@@ -9,6 +9,167 @@ import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Box from "@mui/material/Box";
 
+import dayjs from "dayjs";
+import Tooltip from "@mui/material/Tooltip";
+
+import Paper from "@mui/material/Paper";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TablePagination from "@mui/material/TablePagination";
+import TableRow from "@mui/material/TableRow";
+
+const columns = [
+  {
+    id: "date",
+    label: "Date",
+    minWidth: 100,
+    align: "right",
+    format: (value) => value.format("DD/MM/YYYY"),
+    tooltip: (value) => value.format("MMMM DD, YYYY"),
+  },
+  { id: "name", label: "Name", minWidth: 100 },
+  {
+    id: "o2",
+    label: "Mix",
+    minWidth: 170,
+    align: "right",
+    format: (value, row) => {
+      let o2 = row.o2.toFixed(1);
+      let he = row.he.toFixed(1);
+
+      if (he == 0.0) {
+        return o2;
+      } else {
+        return `${o2}/${he}`;
+      }
+    },
+  },
+  {
+    id: "start",
+    label: "Fill",
+    minWidth: 200,
+    align: "left",
+    format: (value, row) => `${row.start} psi -> ${row.end} psi`,
+  },
+  {
+    id: "cylinder",
+    label: "Cylinder",
+    minWidth: 100,
+    align: "left",
+  },
+];
+
+function createData(id, name, date, start, end, o2, he, cylinder) {
+  return { id, name, date, start, end, o2, he, cylinder };
+}
+
+const rows = [
+  createData(
+    1,
+    "Marshall Asch",
+    dayjs("2025-10-01T00:00:00.000"),
+    500,
+    3400,
+    20.9,
+    0,
+    "abcd-efg-hij",
+  ),
+  createData(
+    2,
+    "Bob Marley",
+    dayjs("2023-11-10T00:00:00.000"),
+    0,
+    3000,
+    18.0,
+    42,
+    "abcd-efg-hij",
+  ),
+];
+
+function FillHistory(props) {
+  const { children, value, index, ...other } = props;
+
+  const [page, setPage] = React.useState(0);
+  const [rowsPerPage, setRowsPerPage] = React.useState(10);
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(+event.target.value);
+    setPage(0);
+  };
+
+  return (
+    <Paper sx={{ width: "100%", overflow: "hidden" }}>
+      <TableContainer sx={{ maxHeight: 440 }}>
+        <Table stickyHeader aria-label="sticky table">
+          <TableHead>
+            <TableRow>
+              {columns.map((column) => (
+                <TableCell
+                  key={column.id}
+                  align={column.align}
+                  style={{ minWidth: column.minWidth }}
+                >
+                  {column.label}
+                </TableCell>
+              ))}
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {rows
+              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+              .map((row) => {
+                return (
+                  <TableRow hover role="checkbox" tabIndex={-1} key={row.id}>
+                    {columns.map((column) => {
+                      const value = row[column.id];
+
+                      if (column.tooltip) {
+                        return (
+                          <Tooltip
+                            key={row.id}
+                            title={column.tooltip(value, row)}
+                          >
+                            <TableCell key={column.id} align={column.align}>
+                              {column.format
+                                ? column.format(value, row)
+                                : value}
+                            </TableCell>
+                          </Tooltip>
+                        );
+                      } else {
+                        return (
+                          <TableCell key={column.id} align={column.align}>
+                            {column.format ? column.format(value, row) : value}
+                          </TableCell>
+                        );
+                      }
+                    })}
+                  </TableRow>
+                );
+              })}
+          </TableBody>
+        </Table>
+      </TableContainer>
+      <TablePagination
+        rowsPerPageOptions={[10, 25, 100]}
+        component="div"
+        count={rows.length}
+        rowsPerPage={rowsPerPage}
+        page={page}
+        onPageChange={handleChangePage}
+        onRowsPerPageChange={handleChangeRowsPerPage}
+      />
+    </Paper>
+  );
+}
+
 function CustomTabPanel(props) {
   const { children, value, index, ...other } = props;
 
@@ -16,8 +177,8 @@ function CustomTabPanel(props) {
     <div
       role="tabpanel"
       hidden={value !== index}
-      id={`simple-tabpanel-${index}`}
-      aria-labelledby={`simple-tab-${index}`}
+      id={`tabpanel-${index}`}
+      aria-labelledby={`tab-${index}`}
       {...other}
     >
       {value === index && <Box sx={{ p: 3 }}>{children}</Box>}
@@ -33,8 +194,8 @@ CustomTabPanel.propTypes = {
 
 function a11yProps(index) {
   return {
-    id: `simple-tab-${index}`,
-    "aria-controls": `simple-tabpanel-${index}`,
+    id: `tab-${index}`,
+    "aria-controls": `tabpanel-${index}`,
   };
 }
 
@@ -49,24 +210,16 @@ export default function History() {
     <Container maxWidth="lg">
       <Box sx={{ width: "100%" }}>
         <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-          <Tabs
-            value={value}
-            onChange={handleChange}
-            aria-label="basic tabs example"
-          >
-            <Tab label="Item One" {...a11yProps(0)} />
-            <Tab label="Item Two" {...a11yProps(1)} />
-            <Tab label="Item Three" {...a11yProps(2)} />
+          <Tabs value={value} onChange={handleChange}>
+            <Tab label="Fills" {...a11yProps(0)} />
+            <Tab label="Visual Inspections" {...a11yProps(1)} />
           </Tabs>
         </Box>
         <CustomTabPanel value={value} index={0}>
-          Item One
+          <FillHistory />
         </CustomTabPanel>
         <CustomTabPanel value={value} index={1}>
           Item Two
-        </CustomTabPanel>
-        <CustomTabPanel value={value} index={2}>
-          Item Three
         </CustomTabPanel>
       </Box>
     </Container>
