@@ -1,0 +1,231 @@
+import * as React from "react";
+
+import CylinderPicker from "@/components/CylinderPicker";
+
+import FormHelperText from "@mui/material/FormHelperText";
+import Input from "@mui/material/Input";
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
+import FormControl from "@mui/material/FormControl";
+import Select from "@mui/material/Select";
+import Tooltip from "@mui/material/Tooltip";
+
+import CancelIcon from "@mui/icons-material/Cancel";
+
+import TableCell from "@mui/material/TableCell";
+import TableRow from "@mui/material/TableRow";
+import IconButton from "@mui/material/IconButton";
+
+export default function FillTableRow({
+  index,
+  item,
+  person,
+  onCancel = (index, item) => {},
+  ...other
+}) {
+  const nitroxUse = person && (person.nitroxCert || person.advancedNitroxCert);
+  const advancedNitroxUse = person && person.advancedNitroxCert;
+  const trimixUse = person && person.trimixCert;
+
+  const [typeValue, setType] = React.useState("air");
+
+  const [oxygenAmount, setOxygen] = React.useState("20.9");
+  const [heliumAmount, setHelium] = React.useState("0");
+  const [startPressure, setStartPressure] = React.useState("0");
+  const [endPressure, setEndPressure] = React.useState("0");
+
+  const [oxygenError, setOxygenError] = React.useState("");
+  const [heliumError, setHeliumError] = React.useState("");
+
+  const [startError, setStartError] = React.useState("");
+  const [endError, setEndError] = React.useState("");
+
+  const handleTypeChange = (event) => {
+    setType(event.target.value);
+  };
+
+  return (
+    <TableRow key={index}>
+      <TableCell align="center">
+        <CylinderPicker />
+      </TableCell>
+
+      <TableCell>
+        <FormControl fullWidth>
+          <InputLabel id="fill-type">Fill Type</InputLabel>
+          <Select
+            labelId="fill-type"
+            id="fill-type"
+            label="Fill Type"
+            value={typeValue}
+            onChange={handleTypeChange}
+          >
+            <MenuItem value="air">Air</MenuItem>
+            <Tooltip title={!nitroxUse && "Not certified for nitrox"}>
+              <div>
+                <MenuItem value="nitrox" disabled={!nitroxUse}>
+                  Nitrox
+                </MenuItem>
+              </div>
+            </Tooltip>
+            <Tooltip title={!trimixUse && "Not certified for trimix"}>
+              <div>
+                <MenuItem value="trimix" disabled={!trimixUse}>
+                  Trimix
+                </MenuItem>
+              </div>
+            </Tooltip>
+          </Select>
+        </FormControl>
+      </TableCell>
+
+      <TableCell>
+        <FormControl
+          disabled={typeValue == "air"}
+          error={oxygenError != ""}
+          variant="standard"
+        >
+          <InputLabel htmlFor="oxygen">Oxygen %</InputLabel>
+          <Input
+            id="oxygen"
+            value={oxygenAmount}
+            onChange={(event) => {
+              let value = event.target.value;
+              setOxygen(value);
+
+              if (isNaN(value)) {
+                setOxygenError("Must be a number");
+              } else if (value < 20.9 && typeValue != "trimix") {
+                setOxygenError("Must not be hypoxic");
+              } else if (value <= 0 || value > 100) {
+                setOxygenError("Must be between 0 and 100%");
+              } else if (value > 40 && !advancedNitroxUse) {
+                setOxygenError(
+                  "Must be certified for advanced nitrox to use mixes over 40%",
+                );
+              } else {
+                setOxygenError("");
+              }
+            }}
+            aria-describedby="oxygen-text"
+          />
+          {oxygenError && (
+            <FormHelperText id="oxygen-text">{oxygenError}</FormHelperText>
+          )}
+        </FormControl>
+
+        <FormControl
+          disabled={typeValue != "trimix"}
+          error={heliumError != ""}
+          variant="standard"
+        >
+          <InputLabel htmlFor="helium">Helium %</InputLabel>
+          <Input
+            id="helium"
+            value={heliumAmount}
+            onChange={(event) => {
+              let value = event.target.value;
+
+              setHelium(value);
+
+              if (isNaN(value)) {
+                setHeliumError("Must be a number");
+              } else if (value <= 0 || value > 100) {
+                setHeliumError("Must be between 0 and 100%");
+              } else {
+                setHeliumError("");
+              }
+            }}
+            aria-describedby="helium-text"
+          />
+          {heliumError && (
+            <FormHelperText id="helium-text">{heliumError}</FormHelperText>
+          )}
+        </FormControl>
+      </TableCell>
+
+      <TableCell>
+        <FormControl error={startError != ""} variant="standard">
+          <InputLabel htmlFor="start-pressure">Start Pressure</InputLabel>
+          <Input
+            id="start-pressure"
+            value={startPressure}
+            onChange={(event) => {
+              let value = event.target.value;
+              setStartPressure(value);
+
+              if (isNaN(value)) {
+                setStartError("Must be a number");
+              } else if (value < 0) {
+                setStartError("Must be above 0");
+              } else if (value > endPressure) {
+                setStartError("Start must be less than end pressure");
+                !endError &&
+                  setEndError("Must be more than the start pressure");
+              } else {
+                setStartError("");
+                if (endError == "Must be more than the start pressure") {
+                  setEndError("");
+                }
+              }
+            }}
+            aria-describedby="start-pressure-text"
+          />
+          {startError && (
+            <FormHelperText id="start-pressure-text">
+              {startError}
+            </FormHelperText>
+          )}
+        </FormControl>
+      </TableCell>
+
+      <TableCell>
+        <FormControl error={endError != ""} variant="standard">
+          <InputLabel htmlFor="end-pressure">End Pressure</InputLabel>
+          <Input
+            id="end-pressure"
+            value={endPressure}
+            onChange={(event) => {
+              let value = event.target.value;
+              setEndPressure(value);
+
+              if (isNaN(value)) {
+                setEndError("Must be a number");
+              } else if (value < 0) {
+                setEndError("Must be above 0");
+              } else if (value <= startPressure) {
+                setEndError("Must be more than the start pressure");
+                !startError &&
+                  setStartError("Start must be less than end pressure");
+              } else {
+                setEndError("");
+                if (startError == "Start must be less than end pressure") {
+                  setStartError("");
+                }
+              }
+            }}
+            aria-describedby="end-pressure-text"
+          />
+          {endError && (
+            <FormHelperText id="end-pressure-text">{endError}</FormHelperText>
+          )}
+        </FormControl>
+      </TableCell>
+
+      <TableCell align="right">
+        <Tooltip title="Cancel">
+          <IconButton
+            edge="end"
+            aria-label="cancel"
+            onClick={() => {
+              console.log(`index ${index}`);
+              onCancel(index, item);
+            }}
+          >
+            <CancelIcon />
+          </IconButton>
+        </Tooltip>
+      </TableCell>
+    </TableRow>
+  );
+}

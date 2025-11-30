@@ -9,6 +9,8 @@ import Button from "@mui/material/Button";
 import Autocomplete, { createFilterOptions } from "@mui/material/Autocomplete";
 import Checkbox from "@mui/material/Checkbox";
 
+import Stack from "@mui/material/Stack";
+
 import { green } from "@mui/material/colors";
 import FormControlLabel from "@mui/material/FormControlLabel";
 
@@ -147,80 +149,83 @@ export default function CylinderPicker() {
             <DialogContentText>
               Add the new cylinders information to save it for next time.
             </DialogContentText>
+            <Stack spacing={2}>
+              <TextField
+                autoFocus
+                margin="dense"
+                id="name"
+                value={dialogValue.serialNumber}
+                onChange={(event) =>
+                  setDialogValue({
+                    ...dialogValue,
+                    serialNumber: event.target.value,
+                  })
+                }
+                label="Serial Number"
+                type="text"
+                variant="standard"
+              />
 
-            <TextField
-              autoFocus
-              margin="dense"
-              id="name"
-              value={dialogValue.serialNumber}
-              onChange={(event) =>
-                setDialogValue({
-                  ...dialogValue,
-                  serialNumber: event.target.value,
-                })
-              }
-              label="Serial Number"
-              type="text"
-              variant="standard"
-            />
-
-            <MonthPicker
-              label="First Hydro"
-              helpText="The first hydro stamp on the cylinder"
-              initialValue={dialogValue.birthDate}
-              onChange={(value) =>
-                setDialogValue({
-                  ...dialogValue,
-                  birthDate: value,
-                })
-              }
-            />
-
-            <MonthPicker
-              label="Last Hydro"
-              helpText="The most recent hydro stamp on the cylinder"
-              initialValue={dialogValue.lastHydro}
-              onChange={(value) =>
-                setDialogValue({
-                  ...dialogValue,
-                  lastHydro: value,
-                })
-              }
-            />
-
-            <MonthPicker
-              label="Last Vis"
-              helpText="The most recent Vis sticker on the cylinder"
-              initialValue={dialogValue.lastVis}
-              onChange={(value) =>
-                setDialogValue({
-                  ...dialogValue,
-                  lastVis: value,
-                })
-              }
-            />
-
-            <FormControlLabel
-              label="Tank and valve have been cleaned for oxygen service to 100%"
-              labelPlacement="end"
-              control={
-                <Checkbox
-                  checked={dialogValue.oxygenClean}
-                  onChange={(event) =>
+              <Stack direction="row" spacing={2}>
+                <MonthPicker
+                  label="First Hydro"
+                  helpText="The first hydro stamp on the cylinder"
+                  initialValue={dialogValue.birthDate}
+                  onChange={(value) =>
                     setDialogValue({
                       ...dialogValue,
-                      oxygenClean: event.target.checked,
+                      birthDate: value,
                     })
                   }
-                  sx={{
-                    color: green[800],
-                    "&.Mui-checked": {
-                      color: green[600],
-                    },
-                  }}
                 />
-              }
-            />
+
+                <MonthPicker
+                  label="Last Hydro"
+                  helpText="The most recent hydro stamp on the cylinder"
+                  initialValue={dialogValue.lastHydro}
+                  onChange={(value) =>
+                    setDialogValue({
+                      ...dialogValue,
+                      lastHydro: value,
+                    })
+                  }
+                />
+              </Stack>
+
+              <MonthPicker
+                label="Last Vis"
+                helpText="The most recent Vis sticker on the cylinder"
+                initialValue={dialogValue.lastVis}
+                onChange={(value) =>
+                  setDialogValue({
+                    ...dialogValue,
+                    lastVis: value,
+                  })
+                }
+              />
+
+              <FormControlLabel
+                label="Tank and valve have been cleaned for oxygen service to 100%"
+                labelPlacement="end"
+                control={
+                  <Checkbox
+                    checked={dialogValue.oxygenClean}
+                    onChange={(event) =>
+                      setDialogValue({
+                        ...dialogValue,
+                        oxygenClean: event.target.checked,
+                      })
+                    }
+                    sx={{
+                      color: green[800],
+                      "&.Mui-checked": {
+                        color: green[600],
+                      },
+                    }}
+                  />
+                }
+              />
+            </Stack>
           </DialogContent>
           <DialogActions>
             <Button onClick={handleClose}>Cancel</Button>

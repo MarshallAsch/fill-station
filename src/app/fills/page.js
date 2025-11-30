@@ -7,23 +7,46 @@ import Box from "@mui/material/Box";
 
 import dayjs from "dayjs";
 
-import CylinderPicker from "@/components/CylinderPicker";
+import PersonPicker from "@/components/PersonPicker";
 
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 
-import Radio from "@mui/material/Radio";
-import RadioGroup from "@mui/material/RadioGroup";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import FormControl from "@mui/material/FormControl";
-import FormHelperText from "@mui/material/FormHelperText";
-import FormLabel from "@mui/material/FormLabel";
-import InputLabel from "@mui/material/InputLabel";
-import Input from "@mui/material/Input";
+import Tooltip from "@mui/material/Tooltip";
+
+import AddIcon from "@mui/icons-material/Add";
+
+import Paper from "@mui/material/Paper";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+import IconButton from "@mui/material/IconButton";
+
+import FillTableRow from "@/components/FillTableRow";
+
+import Stack from "@mui/material/Stack";
 
 const gotCompressor = dayjs("2025-01-01T00:00:00.000");
 
+function newFill(id) {
+  return {
+    id,
+    type: "air",
+    start: 0,
+    end: 3000,
+    o2: 20.9,
+    he: 0,
+    cylinder: "",
+  };
+}
+
 export default function About() {
   const [error, setError] = React.useState(null);
+
+  const [personValue, setPerson] = React.useState(null);
+
   const [typeValue, setType] = React.useState("air");
 
   const [oxygenAmount, setOxygen] = React.useState("20.9");
@@ -37,7 +60,7 @@ export default function About() {
   const [startError, setStartError] = React.useState("");
   const [endError, setEndError] = React.useState("");
 
-  oxygenError;
+  const [fillList, setNewFills] = React.useState([newFill(0)]);
 
   const errorMessage = React.useMemo(() => {
     switch (error) {
@@ -78,156 +101,69 @@ export default function About() {
           Record a Tank Fill
         </Typography>
 
-        <DatePicker
-          label="Fill Date"
-          name="date"
-          defaultValue={dayjs()}
-          minDate={gotCompressor}
-          disableFuture
-          onError={(newError) => setError(newError)}
-          slotProps={{
-            textField: {
-              helperText: errorMessage,
-            },
-          }}
-        />
-
-        <FormControl>
-          <FormLabel id="fill-type-group-label">Fill Type</FormLabel>
-          <RadioGroup
-            row
-            aria-labelledby="fill-type-group-label"
-            name="fill-type"
-            defaultValue="air"
-            value={typeValue}
-            onChange={handleTypeChange}
-          >
-            <FormControlLabel value="air" control={<Radio />} label="Air" />
-            <FormControlLabel
-              value="nitrox"
-              control={<Radio />}
-              label="Nitrox"
-            />
-            <FormControlLabel
-              value="trimix"
-              control={<Radio />}
-              label="Trimix"
-            />
-          </RadioGroup>
-        </FormControl>
-
-        <FormControl
-          disabled={typeValue == "air"}
-          error={oxygenError != ""}
-          variant="standard"
-        >
-          <InputLabel htmlFor="oxygen">Oxygen %</InputLabel>
-          <Input
-            id="oxygen"
-            value={oxygenAmount}
-            onChange={(event) => {
-              let value = event.target.value;
-              setOxygen(value);
-
-              if (isNaN(value)) {
-                setOxygenError("Must be a number");
-              } else if (value < 20.9 && typeValue != "trimix") {
-                setOxygenError("Must not be hypoxic");
-              } else if (value <= 0 || value > 100) {
-                setOxygenError("Must be between 0 and 100%");
-              } else {
-                setOxygenError("");
-              }
+        <Stack direction="row" spacing={2}>
+          <DatePicker
+            label="Fill Date"
+            name="date"
+            defaultValue={dayjs()}
+            minDate={gotCompressor}
+            disableFuture
+            onError={(newError) => setError(newError)}
+            slotProps={{
+              textField: {
+                helperText: errorMessage,
+              },
             }}
-            aria-describedby="oxygen-text"
           />
-          {oxygenError && (
-            <FormHelperText id="oxygen-text">{oxygenError}</FormHelperText>
-          )}
-        </FormControl>
-
-        <FormControl
-          disabled={typeValue != "trimix"}
-          error={heliumError != ""}
-          variant="standard"
-        >
-          <InputLabel htmlFor="helium">Helium %</InputLabel>
-          <Input
-            id="helium"
-            value={heliumAmount}
-            onChange={(event) => {
-              let value = event.target.value;
-
-              setHelium(value);
-
-              if (isNaN(value)) {
-                setHeliumError("Must be a number");
-              } else if (value <= 0 || value > 100) {
-                setHeliumError("Must be between 0 and 100%");
-              } else {
-                setHeliumError("");
-              }
-            }}
-            aria-describedby="helium-text"
+          <PersonPicker
+            value={personValue}
+            onChange={(value) => setPerson(value)}
           />
-          {heliumError && (
-            <FormHelperText id="helium-text">{heliumError}</FormHelperText>
-          )}
-        </FormControl>
-
-        <FormControl error={startError != ""} variant="standard">
-          <InputLabel htmlFor="start-pressure">Start Pressure</InputLabel>
-          <Input
-            id="start-pressure"
-            value={startPressure}
-            onChange={(event) => {
-              let value = event.target.value;
-              setStartPressure(value);
-
-              if (isNaN(value)) {
-                setStartError("Must be a number");
-              } else if (value < 0) {
-                setStartError("Must be above 0");
-              } else {
-                setStartError("");
-              }
-            }}
-            aria-describedby="start-pressure-text"
-          />
-          {startError && (
-            <FormHelperText id="start-pressure-text">
-              {startError}
-            </FormHelperText>
-          )}
-        </FormControl>
-
-        <FormControl error={endError != ""} variant="standard">
-          <InputLabel htmlFor="end-pressure">End Pressure</InputLabel>
-          <Input
-            id="end-pressure"
-            value={endPressure}
-            onChange={(event) => {
-              let value = event.target.value;
-              setEndPressure(value);
-
-              if (isNaN(value)) {
-                setEndError("Must be a number");
-              } else if (value < 0) {
-                setEndError("Must be above 0");
-              } else if (value <= startPressure) {
-                setEndError("Must be more than the start pressure");
-              } else {
-                setEndError("");
-              }
-            }}
-            aria-describedby="end-pressure-text"
-          />
-          {endError && (
-            <FormHelperText id="end-pressure-text">{endError}</FormHelperText>
-          )}
-        </FormControl>
-
-        <CylinderPicker />
+        </Stack>
+        <TableContainer component={Paper}>
+          <Table aria-label="new stock table">
+            <TableHead>
+              <TableRow>
+                <TableCell align="center">Cylinder</TableCell>
+                <TableCell align="left">Fill Type</TableCell>
+                <TableCell align="left">Contents</TableCell>
+                <TableCell align="center">Start Pressure</TableCell>
+                <TableCell align="center">End Pressure</TableCell>
+                <TableCell></TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {fillList.map((item, index) => (
+                <FillTableRow
+                  key={index}
+                  item={item}
+                  person={personValue}
+                  onCancel={() =>
+                    setNewFills(fillList.filter((s) => s.id !== item.id))
+                  }
+                />
+              ))}
+              <TableRow key={"add-stock"}>
+                <TableCell align="center" colSpan={6}>
+                  <Tooltip title={"Another Fill"}>
+                    <IconButton
+                      edge="end"
+                      aria-label="Another Fill"
+                      onClick={() => {
+                        setNewFills([
+                          ...fillList,
+                          newFill(fillList.length + 1),
+                        ]);
+                      }}
+                    >
+                      <AddIcon />
+                    </IconButton>
+                  </Tooltip>
+                </TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
+        </TableContainer>
       </Box>
     </Container>
   );
