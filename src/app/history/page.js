@@ -304,7 +304,10 @@ function VisHistory(props) {
                       }
                     })}
                     <TableCell key="details" align="center">
-                      <IconButton aria-label="details">
+                      <IconButton
+                        aria-label="details"
+                        href={`/visual/${row.id}`}
+                      >
                         <OpenInNewIcon />
                       </IconButton>
                     </TableCell>
