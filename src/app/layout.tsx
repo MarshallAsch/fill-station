@@ -5,6 +5,10 @@ import { useState } from "react";
 import { Dialog, DialogPanel } from "@headlessui/react";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import LogoIcon from "@/components/LogoIcon";
+import { LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { Provider } from "react-redux";
+import { store } from "@/redux/store";
 
 const navigation = [
   { name: "Fills", href: "fills" },
@@ -105,7 +109,11 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           </Dialog>
         </header>
         <main className="h-[90vh] flex justify-center items-center">
-          {children}
+          <Provider store={store}>
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              {children}
+            </LocalizationProvider>
+          </Provider>
         </main>
       </body>
     </html>
