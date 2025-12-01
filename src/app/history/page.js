@@ -28,6 +28,8 @@ import OpenInNewIcon from "@mui/icons-material/OpenInNew";
 import CheckCircleRoundedIcon from "@mui/icons-material/CheckCircleRounded";
 import DangerousRoundedIcon from "@mui/icons-material/DangerousRounded";
 
+import MaintenanceHistory from "@/components/MaintenanceHistory";
+
 const fillColumns = [
   {
     id: "date",
@@ -373,6 +375,7 @@ export default function History() {
           <Tabs value={value} onChange={handleChange}>
             <Tab label="Fills" {...a11yProps(0)} />
             <Tab label="Visual Inspections" {...a11yProps(1)} />
+            <Tab label="Compressor Maintenance" {...a11yProps(2)} />
           </Tabs>
         </Box>
         <CustomTabPanel value={value} index={0}>
@@ -380,6 +383,9 @@ export default function History() {
         </CustomTabPanel>
         <CustomTabPanel value={value} index={1}>
           <VisHistory />
+        </CustomTabPanel>
+        <CustomTabPanel value={value} index={2}>
+          <MaintenanceHistory />
         </CustomTabPanel>
       </Box>
     </Container>

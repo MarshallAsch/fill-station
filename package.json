@@ -17,6 +17,7 @@
     "@emotion/styled": "latest",
     "@mui/base": "^5.0.0-beta.70",
     "@mui/icons-material": "^7.3.5",
+    "@mui/lab": "^7.0.1-beta.19",
     "@mui/material": "latest",
     "@mui/material-nextjs": "latest",
     "@mui/x-date-pickers": "^8.17.0",
