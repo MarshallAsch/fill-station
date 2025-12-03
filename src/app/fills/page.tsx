@@ -1,6 +1,6 @@
 "use client";
 
-import * as React from "react";
+import React, { useMemo, useState } from "react";
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
@@ -27,42 +27,19 @@ import IconButton from "@mui/material/IconButton";
 import FillTableRow from "@/components/FillTableRow";
 
 import Stack from "@mui/material/Stack";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { addNewFill, removeFill } from "@/redux/fills/fillsSlice";
 
 const gotCompressor = dayjs("2025-01-01T00:00:00.000");
 
-function newFill(id) {
-  return {
-    id,
-    type: "air",
-    start: 0,
-    end: 3000,
-    o2: 20.9,
-    he: 0,
-    cylinder: "",
-  };
-}
-
 export default function About() {
-  const [error, setError] = React.useState(null);
+  const { fills } = useAppSelector((state) => state);
+  const dispatch = useAppDispatch();
+  const [error, setError] = useState<string | null>(null);
 
-  const [personValue, setPerson] = React.useState(null);
+  const [personValue, setPerson] = useState(null);
 
-  const [typeValue, setType] = React.useState("air");
-
-  const [oxygenAmount, setOxygen] = React.useState("20.9");
-  const [heliumAmount, setHelium] = React.useState("0");
-  const [startPressure, setStartPressure] = React.useState("0");
-  const [endPressure, setEndPressure] = React.useState("0");
-
-  const [oxygenError, setOxygenError] = React.useState("");
-  const [heliumError, setHeliumError] = React.useState("");
-
-  const [startError, setStartError] = React.useState("");
-  const [endError, setEndError] = React.useState("");
-
-  const [fillList, setNewFills] = React.useState([newFill(0)]);
-
-  const errorMessage = React.useMemo(() => {
+  const errorMessage = useMemo(() => {
     switch (error) {
       case "disableFuture": {
         return "Please select a date thats not in the future";
@@ -133,14 +110,13 @@ export default function About() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {fillList.map((item, index) => (
+              {fills.map((item) => (
                 <FillTableRow
-                  key={index}
+                  key={item.id}
+                  index={item.id}
                   item={item}
                   person={personValue}
-                  onCancel={() =>
-                    setNewFills(fillList.filter((s) => s.id !== item.id))
-                  }
+                  onCancel={(index) => dispatch(removeFill(index))}
                 />
               ))}
               <TableRow key={"add-stock"}>
@@ -150,10 +126,7 @@ export default function About() {
                       edge="end"
                       aria-label="Another Fill"
                       onClick={() => {
-                        setNewFills([
-                          ...fillList,
-                          newFill(fillList.length + 1),
-                        ]);
+                        dispatch(addNewFill());
                       }}
                     >
                       <AddIcon />

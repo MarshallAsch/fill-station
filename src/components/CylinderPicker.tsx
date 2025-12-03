@@ -1,4 +1,4 @@
-import * as React from "react";
+import React from "react";
 import TextField from "@mui/material/TextField";
 import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
@@ -18,22 +18,15 @@ import MonthPicker from "@/components/MonthPicker";
 
 import dayjs from "dayjs";
 import objectSupport from "dayjs/plugin/objectSupport"; // ES 2015
+import { useAppSelector } from "@/redux/hooks";
 
 dayjs.extend(objectSupport);
 
 const filter = createFilterOptions();
 
-const Cylinders = [
-  {
-    serialNumber: "abcd-efg-hi",
-    birthDate: dayjs({ month: 10, year: 2020 }),
-    lastHydro: 2024,
-    lastVis: 2023,
-    oxygenClean: false,
-  },
-];
+const CylinderPicker = () => {
+  const { cylinders } = useAppSelector((state) => state);
 
-export default function CylinderPicker() {
   const [value, setValue] = React.useState(null);
   const [open, toggleOpen] = React.useState(false);
 
@@ -72,7 +65,7 @@ export default function CylinderPicker() {
   };
 
   return (
-    <React.Fragment>
+    <>
       <Autocomplete
         value={value}
         onChange={(event, newValue) => {
@@ -114,7 +107,7 @@ export default function CylinderPicker() {
           return filtered;
         }}
         id="free-solo-dialog-demo"
-        options={Cylinders}
+        options={cylinders}
         getOptionLabel={(option) => {
           // for example value selected with enter, right from the input
           if (typeof option === "string") {
@@ -233,6 +226,8 @@ export default function CylinderPicker() {
           </DialogActions>
         </form>
       </Dialog>
-    </React.Fragment>
+    </>
   );
-}
+};
+
+export default CylinderPicker;

@@ -1,6 +1,4 @@
-import * as React from "react";
-
-import CylinderPicker from "@/components/CylinderPicker";
+import React, { SetStateAction, useState } from "react";
 
 import FormHelperText from "@mui/material/FormHelperText";
 import Input from "@mui/material/Input";
@@ -15,32 +13,37 @@ import CancelIcon from "@mui/icons-material/Cancel";
 import TableCell from "@mui/material/TableCell";
 import TableRow from "@mui/material/TableRow";
 import IconButton from "@mui/material/IconButton";
+import { Fill } from "@/redux/fills/fillsSlice";
+import CylinderPicker from "./CylinderPicker";
 
-export default function FillTableRow({
-  index,
-  item,
-  person,
-  onCancel = (index, item) => {},
-  ...other
-}) {
+type Props = {
+  index: number;
+  item: Fill;
+  person: any; //TODO Update Type When Slice Created
+  onCancel: (index: number) => void;
+};
+
+export default function FillTableRow({ index, item, person, onCancel }: Props) {
   const nitroxUse = person && (person.nitroxCert || person.advancedNitroxCert);
   const advancedNitroxUse = person && person.advancedNitroxCert;
   const trimixUse = person && person.trimixCert;
 
-  const [typeValue, setType] = React.useState("air");
+  const [typeValue, setType] = useState(item.type);
 
-  const [oxygenAmount, setOxygen] = React.useState("20.9");
-  const [heliumAmount, setHelium] = React.useState("0");
-  const [startPressure, setStartPressure] = React.useState("0");
-  const [endPressure, setEndPressure] = React.useState("0");
+  const [oxygenAmount, setOxygen] = useState(item.o2);
+  const [heliumAmount, setHelium] = useState(item.he);
+  const [startPressure, setStartPressure] = useState(item.start);
+  const [endPressure, setEndPressure] = useState(item.end);
 
-  const [oxygenError, setOxygenError] = React.useState("");
-  const [heliumError, setHeliumError] = React.useState("");
+  const [oxygenError, setOxygenError] = useState("");
+  const [heliumError, setHeliumError] = useState("");
 
-  const [startError, setStartError] = React.useState("");
-  const [endError, setEndError] = React.useState("");
+  const [startError, setStartError] = useState("");
+  const [endError, setEndError] = useState("");
 
-  const handleTypeChange = (event) => {
+  const handleTypeChange = (event: {
+    target: { value: SetStateAction<string> };
+  }) => {
     setType(event.target.value);
   };
 
@@ -87,10 +90,11 @@ export default function FillTableRow({
         >
           <InputLabel htmlFor="oxygen">Oxygen %</InputLabel>
           <Input
+            type="number"
             id="oxygen"
             value={oxygenAmount}
             onChange={(event) => {
-              let value = event.target.value;
+              let value = Number(event.target.value);
               setOxygen(value);
 
               if (isNaN(value)) {
@@ -121,10 +125,11 @@ export default function FillTableRow({
         >
           <InputLabel htmlFor="helium">Helium %</InputLabel>
           <Input
+            type="number"
             id="helium"
             value={heliumAmount}
             onChange={(event) => {
-              let value = event.target.value;
+              let value = Number(event.target.value);
 
               setHelium(value);
 
@@ -148,10 +153,11 @@ export default function FillTableRow({
         <FormControl error={startError != ""} variant="standard">
           <InputLabel htmlFor="start-pressure">Start Pressure</InputLabel>
           <Input
+            type="number"
             id="start-pressure"
             value={startPressure}
             onChange={(event) => {
-              let value = event.target.value;
+              let value = Number(event.target.value);
               setStartPressure(value);
 
               if (isNaN(value)) {
@@ -183,10 +189,11 @@ export default function FillTableRow({
         <FormControl error={endError != ""} variant="standard">
           <InputLabel htmlFor="end-pressure">End Pressure</InputLabel>
           <Input
+            type="number"
             id="end-pressure"
             value={endPressure}
             onChange={(event) => {
-              let value = event.target.value;
+              let value = Number(event.target.value);
               setEndPressure(value);
 
               if (isNaN(value)) {
@@ -218,8 +225,7 @@ export default function FillTableRow({
             edge="end"
             aria-label="cancel"
             onClick={() => {
-              console.log(`index ${index}`);
-              onCancel(index, item);
+              onCancel(index);
             }}
           >
             <CancelIcon />
