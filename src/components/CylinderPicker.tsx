@@ -1,4 +1,4 @@
-import React from "react";
+import React, { FormEvent } from "react";
 import TextField from "@mui/material/TextField";
 import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
@@ -19,6 +19,7 @@ import MonthPicker from "@/components/MonthPicker";
 import dayjs from "dayjs";
 import objectSupport from "dayjs/plugin/objectSupport"; // ES 2015
 import { useAppSelector } from "@/redux/hooks";
+import { Cylinder } from "@/redux/cylinder/cylinderSlice";
 
 dayjs.extend(objectSupport);
 
@@ -27,29 +28,29 @@ const filter = createFilterOptions();
 const CylinderPicker = () => {
   const { cylinders } = useAppSelector((state) => state);
 
-  const [value, setValue] = React.useState(null);
+  const [value, setValue] = React.useState<Cylinder | null>(null);
   const [open, toggleOpen] = React.useState(false);
 
   const handleClose = () => {
     setDialogValue({
       serialNumber: "",
-      birthDate: "",
-      lastHydro: "",
-      lastVis: "",
+      birthDate: null,
+      lastHydro: null,
+      lastVis: null,
       oxygenClean: false,
     });
     toggleOpen(false);
   };
 
-  const [dialogValue, setDialogValue] = React.useState({
+  const [dialogValue, setDialogValue] = React.useState<Cylinder>({
     serialNumber: "",
-    birthDate: "",
-    lastHydro: "",
-    lastVis: "",
+    birthDate: null,
+    lastHydro: null,
+    lastVis: null,
     oxygenClean: false,
   });
 
-  const handleSubmit = (event) => {
+  const handleSubmit = (event: FormEvent) => {
     event.preventDefault();
 
     console.log(dialogValue);
@@ -68,16 +69,16 @@ const CylinderPicker = () => {
     <>
       <Autocomplete
         value={value}
-        onChange={(event, newValue) => {
+        onChange={(event, newValue: string | Cylinder | any | null) => {
           if (typeof newValue === "string") {
             // timeout to avoid instant validation of the dialog's form.
             setTimeout(() => {
               toggleOpen(true);
               setDialogValue({
                 serialNumber: newValue,
-                birthDate: "",
-                lastHydro: "",
-                lastVis: "",
+                birthDate: null,
+                lastHydro: null,
+                lastVis: null,
                 oxygenClean: false,
               });
             });
@@ -85,9 +86,9 @@ const CylinderPicker = () => {
             toggleOpen(true);
             setDialogValue({
               serialNumber: newValue.inputValue,
-              birthDate: "",
-              lastHydro: "",
-              lastVis: "",
+              birthDate: null,
+              lastHydro: null,
+              lastVis: null,
               oxygenClean: false,
             });
           } else {
@@ -164,7 +165,7 @@ const CylinderPicker = () => {
                   label="First Hydro"
                   helpText="The first hydro stamp on the cylinder"
                   initialValue={dialogValue.birthDate}
-                  onChange={(value) =>
+                  onChange={(value: dayjs.Dayjs) =>
                     setDialogValue({
                       ...dialogValue,
                       birthDate: value,
@@ -176,7 +177,7 @@ const CylinderPicker = () => {
                   label="Last Hydro"
                   helpText="The most recent hydro stamp on the cylinder"
                   initialValue={dialogValue.lastHydro}
-                  onChange={(value) =>
+                  onChange={(value: dayjs.Dayjs) =>
                     setDialogValue({
                       ...dialogValue,
                       lastHydro: value,
@@ -189,7 +190,7 @@ const CylinderPicker = () => {
                 label="Last Vis"
                 helpText="The most recent Vis sticker on the cylinder"
                 initialValue={dialogValue.lastVis}
-                onChange={(value) =>
+                onChange={(value: dayjs.Dayjs) =>
                   setDialogValue({
                     ...dialogValue,
                     lastVis: value,

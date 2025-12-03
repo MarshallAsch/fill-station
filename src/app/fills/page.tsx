@@ -59,10 +59,6 @@ export default function About() {
     }
   }, [error]);
 
-  const handleTypeChange = (event) => {
-    setType(event.target.value);
-  };
-
   return (
     <Container maxWidth="lg">
       <Box
