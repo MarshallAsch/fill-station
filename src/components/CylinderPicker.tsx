@@ -24,7 +24,7 @@ dayjs.extend(objectSupport);
 
 const filter = createFilterOptions();
 
-export default function CylinderPicker() {
+const CylinderPicker = () => {
   const { cylinders } = useAppSelector((state) => state);
 
   const [value, setValue] = React.useState(null);
@@ -228,4 +228,6 @@ export default function CylinderPicker() {
       </Dialog>
     </>
   );
-}
+};
+
+export default CylinderPicker;

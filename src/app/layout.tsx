@@ -108,7 +108,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             </DialogPanel>
           </Dialog>
         </header>
-        <main className="h-[90vh] flex justify-center items-center">
+        <main className="min-h-[90vh] overflow-auto flex justify-center items-center">
           <Provider store={store}>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               {children}
