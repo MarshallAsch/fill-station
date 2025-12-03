@@ -2,6 +2,7 @@ import { EyeIcon, TableCellsIcon } from "@heroicons/react/24/outline";
 import AirTank from "@/icons/air-tank.svg";
 import React from "react";
 import Image from "next/image";
+import Link from "next/link";
 
 export default function Home() {
   return (
@@ -15,7 +16,7 @@ export default function Home() {
       </p>
       <div className="mx-auto mt-5 max-w-md sm:flex sm:justify-center md:mt-8">
         <div className="-mx-6 grid grid-cols-2 gap-0.5 overflow-hidden sm:mx-0 sm:rounded-2xl md:grid-cols-3">
-          <a
+          <Link
             href="fills"
             className="bg-gray-400/5 p-6 sm:p-10 flex flex-col gap-2 items-center justify-between cursor-pointer hover:bg-gray-400/10 transition"
           >
@@ -25,21 +26,21 @@ export default function Home() {
               className="max-h-12 w-full object-contain"
             />
             <p>Fills</p>
-          </a>
-          <a
+          </Link>
+          <Link
             href="visual"
             className="bg-gray-400/5 p-6 sm:p-10 flex flex-col gap-2 items-center justify-between cursor-pointer hover:bg-gray-400/10 transition"
           >
             <EyeIcon />
             <p>Visual</p>
-          </a>
-          <a
+          </Link>
+          <Link
             href="history"
             className="bg-gray-400/5 p-6 sm:p-10 flex flex-col gap-2 items-center justify-between cursor-pointer hover:bg-gray-400/10 transition"
           >
             <TableCellsIcon />
             <p>History</p>
-          </a>
+          </Link>
         </div>
       </div>
     </div>
