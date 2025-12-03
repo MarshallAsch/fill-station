@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import dayjs from "dayjs";
 
-type Cylinder = {
+export type Cylinder = {
   serialNumber: string;
   birthDate: dayjs.Dayjs | null;
   lastHydro: dayjs.Dayjs | null;

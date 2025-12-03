@@ -44,7 +44,7 @@ export default function FillTableRow({ index, item, person, onCancel }: Props) {
   const handleTypeChange = (event: {
     target: { value: SetStateAction<string> };
   }) => {
-    setType(event.target.value);
+    setType(event.target.value as Fill["type"]);
   };
 
   return (
