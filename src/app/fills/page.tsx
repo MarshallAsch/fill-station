@@ -29,15 +29,16 @@ import FillTableRow from "@/components/FillTableRow";
 import Stack from "@mui/material/Stack";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { addNewFill, removeFill } from "@/redux/fills/fillsSlice";
+import { Client } from "@/redux/client/clientSlice";
 
 const gotCompressor = dayjs("2025-01-01T00:00:00.000");
 
-export default function About() {
+export default function Fills() {
   const { fills } = useAppSelector((state) => state);
   const dispatch = useAppDispatch();
   const [error, setError] = useState<string | null>(null);
 
-  const [personValue, setPerson] = useState(null);
+  const [personValue, setPerson] = useState<Client | null>(null);
 
   const errorMessage = useMemo(() => {
     switch (error) {
@@ -111,7 +112,7 @@ export default function About() {
                   key={item.id}
                   index={item.id}
                   item={item}
-                  person={personValue}
+                  client={personValue}
                   onCancel={(index) => dispatch(removeFill(index))}
                 />
               ))}

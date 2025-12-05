@@ -10,59 +10,38 @@ import Autocomplete, { createFilterOptions } from "@mui/material/Autocomplete";
 
 import Stack from "@mui/material/Stack";
 
+import { useAppSelector } from "@/redux/hooks";
+
+import { Client } from "@/redux/client/clientSlice";
+
 // ES 2015
 
 const filter = createFilterOptions();
 
-const People = [
-  {
-    id: 1,
-    name: "Marshall Asch",
-    nitroxCert: "123456 (TDI)",
-    advancedNitroxCert: "456789 (TDI)",
-    trimixCert: "",
-  },
-  {
-    id: 2,
-    name: "Bob",
-    nitroxCert: "",
-    advancedNitroxCert: "",
-    trimixCert: "",
-  },
-  {
-    id: 3,
-    name: "Frank",
-    nitroxCert: "444444 (TDI)",
-    advancedNitroxCert: "",
-    trimixCert: "",
-  },
-  {
-    id: 4,
-    name: "Jim",
-    nitroxCert: "555 (TDI)",
-    advancedNitroxCert: "666 (TDI)",
-    trimixCert: "200000 (TDI)",
-  },
-];
+type Props = {
+  value: Client | null;
+  onChange: (value: Client) => void;
+};
 
-export default function PersonPicker({
-  value: controlledValue,
-  onChange = (value) => {},
-}) {
-  const [value, setValue] = React.useState(controlledValue);
+export default function PersonPicker({ value: inValue, onChange }: Props) {
+  const { clients } = useAppSelector((state) => state);
+
+  const [value, setValue] = React.useState<Client | null>(inValue);
   const [open, toggleOpen] = React.useState(false);
 
   const handleClose = () => {
+    toggleOpen(false);
     setDialogValue({
+      id: 0,
       name: "",
       nitroxCert: "",
       advancedNitroxCert: "",
       trimixCert: "",
     });
-    toggleOpen(false);
   };
 
-  const [dialogValue, setDialogValue] = React.useState({
+  const [dialogValue, setDialogValue] = React.useState<Client>({
+    id: 0,
     name: "",
     nitroxCert: "",
     advancedNitroxCert: "",
@@ -75,6 +54,7 @@ export default function PersonPicker({
     console.log(dialogValue);
 
     setValue({
+      id: 0,
       name: dialogValue.name,
       nitroxCert: dialogValue.nitroxCert,
       advancedNitroxCert: dialogValue.advancedNitroxCert,
@@ -87,12 +67,13 @@ export default function PersonPicker({
     <React.Fragment>
       <Autocomplete
         value={value}
-        onChange={(event, newValue) => {
+        onChange={(event, newValue: string | Client | any | null) => {
           if (typeof newValue === "string") {
             // timeout to avoid instant validation of the dialog's form.
             setTimeout(() => {
               toggleOpen(true);
               setDialogValue({
+                id: 0,
                 name: newValue,
                 nitroxCert: "",
                 advancedNitroxCert: "",
@@ -102,6 +83,7 @@ export default function PersonPicker({
           } else if (newValue && newValue.inputValue) {
             toggleOpen(true);
             setDialogValue({
+              id: 0,
               name: newValue.inputValue,
               nitroxCert: "",
               advancedNitroxCert: "",
@@ -125,7 +107,7 @@ export default function PersonPicker({
           return filtered;
         }}
         id="free-solo-dialog-demo"
-        options={People}
+        options={clients}
         getOptionLabel={(option) => {
           // for example value selected with enter, right from the input
           if (typeof option === "string") {
