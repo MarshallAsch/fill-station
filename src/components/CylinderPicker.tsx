@@ -66,7 +66,7 @@ const CylinderPicker = () => {
   };
 
   return (
-    <>
+    <div className="py-6">
       <Autocomplete
         value={value}
         onChange={(event, newValue: string | Cylinder | any | null) => {
@@ -163,6 +163,7 @@ const CylinderPicker = () => {
               <Stack direction="row" spacing={2}>
                 <MonthPicker
                   label="First Hydro"
+                  name="fistHydro"
                   helpText="The first hydro stamp on the cylinder"
                   initialValue={dialogValue.birthDate}
                   onChange={(value: dayjs.Dayjs) =>
@@ -174,6 +175,7 @@ const CylinderPicker = () => {
                 />
 
                 <MonthPicker
+                  name="lastHydro"
                   label="Last Hydro"
                   helpText="The most recent hydro stamp on the cylinder"
                   initialValue={dialogValue.lastHydro}
@@ -187,6 +189,7 @@ const CylinderPicker = () => {
               </Stack>
 
               <MonthPicker
+                name="lastVis"
                 label="Last Vis"
                 helpText="The most recent Vis sticker on the cylinder"
                 initialValue={dialogValue.lastVis}
@@ -227,7 +230,7 @@ const CylinderPicker = () => {
           </DialogActions>
         </form>
       </Dialog>
-    </>
+    </div>
   );
 };
 
