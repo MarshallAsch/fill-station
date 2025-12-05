@@ -1,234 +1,234 @@
-import React, { FormEvent } from "react";
-import TextField from "@mui/material/TextField";
-import Dialog from "@mui/material/Dialog";
-import DialogTitle from "@mui/material/DialogTitle";
-import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
-import DialogActions from "@mui/material/DialogActions";
-import Button from "@mui/material/Button";
-import Autocomplete, { createFilterOptions } from "@mui/material/Autocomplete";
-import Checkbox from "@mui/material/Checkbox";
+import React, { FormEvent } from 'react'
+import TextField from '@mui/material/TextField'
+import Dialog from '@mui/material/Dialog'
+import DialogTitle from '@mui/material/DialogTitle'
+import DialogContent from '@mui/material/DialogContent'
+import DialogContentText from '@mui/material/DialogContentText'
+import DialogActions from '@mui/material/DialogActions'
+import Button from '@mui/material/Button'
+import Autocomplete, { createFilterOptions } from '@mui/material/Autocomplete'
+import Checkbox from '@mui/material/Checkbox'
 
-import Stack from "@mui/material/Stack";
+import Stack from '@mui/material/Stack'
 
-import { green } from "@mui/material/colors";
-import FormControlLabel from "@mui/material/FormControlLabel";
+import { green } from '@mui/material/colors'
+import FormControlLabel from '@mui/material/FormControlLabel'
 
-import MonthPicker from "@/components/MonthPicker";
+import MonthPicker from '@/components/MonthPicker'
 
-import dayjs from "dayjs";
-import objectSupport from "dayjs/plugin/objectSupport"; // ES 2015
-import { useAppSelector } from "@/redux/hooks";
-import { Cylinder } from "@/redux/cylinder/cylinderSlice";
+import dayjs from 'dayjs'
+import objectSupport from 'dayjs/plugin/objectSupport' // ES 2015
+import { useAppSelector } from '@/redux/hooks'
+import { Cylinder } from '@/redux/cylinder/cylinderSlice'
 
-dayjs.extend(objectSupport);
+dayjs.extend(objectSupport)
 
-const filter = createFilterOptions();
+const filter = createFilterOptions()
 
 const CylinderPicker = () => {
-  const { cylinders } = useAppSelector((state) => state);
+	const { cylinders } = useAppSelector((state) => state)
 
-  const [value, setValue] = React.useState<Cylinder | null>(null);
-  const [open, toggleOpen] = React.useState(false);
+	const [value, setValue] = React.useState<Cylinder | null>(null)
+	const [open, toggleOpen] = React.useState(false)
 
-  const handleClose = () => {
-    setDialogValue({
-      serialNumber: "",
-      birthDate: null,
-      lastHydro: null,
-      lastVis: null,
-      oxygenClean: false,
-    });
-    toggleOpen(false);
-  };
+	const handleClose = () => {
+		setDialogValue({
+			serialNumber: '',
+			birthDate: null,
+			lastHydro: null,
+			lastVis: null,
+			oxygenClean: false,
+		})
+		toggleOpen(false)
+	}
 
-  const [dialogValue, setDialogValue] = React.useState<Cylinder>({
-    serialNumber: "",
-    birthDate: null,
-    lastHydro: null,
-    lastVis: null,
-    oxygenClean: false,
-  });
+	const [dialogValue, setDialogValue] = React.useState<Cylinder>({
+		serialNumber: '',
+		birthDate: null,
+		lastHydro: null,
+		lastVis: null,
+		oxygenClean: false,
+	})
 
-  const handleSubmit = (event: FormEvent) => {
-    event.preventDefault();
+	const handleSubmit = (event: FormEvent) => {
+		event.preventDefault()
 
-    console.log(dialogValue);
+		console.log(dialogValue)
 
-    setValue({
-      serialNumber: dialogValue.serialNumber,
-      birthDate: dialogValue.birthDate,
-      lastHydro: dialogValue.lastHydro,
-      lastVis: dialogValue.lastVis,
-      oxygenClean: dialogValue.oxygenClean,
-    });
-    handleClose();
-  };
+		setValue({
+			serialNumber: dialogValue.serialNumber,
+			birthDate: dialogValue.birthDate,
+			lastHydro: dialogValue.lastHydro,
+			lastVis: dialogValue.lastVis,
+			oxygenClean: dialogValue.oxygenClean,
+		})
+		handleClose()
+	}
 
-  return (
-    <>
-      <Autocomplete
-        value={value}
-        onChange={(event, newValue: string | Cylinder | any | null) => {
-          if (typeof newValue === "string") {
-            // timeout to avoid instant validation of the dialog's form.
-            setTimeout(() => {
-              toggleOpen(true);
-              setDialogValue({
-                serialNumber: newValue,
-                birthDate: null,
-                lastHydro: null,
-                lastVis: null,
-                oxygenClean: false,
-              });
-            });
-          } else if (newValue && newValue.inputValue) {
-            toggleOpen(true);
-            setDialogValue({
-              serialNumber: newValue.inputValue,
-              birthDate: null,
-              lastHydro: null,
-              lastVis: null,
-              oxygenClean: false,
-            });
-          } else {
-            setValue(newValue);
-          }
-        }}
-        filterOptions={(options, params) => {
-          const filtered = filter(options, params);
+	return (
+		<>
+			<Autocomplete
+				value={value}
+				onChange={(event, newValue: string | Cylinder | any | null) => {
+					if (typeof newValue === 'string') {
+						// timeout to avoid instant validation of the dialog's form.
+						setTimeout(() => {
+							toggleOpen(true)
+							setDialogValue({
+								serialNumber: newValue,
+								birthDate: null,
+								lastHydro: null,
+								lastVis: null,
+								oxygenClean: false,
+							})
+						})
+					} else if (newValue && newValue.inputValue) {
+						toggleOpen(true)
+						setDialogValue({
+							serialNumber: newValue.inputValue,
+							birthDate: null,
+							lastHydro: null,
+							lastVis: null,
+							oxygenClean: false,
+						})
+					} else {
+						setValue(newValue)
+					}
+				}}
+				filterOptions={(options, params) => {
+					const filtered = filter(options, params)
 
-          if (params.inputValue !== "") {
-            filtered.push({
-              inputValue: params.inputValue,
-              serialNumber: `Add "${params.inputValue}"`,
-            });
-          }
+					if (params.inputValue !== '') {
+						filtered.push({
+							inputValue: params.inputValue,
+							serialNumber: `Add "${params.inputValue}"`,
+						})
+					}
 
-          return filtered;
-        }}
-        id="free-solo-dialog-demo"
-        options={cylinders}
-        getOptionLabel={(option) => {
-          // for example value selected with enter, right from the input
-          if (typeof option === "string") {
-            return option;
-          }
-          if (option.inputValue) {
-            return option.inputValue;
-          }
-          return option.serialNumber;
-        }}
-        selectOnFocus
-        clearOnBlur
-        handleHomeEndKeys
-        renderOption={(props, option) => {
-          const { key, ...optionProps } = props;
-          return (
-            <li key={key} {...optionProps}>
-              {option.serialNumber}
-            </li>
-          );
-        }}
-        sx={{ width: 300 }}
-        freeSolo
-        renderInput={(params) => (
-          <TextField {...params} label="Select a cylinder" />
-        )}
-      />
-      <Dialog open={open} onClose={handleClose}>
-        <form onSubmit={handleSubmit}>
-          <DialogTitle>New Cylinder</DialogTitle>
-          <DialogContent>
-            <DialogContentText>
-              Add the new cylinders information to save it for next time.
-            </DialogContentText>
-            <Stack spacing={2}>
-              <TextField
-                autoFocus
-                margin="dense"
-                id="name"
-                value={dialogValue.serialNumber}
-                onChange={(event) =>
-                  setDialogValue({
-                    ...dialogValue,
-                    serialNumber: event.target.value,
-                  })
-                }
-                label="Serial Number"
-                type="text"
-                variant="standard"
-              />
+					return filtered
+				}}
+				id='free-solo-dialog-demo'
+				options={cylinders}
+				getOptionLabel={(option) => {
+					// for example value selected with enter, right from the input
+					if (typeof option === 'string') {
+						return option
+					}
+					if (option.inputValue) {
+						return option.inputValue
+					}
+					return option.serialNumber
+				}}
+				selectOnFocus
+				clearOnBlur
+				handleHomeEndKeys
+				renderOption={(props, option) => {
+					const { key, ...optionProps } = props
+					return (
+						<li key={key} {...optionProps}>
+							{option.serialNumber}
+						</li>
+					)
+				}}
+				sx={{ width: 300 }}
+				freeSolo
+				renderInput={(params) => (
+					<TextField {...params} label='Select a cylinder' />
+				)}
+			/>
+			<Dialog open={open} onClose={handleClose}>
+				<form onSubmit={handleSubmit}>
+					<DialogTitle>New Cylinder</DialogTitle>
+					<DialogContent>
+						<DialogContentText>
+							Add the new cylinders information to save it for next time.
+						</DialogContentText>
+						<Stack spacing={2}>
+							<TextField
+								autoFocus
+								margin='dense'
+								id='name'
+								value={dialogValue.serialNumber}
+								onChange={(event) =>
+									setDialogValue({
+										...dialogValue,
+										serialNumber: event.target.value,
+									})
+								}
+								label='Serial Number'
+								type='text'
+								variant='standard'
+							/>
 
-              <Stack direction="row" spacing={2}>
-                <MonthPicker
-                  label="First Hydro"
-                  helpText="The first hydro stamp on the cylinder"
-                  initialValue={dialogValue.birthDate}
-                  onChange={(value: dayjs.Dayjs) =>
-                    setDialogValue({
-                      ...dialogValue,
-                      birthDate: value,
-                    })
-                  }
-                />
+							<Stack direction='row' spacing={2}>
+								<MonthPicker
+									label='First Hydro'
+									helpText='The first hydro stamp on the cylinder'
+									initialValue={dialogValue.birthDate}
+									onChange={(value: dayjs.Dayjs) =>
+										setDialogValue({
+											...dialogValue,
+											birthDate: value,
+										})
+									}
+								/>
 
-                <MonthPicker
-                  label="Last Hydro"
-                  helpText="The most recent hydro stamp on the cylinder"
-                  initialValue={dialogValue.lastHydro}
-                  onChange={(value: dayjs.Dayjs) =>
-                    setDialogValue({
-                      ...dialogValue,
-                      lastHydro: value,
-                    })
-                  }
-                />
-              </Stack>
+								<MonthPicker
+									label='Last Hydro'
+									helpText='The most recent hydro stamp on the cylinder'
+									initialValue={dialogValue.lastHydro}
+									onChange={(value: dayjs.Dayjs) =>
+										setDialogValue({
+											...dialogValue,
+											lastHydro: value,
+										})
+									}
+								/>
+							</Stack>
 
-              <MonthPicker
-                label="Last Vis"
-                helpText="The most recent Vis sticker on the cylinder"
-                initialValue={dialogValue.lastVis}
-                onChange={(value: dayjs.Dayjs) =>
-                  setDialogValue({
-                    ...dialogValue,
-                    lastVis: value,
-                  })
-                }
-              />
+							<MonthPicker
+								label='Last Vis'
+								helpText='The most recent Vis sticker on the cylinder'
+								initialValue={dialogValue.lastVis}
+								onChange={(value: dayjs.Dayjs) =>
+									setDialogValue({
+										...dialogValue,
+										lastVis: value,
+									})
+								}
+							/>
 
-              <FormControlLabel
-                label="Tank and valve have been cleaned for oxygen service to 100%"
-                labelPlacement="end"
-                control={
-                  <Checkbox
-                    checked={dialogValue.oxygenClean}
-                    onChange={(event) =>
-                      setDialogValue({
-                        ...dialogValue,
-                        oxygenClean: event.target.checked,
-                      })
-                    }
-                    sx={{
-                      color: green[800],
-                      "&.Mui-checked": {
-                        color: green[600],
-                      },
-                    }}
-                  />
-                }
-              />
-            </Stack>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleClose}>Cancel</Button>
-            <Button type="submit">Add</Button>
-          </DialogActions>
-        </form>
-      </Dialog>
-    </>
-  );
-};
+							<FormControlLabel
+								label='Tank and valve have been cleaned for oxygen service to 100%'
+								labelPlacement='end'
+								control={
+									<Checkbox
+										checked={dialogValue.oxygenClean}
+										onChange={(event) =>
+											setDialogValue({
+												...dialogValue,
+												oxygenClean: event.target.checked,
+											})
+										}
+										sx={{
+											color: green[800],
+											'&.Mui-checked': {
+												color: green[600],
+											},
+										}}
+									/>
+								}
+							/>
+						</Stack>
+					</DialogContent>
+					<DialogActions>
+						<Button onClick={handleClose}>Cancel</Button>
+						<Button type='submit'>Add</Button>
+					</DialogActions>
+				</form>
+			</Dialog>
+		</>
+	)
+}
 
-export default CylinderPicker;
+export default CylinderPicker
