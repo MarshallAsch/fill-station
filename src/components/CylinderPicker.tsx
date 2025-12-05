@@ -162,6 +162,7 @@ const CylinderPicker = () => {
 
 							<Stack direction='row' spacing={2}>
 								<MonthPicker
+									name='firstHydro'
 									label='First Hydro'
 									helpText='The first hydro stamp on the cylinder'
 									initialValue={dialogValue.birthDate}
@@ -174,6 +175,7 @@ const CylinderPicker = () => {
 								/>
 
 								<MonthPicker
+									name='lastHydro'
 									label='Last Hydro'
 									helpText='The most recent hydro stamp on the cylinder'
 									initialValue={dialogValue.lastHydro}
@@ -187,6 +189,7 @@ const CylinderPicker = () => {
 							</Stack>
 
 							<MonthPicker
+								name='lastVis'
 								label='Last Vis'
 								helpText='The most recent Vis sticker on the cylinder'
 								initialValue={dialogValue.lastVis}
