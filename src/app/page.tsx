@@ -1,8 +1,7 @@
 import { EyeIcon, TableCellsIcon } from '@heroicons/react/24/outline'
-import AirTank from '@/icons/air-tank.svg'
 import React from 'react'
-import Image from 'next/image'
 import Link from 'next/link'
+import AirTank from '@/icons/AirTank'
 
 export default function Home() {
 	return (
@@ -20,11 +19,7 @@ export default function Home() {
 						href='fills'
 						className='flex cursor-pointer flex-col items-center justify-between gap-2 bg-gray-400/5 p-6 transition hover:bg-gray-400/10 sm:p-10'
 					>
-						<Image
-							src={AirTank}
-							alt='Air Tank'
-							className='max-h-12 w-full object-contain'
-						/>
+						<AirTank />
 						<p>Fills</p>
 					</Link>
 					<Link

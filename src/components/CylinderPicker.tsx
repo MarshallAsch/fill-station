@@ -1,3 +1,4 @@
+'use client'
 import React, { FormEvent } from 'react'
 import TextField from '@mui/material/TextField'
 import Dialog from '@mui/material/Dialog'
