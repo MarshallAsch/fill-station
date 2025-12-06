@@ -15,18 +15,19 @@ import TableRow from '@mui/material/TableRow'
 import IconButton from '@mui/material/IconButton'
 import { Fill } from '@/redux/fills/fillsSlice'
 import CylinderPicker from './CylinderPicker'
+import { Client } from '@/redux/client/clientSlice'
 
 type Props = {
 	index: number
 	item: Fill
-	person: any //TODO Update Type When Slice Created
+	client: Client | null
 	onCancel: (index: number) => void
 }
 
-export default function FillTableRow({ index, item, person, onCancel }: Props) {
-	const nitroxUse = person && (person.nitroxCert || person.advancedNitroxCert)
-	const advancedNitroxUse = person && person.advancedNitroxCert
-	const trimixUse = person && person.trimixCert
+export default function FillTableRow({ index, item, client, onCancel }: Props) {
+	const nitroxUse = client && (client.nitroxCert || client.advancedNitroxCert)
+	const advancedNitroxUse = client && client.advancedNitroxCert
+	const trimixUse = client && client.trimixCert
 
 	const [typeValue, setType] = useState(item.type)
 

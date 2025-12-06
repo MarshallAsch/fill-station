@@ -1,0 +1,96 @@
+import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+
+export type Client = {
+	id: number
+	name: string
+	nitroxCert: string
+	advancedNitroxCert: string
+	trimixCert: string
+}
+
+type InitialState = {
+	selectedClient: Client | null
+	allClients: Client[]
+}
+
+const initialState: InitialState = {
+	selectedClient: null,
+	allClients: [
+		{
+			id: 1,
+			name: 'Marshall Asch',
+			nitroxCert: '123456 (TDI)',
+			advancedNitroxCert: '456789 (TDI)',
+			trimixCert: '',
+		},
+		{
+			id: 2,
+			name: 'Bob',
+			nitroxCert: '',
+			advancedNitroxCert: '',
+			trimixCert: '',
+		},
+		{
+			id: 3,
+			name: 'Frank',
+			nitroxCert: '444444 (TDI)',
+			advancedNitroxCert: '',
+			trimixCert: '',
+		},
+		{
+			id: 4,
+			name: 'Jim',
+			nitroxCert: '555 (TDI)',
+			advancedNitroxCert: '666 (TDI)',
+			trimixCert: '200000 (TDI)',
+		},
+	],
+}
+
+const clientSlice = createSlice({
+	name: 'clients',
+	initialState,
+	reducers: {
+		addNewClient: (state, action: PayloadAction<string>) => {
+			state.allClients.push({
+				id: state.allClients.length,
+				name: action.payload,
+				nitroxCert: '',
+				advancedNitroxCert: '',
+				trimixCert: '',
+			})
+		},
+		removeClient: (state, action: PayloadAction<number>) => {
+			state.allClients = state.allClients.filter(
+				(client: Client) => client.id !== action.payload,
+			)
+		},
+		updateClient: (
+			state,
+			action: PayloadAction<{ id: number; data: Client }>,
+		) => {
+			const { id, data } = action.payload
+			const clientIndex = state.allClients.findIndex(
+				(client: Client) => client.id === id,
+			)
+			if (clientIndex !== -1) {
+				state.allClients[clientIndex] = {
+					...state.allClients[clientIndex],
+					...data,
+				}
+			}
+		},
+		selectClient: (state, action: PayloadAction<number>) => {
+			const clientIndex = state.allClients.findIndex(
+				(client: Client) => client.id === action.payload,
+			)
+			if (clientIndex) {
+				state.selectedClient = state.allClients[clientIndex]
+			}
+		},
+	},
+})
+
+export const { addNewClient, removeClient, updateClient, selectClient } =
+	clientSlice.actions
+export default clientSlice.reducer
