@@ -1,7 +1,7 @@
 
 
 import nconf from "nconf-esm";
-import {safeLoad,safeDump } from "js-yaml";
+import {load,dump } from "js-yaml";
 import path from 'path';
 
  nconf
@@ -11,15 +11,15 @@ import path from 'path';
   .file('container', {
       file: path.join('/config', 'config.yaml'),
       format: {
-        parse: safeLoad,
-        stringify: safeDump,
+        parse: load,
+        stringify: dump,
       }
   })
   .file('local', {
       file: path.join( __dirname, '..', '..', '..', 'config.yaml'),
       format: {
-        parse: safeLoad,
-        stringify: safeDump,
+        parse: load,
+        stringify: dump,
       }
   })
   .defaults({

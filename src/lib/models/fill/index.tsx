@@ -87,15 +87,6 @@ Fill.init(
 	},
 	{
 		sequelize,
-		validate: {
-			oxygenHelium() {
-				if (this.oxygen + this.helium <= 100) {
-					throw new Error(
-						'The total amount of oxygen and helium can not be more than 100%',
-					)
-				}
-			},
-		},
 	},
 )
 
