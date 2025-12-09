@@ -2,13 +2,21 @@
 
 import nconf from "nconf-esm";
 import {safeLoad,safeDump } from "js-yaml";
+import path from 'path';
 
  nconf
   .use('memory')
   .argv({parseValues: true})
-   .env({lowerCase: true, parseValues: true})
-   .file({
-      file: __dirname + '../../../application.yml',
+  .env({lowerCase: true, parseValues: true})
+  .file('container', {
+      file: path.join('/config', 'config.yaml'),
+      format: {
+        parse: safeLoad,
+        stringify: safeDump,
+      }
+  })
+  .file('local', {
+      file: path.join( __dirname, '..', '..', '..', 'config.yaml'),
       format: {
         parse: safeLoad,
         stringify: safeDump,
