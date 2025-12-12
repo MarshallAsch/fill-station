@@ -1,49 +1,34 @@
 'use client'
 
-import {
-	FormControl,
-	FormControlLabel,
-	FormHelperText,
-	FormLabel,
-	InputLabel,
-	MenuItem,
-	Radio,
-	RadioGroup,
-	Select,
-} from '@mui/material'
+import { FormControl, InputLabel, MenuItem, Select } from '@mui/material'
 import FormGroup from '../UI/FormGroup'
 import { DatePicker } from '@mui/x-date-pickers'
 import dayjs from 'dayjs'
+import { BOOL_OPTIONS } from '@/app/constants/FormConstants'
+import RadioGroup from '../UI/FormElements/RadioGroup'
 
 const FinalStatus = () => {
 	return (
 		<FormGroup title='Final Status' description=''>
 			<>
-				<FormControl>
-					<FormLabel id='status'>Cylinder Status</FormLabel>
-					<RadioGroup
-						aria-labelledby='status'
-						defaultValue='acceptable'
-						name='status'
-						row
-					>
-						<FormControlLabel
-							value='acceptable'
-							control={<Radio />}
-							label='Acceptable'
-						/>
-						<FormControlLabel
-							value='marginal'
-							control={<Radio />}
-							label='Marginal'
-						/>
-						<FormControlLabel
-							value='reject'
-							control={<Radio />}
-							label='Reject'
-						/>
-					</RadioGroup>
-				</FormControl>
+				<RadioGroup
+					title='Cylinder Status'
+					name='external_psi_standards'
+					options={[
+						{
+							label: 'Acceptable',
+							value: 'acceptable',
+						},
+						{
+							label: 'Marginal',
+							value: 'marginal',
+						},
+						{
+							label: 'Reject',
+							value: 'reject',
+						},
+					]}
+				/>
 
 				<DatePicker
 					label='Inspection Date'
@@ -52,39 +37,19 @@ const FinalStatus = () => {
 					disableFuture
 				/>
 
-				<FormControl>
-					<FormLabel id='oxygen-cleaned'>
-						Valve and Tank cleaned for oxygen service
-					</FormLabel>
-					<RadioGroup
-						aria-labelledby='oxygen-cleaned'
-						defaultValue='no'
-						name='oxygen-cleaned'
-						row
-					>
-						<FormControlLabel value='yes' control={<Radio />} label='Yes' />
-						<FormControlLabel value='no' control={<Radio />} label='No' />
-					</RadioGroup>
-				</FormControl>
+				<RadioGroup
+					title='Valve and Tank Cleaned for Oxygen Service'
+					name='valve_tank_cleaned'
+					options={BOOL_OPTIONS}
+				/>
 
-				<FormControl>
-					<FormLabel id='oxygen-clean'>
-						Valve and Tank marked clean for oxygen service
-					</FormLabel>
-					<RadioGroup
-						aria-labelledby='oxygen-clean'
-						defaultValue='yes'
-						name='oxygen-clean'
-						row
-					>
-						<FormControlLabel value='yes' control={<Radio />} label='Yes' />
-						<FormControlLabel value='no' control={<Radio />} label='No' />
-					</RadioGroup>
-					<FormHelperText>
-						If the tank and valve were already clean or if they were cleaned as
-						part of this Vis
-					</FormHelperText>
-				</FormControl>
+				<RadioGroup
+					title='Valve and Tank Marked Clean for Oxygen Service'
+					name='valve_tank_marked'
+					options={BOOL_OPTIONS}
+					description='If the tank and valve were already clean or if they were cleaned as
+						part of this Vis'
+				/>
 
 				<FormControl fullWidth>
 					<InputLabel id='inspector'>Inspector</InputLabel>

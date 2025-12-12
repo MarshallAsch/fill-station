@@ -1,152 +1,80 @@
-import {
-  FormControl,
-  FormControlLabel,
-  FormHelperText,
-  FormLabel,
-  Radio,
-  RadioGroup,
-  TextField,
-} from "@mui/material";
-import FormGroup from "../UI/FormGroup";
+import FormGroup from '../UI/FormGroup'
+import TextArea from '../UI/FormElements/TextArea'
+import RadioGroup from '../UI/FormElements/RadioGroup'
+import { BOOL_OPTIONS } from '@/app/constants/FormConstants'
 
 const External = () => {
-  return (
-    <FormGroup title="External" description="">
-      <>
-        <FormControl>
-          <FormLabel id="heat-damage">Evidence of Heat Damage</FormLabel>
-          <RadioGroup
-            aria-labelledby="heat-damage"
-            defaultValue="no"
-            name="heat-damage"
-            row
-          >
-            <FormControlLabel value="no" control={<Radio />} label="No" />
-            <FormControlLabel value="yes" control={<Radio />} label="Yes" />
-          </RadioGroup>
-        </FormControl>
+	return (
+		<FormGroup title='External' description=''>
+			<>
+				<RadioGroup
+					title='Evidence of Heat Damage'
+					name='heat_damage'
+					options={BOOL_OPTIONS}
+				/>
 
-        <FormControl>
-          <FormLabel id="re-painting">Evidence of re-painting</FormLabel>
-          <RadioGroup
-            aria-labelledby="re-painting"
-            defaultValue="no"
-            name="re-painting"
-            row
-          >
-            <FormControlLabel value="no" control={<Radio />} label="No" />
-            <FormControlLabel value="yes" control={<Radio />} label="Yes" />
-          </RadioGroup>
-        </FormControl>
+				<RadioGroup
+					title='Evidence of Re-painting'
+					name='repainting'
+					options={BOOL_OPTIONS}
+				/>
 
-        <FormControl>
-          <FormLabel id="odor">Evidence of odor</FormLabel>
-          <RadioGroup aria-labelledby="odor" defaultValue="no" name="odor" row>
-            <FormControlLabel value="no" control={<Radio />} label="No" />
-            <FormControlLabel value="yes" control={<Radio />} label="Yes" />
-          </RadioGroup>
-        </FormControl>
+				<RadioGroup
+					title='Evidence of odor'
+					name='odor'
+					options={BOOL_OPTIONS}
+				/>
 
-        <FormControl>
-          <FormLabel id="bow">Evidence of bow</FormLabel>
-          <RadioGroup aria-labelledby="bow" defaultValue="no" name="bow" row>
-            <FormControlLabel value="no" control={<Radio />} label="No" />
-            <FormControlLabel value="yes" control={<Radio />} label="Yes" />
-          </RadioGroup>
-        </FormControl>
+				<RadioGroup title='Evidence of Bow' name='bow' options={BOOL_OPTIONS} />
 
-        <FormControl>
-          <FormLabel id="bulge">Evidence of bulges</FormLabel>
-          <RadioGroup
-            aria-labelledby="bulge"
-            defaultValue="no"
-            name="bulge"
-            row
-          >
-            <FormControlLabel value="no" control={<Radio />} label="No" />
-            <FormControlLabel value="yes" control={<Radio />} label="Yes" />
-          </RadioGroup>
-        </FormControl>
+				<RadioGroup
+					title='Hammer tone test - bell like sound'
+					name='hammer_tone'
+					options={BOOL_OPTIONS}
+					description='Make sure that the valve is removed first'
+				/>
 
-        <FormControl>
-          <FormLabel id="tone-test">
-            Hammer tone test - bell like sound
-          </FormLabel>
-          <RadioGroup
-            aria-labelledby="tone-test"
-            defaultValue="no"
-            name="tone-test"
-            row
-          >
-            <FormControlLabel value="no" control={<Radio />} label="No" />
-            <FormControlLabel value="yes" control={<Radio />} label="Yes" />
-          </RadioGroup>
-          <FormHelperText>
-            Make sure that the valve is removed first
-          </FormHelperText>
-        </FormControl>
+				<TextArea
+					id='exterior-surface'
+					name='exterior_surface'
+					placeholder='Description of exterior surface'
+					ariaLabel='Exterior Surface'
+				/>
 
-        <TextField
-          id="exterior-surface"
-          label="Description of exterior surface"
-          multiline
-          fullWidth
-          maxRows={4}
-        />
+				<TextArea
+					id='exterior-marks'
+					name='exterior_marks'
+					placeholder='Location and depth of marks, pits, gouges of more than 0.015"+'
+					ariaLabel='Exterior Marks'
+				/>
 
-        <TextField
-          id="exterior-marks"
-          label='Location and depth of marks, pits, gouges of more than 0.015"+'
-          multiline
-          fullWidth
-          maxRows={4}
-        />
+				<RadioGroup
+					title='Line corrosion around boot and other accessories'
+					name='corrosion'
+					options={BOOL_OPTIONS}
+				/>
 
-        <FormControl>
-          <FormLabel id="line-corrosion">
-            Line corrosion around boot and others accessories
-          </FormLabel>
-          <RadioGroup
-            aria-labelledby="line-corrosion"
-            defaultValue="no"
-            name="line-corrosion"
-            row
-          >
-            <FormControlLabel value="no" control={<Radio />} label="No" />
-            <FormControlLabel value="yes" control={<Radio />} label="Yes" />
-          </RadioGroup>
-        </FormControl>
+				<RadioGroup
+					title='Comparison to PSI Standards/Manufacturers'
+					name='external_psi_standards'
+					options={[
+						{
+							label: 'Acceptable',
+							value: 'acceptable',
+						},
+						{
+							label: 'Marginal',
+							value: 'marginal',
+						},
+						{
+							label: 'Condemn',
+							value: 'condemn',
+						},
+					]}
+				/>
+			</>
+		</FormGroup>
+	)
+}
 
-        <FormControl>
-          <FormLabel id="manufacturer-standards-external">
-            Comparison to PSI Standards/Manufacturers
-          </FormLabel>
-          <RadioGroup
-            aria-labelledby="manufacturer-standards-external"
-            defaultValue="acceptable"
-            name="manufacturer-standards-external"
-            row
-          >
-            <FormControlLabel
-              value="acceptable"
-              control={<Radio />}
-              label="Acceptable"
-            />
-            <FormControlLabel
-              value="marginal"
-              control={<Radio />}
-              label="Marginal"
-            />
-            <FormControlLabel
-              value="condemn"
-              control={<Radio />}
-              label="Condemn"
-            />
-          </RadioGroup>
-        </FormControl>
-      </>
-    </FormGroup>
-  );
-};
-
-export default External;
+export default External

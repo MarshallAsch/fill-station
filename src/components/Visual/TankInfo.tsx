@@ -1,15 +1,9 @@
 'use client'
 
-import {
-	FormControl,
-	FormControlLabel,
-	FormLabel,
-	Radio,
-	RadioGroup,
-} from '@mui/material'
 import MonthPicker from '../MonthPicker'
 import FormGroup from '../UI/FormGroup'
 import dayjs from 'dayjs'
+import RadioGroup from '../UI/FormElements/RadioGroup'
 
 const TankInfo = () => {
 	return (
@@ -35,22 +29,25 @@ const TankInfo = () => {
 					label='Last Vis'
 					helpText='The most recent Vis sticker on the cylinder'
 				/>
-				<FormControl>
-					<FormLabel id='material'>Cylinder Material</FormLabel>
-					<RadioGroup aria-labelledby='material' name='material' row>
-						<FormControlLabel value='steel' control={<Radio />} label='Steel' />
-						<FormControlLabel
-							value='aluminum'
-							control={<Radio />}
-							label='Aluminum'
-						/>
-						<FormControlLabel
-							value='composite'
-							control={<Radio />}
-							label='Carbon Composite'
-						/>
-					</RadioGroup>
-				</FormControl>
+
+				<RadioGroup
+					title='Cylinder Material'
+					options={[
+						{
+							label: 'Steel',
+							value: 'steel',
+						},
+						{
+							label: 'Aluminum',
+							value: 'aluminum',
+						},
+						{
+							label: 'Composite',
+							value: 'composite',
+						},
+					]}
+					name='cylinder_material'
+				/>
 			</>
 		</FormGroup>
 	)
