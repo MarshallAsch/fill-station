@@ -1,21 +1,7 @@
 'use client'
 import React, { FormEvent } from 'react'
 import TextField from '@mui/material/TextField'
-import Dialog from '@mui/material/Dialog'
-import DialogTitle from '@mui/material/DialogTitle'
-import DialogContent from '@mui/material/DialogContent'
-import DialogContentText from '@mui/material/DialogContentText'
-import DialogActions from '@mui/material/DialogActions'
-import Button from '@mui/material/Button'
 import Autocomplete, { createFilterOptions } from '@mui/material/Autocomplete'
-import Checkbox from '@mui/material/Checkbox'
-
-import Stack from '@mui/material/Stack'
-
-import { green } from '@mui/material/colors'
-import FormControlLabel from '@mui/material/FormControlLabel'
-
-import MonthPicker from '@/components/MonthPicker'
 
 import dayjs from 'dayjs'
 import objectSupport from 'dayjs/plugin/objectSupport' // ES 2015
@@ -137,100 +123,6 @@ const CylinderPicker = () => {
 					<TextField {...params} label='Select a cylinder' />
 				)}
 			/>
-			<Dialog open={open} onClose={handleClose}>
-				<form onSubmit={handleSubmit}>
-					<DialogTitle>New Cylinder</DialogTitle>
-					<DialogContent>
-						<DialogContentText>
-							Add the new cylinders information to save it for next time.
-						</DialogContentText>
-						<Stack spacing={2}>
-							<TextField
-								autoFocus
-								margin='dense'
-								id='name'
-								value={dialogValue.serialNumber}
-								onChange={(event) =>
-									setDialogValue({
-										...dialogValue,
-										serialNumber: event.target.value,
-									})
-								}
-								label='Serial Number'
-								type='text'
-								variant='standard'
-							/>
-
-							<Stack direction='row' spacing={2}>
-								<MonthPicker
-									name='firstHydro'
-									label='First Hydro'
-									helpText='The first hydro stamp on the cylinder'
-									initialValue={dialogValue.birthDate}
-									onChange={(value: dayjs.Dayjs) =>
-										setDialogValue({
-											...dialogValue,
-											birthDate: value,
-										})
-									}
-								/>
-
-								<MonthPicker
-									name='lastHydro'
-									label='Last Hydro'
-									helpText='The most recent hydro stamp on the cylinder'
-									initialValue={dialogValue.lastHydro}
-									onChange={(value: dayjs.Dayjs) =>
-										setDialogValue({
-											...dialogValue,
-											lastHydro: value,
-										})
-									}
-								/>
-							</Stack>
-
-							<MonthPicker
-								name='lastVis'
-								label='Last Vis'
-								helpText='The most recent Vis sticker on the cylinder'
-								initialValue={dialogValue.lastVis}
-								onChange={(value: dayjs.Dayjs) =>
-									setDialogValue({
-										...dialogValue,
-										lastVis: value,
-									})
-								}
-							/>
-
-							<FormControlLabel
-								label='Tank and valve have been cleaned for oxygen service to 100%'
-								labelPlacement='end'
-								control={
-									<Checkbox
-										checked={dialogValue.oxygenClean}
-										onChange={(event) =>
-											setDialogValue({
-												...dialogValue,
-												oxygenClean: event.target.checked,
-											})
-										}
-										sx={{
-											color: green[800],
-											'&.Mui-checked': {
-												color: green[600],
-											},
-										}}
-									/>
-								}
-							/>
-						</Stack>
-					</DialogContent>
-					<DialogActions>
-						<Button onClick={handleClose}>Cancel</Button>
-						<Button type='submit'>Add</Button>
-					</DialogActions>
-				</form>
-			</Dialog>
 		</>
 	)
 }

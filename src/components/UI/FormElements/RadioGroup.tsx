@@ -6,6 +6,7 @@ type RadioGroupProps = {
 	}[]
 	name: string
 	description?: string
+	required?: boolean
 }
 
 const RadioGroup = ({ title, options, name, description }: RadioGroupProps) => {
