@@ -1,0 +1,31 @@
+services:
+  fills_db:
+    image: linuxserver/mariadb
+    networks:
+      - internal
+    environment:
+      - PUID
+      - PGID
+      - TZ
+      - MYSQL_DATABASE=fills
+      - MYSQL_USER=fills
+      - MYSQL_PASSWORD=fills
+
+  fill-station:
+    build:
+      context: .
+    ports:
+    - 3000:3000
+    networks:
+      - internal
+      - default
+    environment:
+      - DATABASE__HOST=fills_db
+      - DATABASE__DATABASE=fills
+      - DATABASE__USERNAME=fills
+      - DATABASE__PASSWORD=fills
+
+networks:
+  default:
+  internal:
+    internal: true

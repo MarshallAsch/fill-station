@@ -86,6 +86,7 @@ Fill.init(
 		updatedAt: DataTypes.DATE,
 	},
 	{
+		modelName: 'Fill',
 		sequelize,
 	},
 )
