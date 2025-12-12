@@ -12,10 +12,10 @@ export async function GET(request: Request) {
 	return Response.json(visual)
 }
 
-export async function POST(request: Request) {
-	// For example, fetch data from your DB here
+// export async function POST(request: Request) {
+// 	// For example, fetch data from your DB here
 
-	let visual = await Visual.create({})
+// 	let visual = await Visual.create({})
 
-	return Response.json(visual)
-}
+// 	return Response.json(visual)
+// }

@@ -59,6 +59,7 @@ Client.init(
 		updatedAt: DataTypes.DATE,
 	},
 	{
+		modelName: 'Client',
 		sequelize,
 	},
 )

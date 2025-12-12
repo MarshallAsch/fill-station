@@ -206,6 +206,7 @@ Visual.init(
 		updatedAt: DataTypes.DATE,
 	},
 	{
+		modelName: 'Visual',
 		sequelize,
 	},
 )
