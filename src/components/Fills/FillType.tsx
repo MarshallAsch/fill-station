@@ -23,7 +23,6 @@ const FillType = ({ index, item }: FillTypeProps) => {
 		client &&
 		(client.nitroxCert || client.advancedNitroxCert)
 	)
-	const advancedNitroxUse = client && client.advancedNitroxCert
 	const trimixUse = !!(client && client.trimixCert)
 
 	const options: {

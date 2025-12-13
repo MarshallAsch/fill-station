@@ -3,9 +3,10 @@ import CylinderPicker from '../UI/FormElements/CylinderPicker'
 import FillType from './FillType'
 import { Fill, removeFill, updateFill } from '@/redux/fills/fillsSlice'
 import NumberInput from '../UI/FormElements/NumberInput'
-import { useAppDispatch } from '@/redux/hooks'
+import { useAppDispatch, useAppSelector } from '@/redux/hooks'
 
 const FillsRow = ({ fill }: { fill: Fill }) => {
+	const fills = useAppSelector((state) => state.fills)
 	const dispatch = useAppDispatch()
 	return (
 		<tr key={fill.id}>
@@ -59,7 +60,8 @@ const FillsRow = ({ fill }: { fill: Fill }) => {
 			</td>
 			<td className='py-4 pr-4 pl-3 text-right text-sm font-medium whitespace-nowrap sm:pr-6'>
 				<button
-					className='cursor-pointer'
+					className='cursor-pointer disabled:cursor-not-allowed'
+					disabled={fills.length <= 1}
 					onClick={() => dispatch(removeFill(fill.id))}
 				>
 					<XCircleIcon className='h-5 w-5' />
