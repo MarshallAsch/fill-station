@@ -1,35 +1,33 @@
-import {
-  FormControl,
-  FormControlLabel,
-  FormLabel,
-  Radio,
-  RadioGroup,
-} from "@mui/material";
-import FormGroup from "../UI/FormGroup";
+import RadioGroup from '../UI/FormElements/RadioGroup'
+import FormGroup from '../UI/FormGroup'
 
 const VisualInfo = () => {
-  return (
-    <FormGroup title="Vis Info" description="">
-      <FormControl>
-        <FormLabel id="valve-type">Valve Type</FormLabel>
-        <RadioGroup
-          aria-labelledby="valve-type"
-          defaultValue="din"
-          name="valve-type"
-          row
-        >
-          <FormControlLabel value="din" control={<Radio />} label="Din" />
-          <FormControlLabel
-            value="k"
-            control={<Radio />}
-            label="K (standard Yoke)"
-          />
-          <FormControlLabel value="h" control={<Radio />} label="H" />
-          <FormControlLabel value="none" control={<Radio />} label="None" />
-        </RadioGroup>
-      </FormControl>
-    </FormGroup>
-  );
-};
+	return (
+		<FormGroup title='Vis Info' description=''>
+			<RadioGroup
+				title='Valve Type'
+				name='valve_type'
+				options={[
+					{
+						label: 'Din',
+						value: 'din',
+					},
+					{
+						label: 'K (Standard Yoke)',
+						value: 'k',
+					},
+					{
+						label: 'H',
+						value: 'h',
+					},
+					{
+						label: 'None',
+						value: 'none',
+					},
+				]}
+			/>
+		</FormGroup>
+	)
+}
 
-export default VisualInfo;
+export default VisualInfo

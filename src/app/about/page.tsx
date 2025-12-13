@@ -1,4 +1,3 @@
-import Container from '@mui/material/Container'
 import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
@@ -7,7 +6,7 @@ import ProTip from '@/components/ProTip'
 
 export default function About() {
 	return (
-		<Container maxWidth='lg'>
+		<div className='max-w-7xl'>
 			<Box
 				sx={{
 					my: 4,
@@ -27,6 +26,6 @@ export default function About() {
 				</Box>
 				<ProTip />
 			</Box>
-		</Container>
+		</div>
 	)
 }

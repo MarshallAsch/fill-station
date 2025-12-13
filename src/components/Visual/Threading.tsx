@@ -1,60 +1,55 @@
-import {
-  FormControl,
-  FormControlLabel,
-  FormLabel,
-  Radio,
-  RadioGroup,
-  TextField,
-} from "@mui/material";
-import FormGroup from "../UI/FormGroup";
-import NumberField from "../NumberField";
+import FormGroup from '../UI/FormGroup'
+import NumberField from '../NumberField'
+import TextArea from '../UI/FormElements/TextArea'
+import RadioGroup from '../UI/FormElements/RadioGroup'
 
 const Threading = () => {
-  return (
-    <FormGroup title="Threading" description="">
-      <>
-        <TextField id="thread-description" label="Description" />
+	return (
+		<FormGroup title='Threading' description=''>
+			<>
+				<TextArea
+					id='thread-description'
+					name='thread_description'
+					placeholder='Description'
+					ariaLabel='Thread Description'
+				/>
 
-        <NumberField
-          id="damagedThreads"
-          name="damagedThreads"
-          min={0}
-          max={20}
-          helperText="How many damaged threads are visible?"
-        />
+				<NumberField
+					id='damagedThreads'
+					name='damagedThreads'
+					min={0}
+					max={20}
+					helperText='How many damaged threads are visible?'
+				/>
 
-        <TextField id="oring-surface" label="O-ring Surface" />
+				<TextArea
+					id='oring-surface'
+					name='oring_surface'
+					placeholder='O-ring surface'
+					ariaLabel='O-ring Surface'
+				/>
 
-        <FormControl>
-          <FormLabel id="manufacturer-standards-threads">
-            Comparison to PSI Standards/Manufacturers
-          </FormLabel>
-          <RadioGroup
-            aria-labelledby="manufacturer-standards-threads"
-            defaultValue="acceptable"
-            name="manufacturer-standards-threads"
-            row
-          >
-            <FormControlLabel
-              value="acceptable"
-              control={<Radio />}
-              label="Acceptable"
-            />
-            <FormControlLabel
-              value="marginal"
-              control={<Radio />}
-              label="Marginal"
-            />
-            <FormControlLabel
-              value="condemn"
-              control={<Radio />}
-              label="Condemn"
-            />
-          </RadioGroup>
-        </FormControl>
-      </>
-    </FormGroup>
-  );
-};
+				<RadioGroup
+					title='Comparison to PSI Standards/Manufacturers'
+					name='threading_psi_standards'
+					options={[
+						{
+							label: 'Acceptable',
+							value: 'acceptable',
+						},
+						{
+							label: 'Marginal',
+							value: 'marginal',
+						},
+						{
+							label: 'Condemn',
+							value: 'condemn',
+						},
+					]}
+				/>
+			</>
+		</FormGroup>
+	)
+}
 
-export default Threading;
+export default Threading
