@@ -51,7 +51,7 @@ export default function FillTableRow({ index, item, client, onCancel }: Props) {
 	return (
 		<TableRow key={index}>
 			<TableCell align='center'>
-				<CylinderPicker />
+				<CylinderPicker isFill index={index} />
 			</TableCell>
 
 			<TableCell>

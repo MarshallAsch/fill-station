@@ -1,10 +1,10 @@
 'use client'
 
-import { FormControl, InputLabel, MenuItem, Select } from '@mui/material'
 import FormGroup from '../UI/FormGroup'
 import { BOOL_OPTIONS } from '@/app/constants/FormConstants'
 import RadioGroup from '../UI/FormElements/RadioGroup'
 import DatePicker from '../UI/FormElements/DatePicker'
+import ClientPicker from '../UI/FormElements/ClientPicker'
 
 const FinalStatus = () => {
 	return (
@@ -45,12 +45,7 @@ const FinalStatus = () => {
 						part of this Vis'
 				/>
 
-				<FormControl fullWidth>
-					<InputLabel id='inspector'>Inspector</InputLabel>
-					<Select labelId='inspector' id='inspector' label='Inspector'>
-						<MenuItem value='marshall'>Marshall Asch</MenuItem>
-					</Select>
-				</FormControl>
+				<ClientPicker />
 			</>
 		</FormGroup>
 	)

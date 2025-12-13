@@ -1,13 +1,14 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { Cylinder } from '../cylinder/cylinderSlice'
 
 export type Fill = {
 	id: number
-	type: 'air' | 'nitrox' | 'trimix' | 'heliox'
+	type: 'air' | 'nitrox' | 'trimix'
 	start: number
 	end: number
 	o2: number
 	he: number
-	cylinder: string
+	cylinder: null | Cylinder
 }
 
 const initialState: Fill[] = [
@@ -18,7 +19,7 @@ const initialState: Fill[] = [
 		end: 3000,
 		o2: 20.9,
 		he: 0,
-		cylinder: '',
+		cylinder: null,
 	},
 ]
 
@@ -34,7 +35,7 @@ const fillSlice = createSlice({
 				end: 0,
 				o2: 20.9,
 				he: 0,
-				cylinder: '',
+				cylinder: null,
 			})
 		},
 		removeFill: (state, action: PayloadAction<number>) => {
@@ -47,8 +48,19 @@ const fillSlice = createSlice({
 				state[fillIndex] = { ...state[fillIndex], ...data }
 			}
 		},
+		updateCylinder: (
+			state,
+			action: PayloadAction<{ id: number; data: Cylinder | null }>,
+		) => {
+			const { id, data } = action.payload
+			const fillIndex = state.findIndex((fill) => fill.id === id)
+			if (fillIndex !== -1) {
+				state[fillIndex].cylinder = data
+			}
+		},
 	},
 })
 
-export const { addNewFill, removeFill, updateFill } = fillSlice.actions
+export const { addNewFill, removeFill, updateFill, updateCylinder } =
+	fillSlice.actions
 export default fillSlice.reducer

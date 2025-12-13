@@ -1,6 +1,5 @@
 'use client'
 
-import { Button, Container } from '@mui/material'
 import CylinderPicker from '@/components/UI/FormElements/CylinderPicker'
 import TankInfo from '@/components/Visual/TankInfo'
 import VisualInfo from '@/components/Visual/VisualInfo'
@@ -10,6 +9,7 @@ import Threading from '@/components/Visual/Threading'
 import Valve from '@/components/Visual/Valve'
 import FinalStatus from '@/components/Visual/FinalStatus'
 import { FormEvent } from 'react'
+import { Button } from '@headlessui/react'
 
 export default function Visual() {
 	const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
@@ -22,7 +22,7 @@ export default function Visual() {
 		console.log(formData)
 	}
 	return (
-		<Container maxWidth='lg'>
+		<div className='max-w-7xl'>
 			<div className='flex flex-col overflow-auto'>
 				<div className='flex flex-col items-center justify-center gap-3 py-6'>
 					<h1 className='text-4xl font-semibold text-gray-900'>
@@ -50,12 +50,15 @@ export default function Visual() {
 					<FinalStatus />
 
 					<div className='flex w-full justify-end py-10'>
-						<Button variant='contained' type='submit'>
+						<Button
+							className='cursor-pointer rounded-lg bg-blue-600 px-2.5 py-2 text-white hover:bg-blue-700'
+							type='submit'
+						>
 							Submit
 						</Button>
 					</div>
 				</form>
 			</div>
-		</Container>
+		</div>
 	)
 }
