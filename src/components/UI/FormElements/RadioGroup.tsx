@@ -26,6 +26,7 @@ const RadioGroup = ({ title, options, name, description }: RadioGroupProps) => {
 							name={name}
 							type='radio'
 							value={option.value}
+							defaultChecked={option.value === options[0].value}
 							className='absolute inset-0 cursor-pointer appearance-none focus:outline-none disabled:cursor-not-allowed'
 						/>
 						<span className='text-sm font-medium text-gray-900 group-has-checked:text-white'>

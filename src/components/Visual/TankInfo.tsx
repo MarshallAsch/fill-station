@@ -1,33 +1,35 @@
 'use client'
 
-import MonthPicker from '../MonthPicker'
 import FormGroup from '../UI/FormGroup'
-import dayjs from 'dayjs'
 import RadioGroup from '../UI/FormElements/RadioGroup'
+import DatePicker from '../UI/FormElements/DatePicker'
 
 const TankInfo = () => {
 	return (
 		<FormGroup title='Tank Info' description=''>
 			<>
-				<MonthPicker
-					initialValue={dayjs()}
+				<DatePicker
+					mode='month'
+					title='First Hydro'
 					name='firstHydro'
-					label='First Hydro'
-					helpText='The first hydro stamp on the cylinder'
+					id='first_hydro'
+					description='The first hydro stamp on the cylinder'
 				/>
 
-				<MonthPicker
-					initialValue={dayjs()}
+				<DatePicker
+					mode='month'
+					title='Last Hydro'
 					name='lastHydro'
-					label='Last Hydro'
-					helpText='The most recent hydro stamp on the cylinder'
+					id='last_hydro'
+					description='The most recent hydro stamp on the cylinder'
 				/>
 
-				<MonthPicker
-					initialValue={dayjs()}
+				<DatePicker
+					mode='month'
+					title='Last Vis'
 					name='lastVis'
-					label='Last Vis'
-					helpText='The most recent Vis sticker on the cylinder'
+					id='last_vis'
+					description='The most recent Vis sticker on the cylinder'
 				/>
 
 				<RadioGroup

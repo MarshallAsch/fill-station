@@ -2,10 +2,9 @@
 
 import { FormControl, InputLabel, MenuItem, Select } from '@mui/material'
 import FormGroup from '../UI/FormGroup'
-import { DatePicker } from '@mui/x-date-pickers'
-import dayjs from 'dayjs'
 import { BOOL_OPTIONS } from '@/app/constants/FormConstants'
 import RadioGroup from '../UI/FormElements/RadioGroup'
+import DatePicker from '../UI/FormElements/DatePicker'
 
 const FinalStatus = () => {
 	return (
@@ -30,12 +29,7 @@ const FinalStatus = () => {
 					]}
 				/>
 
-				<DatePicker
-					label='Inspection Date'
-					name='date'
-					defaultValue={dayjs()}
-					disableFuture
-				/>
+				<DatePicker title='Inspection Date' name='date' id='inspection_date' />
 
 				<RadioGroup
 					title='Valve and Tank Cleaned for Oxygen Service'
