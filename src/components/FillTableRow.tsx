@@ -14,7 +14,7 @@ import TableCell from '@mui/material/TableCell'
 import TableRow from '@mui/material/TableRow'
 import IconButton from '@mui/material/IconButton'
 import { Fill } from '@/redux/fills/fillsSlice'
-import CylinderPicker from './CylinderPicker'
+import CylinderPicker from './UI/FormElements/CylinderPicker'
 import { Client } from '@/redux/client/clientSlice'
 
 type Props = {

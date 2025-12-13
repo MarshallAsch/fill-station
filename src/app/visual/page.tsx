@@ -1,7 +1,7 @@
 'use client'
 
 import { Button, Container } from '@mui/material'
-import CylinderPicker from '@/components/CylinderPicker'
+import CylinderPicker from '@/components/UI/FormElements/CylinderPicker'
 import TankInfo from '@/components/Visual/TankInfo'
 import VisualInfo from '@/components/Visual/VisualInfo'
 import External from '@/components/Visual/External'
