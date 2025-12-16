@@ -14,7 +14,7 @@ import TableCell from '@mui/material/TableCell'
 import TableRow from '@mui/material/TableRow'
 import IconButton from '@mui/material/IconButton'
 import { Fill } from '@/redux/fills/fillsSlice'
-import CylinderPicker from './CylinderPicker'
+import CylinderPicker from './UI/FormElements/CylinderPicker'
 import { Client } from '@/redux/client/clientSlice'
 
 type Props = {
@@ -51,7 +51,7 @@ export default function FillTableRow({ index, item, client, onCancel }: Props) {
 	return (
 		<TableRow key={index}>
 			<TableCell align='center'>
-				<CylinderPicker />
+				<CylinderPicker isFill index={index} />
 			</TableCell>
 
 			<TableCell>

@@ -1,72 +1,54 @@
-import {
-  FormControl,
-  FormControlLabel,
-  FormLabel,
-  Radio,
-  RadioGroup,
-  TextField,
-} from "@mui/material";
-import FormGroup from "../UI/FormGroup";
+import FormGroup from '../UI/FormGroup'
+import TextArea from '../UI/FormElements/TextArea'
+import RadioGroup from '../UI/FormElements/RadioGroup'
 
 const Internal = () => {
-  return (
-    <FormGroup title="Internal" description="">
-      <>
-        <TextField
-          id="contents"
-          label="Amount and composition of content"
-          helperText="if any stuff was in the tank when it was flipped upside down"
-          multiline
-          fullWidth
-          maxRows={4}
-        />
+	return (
+		<FormGroup title='Internal' description=''>
+			<>
+				<TextArea
+					id='contents'
+					name='contents'
+					placeholder='Amount and composition of content'
+					ariaLabel='Contents'
+					description='If any stuff was in the tank when it was flipped upside down'
+				/>
 
-        <TextField
-          id="internal-surface"
-          label="Description of internal surface"
-          multiline
-          fullWidth
-          maxRows={4}
-        />
+				<TextArea
+					id='internal-surface'
+					name='internal_surface'
+					placeholder='Description of Internal Surface'
+					ariaLabel='Internal Surface'
+				/>
 
-        <TextField
-          id="internal-pitting"
-          label="Location and estimated depth of any pitting"
-          multiline
-          fullWidth
-          maxRows={4}
-        />
+				<TextArea
+					id='internal-pitting'
+					name='internal_pitting'
+					placeholder='Location and estimated depth of any pitting'
+					ariaLabel='Internal Pitting'
+				/>
 
-        <FormControl>
-          <FormLabel id="manufacturer-standards-internal">
-            Comparison to PSI Standards/Manufacturers
-          </FormLabel>
-          <RadioGroup
-            aria-labelledby="manufacturer-standards-internal"
-            defaultValue="acceptable"
-            name="manufacturer-standards-internal"
-            row
-          >
-            <FormControlLabel
-              value="acceptable"
-              control={<Radio />}
-              label="Acceptable"
-            />
-            <FormControlLabel
-              value="marginal"
-              control={<Radio />}
-              label="Marginal"
-            />
-            <FormControlLabel
-              value="condemn"
-              control={<Radio />}
-              label="Condemn"
-            />
-          </RadioGroup>
-        </FormControl>
-      </>
-    </FormGroup>
-  );
-};
+				<RadioGroup
+					title='Comparison to PSI Standards/Manufacturers'
+					name='internal_psi_standards'
+					options={[
+						{
+							label: 'Acceptable',
+							value: 'acceptable',
+						},
+						{
+							label: 'Marginal',
+							value: 'marginal',
+						},
+						{
+							label: 'Condemn',
+							value: 'condemn',
+						},
+					]}
+				/>
+			</>
+		</FormGroup>
+	)
+}
 
-export default Internal;
+export default Internal
