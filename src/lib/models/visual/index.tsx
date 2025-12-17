@@ -211,10 +211,10 @@ Visual.init(
 	},
 )
 
-Visual.hasOne(Cylinder)
+Visual.belongsTo(Cylinder)
 Cylinder.hasMany(Visual)
 
-Visual.hasOne(Client, { as: 'inspector', foreignKey: 'inspectorId' })
+Visual.belongsTo(Client, { as: 'inspector', foreignKey: 'inspectorId' })
 Client.hasMany(Visual)
 
 Visual.sync({ alter: true })

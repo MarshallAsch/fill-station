@@ -91,7 +91,7 @@ Fill.init(
 	},
 )
 
-Fill.hasOne(Cylinder)
+Fill.belongsTo(Cylinder)
 Cylinder.hasMany(Fill)
 
 Fill.sync({ alter: true })
