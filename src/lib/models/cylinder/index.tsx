@@ -79,6 +79,7 @@ Cylinder.init(
 		updatedAt: DataTypes.DATE,
 	},
 	{
+		modelName: 'Cylinder',
 		sequelize,
 	},
 )
