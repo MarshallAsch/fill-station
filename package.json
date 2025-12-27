@@ -37,7 +37,9 @@
 		"react-dom": "^19.0.0",
 		"react-redux": "^9.2.0",
 		"redux": "^5.0.1",
+		"reflect-metadata": "^0.2.2",
 		"sequelize": "^6.37.7",
+		"sequelize-typescript": "^2.1.6",
 		"tailwindcss": "^4.1.17"
 	},
 	"devDependencies": {
