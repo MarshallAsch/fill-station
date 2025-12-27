@@ -6,6 +6,10 @@ import {
 	NonAttribute,
 	ForeignKey,
 	DataTypes,
+	Association,
+	HasOneGetAssociationMixin,
+	HasOneSetAssociationMixin,
+	Sequelize,
 } from 'sequelize'
 import { Cylinder } from '../cylinder'
 import { sequelize } from '../config'
@@ -33,6 +37,13 @@ export class Fill extends Model<
 	declare createdAt: CreationOptional<Date>
 	// updatedAt can be undefined during creation
 	declare updatedAt: CreationOptional<Date>
+
+	declare getCylinder: HasOneGetAssociationMixin<Cylinder> // Note the null assertions!
+	declare setCylinder: HasOneSetAssociationMixin<Cylinder, Cylinder['id']>
+
+	declare static associations: {
+		cylinder: Association<Cylinder, Fill>
+	}
 }
 
 Fill.init(
@@ -77,7 +88,8 @@ Fill.init(
 			},
 		},
 		date: {
-			type: DataTypes.DATE,
+			type: DataTypes.DATEONLY,
+			defaultValue: Sequelize.fn('now'),
 			validate: {
 				isAfter: '2024-11-01', // when I got the compressor, cant do a fill before that
 			},
