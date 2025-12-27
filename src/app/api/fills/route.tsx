@@ -1,11 +1,52 @@
+import { Cylinder } from '@/lib/models/cylinder'
 import { Fill } from '@/lib/models/fill'
 
 export async function GET(request: Request) {
-	// For example, fetch data from your DB here
-
 	let fills = await Fill.findAll()
-	return new Response(JSON.stringify(fills), {
-		status: 200,
-		headers: { 'Content-Type': 'application/json' },
-	})
+	return Response.json(fills)
+}
+
+type FillDto = {
+	date: Date
+	cylinderId: number
+	startPressure: number
+	endPressure: number
+	oxygen: number
+	helium: number
+}
+
+export async function POST(request: Request) {
+	let fills: FillDto[] = await request.json()
+	let cylinders: Cylinder[] = []
+
+	try {
+		let cylinders = await fills.map((fill) =>
+			Cylinder.findByPk(fill.cylinderId),
+		)
+	} catch (err: any) {
+		return Response.json(
+			{ error: err.name, message: err.errors[0].message },
+			{ status: 404 },
+		)
+	}
+
+	try {
+		let created = await fills.map((fill, index) =>
+			cylinders[index].createFill({
+				date: fill.date,
+				startPressure: fill.startPressure,
+				endPressure: fill.endPressure,
+				oxygen: fill.oxygen,
+				helium: fill.helium,
+			}),
+		)
+
+		return Response.json(created)
+	} catch (err: any) {
+		console.error('error:', err)
+		return Response.json(
+			{ error: err.name, message: err.errors[0].message },
+			{ status: 400 },
+		)
+	}
 }
