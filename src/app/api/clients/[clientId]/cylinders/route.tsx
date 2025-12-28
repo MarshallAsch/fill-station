@@ -1,21 +1,41 @@
+import { Client } from '@/lib/models/client'
 import { Cylinder } from '@/lib/models/cylinder'
 import dayjs from 'dayjs'
 
 import customParseFormat from 'dayjs/plugin/customParseFormat'
 dayjs.extend(customParseFormat)
 
-export async function GET(request: Request) {
-	// For example, fetch data from your DB here
+export async function GET(
+	request: Request,
+	{ params }: { params: Promise<{ clientId: string }> },
+) {
+	const { clientId } = await params
 
-	let cylinders = await Cylinder.findAll()
+	let cylinders = await Cylinder.findAll({
+		where: {
+			ownerId: clientId,
+		},
+	})
 
 	return Response.json(cylinders)
 }
 
-export async function POST(request: Request) {
-	// For example, fetch data from your DB here
+export async function POST(
+	request: Request,
+	{ params }: { params: Promise<{ clientId: string }> },
+) {
+	const { clientId } = await params
 
-	let { serialNumber, ownerId, birth, lastHydro, lastVis, oxygenClean } =
+	let client = await Client.findByPk(clientId)
+
+	if (!client) {
+		return Response.json(
+			{ message: `Client Not Fount with ID: ${clientId}` },
+			{ status: 404 },
+		)
+	}
+
+	let { serialNumber, birth, lastHydro, lastVis, oxygenClean } =
 		await request.json()
 
 	if (
@@ -31,15 +51,13 @@ export async function POST(request: Request) {
 		)
 	}
 
-	console.log(dayjs(birth, 'YYYY-MM-DD'))
 	try {
-		let result = await Cylinder.create({
+		let result = await client.createCylinder({
 			serialNumber: serialNumber,
 			birth: dayjs(birth, 'YYYY-MM-DD'),
 			lastHydro: dayjs(lastHydro, 'YYYY-MM-DD'),
 			lastVis: dayjs(lastVis, 'YYYY-MM-DD'),
 			oxygenClean: oxygenClean,
-			ownerId: ownerId,
 		})
 
 		return Response.json(result)

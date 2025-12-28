@@ -4,8 +4,21 @@ import {
 	InferCreationAttributes,
 	CreationOptional,
 	DataTypes,
+	HasManyGetAssociationsMixin,
+	HasManyAddAssociationMixin,
+	HasManyAddAssociationsMixin,
+	HasManySetAssociationsMixin,
+	HasManyRemoveAssociationMixin,
+	HasManyRemoveAssociationsMixin,
+	HasManyHasAssociationMixin,
+	HasManyHasAssociationsMixin,
+	HasManyCountAssociationsMixin,
+	HasManyCreateAssociationMixin,
+	NonAttribute,
+	Association,
 } from 'sequelize'
 import { sequelize } from '../config'
+import { Cylinder } from '../cylinder'
 
 export class Client extends Model<
 	InferAttributes<Client>,
@@ -16,16 +29,32 @@ export class Client extends Model<
 	declare id: CreationOptional<number>
 
 	declare name: string
-	declare nitroxCert: string
-	declare advancedNitroxCert: string
-	declare trimixCert: string
-	declare inspectionCert: CreationOptional<string>
+	declare nitroxCert?: string
+	declare advancedNitroxCert?: string
+	declare trimixCert?: string
+	declare inspectionCert?: CreationOptional<string>
 
-	// timestamps!
 	// createdAt can be undefined during creation
 	declare createdAt: CreationOptional<Date>
 	// updatedAt can be undefined during creation
 	declare updatedAt: CreationOptional<Date>
+
+	declare getCylinders: HasManyGetAssociationsMixin<Cylinder> // Note the null assertions!
+	declare addCylinder: HasManyAddAssociationMixin<Cylinder, number>
+	declare addCylinders: HasManyAddAssociationsMixin<Cylinder, number>
+	declare setCylinders: HasManySetAssociationsMixin<Cylinder, number>
+	declare removeCylinder: HasManyRemoveAssociationMixin<Cylinder, number>
+	declare removeCylinders: HasManyRemoveAssociationsMixin<Cylinder, number>
+	declare hasCylinder: HasManyHasAssociationMixin<Cylinder, number>
+	declare hasCylinders: HasManyHasAssociationsMixin<Cylinder, number>
+	declare countCylinders: HasManyCountAssociationsMixin
+	declare createCylinder: HasManyCreateAssociationMixin<Cylinder, 'ownerId'>
+
+	declare cylinders?: NonAttribute<Cylinder[]>
+
+	declare static associations: {
+		cylinders: Association<Client, Cylinder>
+	}
 }
 
 Client.init(
@@ -41,19 +70,23 @@ Client.init(
 		},
 		nitroxCert: {
 			type: DataTypes.STRING,
-			allowNull: true,
+			allowNull: false,
+			defaultValue: '',
 		},
 		advancedNitroxCert: {
 			type: DataTypes.STRING,
-			allowNull: true,
+			allowNull: false,
+			defaultValue: '',
 		},
 		trimixCert: {
 			type: DataTypes.STRING,
-			allowNull: true,
+			allowNull: false,
+			defaultValue: '',
 		},
 		inspectionCert: {
 			type: DataTypes.STRING,
-			allowNull: true,
+			allowNull: false,
+			defaultValue: '',
 		},
 		createdAt: DataTypes.DATE,
 		updatedAt: DataTypes.DATE,

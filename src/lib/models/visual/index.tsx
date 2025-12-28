@@ -6,6 +6,9 @@ import {
 	NonAttribute,
 	ForeignKey,
 	DataTypes,
+	HasOneGetAssociationMixin,
+	HasOneSetAssociationMixin,
+	Association,
 } from 'sequelize'
 import { sequelize } from '../config'
 import { Cylinder } from '../cylinder'
@@ -66,6 +69,17 @@ export class Visual extends Model<
 	declare createdAt: CreationOptional<Date>
 	// updatedAt can be undefined during creation
 	declare updatedAt: CreationOptional<Date>
+
+	declare getCylinder: HasOneGetAssociationMixin<Cylinder> // Note the null assertions!
+	declare setCylinder: HasOneSetAssociationMixin<Cylinder, Cylinder['id']>
+
+	declare getInspector: HasOneGetAssociationMixin<Client> // Note the null assertions!
+	declare setInspector: HasOneSetAssociationMixin<Client, Client['id']>
+
+	declare static associations: {
+		cylinder: Association<Cylinder, Visual>
+		inspector: Association<Cylinder, Client>
+	}
 }
 
 Visual.init(
