@@ -1,11 +1,36 @@
 import { Client } from '@/lib/models/client'
 
 export async function GET(request: Request) {
-	// For example, fetch data from your DB here
+	let clients = await Client.findAll()
+	return Response.json(clients)
+}
 
-	let client = await Client.findAll()
-	return new Response(JSON.stringify(client), {
-		status: 200,
-		headers: { 'Content-Type': 'application/json' },
-	})
+export async function POST(request: Request) {
+	let { name, nitroxCert, advancedNitroxCert, trimixCert, inspectionCert } =
+		await request.json()
+
+	if (name == undefined) {
+		return Response.json(
+			{ error: 'missing', message: 'Missing required fields' },
+			{ status: 400 },
+		)
+	}
+
+	try {
+		let result = await Client.create({
+			name: name,
+			nitroxCert: nitroxCert,
+			advancedNitroxCert: advancedNitroxCert,
+			trimixCert: trimixCert,
+			inspectionCert: inspectionCert,
+		})
+
+		return Response.json(result)
+	} catch (err: any) {
+		console.error('error:', err)
+		return Response.json(
+			{ error: err.name, message: err.errors[0].message },
+			{ status: 400 },
+		)
+	}
 }

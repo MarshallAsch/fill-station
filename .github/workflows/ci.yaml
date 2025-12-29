@@ -1,9 +1,7 @@
 name: Build and Push Docker Image
 
 on:
-  push:
-    branches:
-      - main
+  - push
 
 permissions:
   contents: read
@@ -41,7 +39,7 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v6
         with:
-          push: true
+          push: ${{ github.ref_name == 'main' }}
           provenance: mode=max
           sbom: true
           tags: ${{ steps.meta.outputs.tags }}
