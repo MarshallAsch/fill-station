@@ -10,7 +10,7 @@ export default function Layout({ children }: { children: ReactNode }) {
 			<html lang='en'>
 				<body>
 					<Navbar />
-					<main className='flex min-h-[90vh] items-center justify-center overflow-auto'>
+					<main className='font-montserrat-regular flex min-h-screen justify-center'>
 						{children}
 					</main>
 					<Copyright />
