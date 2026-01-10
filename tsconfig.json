@@ -1,50 +1,50 @@
 {
-  "compilerOptions": {
-    "baseUrl": ".",
-    "paths": {
-      "@/*": ["src/*"]
-    },
-    "target": "ES2022",
-    "lib": ["dom", "dom.iterable", "esnext"],
-    "allowJs": true,
-    "skipLibCheck": true,
-    "strict": true,
-    "forceConsistentCasingInFileNames": true,
-    "noEmit": true,
-    "esModuleInterop": true,
-    "module": "esnext",
-    "moduleResolution": "node",
-    "noImplicitAny": true,
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "jsx": "preserve",
-    "incremental": true,
-    "plugins": [
-      {
-        "name": "next"
-      }
-    ]
-  },
-  "include": [
-    "**/*.js",
-    "**/*.ts",
-    "**/*.tsx",
-    "eslint.config.mjs",
-    "next-env.d.ts",
-    "next-i18next.config.js",
-    "next.config.js",
-    "postcss.config.mjs",
-    "prettier.config.mjs",
-    "tailwind.config.mjs",
-    ".next/types/**/*.ts"
-  ],
-  "exclude": [
-    "**/node_modules",
-    "**/.next",
-    "**/.vercel",
-    "**/out",
-    "**/migrations/",
-    "**/util/countries",
-    ".next"
-  ]
+	"compilerOptions": {
+		"baseUrl": ".",
+		"paths": {
+			"@/*": ["src/*"]
+		},
+		"target": "ES2022",
+		"lib": ["dom", "dom.iterable", "esnext"],
+		"allowJs": true,
+		"skipLibCheck": true,
+		"strict": true,
+		"forceConsistentCasingInFileNames": true,
+		"noEmit": true,
+		"esModuleInterop": true,
+		"module": "esnext",
+		"moduleResolution": "node",
+		"noImplicitAny": true,
+		"resolveJsonModule": true,
+		"isolatedModules": true,
+		"jsx": "preserve",
+		"incremental": true,
+		"plugins": [
+			{
+				"name": "next"
+			}
+		]
+	},
+	"include": [
+		"**/*.js",
+		"**/*.ts",
+		"**/*.tsx",
+		"eslint.config.mjs",
+		"next-env.d.ts",
+		"next-i18next.config.js",
+		"next.config.js",
+		"postcss.config.mjs",
+		"prettier.config.mjs",
+		"tailwind.config.mjs",
+		".next/types/**/*.ts"
+	],
+	"exclude": [
+		"**/node_modules",
+		"**/.next",
+		"**/.vercel",
+		"**/out",
+		"**/migrations/",
+		"**/util/countries",
+		".next"
+	]
 }
