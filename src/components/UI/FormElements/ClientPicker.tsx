@@ -13,6 +13,7 @@ import {
 import { useState } from 'react'
 import { ChevronDownIcon } from '@heroicons/react/24/outline'
 import { Client, selectClient } from '@/redux/client/clientSlice'
+import { updateAddClientModalOpen } from '@/redux/modal/modalSlice'
 
 const ClientPicker = () => {
 	const { allClients: clients } = useAppSelector((state) => state.clients)
@@ -57,7 +58,7 @@ const ClientPicker = () => {
 					className='absolute z-10 mt-1 max-h-60 w-75 overflow-auto rounded-md bg-white py-1 text-base shadow-lg outline outline-black/5 data-leave:transition data-leave:duration-100 data-leave:ease-in data-closed:data-leave:opacity-0 sm:text-sm'
 				>
 					<Button
-						// onClick={() => dispatch(updateAddCylinderModalOpen(true))}
+						onClick={() => dispatch(updateAddClientModalOpen(true))}
 						className='cursor-pointer px-3 py-2 text-gray-900 select-none data-focus:bg-indigo-600 data-focus:text-white data-focus:outline-hidden'
 					>
 						Add new Client
