@@ -15,36 +15,7 @@ type InitialState = {
 
 const initialState: InitialState = {
 	selectedClient: null,
-	allClients: [
-		{
-			id: 1,
-			name: 'Marshall Asch',
-			nitroxCert: '123456 (TDI)',
-			advancedNitroxCert: '456789 (TDI)',
-			trimixCert: '',
-		},
-		{
-			id: 2,
-			name: 'Bob',
-			nitroxCert: '',
-			advancedNitroxCert: '',
-			trimixCert: '',
-		},
-		{
-			id: 3,
-			name: 'Frank',
-			nitroxCert: '444444 (TDI)',
-			advancedNitroxCert: '',
-			trimixCert: '',
-		},
-		{
-			id: 4,
-			name: 'Jim',
-			nitroxCert: '555 (TDI)',
-			advancedNitroxCert: '666 (TDI)',
-			trimixCert: '200000 (TDI)',
-		},
-	],
+	allClients: [],
 }
 
 const clientSlice = createSlice({
