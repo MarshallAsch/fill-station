@@ -2,10 +2,12 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
 type InitialState = {
 	addCylinderModalOpen: boolean
+	addServiceModalOpen: boolean
 }
 
 const initialState: InitialState = {
 	addCylinderModalOpen: false,
+	addServiceModalOpen: false,
 }
 
 const modalSlice = createSlice({
@@ -15,8 +17,12 @@ const modalSlice = createSlice({
 		updateAddCylinderModalOpen(state, action: PayloadAction<boolean>) {
 			state.addCylinderModalOpen = action.payload
 		},
+		updateAddServiceModalOpen(state, action: PayloadAction<boolean>) {
+			state.addServiceModalOpen = action.payload
+		},
 	},
 })
 
-export const { updateAddCylinderModalOpen } = modalSlice.actions
+export const { updateAddCylinderModalOpen, updateAddServiceModalOpen } =
+	modalSlice.actions
 export default modalSlice.reducer
