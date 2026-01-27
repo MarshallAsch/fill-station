@@ -13,7 +13,7 @@ import { useMemo } from 'react'
 import { updateAddServiceModalOpen } from '@/redux/modal/modalSlice'
 dayjs.extend(relativeTime)
 
-const MHistory = () => {
+const MaintenanceHistory = () => {
 	const { maintenanceTimeline } = useAppSelector((state) => state.history)
 	const dispatch = useAppDispatch()
 	const getColor = (type: MAINTENANCE_TYPE) => {
@@ -169,4 +169,4 @@ const MHistory = () => {
 	)
 }
 
-export default MHistory
+export default MaintenanceHistory

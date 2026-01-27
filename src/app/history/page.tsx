@@ -5,7 +5,7 @@ import { useAppSelector } from '@/redux/hooks'
 import { TAB } from '@/redux/history/historySlice'
 import FillsHistory from '@/components/History/FillsHistory'
 import VisHistory from '@/components/History/VisHistory'
-import MHistory from '@/components/History/MaintenanceHistory/MaintanenceHistory'
+import MaintenanceHistory from '@/components/History/MaintenanceHistory/MaintenanceHistory'
 
 export default function History() {
 	const { selectedTab } = useAppSelector((state) => state.history)
@@ -17,7 +17,7 @@ export default function History() {
 			case TAB.VIS_INSPECTION:
 				return <VisHistory />
 			case TAB.COMP_MAINTENANCE:
-				return <MHistory />
+				return <MaintenanceHistory />
 			default:
 				return <FillsHistory />
 		}
