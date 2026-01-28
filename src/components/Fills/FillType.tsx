@@ -55,7 +55,7 @@ const FillType = ({ index, item }: FillTypeProps) => {
 		)
 	}
 	return (
-		<td className='px-3 py-2'>
+		<div className='px-3 py-2'>
 			<Listbox value={item.type} onChange={handleTypeChange}>
 				<div className='relative'>
 					<Label className='mb-1 block text-sm font-medium text-gray-700'>
@@ -104,7 +104,7 @@ const FillType = ({ index, item }: FillTypeProps) => {
 					</ListboxOptions>
 				</div>
 			</Listbox>
-		</td>
+		</div>
 	)
 }
 
