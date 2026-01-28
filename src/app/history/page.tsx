@@ -6,6 +6,7 @@ import { TAB } from '@/redux/history/historySlice'
 import FillsHistory from '@/components/History/FillsHistory'
 import VisHistory from '@/components/History/VisHistory'
 import MaintenanceHistory from '@/components/History/MaintenanceHistory/MaintenanceHistory'
+import HistoryTable from '@/components/History/components/HistoryTable'
 
 export default function History() {
 	const { selectedTab } = useAppSelector((state) => state.history)
@@ -13,7 +14,7 @@ export default function History() {
 	const getTabComponent = () => {
 		switch (selectedTab) {
 			case TAB.FILLS:
-				return <FillsHistory />
+				return <HistoryTable />
 			case TAB.VIS_INSPECTION:
 				return <VisHistory />
 			case TAB.COMP_MAINTENANCE:

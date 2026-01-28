@@ -1,9 +1,15 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { Cylinder } from '../cylinder/cylinderSlice'
 import dayjs from 'dayjs'
 
-type InitialState = {
-	selectedTab: TAB
-	maintenanceTimeline: CompressorMaintenance[]
+export type FillHistory = {
+	id: number
+	name: string
+	date: string
+	mix: number
+	start: number
+	end: number
+	cylinder: Cylinder
 }
 
 export enum TAB {
@@ -28,8 +34,46 @@ export type CompressorMaintenance = {
 	content: string
 }
 
+type InitialState = {
+	selectedTab: TAB
+	fillHistory: FillHistory[]
+	maintenanceTimeline: CompressorMaintenance[]
+}
+
 const initialState: InitialState = {
 	selectedTab: TAB.FILLS,
+	fillHistory: [
+		{
+			id: 1,
+			name: 'Marshall Asch',
+			date: dayjs().format('MM/DD/YYYY'),
+			mix: 20.9,
+			start: 500,
+			end: 3400,
+			cylinder: {
+				serialNumber: 'abcd-efg-hi',
+				birthDate: null,
+				lastHydro: null,
+				lastVis: null,
+				oxygenClean: false,
+			},
+		},
+		{
+			id: 2,
+			name: 'Marshall Asch',
+			date: dayjs().format('MM/DD/YYYY'),
+			mix: 20.9,
+			start: 500,
+			end: 3400,
+			cylinder: {
+				serialNumber: 'abcd-efg-hi',
+				birthDate: null,
+				lastHydro: null,
+				lastVis: null,
+				oxygenClean: false,
+			},
+		},
+	],
 	maintenanceTimeline: [
 		{
 			id: 1,

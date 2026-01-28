@@ -26,11 +26,11 @@ const Layout = ({ children }: { children: ReactNode }) => {
 		dispatch(setSelectedTab(val))
 	}
 	return (
-		<div className='flex grow'>
+		<div className='flex grow border-t border-gray-200'>
 			{/* Static sidebar for desktop */}
 			<div className='hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-72 lg:flex-col'>
 				{/* Sidebar component, swap this element with another sidebar if you like */}
-				<div className='mt-24 flex grow flex-col gap-y-5 overflow-y-auto border-r border-gray-200 bg-white px-6'>
+				<div className='mt-24 flex grow flex-col gap-y-5 overflow-y-auto border-t border-r border-gray-200 bg-white px-6'>
 					<nav className='flex flex-1 flex-col'>
 						<ul role='list' className='flex flex-1 flex-col gap-y-7'>
 							<li>
