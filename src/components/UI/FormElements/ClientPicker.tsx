@@ -22,6 +22,13 @@ const ClientPicker = () => {
 	const [query, setQuery] = useState('')
 	const [selectedClient, setSelectedClient] = useState<Client | null>(null)
 
+	const filteredClients =
+		query === ''
+			? clients
+			: clients.filter((person) => {
+					return person.name.toLowerCase().includes(query.toLowerCase())
+				})
+
 	return (
 		<Combobox
 			as='div'
@@ -71,7 +78,7 @@ const ClientPicker = () => {
 							{query}
 						</ComboboxOption>
 					)}
-					{clients.map((client) => (
+					{filteredClients.map((client) => (
 						<ComboboxOption
 							key={client.id}
 							value={client}

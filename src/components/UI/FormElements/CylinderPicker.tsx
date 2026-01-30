@@ -28,6 +28,15 @@ const CylinderPicker = ({ isFill, index }: CylinderPickerProps) => {
 		null,
 	)
 
+	const filteredCylinders =
+		query === ''
+			? cylinders
+			: cylinders.filter((cylinder) => {
+					return cylinder.serialNumber
+						.toLowerCase()
+						.includes(query.toLowerCase())
+				})
+
 	useEffect(() => {
 		if (isFill && index !== undefined && selectedCylinder) {
 			dispatch(updateCylinder({ id: index, data: selectedCylinder }))
@@ -83,7 +92,7 @@ const CylinderPicker = ({ isFill, index }: CylinderPickerProps) => {
 							{query}
 						</ComboboxOption>
 					)}
-					{cylinders.map((cylinder) => (
+					{filteredCylinders.map((cylinder) => (
 						<ComboboxOption
 							key={cylinder.serialNumber}
 							value={cylinder}
