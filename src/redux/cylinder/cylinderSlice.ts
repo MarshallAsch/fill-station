@@ -25,7 +25,7 @@ const cylinderSlice = createSlice({
 	initialState,
 	reducers: {
 		AddCylinders: (state, action: PayloadAction<Cylinder[]>) => {
-			return [...state, ...action.payload]
+			state.push(...action.payload)
 		},
 		updateCylinder: (
 			state,
