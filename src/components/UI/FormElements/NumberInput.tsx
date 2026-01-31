@@ -5,6 +5,7 @@ type NumberInputProps = {
 	value: number
 	onChange: (value: number) => void
 	placeholder?: string
+	disabled?: boolean
 }
 
 const NumberInput = ({
@@ -14,6 +15,7 @@ const NumberInput = ({
 	value,
 	onChange,
 	placeholder,
+	disabled = false,
 }: NumberInputProps) => {
 	return (
 		<div className='w-full'>
@@ -31,6 +33,7 @@ const NumberInput = ({
 				name={name}
 				type='number'
 				value={value}
+				disabled={disabled}
 				placeholder={placeholder}
 				onChange={(e) =>
 					onChange(e.target.value === '' ? 0 : Number(e.target.value))
