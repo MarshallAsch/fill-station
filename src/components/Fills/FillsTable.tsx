@@ -55,7 +55,7 @@ const FillsTable = () => {
 										<th scope='col' className='py-3.5 pr-4 pl-3 sm:pr-6'></th>
 									</tr>
 								</thead>
-								<tbody className='divide-y divide-gray-200 bg-white'>
+								<tbody className='h-full divide-y divide-gray-200 bg-white'>
 									{fills.map((fill) => (
 										<FillsRow key={fill.id} fill={fill} />
 									))}
