@@ -1,7 +1,7 @@
 import VisHistoryTable from './components/VisHistoryTable'
 
-const NewVisHistory = () => {
+const VisHistory = () => {
 	return <VisHistoryTable />
 }
 
-export default NewVisHistory
+export default VisHistory
