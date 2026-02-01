@@ -3,6 +3,7 @@
 import FormGroup from '../UI/FormGroup'
 import RadioGroup from '../UI/FormElements/RadioGroup'
 import DatePicker from '../UI/FormElements/DatePicker'
+import { CYLINDER_MATERIAL_OPTIONS } from '@/app/constants/FormConstants'
 
 const TankInfo = () => {
 	return (
@@ -34,20 +35,7 @@ const TankInfo = () => {
 
 				<RadioGroup
 					title='Cylinder Material'
-					options={[
-						{
-							label: 'Steel',
-							value: 'steel',
-						},
-						{
-							label: 'Aluminum',
-							value: 'aluminum',
-						},
-						{
-							label: 'Composite',
-							value: 'composite',
-						},
-					]}
+					options={CYLINDER_MATERIAL_OPTIONS}
 					name='cylinder_material'
 				/>
 			</>
