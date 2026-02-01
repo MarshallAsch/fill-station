@@ -4,9 +4,9 @@ import React from 'react'
 import { useAppSelector } from '@/redux/hooks'
 import { TAB } from '@/redux/history/historySlice'
 import FillsHistory from '@/components/History/FillsHistory'
-import VisHistory from '@/components/History/VisHistory'
 import MaintenanceHistory from '@/components/History/MaintenanceHistory'
 import HistoryTable from '@/components/History/components/HistoryTable'
+import VisHistory from '@/components/History/VisHistory'
 
 export default function History() {
 	const { selectedTab } = useAppSelector((state) => state.history)

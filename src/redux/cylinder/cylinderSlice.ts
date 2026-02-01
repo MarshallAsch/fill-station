@@ -5,8 +5,12 @@ export type Cylinder = {
 	serialNumber: string
 	birthDate: dayjs.Dayjs | null
 	lastHydro: dayjs.Dayjs | null
-	lastVis: dayjs.Dayjs | null
-	oxygenClean: boolean
+	lastVis: {
+		date: string
+		passed: boolean
+		oxygenClean: boolean
+		details: string
+	} | null
 }
 
 // This will eventually be empty to start and populated with API Data
@@ -15,8 +19,12 @@ const initialState: Cylinder[] = [
 		serialNumber: 'abcd-efg-hi',
 		birthDate: null,
 		lastHydro: null,
-		lastVis: null,
-		oxygenClean: false,
+		lastVis: {
+			date: dayjs().format('DD/MM/YYYY'),
+			passed: true,
+			oxygenClean: true,
+			details: 'test-query',
+		},
 	},
 ]
 
