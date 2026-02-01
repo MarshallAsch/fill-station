@@ -32,7 +32,7 @@ const FillsRow = ({ fill }: { fill: Fill }) => {
 					name='helium'
 					label='Helium %'
 					value={fill.he}
-					disabled={fill.type === 'air'}
+					disabled={fill.type !== 'trimix'}
 					onChange={(val: number) =>
 						dispatch(updateFill({ id: fill.id, data: { ...fill, he: val } }))
 					}
