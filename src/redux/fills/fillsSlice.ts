@@ -1,9 +1,12 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { Cylinder } from '../cylinder/cylinderSlice'
+import FillType from '@/components/Fills/FillType'
+
+export type FillType = 'air' | 'nitrox' | 'trimix'
 
 export type Fill = {
 	id: number
-	type: 'air' | 'nitrox' | 'trimix'
+	type: FillType
 	start: number
 	end: number
 	o2: number

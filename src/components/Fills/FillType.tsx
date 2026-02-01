@@ -6,31 +6,37 @@ import {
 	ListboxOptions,
 } from '@headlessui/react'
 import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/24/outline'
-import { Fill, updateFill } from '@/redux/fills/fillsSlice'
+import {
+	Fill,
+	FillType as IFillType,
+	updateFill,
+} from '@/redux/fills/fillsSlice'
 import { useAppDispatch, useAppSelector } from '@/redux/hooks'
-
-type FillType = 'air' | 'nitrox' | 'trimix'
+import { useState } from 'react'
 
 type FillTypeProps = {
 	index: number
 	item: Fill
 }
 
+type FillOption = {
+	value: IFillType
+	label: string
+	enabled: boolean
+	disabledReason?: string
+}
+
 const FillType = ({ index, item }: FillTypeProps) => {
 	const client = useAppSelector((state) => state.clients.selectedClient)
 	const dispatch = useAppDispatch()
+
 	const nitroxUse = !!(
 		client &&
 		(client.nitroxCert || client.advancedNitroxCert)
 	)
 	const trimixUse = !!(client && client.trimixCert)
 
-	const options: {
-		value: FillType
-		label: string
-		enabled: boolean
-		disabledReason?: string
-	}[] = [
+	const options: FillOption[] = [
 		{ value: 'air', label: 'Air', enabled: true },
 		{
 			value: 'nitrox',
@@ -46,65 +52,60 @@ const FillType = ({ index, item }: FillTypeProps) => {
 		},
 	]
 
-	const handleTypeChange = (value: FillType) => {
+	const handleTypeChange = (option: FillOption) => {
+		setSelectedFill(option)
 		dispatch(
 			updateFill({
 				id: index,
-				data: { ...item, type: value },
+				data: { ...item, type: option.value },
 			}),
 		)
 	}
-	return (
-		<td className='px-3 py-2'>
-			<Listbox value={item.type} onChange={handleTypeChange}>
-				<div className='relative'>
-					<Label className='mb-1 block text-sm font-medium text-gray-700'>
-						Fill Type
-					</Label>
 
-					<ListboxButton className='relative w-full cursor-default rounded-md border border-gray-300 bg-white py-2 pr-10 pl-3 text-left shadow-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 focus:outline-none sm:text-sm'>
-						<span className='block truncate'>
-							{options.find((o) => o.value === item.type)?.label}
+	const [selectedFill, setSelectedFill] = useState<FillOption>(options[0])
+
+	return (
+		<div className='px-3 py-2'>
+			<Listbox value={selectedFill} onChange={handleTypeChange} by='value'>
+				<Label className='block text-sm/6 font-medium text-gray-900'>
+					Assigned to
+				</Label>
+				<div className='relative mt-2'>
+					<ListboxButton className='grid w-full cursor-default grid-cols-1 rounded-md bg-white py-1.5 pr-2 pl-3 text-left text-gray-900 outline-1 -outline-offset-1 outline-gray-300 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-indigo-600 sm:text-sm/6'>
+						<span className='col-start-1 row-start-1 truncate pr-6'>
+							{selectedFill.label}
 						</span>
-						<span className='pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2'>
-							<ChevronUpDownIcon className='h-5 w-5 text-gray-400' />
-						</span>
+						<ChevronUpDownIcon
+							aria-hidden='true'
+							className='col-start-1 row-start-1 size-5 self-center justify-self-end text-gray-500 sm:size-4'
+						/>
 					</ListboxButton>
 
-					<ListboxOptions className='ring-opacity-5 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black focus:outline-none sm:text-sm'>
+					<ListboxOptions
+						transition
+						className='absolute z-10 mt-1 max-h-60 w-40 overflow-auto rounded-md bg-white py-1 text-base shadow-lg outline-1 outline-black/5 data-leave:transition data-leave:duration-100 data-leave:ease-in data-closed:data-leave:opacity-0 sm:text-sm'
+					>
 						{options.map((option) => (
 							<ListboxOption
 								key={option.value}
-								value={option.value}
+								value={option}
 								disabled={!option.enabled}
-								title={!option.enabled ? option.disabledReason : undefined}
-								className={({ active, disabled }) =>
-									`relative cursor-default py-2 pr-4 pl-10 select-none ${active && !disabled ? 'bg-indigo-100 text-indigo-900' : 'text-gray-900'} ${disabled ? 'cursor-not-allowed opacity-50' : ''} `
-								}
+								title={option.enabled ? undefined : option.disabledReason}
+								className='group relative cursor-default py-2 pr-9 pl-3 data-disabled:cursor-not-allowed data-disabled:opacity-50 data-focus:bg-indigo-600 data-focus:text-white'
 							>
-								{({ selected }) => (
-									<>
-										<span
-											className={`block truncate ${
-												selected ? 'font-medium' : 'font-normal'
-											}`}
-										>
-											{option.label}
-										</span>
+								<span className='block truncate font-normal group-data-selected:font-semibold'>
+									{option.label}
+								</span>
 
-										{selected && (
-											<span className='absolute inset-y-0 left-0 flex items-center pl-3 text-indigo-600'>
-												<CheckIcon className='h-5 w-5' />
-											</span>
-										)}
-									</>
-								)}
+								<span className='absolute inset-y-0 right-0 z-10 hidden items-center pr-4 text-indigo-600 group-data-selected:flex'>
+									<CheckIcon aria-hidden='true' className='size-5' />
+								</span>
 							</ListboxOption>
 						))}
 					</ListboxOptions>
 				</div>
 			</Listbox>
-		</td>
+		</div>
 	)
 }
 
