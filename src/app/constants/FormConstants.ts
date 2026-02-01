@@ -30,3 +30,19 @@ export const CYLINDER_MATERIAL_OPTIONS = [
 		value: 'composite',
 	},
 ]
+
+export const PSI_INSPECTION_OPTION_ACCEPTABLE = 'acceptable'
+export const PSI_INSPECTION_OPTIONS = [
+	{
+		label: 'Acceptable',
+		value: 'acceptable',
+	},
+	{
+		label: 'Marginal',
+		value: 'marginal',
+	},
+	{
+		label: 'Reject',
+		value: 'reject',
+	},
+]

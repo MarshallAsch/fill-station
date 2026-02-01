@@ -2,6 +2,10 @@ import FormGroup from '../UI/FormGroup'
 import NumberField from '../NumberField'
 import TextArea from '../UI/FormElements/TextArea'
 import RadioGroup from '../UI/FormElements/RadioGroup'
+import {
+	PSI_INSPECTION_OPTION_ACCEPTABLE,
+	PSI_INSPECTION_OPTIONS,
+} from '@/app/constants/FormConstants'
 
 const Threading = () => {
 	return (
@@ -32,20 +36,8 @@ const Threading = () => {
 				<RadioGroup
 					title='Comparison to PSI Standards/Manufacturers'
 					name='threading_psi_standards'
-					options={[
-						{
-							label: 'Acceptable',
-							value: 'acceptable',
-						},
-						{
-							label: 'Marginal',
-							value: 'marginal',
-						},
-						{
-							label: 'Condemn',
-							value: 'condemn',
-						},
-					]}
+					options={PSI_INSPECTION_OPTIONS}
+					defaultValue={PSI_INSPECTION_OPTION_ACCEPTABLE}
 				/>
 			</>
 		</FormGroup>
