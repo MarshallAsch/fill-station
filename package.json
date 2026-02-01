@@ -6,8 +6,8 @@
 		"dev": "next dev",
 		"build": "next build",
 		"start": "next start",
-		"lint": "eslint",
-		"lint-fix": "eslint . --fix --cache --ignore-pattern .next",
+		"lint": "prettier --write **/*.{ts,tsx} && eslint . --fix --cache",
+		"lint-fix": "eslint . --fix --cache",
 		"prettier": "prettier --write **/*.{ts,tsx}",
 		"knip": "knip --production"
 	},
