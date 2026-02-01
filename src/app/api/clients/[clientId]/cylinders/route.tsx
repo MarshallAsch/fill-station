@@ -13,7 +13,7 @@ export async function GET(
 
 	let cylinders = await Cylinder.findAll({
 		where: {
-			ClientId: clientId,
+			ownerId: clientId,
 		},
 	})
 
