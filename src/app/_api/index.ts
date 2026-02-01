@@ -1,6 +1,6 @@
 import { Client } from '@/redux/client/clientSlice'
 import { Cylinder } from '@/redux/cylinder/cylinderSlice'
-import { NewClientDTO } from '@/types/client'
+import { NewClientDTO, NewCylinderDTO } from '@/types/client'
 import axios from 'axios'
 
 export async function getAllClients(): Promise<Client[]> {
@@ -25,5 +25,13 @@ export async function newClient(
 ): Promise<Client | string> {
 	let result = await axios.post('/api/clients', client)
 
+	return result.status == 201 ? result.data : result.data.message
+}
+
+export async function newCylinder(
+	clientId: number,
+	cylinder: NewCylinderDTO,
+): Promise<Cylinder | string> {
+	let result = await axios.post(`/api/clients/${clientId}/cylinders`, cylinder)
 	return result.status == 201 ? result.data : result.data.message
 }

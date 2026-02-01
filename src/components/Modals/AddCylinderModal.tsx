@@ -11,25 +11,36 @@ import {
 import { FormEvent, Fragment } from 'react'
 import MonthPicker from '../MonthPicker'
 import dayjs from 'dayjs'
-import Checkbox from '../UI/FormElements/CheckBox'
 import TextInput from '../UI/FormElements/TextInput'
+import { useQueryClient } from '@tanstack/react-query'
+import { newCylinder } from '@/app/_api'
+import { NewCylinderDTO } from '@/types/client'
+import RadioGroup from '../UI/FormElements/RadioGroup'
+import { BOOL_OPTION_NO, BOOL_OPTIONS, CYLINDER_MATERIAL_OPTIONS } from '@/app/constants/FormConstants'
+import ClientPicker from '../UI/FormElements/ClientPicker'
 
 const AddCylinderModal = () => {
 	const { addCylinderModalOpen } = useAppSelector((state) => state.modal)
 	const dispatch = useAppDispatch()
+	const queryClient = useQueryClient()
 
 	const handleClose = () => {
 		dispatch(updateAddCylinderModalOpen(false))
 	}
 
-	const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+	const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
 		event.preventDefault()
 
 		// For this to work properly, the name provided to each input should be unique and match the schema on the BE
 		const form = new FormData(event.target as HTMLFormElement)
 		const formData = Object.fromEntries(form.entries())
-
 		console.log(formData)
+
+		// const data = await newCylinder(1, formData as NewCylinderDTO)
+		// if (!(data instanceof String)) {
+		// 	queryClient.invalidateQueries({ queryKey: ['cylinders'] })
+		// 	handleClose()
+		// }
 	}
 	return (
 		<Transition show={addCylinderModalOpen} as={Fragment}>
@@ -62,11 +73,14 @@ const AddCylinderModal = () => {
 									<DialogTitle>
 										Add the new cylinders information to save it for next time.
 									</DialogTitle>
+
+									<ClientPicker />
+									
 									<TextInput
 										autoFocus
 										type='text'
 										id='serial-number'
-										name='serial_number'
+										name='serialNumber'
 										ariaLabel='Serial Number'
 										placeholder='Serial Number'
 									/>
@@ -94,10 +108,17 @@ const AddCylinderModal = () => {
 										initialValue={dayjs()}
 									/>
 
-									<Checkbox
+									<RadioGroup
+										title='Cylinder material'
+										name='material'
+										options={CYLINDER_MATERIAL_OPTIONS}
+									/>
+
+									<RadioGroup
 										title='Tank and Valve have been cleaned for oxygen service to 100%'
-										id='tank-valve-cleaned'
-										name='tank_valve_cleaned'
+										name='oxygenClean'
+										options={BOOL_OPTIONS}
+										defaultValue={BOOL_OPTION_NO}
 									/>
 
 									<div className='flex w-full justify-end gap-2'>
