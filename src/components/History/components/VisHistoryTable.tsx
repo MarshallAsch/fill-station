@@ -2,7 +2,7 @@ import { useAppSelector } from '@/redux/hooks'
 import VisHistoryRow from './VisHistoryRow'
 
 const VisHistoryTable = () => {
-	const cylinders = useAppSelector((state) => state.cylinders)
+	const { cylinders } = useAppSelector((state) => state.cylinders)
 	return (
 		<div className='min-w-full'>
 			<div className='mt-8 flow-root'>
