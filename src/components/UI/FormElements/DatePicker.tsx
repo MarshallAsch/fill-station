@@ -70,7 +70,7 @@ export default function DatePicker({
 	}
 
 	return (
-		<div ref={ref} className='relative flex w-full flex-col gap-2'>
+		<div ref={ref} className='flex w-full flex-col gap-2'>
 			<label>{title}</label>
 			<button
 				type='button'
@@ -89,7 +89,7 @@ export default function DatePicker({
 			)}
 
 			{open && (
-				<div className='absolute top-16 z-50 mt-2 w-72 rounded-xl border border-gray-200 bg-white p-4 shadow-lg'>
+				<div className='absolute z-50 mt-2 w-72 rounded-xl border border-gray-200 bg-white p-4 shadow-lg'>
 					{/* Header */}
 					<div className='mb-4 flex items-center justify-between'>
 						<button
