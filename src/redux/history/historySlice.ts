@@ -55,7 +55,6 @@ const initialState: InitialState = {
 				birthDate: null,
 				lastHydro: null,
 				lastVis: null,
-				oxygenClean: false,
 			},
 		},
 		{
@@ -70,7 +69,6 @@ const initialState: InitialState = {
 				birthDate: null,
 				lastHydro: null,
 				lastVis: null,
-				oxygenClean: false,
 			},
 		},
 	],
