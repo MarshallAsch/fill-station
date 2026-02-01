@@ -10,7 +10,13 @@ type RadioGroupProps = {
 	required?: boolean
 }
 
-const RadioGroup = ({ title, options, name, description, defaultValue }: RadioGroupProps) => {
+const RadioGroup = ({
+	title,
+	options,
+	name,
+	description,
+	defaultValue,
+}: RadioGroupProps) => {
 	return (
 		<fieldset className='w-full'>
 			<div className='flex items-center justify-between'>
@@ -27,7 +33,9 @@ const RadioGroup = ({ title, options, name, description, defaultValue }: RadioGr
 							name={name}
 							type='radio'
 							value={option.value}
-							defaultChecked={option.value === (defaultValue ?? options[0].value)}
+							defaultChecked={
+								option.value === (defaultValue ?? options[0].value)
+							}
 							className='absolute inset-0 cursor-pointer appearance-none focus:outline-none disabled:cursor-not-allowed'
 						/>
 						<span className='text-sm font-medium text-gray-900 group-has-checked:text-white'>

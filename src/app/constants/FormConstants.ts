@@ -1,6 +1,5 @@
-
-export const BOOL_OPTION_YES = 1;
-export const BOOL_OPTION_NO = 0;
+export const BOOL_OPTION_YES = 1
+export const BOOL_OPTION_NO = 0
 
 export const BOOL_OPTIONS = [
 	{

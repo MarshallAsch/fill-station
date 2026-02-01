@@ -13,10 +13,12 @@ import MonthPicker from '../MonthPicker'
 import dayjs from 'dayjs'
 import TextInput from '../UI/FormElements/TextInput'
 import { useQueryClient } from '@tanstack/react-query'
-import { newCylinder } from '@/app/_api'
-import { NewCylinderDTO } from '@/types/client'
 import RadioGroup from '../UI/FormElements/RadioGroup'
-import { BOOL_OPTION_NO, BOOL_OPTIONS, CYLINDER_MATERIAL_OPTIONS } from '@/app/constants/FormConstants'
+import {
+	BOOL_OPTION_NO,
+	BOOL_OPTIONS,
+	CYLINDER_MATERIAL_OPTIONS,
+} from '@/app/constants/FormConstants'
 import ClientPicker from '../UI/FormElements/ClientPicker'
 
 const AddCylinderModal = () => {
@@ -75,7 +77,7 @@ const AddCylinderModal = () => {
 									</DialogTitle>
 
 									<ClientPicker />
-									
+
 									<TextInput
 										autoFocus
 										type='text'
