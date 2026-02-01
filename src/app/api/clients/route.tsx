@@ -25,7 +25,7 @@ export async function POST(request: Request) {
 			inspectionCert: inspectionCert,
 		})
 
-		return Response.json(result)
+		return Response.json(result, { status: 201 })
 	} catch (err: any) {
 		console.error('error:', err)
 		return Response.json(

@@ -1,7 +1,7 @@
 'use client'
 
 import { useAppDispatch, useAppSelector } from '@/redux/hooks'
-import { Cylinder } from '@/redux/cylinder/cylinderSlice'
+import { Cylinder, setCylinders } from '@/redux/cylinder/cylinderSlice'
 import {
 	Button,
 	Combobox,
@@ -15,12 +15,32 @@ import { useEffect, useState } from 'react'
 import { ChevronDownIcon } from '@heroicons/react/24/outline'
 import { updateAddCylinderModalOpen } from '@/redux/modal/modalSlice'
 import { updateCylinder } from '@/redux/fills/fillsSlice'
+import { useQuery } from '@tanstack/react-query'
+import { getAllCylinders } from '@/app/_api'
+
 type CylinderPickerProps = {
 	isFill?: boolean
 	index?: number
 }
+
+function useLoadCylinder() {
+	const { status, data, error } = useQuery({
+		queryKey: ['cylinders'],
+		queryFn: getAllCylinders,
+	})
+
+	const dispatch = useAppDispatch()
+	const { cylinders } = useAppSelector((state) => state.cylinders)
+
+	if (data) {
+		dispatch(setCylinders(data))
+	}
+
+	return { cylinders, status, error }
+}
+
 const CylinderPicker = ({ isFill, index }: CylinderPickerProps) => {
-	const cylinders = useAppSelector((state) => state.cylinders)
+	const { cylinders } = useLoadCylinder()
 	const dispatch = useAppDispatch()
 
 	const [query, setQuery] = useState('')

@@ -12,12 +12,30 @@ import {
 } from '@headlessui/react'
 import { useState } from 'react'
 import { ChevronDownIcon } from '@heroicons/react/24/outline'
-import { Client, selectClient } from '@/redux/client/clientSlice'
+import { Client, selectClient, setClients } from '@/redux/client/clientSlice'
 import { updateAddClientModalOpen } from '@/redux/modal/modalSlice'
+import { useQuery } from '@tanstack/react-query'
+import { getAllClients } from '@/app/_api'
+
+function useLoadClients() {
+	const { status, data, error } = useQuery({
+		queryKey: ['clients'],
+		queryFn: getAllClients,
+	})
+
+	const dispatch = useAppDispatch()
+	const { allClients: clients } = useAppSelector((state) => state.clients)
+
+	if (data) {
+		dispatch(setClients(data))
+	}
+
+	return { clients, status, error }
+}
 
 const ClientPicker = () => {
-	const { allClients: clients } = useAppSelector((state) => state.clients)
 	const dispatch = useAppDispatch()
+	const { clients, status, error } = useLoadClients()
 
 	const [query, setQuery] = useState('')
 	const [selectedClient, setSelectedClient] = useState<Client | null>(null)

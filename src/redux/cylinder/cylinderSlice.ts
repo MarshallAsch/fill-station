@@ -13,42 +13,42 @@ export type Cylinder = {
 	} | null
 }
 
-// This will eventually be empty to start and populated with API Data
-const initialState: Cylinder[] = [
-	{
-		serialNumber: 'abcd-efg-hi',
-		birthDate: null,
-		lastHydro: null,
-		lastVis: {
-			date: dayjs().format('DD/MM/YYYY'),
-			passed: true,
-			oxygenClean: true,
-			details: 'test-query',
-		},
-	},
-]
+type InitialState = {
+	cylinders: Cylinder[]
+}
+
+const initialState: InitialState = {
+	cylinders: [],
+}
 
 const cylinderSlice = createSlice({
 	name: 'cylinders',
 	initialState,
 	reducers: {
+		setCylinders: (state, action: PayloadAction<Cylinder[]>) => {
+			state.cylinders = action.payload
+		},
 		AddCylinders: (state, action: PayloadAction<Cylinder[]>) => {
-			state.push(...action.payload)
+			state.cylinders.push(...action.payload)
 		},
 		updateCylinder: (
 			state,
 			action: PayloadAction<{ serialNumber: string; data: Cylinder }>,
 		) => {
 			const { serialNumber, data } = action.payload
-			const cylinderIndex = state.findIndex(
+			const cylinderIndex = state.cylinders.findIndex(
 				(cylinder) => cylinder.serialNumber === serialNumber,
 			)
 			if (cylinderIndex !== -1) {
-				state[cylinderIndex] = { ...state[cylinderIndex], ...data }
+				state.cylinders[cylinderIndex] = {
+					...state.cylinders[cylinderIndex],
+					...data,
+				}
 			}
 		},
 	},
 })
 
-export const { AddCylinders, updateCylinder } = cylinderSlice.actions
+export const { setCylinders, AddCylinders, updateCylinder } =
+	cylinderSlice.actions
 export default cylinderSlice.reducer
