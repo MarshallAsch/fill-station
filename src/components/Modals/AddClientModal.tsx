@@ -10,10 +10,14 @@ import {
 } from '@headlessui/react'
 import { FormEvent, Fragment } from 'react'
 import TextInput from '../UI/FormElements/TextInput'
+import { newClient } from '@/app/_api'
+import { NewClientDTO } from '@/types/client'
+import { useQueryClient } from '@tanstack/react-query'
 
 const AddClientModal = () => {
 	const { addClientModalOpen } = useAppSelector((state) => state.modal)
 	const dispatch = useAppDispatch()
+	const queryClient = useQueryClient()
 
 	const handleClose = () => {
 		dispatch(updateAddClientModalOpen(false))
@@ -22,17 +26,14 @@ const AddClientModal = () => {
 	const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
 		event.preventDefault()
 
-		// For this to work properly, the name provided to each input should be unique and match the schema on the BE
 		const form = new FormData(event.target as HTMLFormElement)
 		const formData = Object.fromEntries(form.entries())
 
-		let res = await fetch('/api/clients', {
-    method: "POST",
-    body: JSON.stringify(formData),
-    headers: {
-      "Content-Type": "application/json",
-    }},)
-		console.log(await res.json())
+		const data = await newClient(formData as NewClientDTO)
+		if (!(data instanceof String)) {
+			queryClient.invalidateQueries({ queryKey: ['clients'] })
+			handleClose()
+		}
 	}
 	return (
 		<Transition show={addClientModalOpen} as={Fragment}>

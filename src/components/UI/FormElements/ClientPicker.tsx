@@ -18,25 +18,24 @@ import { useQuery } from '@tanstack/react-query'
 import { getAllClients } from '@/app/_api'
 
 function useLoadClients() {
-  const { status, data, error } = useQuery({
+	const { status, data, error } = useQuery({
 		queryKey: ['clients'],
-		queryFn: getAllClients
+		queryFn: getAllClients,
 	})
 
 	const dispatch = useAppDispatch()
-	const {allClients: clients}= useAppSelector(state => state.clients)
+	const { allClients: clients } = useAppSelector((state) => state.clients)
 
-	if(data){
+	if (data) {
 		dispatch(setClients(data))
 	}
 
-	return {clients, status, error}
+	return { clients, status, error }
 }
 
 const ClientPicker = () => {
 	const dispatch = useAppDispatch()
-	const {clients, status, error} = useLoadClients()
-
+	const { clients, status, error } = useLoadClients()
 
 	const [query, setQuery] = useState('')
 	const [selectedClient, setSelectedClient] = useState<Client | null>(null)

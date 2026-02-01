@@ -23,7 +23,7 @@ const clientSlice = createSlice({
 	initialState,
 	reducers: {
 		setClients: (state, action: PayloadAction<Client[]>) => {
-			state.allClients = action.payload;
+			state.allClients = action.payload
 		},
 		addNewClient: (state, action: PayloadAction<string>) => {
 			state.allClients.push({
@@ -65,6 +65,11 @@ const clientSlice = createSlice({
 	},
 })
 
-export const { setClients, addNewClient, removeClient, updateClient, selectClient } =
-	clientSlice.actions
+export const {
+	setClients,
+	addNewClient,
+	removeClient,
+	updateClient,
+	selectClient,
+} = clientSlice.actions
 export default clientSlice.reducer
