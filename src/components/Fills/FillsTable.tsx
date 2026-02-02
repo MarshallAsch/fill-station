@@ -1,6 +1,11 @@
 import { useAppDispatch, useAppSelector } from '@/redux/hooks'
 import FillsRow from './FillsRow'
-import { addNewFill } from '@/redux/fills/fillsSlice'
+import { addNewFill, Fill } from '@/redux/fills/fillsSlice'
+
+const SubmitFills = async (fills: Fill[]) => {
+
+}
+
 
 const FillsTable = () => {
 	const fills = useAppSelector((state) => state.fills)
@@ -8,13 +13,26 @@ const FillsTable = () => {
 	return (
 		<div className='px-4 sm:px-6 lg:px-8'>
 			<div className='flex justify-end'>
-				<div className='m sm:mt-0 sm:ml-16 sm:flex-none'>
+				<div className='flex flex-row space-x-2'>
+					<div className='m sm:mt-0 sm:ml-16 sm:flex-none'>
+						<button
+							onClick={() => dispatch(addNewFill())}
+							type='button'
+							className='block cursor-pointer rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600'
+						>
+							Add Fill
+						</button>
+					</div>
 					<button
-						onClick={() => dispatch(addNewFill())}
+						onClick={() => {
+							console.log(fills.map(f => f.cylinder?.serialNumber))
+							SubmitFills(fills)
+
+						}}
 						type='button'
-						className='block cursor-pointer rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600'
+						className='block cursor-pointer rounded-md bg-green-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600'
 					>
-						Add Fill
+						Submit
 					</button>
 				</div>
 			</div>

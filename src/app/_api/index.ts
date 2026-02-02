@@ -35,3 +35,4 @@ export async function newCylinder(
 	let result = await axios.post(`/api/clients/${clientId}/cylinders`, cylinder)
 	return result.status == 201 ? result.data : result.data.message
 }
+
