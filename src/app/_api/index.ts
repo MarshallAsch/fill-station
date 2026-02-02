@@ -26,7 +26,7 @@ export async function getAllCylinders(): Promise<Cylinder[]> {
 }
 
 export async function getClientCylinders(
-	clientId: string,
+	clientId: number | string,
 ): Promise<Cylinder[]> {
 	let result = await axios.get(`/api/clients/${clientId}/cylinders`)
 	return result.data

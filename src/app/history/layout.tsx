@@ -3,7 +3,7 @@
 import { ReactNode } from 'react'
 import clsx from 'clsx'
 
-import { ClockIcon, EyeIcon } from '@heroicons/react/24/outline'
+import { ClockIcon, EyeIcon, UsersIcon } from '@heroicons/react/24/outline'
 import AirTank from '@/icons/AirTank'
 import { setSelectedTab, TAB } from '@/redux/history/historySlice'
 import { useAppDispatch, useAppSelector } from '@/redux/hooks'
@@ -11,6 +11,7 @@ import { useAppDispatch, useAppSelector } from '@/redux/hooks'
 const navigation = [
 	{ name: 'Fills', value: TAB.FILLS, icon: AirTank },
 	{ name: 'Visual Inspections', value: TAB.VIS_INSPECTION, icon: EyeIcon },
+	{ name: 'Client List', value: TAB.CLIENTS, icon: UsersIcon },
 	{
 		name: 'Compressor Maintenance',
 		value: TAB.COMP_MAINTENANCE,
