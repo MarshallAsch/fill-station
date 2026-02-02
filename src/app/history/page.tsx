@@ -7,6 +7,7 @@ import FillsHistory from '@/components/History/FillsHistory'
 import MaintenanceHistory from '@/components/History/MaintenanceHistory/MaintenanceHistory'
 import HistoryTable from '@/components/History/components/HistoryTable'
 import VisHistory from '@/components/History/VisHistory'
+import ClientList from '@/components/History/ClientList'
 
 export default function History() {
 	const { selectedTab } = useAppSelector((state) => state.history)
@@ -19,6 +20,8 @@ export default function History() {
 				return <VisHistory />
 			case TAB.COMP_MAINTENANCE:
 				return <MaintenanceHistory />
+			case TAB.CLIENTS:
+				return <ClientList />
 			default:
 				return <FillsHistory />
 		}
