@@ -3,10 +3,10 @@ import dayjs from 'dayjs'
 
 export type Cylinder = {
 	serialNumber: string
-	birthDate: dayjs.Dayjs | null
-	lastHydro: dayjs.Dayjs | null
+	birthDate: dayjs.Dayjs
+	lastHydro: dayjs.Dayjs
 	lastVis: {
-		date: string
+		date: dayjs.Dayjs
 		passed: boolean
 		oxygenClean: boolean
 		details: string

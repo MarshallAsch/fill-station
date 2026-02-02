@@ -18,9 +18,16 @@ import { updateCylinder } from '@/redux/fills/fillsSlice'
 import { useQuery } from '@tanstack/react-query'
 import { getAllCylinders } from '@/app/_api'
 
+import dayjs from 'dayjs'
+import duration from 'dayjs/plugin/duration'
+
+dayjs.extend(duration)
+
 type CylinderPickerProps = {
 	isFill?: boolean
 	index?: number
+	disableAdd?: boolean
+	showExpired?: boolean
 }
 
 function useLoadCylinder() {
@@ -39,7 +46,12 @@ function useLoadCylinder() {
 	return { cylinders, status, error }
 }
 
-const CylinderPicker = ({ isFill, index }: CylinderPickerProps) => {
+const CylinderPicker = ({
+	isFill,
+	index,
+	disableAdd,
+	showExpired = false,
+}: CylinderPickerProps) => {
 	const { cylinders } = useLoadCylinder()
 	const dispatch = useAppDispatch()
 
@@ -100,6 +112,7 @@ const CylinderPicker = ({ isFill, index }: CylinderPickerProps) => {
 				>
 					<Button
 						onClick={() => dispatch(updateAddCylinderModalOpen(true))}
+						hidden={disableAdd}
 						className='cursor-pointer px-3 py-2 text-gray-900 select-none data-focus:bg-indigo-600 data-focus:text-white data-focus:outline-hidden'
 					>
 						Add new Cylinder
@@ -107,6 +120,8 @@ const CylinderPicker = ({ isFill, index }: CylinderPickerProps) => {
 					{query.length > 0 && (
 						<ComboboxOption
 							value={{ id: null, name: query }}
+							hidden={disableAdd}
+							disabled={true}
 							className='cursor-pointer px-3 py-2 text-gray-900 select-none data-focus:bg-indigo-600 data-focus:text-white data-focus:outline-hidden'
 						>
 							{query}
@@ -116,6 +131,10 @@ const CylinderPicker = ({ isFill, index }: CylinderPickerProps) => {
 						<ComboboxOption
 							key={cylinder.serialNumber}
 							value={cylinder}
+							disabled={
+								!showExpired &&
+								dayjs.duration(dayjs().diff(cylinder.lastHydro)).asYears() > 5
+							}
 							className='cursor-pointer px-3 py-2 text-gray-900 select-none data-focus:bg-indigo-600 data-focus:text-white data-focus:outline-hidden'
 						>
 							{cylinder.serialNumber}
