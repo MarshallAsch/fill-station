@@ -11,6 +11,7 @@ const FillsRow = ({ fill }: { fill: Fill }) => {
 	return (
 		<tr key={fill.id}>
 			<td className='py-4 pr-3 pl-4 text-sm font-medium whitespace-nowrap text-gray-900 sm:pl-6'>
+				{/* Issue here where the selected cylinder here does not go anywhere */}
 				<CylinderPicker />
 			</td>
 			<td className='py-4 text-sm font-medium whitespace-nowrap text-gray-900'>
