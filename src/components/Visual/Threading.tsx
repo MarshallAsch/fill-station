@@ -1,5 +1,5 @@
 import FormGroup from '../UI/FormGroup'
-import NumberField from '../NumberField'
+import NumberField from '../UI/FormElements/NumberField'
 import TextArea from '../UI/FormElements/TextArea'
 import RadioGroup from '../UI/FormElements/RadioGroup'
 import {

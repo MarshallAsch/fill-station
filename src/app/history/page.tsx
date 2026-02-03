@@ -3,7 +3,6 @@
 import React from 'react'
 import { useAppSelector } from '@/redux/hooks'
 import { TAB } from '@/redux/history/historySlice'
-import FillsHistory from '@/components/History/FillsHistory'
 import MaintenanceHistory from '@/components/History/MaintenanceHistory/MaintenanceHistory'
 import HistoryTable from '@/components/History/components/HistoryTable'
 import VisHistory from '@/components/History/VisHistory'
@@ -20,7 +19,7 @@ export default function History() {
 			case TAB.COMP_MAINTENANCE:
 				return <MaintenanceHistory />
 			default:
-				return <FillsHistory />
+				return <HistoryTable />
 		}
 	}
 
