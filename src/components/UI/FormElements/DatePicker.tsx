@@ -1,7 +1,7 @@
 import { useState, useMemo, useRef, useEffect } from 'react'
 import dayjs, { Dayjs } from 'dayjs'
 import { CalendarDaysIcon } from '@heroicons/react/24/outline'
-import { ChevronLeft, ChevronRight } from '@mui/icons-material'
+import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/20/solid'
 
 type DatePickerProps = {
 	mode?: 'date' | 'month'
@@ -97,7 +97,7 @@ export default function DatePicker({
 							onClick={() => setCurrentMonth((m) => m.subtract(1, 'year'))}
 							className='rounded-md px-2 py-1 text-sm hover:bg-gray-100'
 						>
-							<ChevronLeft className='h-2 w-2' />
+							<ChevronLeftIcon className='h-2 w-2' />
 						</button>
 						<div className='font-semibold'>{currentMonth.format('YYYY')}</div>
 						<button
@@ -105,7 +105,7 @@ export default function DatePicker({
 							onClick={() => setCurrentMonth((m) => m.add(1, 'year'))}
 							className='rounded-md px-2 py-1 text-sm hover:bg-gray-100'
 						>
-							<ChevronRight className='h-2 w-2' />
+							<ChevronRightIcon className='h-2 w-2' />
 						</button>
 					</div>
 
@@ -116,7 +116,7 @@ export default function DatePicker({
 								onClick={() => setCurrentMonth((m) => m.subtract(1, 'month'))}
 								className='rounded-md px-2 py-1 text-sm hover:bg-gray-100'
 							>
-								<ChevronLeft className='h-2 w-2' />
+								<ChevronLeftIcon className='h-2 w-2' />
 							</button>
 							<div className='font-medium'>{currentMonth.format('MMMM')}</div>
 							<button
@@ -124,7 +124,7 @@ export default function DatePicker({
 								onClick={() => setCurrentMonth((m) => m.add(1, 'month'))}
 								className='rounded-md px-2 py-1 text-sm hover:bg-gray-100'
 							>
-								<ChevronRight className='h-2 w-2' />
+								<ChevronRightIcon className='h-2 w-2' />
 							</button>
 						</div>
 					)}
