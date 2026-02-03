@@ -17,6 +17,15 @@ const FillsTable = () => {
 						Add Fill
 					</button>
 				</div>
+				<div className='m sm:mt-0 sm:ml-5 sm:flex-none'>
+					<button
+						onClick={() => console.log(fills)}
+						type='button'
+						className='block cursor-pointer rounded-md bg-green-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600'
+					>
+						Submit
+					</button>
+				</div>
 			</div>
 			<div className='mt-8 flow-root'>
 				<div className='sm:-mx-6 lg:-mx-8'>

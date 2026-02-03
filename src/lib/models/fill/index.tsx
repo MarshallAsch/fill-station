@@ -13,6 +13,7 @@ import {
 } from 'sequelize'
 import { Cylinder } from '../cylinder'
 import { sequelize } from '../config'
+import dayjs from 'dayjs'
 
 export class Fill extends Model<
 	InferAttributes<Fill, { omit: 'cylinder' }>,
@@ -21,7 +22,7 @@ export class Fill extends Model<
 	// 'CreationOptional' is a special type that marks the field as optional
 	// when creating an instance of the model (such as using Model.create()).
 	declare id: CreationOptional<number>
-	declare date: Date
+	declare date: dayjs.Dayjs
 
 	declare cylinderId: ForeignKey<Cylinder['id']>
 	declare cylinder?: NonAttribute<Cylinder>
@@ -88,7 +89,7 @@ Fill.init(
 			},
 		},
 		date: {
-			type: DataTypes.DATEONLY,
+			type: DataTypes.DATE,
 			defaultValue: Sequelize.fn('now'),
 			validate: {
 				isAfter: '2024-11-01', // when I got the compressor, cant do a fill before that
@@ -106,4 +107,4 @@ Fill.init(
 Fill.belongsTo(Cylinder)
 Cylinder.hasMany(Fill)
 
-Fill.sync({ alter: true })
+// Fill.sync({ alter: true })

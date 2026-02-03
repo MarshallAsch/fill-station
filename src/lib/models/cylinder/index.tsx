@@ -102,15 +102,15 @@ Cylinder.init(
 			unique: true,
 		},
 		birth: {
-			type: DataTypes.DATEONLY,
+			type: DataTypes.DATE,
 			allowNull: false,
 		},
 		lastHydro: {
-			type: DataTypes.DATEONLY,
+			type: DataTypes.DATE,
 			allowNull: false,
 		},
 		lastVis: {
-			type: DataTypes.DATEONLY,
+			type: DataTypes.DATE,
 			allowNull: false,
 		},
 		oxygenClean: {
@@ -133,7 +133,7 @@ Cylinder.init(
 	},
 )
 
-Cylinder.belongsTo(Client, { as: 'owner', foreignKey: 'ownerId' })
 Client.hasMany(Cylinder)
+Cylinder.belongsTo(Client, { foreignKey: 'ownerId' })
 
-Cylinder.sync({ alter: true })
+// Cylinder.sync({ alter: true })

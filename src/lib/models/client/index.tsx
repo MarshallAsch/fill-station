@@ -97,4 +97,4 @@ Client.init(
 	},
 )
 
-Client.sync({ alter: true })
+// Client.sync({ alter: true })

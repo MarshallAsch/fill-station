@@ -18,7 +18,7 @@ import { Client } from '../client'
 
 export class Visual extends Model<
 	InferAttributes<Visual, { omit: 'cylinder' | 'inspector' }>,
-	InferCreationAttributes<Visual, { omit: 'cylinder' | 'inspector' }>
+	InferCreationAttributes<Visual, { omit: 'cylinder' }>
 > {
 	// 'CreationOptional' is a special type that marks the field as optional
 	// when creating an instance of the model (such as using Model.create()).
@@ -62,7 +62,7 @@ export class Visual extends Model<
 	declare markedOxygenClean: boolean
 
 	declare inspectorId: ForeignKey<Client['id']>
-	declare inspector?: NonAttribute<Client>
+	declare inspector: NonAttribute<Client>
 
 	// timestamps!
 	// createdAt can be undefined during creation
@@ -228,7 +228,12 @@ Visual.init(
 Visual.belongsTo(Cylinder)
 Cylinder.hasMany(Visual)
 
-Visual.belongsTo(Client, { as: 'inspector', foreignKey: 'inspectorId' })
+Visual.belongsTo(Client, {
+	foreignKey: {
+		name: 'inspectorId',
+		allowNull: false,
+	},
+})
 Client.hasMany(Visual)
 
-Visual.sync({ alter: true })
+// Visual.sync({ alter: true })

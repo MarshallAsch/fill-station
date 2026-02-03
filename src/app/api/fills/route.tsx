@@ -1,5 +1,6 @@
 import { Cylinder } from '@/lib/models/cylinder'
 import { Fill } from '@/lib/models/fill'
+import dayjs from 'dayjs'
 
 export async function GET(request: Request) {
 	let fills = await Fill.findAll()
@@ -7,7 +8,7 @@ export async function GET(request: Request) {
 }
 
 type FillDto = {
-	date: Date
+	date: dayjs.Dayjs
 	cylinderId: number
 	startPressure: number
 	endPressure: number
