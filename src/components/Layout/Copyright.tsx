@@ -1,21 +1,14 @@
 import * as React from 'react'
-import Typography from '@mui/material/Typography'
-import MuiLink from '@mui/material/Link'
+import Link from 'next/link'
 
 export default function Copyright() {
 	return (
-		<Typography
-			variant='body2'
-			align='center'
-			sx={{
-				color: 'text.secondary',
-			}}
-		>
+		<div className='my-2 flex w-full justify-center text-sm'>
 			{'Copyright © '}
-			<MuiLink color='inherit' href='https://marshallasch.ca/'>
+			<Link className='underline' href='https://marshallasch.ca/'>
 				Marshall Asch
-			</MuiLink>{' '}
+			</Link>{' '}
 			{new Date().getFullYear()}.
-		</Typography>
+		</div>
 	)
 }

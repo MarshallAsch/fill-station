@@ -1,16 +1,18 @@
 import dayjs from 'dayjs'
-import PlayArrowRoundedIcon from '@mui/icons-material/PlayArrowRounded'
-import OilBarrelIcon from '@mui/icons-material/OilBarrel'
-import GradientIcon from '@mui/icons-material/Gradient'
-import BuildIcon from '@mui/icons-material/Build'
-import BiotechIcon from '@mui/icons-material/Biotech'
-import PriorityHighIcon from '@mui/icons-material/PriorityHigh'
 import clsx from 'clsx'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import { useAppDispatch, useAppSelector } from '@/redux/hooks'
 import { MAINTENANCE_TYPE } from '@/redux/history/historySlice'
 import { useMemo } from 'react'
 import { updateAddServiceModalOpen } from '@/redux/modal/modalSlice'
+import {
+	BeakerIcon,
+	Cog6ToothIcon,
+	ExclamationCircleIcon,
+	EyeDropperIcon,
+	PlayIcon,
+	WrenchIcon,
+} from '@heroicons/react/20/solid'
 dayjs.extend(relativeTime)
 
 const MaintenanceHistory = () => {
@@ -35,25 +37,25 @@ const MaintenanceHistory = () => {
 	const getIcon = (type: MAINTENANCE_TYPE) => {
 		switch (type) {
 			case 'start':
+				return <PlayIcon aria-hidden='true' className='size-5 text-white' />
+			case 'air-test':
+				return <BeakerIcon aria-hidden='true' className='size-5 text-white' />
+			case 'oil-change':
 				return (
-					<PlayArrowRoundedIcon
+					<EyeDropperIcon aria-hidden='true' className='size-5 text-white' />
+				)
+			case 'general':
+				return <WrenchIcon aria-hidden='true' className='size-5 text-white' />
+			case 'filter-change':
+				return (
+					<Cog6ToothIcon aria-hidden='true' className='size-5 text-white' />
+				)
+			default:
+				return (
+					<ExclamationCircleIcon
 						aria-hidden='true'
 						className='size-5 text-white'
 					/>
-				)
-			case 'air-test':
-				return <BiotechIcon aria-hidden='true' className='size-5 text-white' />
-			case 'oil-change':
-				return (
-					<OilBarrelIcon aria-hidden='true' className='size-5 text-white' />
-				)
-			case 'general':
-				return <BuildIcon aria-hidden='true' className='size-5 text-white' />
-			case 'filter-change':
-				return <GradientIcon aria-hidden='true' className='size-5 text-white' />
-			default:
-				return (
-					<PriorityHighIcon aria-hidden='true' className='size-5 text-white' />
 				)
 		}
 	}

@@ -9,8 +9,6 @@ import {
 	TransitionChild,
 } from '@headlessui/react'
 import { FormEvent, Fragment } from 'react'
-import MonthPicker from '../MonthPicker'
-import dayjs from 'dayjs'
 import TextInput from '../UI/FormElements/TextInput'
 import { useQueryClient } from '@tanstack/react-query'
 import RadioGroup from '../UI/FormElements/RadioGroup'
@@ -20,6 +18,7 @@ import {
 	CYLINDER_MATERIAL_OPTIONS,
 } from '@/app/constants/FormConstants'
 import ClientPicker from '../UI/FormElements/ClientPicker'
+import DatePicker from '../UI/FormElements/DatePicker'
 
 const AddCylinderModal = () => {
 	const { addCylinderModalOpen } = useAppSelector((state) => state.modal)
@@ -88,27 +87,20 @@ const AddCylinderModal = () => {
 									/>
 
 									<div className='flex flex-row space-x-2'>
-										<MonthPicker
+										<DatePicker
 											name='firstHydro'
-											label='First Hydro'
-											helpText='The first hydro stamp on the cylinder'
-											initialValue={dayjs()}
+											title='First Hydro'
+											id='first-hydro'
 										/>
 
-										<MonthPicker
+										<DatePicker
 											name='lastHydro'
-											label='Last Hydro'
-											helpText='The most recent hydro stamp on the cylinder'
-											initialValue={dayjs()}
+											title='Last Hydro'
+											id='last-hydro'
 										/>
 									</div>
 
-									<MonthPicker
-										name='lastVis'
-										label='Last Vis'
-										helpText='The most recent Vis sticker on the cylinder'
-										initialValue={dayjs()}
-									/>
+									<DatePicker name='lastVis' title='Last Vis' id='last-vis' />
 
 									<RadioGroup
 										title='Cylinder material'
