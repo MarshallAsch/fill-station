@@ -66,7 +66,7 @@ export class Cylinder extends Model<
 	declare hasFill: HasManyHasAssociationMixin<Fill, number>
 	declare hasFills: HasManyHasAssociationsMixin<Fill, number>
 	declare countFills: HasManyCountAssociationsMixin
-	declare createFill: HasManyCreateAssociationMixin<Fill, 'cylinderId'>
+	declare createFill: HasManyCreateAssociationMixin<Fill, 'CylinderId'>
 
 	declare getVisuals: HasManyGetAssociationsMixin<Visual> // Note the null assertions!
 	declare addVisual: HasManyAddAssociationMixin<Visual, number>
@@ -77,7 +77,7 @@ export class Cylinder extends Model<
 	declare hasVisual: HasManyHasAssociationMixin<Visual, number>
 	declare hasVisuals: HasManyHasAssociationsMixin<Visual, number>
 	declare countVisuals: HasManyCountAssociationsMixin
-	declare createVisual: HasManyCreateAssociationMixin<Visual, 'cylinderId'>
+	declare createVisual: HasManyCreateAssociationMixin<Visual, 'CylinderId'>
 
 	declare fills?: NonAttribute<Fill[]>
 	declare visuals?: NonAttribute<Visual[]>
