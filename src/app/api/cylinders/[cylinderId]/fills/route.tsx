@@ -13,7 +13,7 @@ export async function GET(
 
 	let cylinders = await Fill.findAll({
 		where: {
-			cylinderId: cylinderId,
+			CylinderId: cylinderId,
 		},
 	})
 

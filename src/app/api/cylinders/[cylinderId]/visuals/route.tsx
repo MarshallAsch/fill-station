@@ -14,7 +14,7 @@ export async function GET(
 
 	let cylinders = await Visual.findAll({
 		where: {
-			cylinderId: cylinderId,
+			CylinderId: cylinderId,
 		},
 	})
 
