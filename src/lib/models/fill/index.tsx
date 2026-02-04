@@ -24,7 +24,7 @@ export class Fill extends Model<
 	declare id: CreationOptional<number>
 	declare date: dayjs.Dayjs
 
-	declare cylinderId: ForeignKey<Cylinder['id']>
+	declare CylinderId: ForeignKey<Cylinder['id']>
 	declare cylinder?: NonAttribute<Cylinder>
 
 	declare startPressure: number

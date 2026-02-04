@@ -1,8 +1,29 @@
-import { useAppSelector } from '@/redux/hooks'
+import { useAppDispatch, useAppSelector } from '@/redux/hooks'
 import HistoryRow from './HistoryRow'
+import { useQuery } from '@tanstack/react-query'
+import { getAllFills } from '@/app/_api'
+import { Fill } from '@/redux/fills/fillsSlice'
+import { setFillHistory } from '@/redux/history/historySlice'
+
+function useLoadFills() {
+	const { status, data, error } = useQuery({
+		queryKey: ['fills'],
+		queryFn: getAllFills,
+	})
+
+	const dispatch = useAppDispatch()
+	const { fillHistory: fills } = useAppSelector((state) => state.history)
+
+	if (data) {
+		dispatch(setFillHistory(data))
+	}
+
+	return { fills, status, error }
+}
 
 const HistoryTable = () => {
-	const { fillHistory } = useAppSelector((state) => state.history)
+	const { fills, status, error } = useLoadFills()
+
 	return (
 		<div className='min-w-full'>
 			<div className='mt-8 flow-root'>
@@ -17,12 +38,6 @@ const HistoryTable = () => {
 											className='py-3.5 pr-3 pl-4 text-center text-sm font-semibold text-gray-900 sm:pl-6'
 										>
 											Date
-										</th>
-										<th
-											scope='col'
-											className='px-3 py-3.5 text-center text-sm font-semibold text-gray-900'
-										>
-											Name
 										</th>
 										<th
 											scope='col'
@@ -51,7 +66,7 @@ const HistoryTable = () => {
 									</tr>
 								</thead>
 								<tbody className='divide-y divide-gray-200 bg-white'>
-									{fillHistory.map((fill) => (
+									{fills.map((fill) => (
 										<HistoryRow key={fill.id} fill={fill} />
 									))}
 								</tbody>
@@ -65,3 +80,6 @@ const HistoryTable = () => {
 }
 
 export default HistoryTable
+function setFills(data: Fill[]): any {
+	throw new Error('Function not implemented.')
+}
