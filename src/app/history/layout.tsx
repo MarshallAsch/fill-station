@@ -29,7 +29,7 @@ const Layout = ({ children }: { children: ReactNode }) => {
 	return (
 		<div className='flex grow border-t border-gray-200'>
 			{/* Static sidebar for desktop */}
-			<div className='hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-72 lg:flex-col'>
+			<div className='fixed inset-y-0 z-50 flex w-72 flex-col'>
 				{/* Sidebar component, swap this element with another sidebar if you like */}
 				<div className='mt-24 flex grow flex-col gap-y-5 overflow-y-auto border-t border-r border-gray-200 bg-white px-6'>
 					<nav className='flex flex-1 flex-col'>
@@ -37,7 +37,7 @@ const Layout = ({ children }: { children: ReactNode }) => {
 							<li>
 								<ul role='list' className='flex flex-1 flex-col gap-y-7'>
 									<li>
-										<ul role='list' className='-mx-2 space-y-1'>
+										<ul role='list' className='-mx-2 mt-2 space-y-1'>
 											{navigation.map((item) => (
 												<li key={item.name}>
 													<button
@@ -71,7 +71,7 @@ const Layout = ({ children }: { children: ReactNode }) => {
 				</div>
 			</div>
 
-			<div className='min-w-full py-10 lg:pl-72'>
+			<div className='min-w-full py-10 pl-72'>
 				<div className='flex justify-center px-4 sm:px-6 lg:px-8'>
 					{children}
 				</div>

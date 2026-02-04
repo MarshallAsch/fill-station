@@ -8,7 +8,7 @@ const AirTank = (props: React.SVGProps<SVGSVGElement>) => {
 			viewBox='0 0 475.8 475.8'
 			xmlSpace='preserve'
 			stroke='#000000'
-			stroke-width='5'
+			strokeWidth='5'
 			{...props}
 		>
 			<g>
