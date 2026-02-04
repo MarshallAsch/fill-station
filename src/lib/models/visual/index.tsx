@@ -24,7 +24,7 @@ export class Visual extends Model<
 	// when creating an instance of the model (such as using Model.create()).
 	declare id: CreationOptional<number>
 
-	declare cylinderId: ForeignKey<Cylinder['id']>
+	declare CylinderId: ForeignKey<Cylinder['id']>
 	declare cylinder?: NonAttribute<Cylinder>
 
 	declare valve: 'din' | 'yoke' | 'h' | 'none'
