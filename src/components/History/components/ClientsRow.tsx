@@ -1,8 +1,6 @@
 import { Client } from '@/redux/client/clientSlice'
 import {} from '@/redux/client/clientSlice'
-import {
-	LinkIcon,
-} from '@heroicons/react/24/outline'
+import { LinkIcon } from '@heroicons/react/24/outline'
 import Link from 'next/link'
 
 const clientCert = (client: Client) => {

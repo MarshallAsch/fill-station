@@ -17,15 +17,15 @@ import dayjs from 'dayjs'
 import { Client } from '../client'
 
 export class Visual extends Model<
-	InferAttributes<Visual, { omit: 'cylinder' | 'inspector' }>,
-	InferCreationAttributes<Visual, { omit: 'cylinder' }>
+	InferAttributes<Visual, { omit: 'Cylinder' | 'inspector' }>,
+	InferCreationAttributes<Visual, { omit: 'Cylinder' }>
 > {
 	// 'CreationOptional' is a special type that marks the field as optional
 	// when creating an instance of the model (such as using Model.create()).
 	declare id: CreationOptional<number>
 
 	declare CylinderId: ForeignKey<Cylinder['id']>
-	declare cylinder?: NonAttribute<Cylinder>
+	declare Cylinder?: NonAttribute<Cylinder>
 
 	declare valve: 'din' | 'yoke' | 'h' | 'none'
 
