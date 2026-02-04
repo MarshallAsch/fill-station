@@ -3,7 +3,9 @@ import { Fill } from '@/lib/models/fill'
 import dayjs from 'dayjs'
 
 export async function GET(request: Request) {
-	let fills = await Fill.findAll()
+	let fills = await Fill.findAll({
+		include: Cylinder,
+	})
 	return Response.json(fills)
 }
 

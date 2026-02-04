@@ -6,10 +6,11 @@ export type FillHistory = {
 	id: number
 	name: string
 	date: string
-	mix: number
-	start: number
-	end: number
-	cylinder: Cylinder
+	oxygen: number
+	helium: number
+	startPressure: number
+	endPressure: number
+	Cylinder: Cylinder
 }
 
 export enum TAB {
@@ -42,36 +43,7 @@ type InitialState = {
 
 const initialState: InitialState = {
 	selectedTab: TAB.FILLS,
-	fillHistory: [
-		{
-			id: 1,
-			name: 'Marshall Asch',
-			date: dayjs().format('MM/DD/YYYY'),
-			mix: 20.9,
-			start: 500,
-			end: 3400,
-			cylinder: {
-				serialNumber: 'abcd-efg-hi',
-				birthDate: null,
-				lastHydro: null,
-				lastVis: null,
-			},
-		},
-		{
-			id: 2,
-			name: 'Marshall Asch',
-			date: dayjs().format('MM/DD/YYYY'),
-			mix: 20.9,
-			start: 500,
-			end: 3400,
-			cylinder: {
-				serialNumber: 'abcd-efg-hi',
-				birthDate: null,
-				lastHydro: null,
-				lastVis: null,
-			},
-		},
-	],
+	fillHistory: [],
 	maintenanceTimeline: [
 		{
 			id: 1,
@@ -144,11 +116,14 @@ const historySlice = createSlice({
 	name: 'fills',
 	initialState,
 	reducers: {
+		setFillHistory: (state, action: PayloadAction<FillHistory[]>) => {
+			state.fillHistory = action.payload
+		},
 		setSelectedTab(state, action: PayloadAction<TAB>) {
 			state.selectedTab = action.payload
 		},
 	},
 })
 
-export const { setSelectedTab } = historySlice.actions
+export const { setFillHistory, setSelectedTab } = historySlice.actions
 export default historySlice.reducer

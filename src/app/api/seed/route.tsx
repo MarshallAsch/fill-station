@@ -48,7 +48,7 @@ function generateFill(cylinder: Cylinder): Fill {
 	let max = [2650, 3000, 3442][Math.trunc(Math.random() * 3)]
 	return Fill.build({
 		date: dayjs().subtract(Math.trunc(Math.random() * 180), 'day'),
-		cylinderId: cylinder.id,
+		CylinderId: cylinder.id,
 		startPressure: Math.trunc(Math.random() * (max - 200)),
 		endPressure: max,
 		helium: cylinder.owner?.trimixCert ? Math.random() * 45 : undefined,
