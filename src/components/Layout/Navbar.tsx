@@ -6,11 +6,11 @@ import { useState } from 'react'
 import { Dialog, DialogPanel } from '@headlessui/react'
 
 const navigation = [
-	{ name: 'Fills', href: 'fills' },
-	{ name: 'Visual', href: 'visual' },
-	{ name: 'History', href: 'history' },
-	{ name: 'Clients', href: 'clients' },
-	{ name: 'About', href: 'about' },
+	{ name: 'Fills', href: '/fills' },
+	{ name: 'Visual', href: '/visual' },
+	{ name: 'History', href: '/history' },
+	{ name: 'Clients', href: '/clients' },
+	{ name: 'About', href: '/about' },
 ]
 
 const Navbar = () => {
