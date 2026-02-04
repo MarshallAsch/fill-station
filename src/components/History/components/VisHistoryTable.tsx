@@ -1,8 +1,28 @@
-import { useAppSelector } from '@/redux/hooks'
+import { useAppDispatch, useAppSelector } from '@/redux/hooks'
 import VisHistoryRow from './VisHistoryRow'
+import { useQuery } from '@tanstack/react-query'
+import { setVisHistory } from '@/redux/history/historySlice'
+import { getAllVisuals } from '@/app/_api'
+
+function useLoadVisuals() {
+	const { status, data, error } = useQuery({
+		queryKey: ['fills'],
+		queryFn: getAllVisuals,
+	})
+
+	const dispatch = useAppDispatch()
+	const { visHistory: visuals } = useAppSelector((state) => state.history)
+
+	if (data) {
+		dispatch(setVisHistory(data))
+	}
+
+	return { visuals, status, error }
+}
 
 const VisHistoryTable = () => {
-	const { cylinders } = useAppSelector((state) => state.cylinders)
+	const { visuals, status, error } = useLoadVisuals()
+
 	return (
 		<div className='min-w-full'>
 			<div className='mt-8 flow-root'>
@@ -45,14 +65,9 @@ const VisHistoryTable = () => {
 									</tr>
 								</thead>
 								<tbody className='divide-y divide-gray-200 bg-white'>
-									{cylinders
-										.filter((c) => c.lastVis)
-										.map((cylinder) => (
-											<VisHistoryRow
-												key={cylinder.serialNumber}
-												cylinder={cylinder}
-											/>
-										))}
+									{visuals.map((vis) => (
+										<VisHistoryRow key={vis.id} visual={vis} />
+									))}
 								</tbody>
 							</table>
 						</div>

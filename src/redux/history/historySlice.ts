@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { Cylinder } from '../cylinder/cylinderSlice'
 import dayjs from 'dayjs'
+import { VisualHistory } from '@/types/visuals'
 
 export type FillHistory = {
 	id: number
@@ -38,12 +39,14 @@ export type CompressorMaintenance = {
 type InitialState = {
 	selectedTab: TAB
 	fillHistory: FillHistory[]
+	visHistory: VisualHistory[]
 	maintenanceTimeline: CompressorMaintenance[]
 }
 
 const initialState: InitialState = {
 	selectedTab: TAB.FILLS,
 	fillHistory: [],
+	visHistory: [],
 	maintenanceTimeline: [
 		{
 			id: 1,
@@ -119,11 +122,15 @@ const historySlice = createSlice({
 		setFillHistory: (state, action: PayloadAction<FillHistory[]>) => {
 			state.fillHistory = action.payload
 		},
+		setVisHistory: (state, action: PayloadAction<VisualHistory[]>) => {
+			state.visHistory = action.payload
+		},
 		setSelectedTab(state, action: PayloadAction<TAB>) {
 			state.selectedTab = action.payload
 		},
 	},
 })
 
-export const { setFillHistory, setSelectedTab } = historySlice.actions
+export const { setFillHistory, setVisHistory, setSelectedTab } =
+	historySlice.actions
 export default historySlice.reducer

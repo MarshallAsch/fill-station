@@ -58,7 +58,7 @@ function generateFill(cylinder: Cylinder): Fill {
 function generateVis(cylinder: Cylinder, inspector: Client): Visual {
 	return Visual.build({
 		date: dayjs().subtract(Math.trunc(Math.random() * 180), 'day'),
-		cylinderId: cylinder.id,
+		CylinderId: cylinder.id,
 		inspectorId: inspector.id,
 		valve: Math.random() > 0.4 ? 'din' : 'yoke',
 		heat: Math.random() > 0.7,

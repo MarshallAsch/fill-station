@@ -2,6 +2,7 @@ import { Client } from '@/redux/client/clientSlice'
 import { Cylinder } from '@/redux/cylinder/cylinderSlice'
 import { FillHistory } from '@/redux/history/historySlice'
 import { NewClientDTO, NewCylinderDTO } from '@/types/client'
+import { VisualHistory } from '@/types/visuals'
 import axios from 'axios'
 
 export async function getAllClients(): Promise<Client[]> {
@@ -11,6 +12,11 @@ export async function getAllClients(): Promise<Client[]> {
 
 export async function getAllFills(): Promise<FillHistory[]> {
 	let result = await axios.get('/api/fills')
+	return result.data
+}
+
+export async function getAllVisuals(): Promise<VisualHistory[]> {
+	let result = await axios.get('/api/visuals')
 	return result.data
 }
 
