@@ -63,11 +63,11 @@ export default async function TankVisual({
 						<PropertyRow title='Material' text={vis.Cylinder?.material} />
 						<PropertyRow
 							title='First Hydro'
-							text={dayjs(vis.Cylinder?.birth).format('DD/MM/YYYY HH:MM')}
+							text={dayjs(vis.Cylinder?.birth).format('MM/YYYY')}
 						/>
 						<PropertyRow
 							title='Last Hydro'
-							text={dayjs(vis.Cylinder?.lastHydro).format('DD/MM/YYYY HH:MM')}
+							text={dayjs(vis.Cylinder?.lastHydro).format('MM/YYYY')}
 						/>
 						<PropertyRow title='Valve Type' text={vis.valve} />
 					</div>

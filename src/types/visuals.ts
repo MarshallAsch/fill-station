@@ -1,3 +1,4 @@
+import dayjs from 'dayjs'
 import { Cylinder } from './cylinder'
 
 export type VisualHistory = {
@@ -34,7 +35,7 @@ export type VisualHistory = {
 	rebuilt: boolean
 
 	status: 'acceptable' | 'marginal' | 'fail'
-	date: string
+	date: dayjs.Dayjs
 	oxygenCleaned: boolean
 	markedOxygenClean: boolean
 }

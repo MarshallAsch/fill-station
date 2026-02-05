@@ -102,16 +102,25 @@ Cylinder.init(
 			unique: true,
 		},
 		birth: {
-			type: DataTypes.DATE,
+			type: DataTypes.DATEONLY,
 			allowNull: false,
+			get() {
+				return dayjs(this.getDataValue('birth'))
+			},
 		},
 		lastHydro: {
-			type: DataTypes.DATE,
+			type: DataTypes.DATEONLY,
 			allowNull: false,
+			get() {
+				return dayjs(this.getDataValue('lastHydro'))
+			},
 		},
 		lastVis: {
-			type: DataTypes.DATE,
+			type: DataTypes.DATEONLY,
 			allowNull: false,
+			get() {
+				return dayjs(this.getDataValue('lastVis'))
+			},
 		},
 		oxygenClean: {
 			type: DataTypes.BOOLEAN,
