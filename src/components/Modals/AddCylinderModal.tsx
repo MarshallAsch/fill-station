@@ -75,7 +75,7 @@ const AddCylinderModal = () => {
 										Add the new cylinders information to save it for next time.
 									</DialogTitle>
 
-									<ClientPicker />
+									<ClientPicker disableAdd={true} />
 
 									<TextInput
 										autoFocus

@@ -39,7 +39,7 @@ export class Client extends Model<
 	// updatedAt can be undefined during creation
 	declare updatedAt: CreationOptional<Date>
 
-	declare getCylinders: HasManyGetAssociationsMixin<Cylinder> // Note the null assertions!
+	declare getCylinders: HasManyGetAssociationsMixin<Cylinder>
 	declare addCylinder: HasManyAddAssociationMixin<Cylinder, number>
 	declare addCylinders: HasManyAddAssociationsMixin<Cylinder, number>
 	declare setCylinders: HasManySetAssociationsMixin<Cylinder, number>
@@ -50,10 +50,10 @@ export class Client extends Model<
 	declare countCylinders: HasManyCountAssociationsMixin
 	declare createCylinder: HasManyCreateAssociationMixin<Cylinder, 'ownerId'>
 
-	declare cylinders?: NonAttribute<Cylinder[]>
+	declare Cylinders?: NonAttribute<Cylinder[]>
 
 	declare static associations: {
-		cylinders: Association<Client, Cylinder>
+		Cylinders: Association<Client, Cylinder>
 	}
 }
 
