@@ -60,10 +60,7 @@ export default async function TankVisual({
 
 				<FormGroup title='Cylinder Info' description=''>
 					<div className='flex flex-col gap-2'>
-						<PropertyRow
-							title='Material'
-							text={vis.Cylinder?.material as string}
-						/>
+						<PropertyRow title='Material' text={vis.Cylinder?.material} />
 						<PropertyRow
 							title='First Hydro'
 							text={dayjs(vis.Cylinder?.birth).format('DD/MM/YYYY HH:MM')}
@@ -72,7 +69,7 @@ export default async function TankVisual({
 							title='Last Hydro'
 							text={dayjs(vis.Cylinder?.lastHydro).format('DD/MM/YYYY HH:MM')}
 						/>
-						<PropertyRow title='Valve Type' text={vis.valve as string} />
+						<PropertyRow title='Valve Type' text={vis.valve} />
 					</div>
 				</FormGroup>
 
