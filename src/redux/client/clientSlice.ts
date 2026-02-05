@@ -1,7 +1,6 @@
 import { Client } from '@/types/client'
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
-
 type InitialState = {
 	selectedClient: Client | null
 	allClients: Client[]

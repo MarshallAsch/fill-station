@@ -1,7 +1,7 @@
 'use client'
 
 import { useAppDispatch, useAppSelector } from '@/redux/hooks'
-import { Cylinder, setCylinders } from '@/redux/cylinder/cylinderSlice'
+import { setCylinders } from '@/redux/cylinder/cylinderSlice'
 import {
 	Button,
 	Combobox,
@@ -20,6 +20,7 @@ import { getAllCylinders } from '@/app/_api'
 
 import dayjs from 'dayjs'
 import duration from 'dayjs/plugin/duration'
+import { Cylinder } from '@/types/cylinder'
 
 dayjs.extend(duration)
 

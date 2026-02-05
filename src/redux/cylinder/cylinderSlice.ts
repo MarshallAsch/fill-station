@@ -1,17 +1,5 @@
+import { Cylinder } from '@/types/cylinder'
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import dayjs from 'dayjs'
-
-export type Cylinder = {
-	serialNumber: string
-	birthDate: dayjs.Dayjs
-	lastHydro: dayjs.Dayjs
-	lastVis: {
-		date: dayjs.Dayjs
-		passed: boolean
-		oxygenClean: boolean
-		details: string
-	} | null
-}
 
 type InitialState = {
 	cylinders: Cylinder[]

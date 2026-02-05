@@ -1,4 +1,4 @@
-import { Cylinder } from '@/redux/cylinder/cylinderSlice'
+import { Cylinder } from './cylinder'
 
 export type VisualHistory = {
 	id: number
