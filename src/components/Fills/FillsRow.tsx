@@ -1,9 +1,10 @@
 import { XCircleIcon } from '@heroicons/react/24/outline'
 import CylinderPicker from '../UI/FormElements/CylinderPicker'
 import FillType from './FillType'
-import { Fill, removeFill, updateFill } from '@/redux/fills/fillsSlice'
+import { removeFill, updateFill } from '@/redux/fills/fillsSlice'
 import NumberInput from '../UI/FormElements/NumberInput'
 import { useAppDispatch, useAppSelector } from '@/redux/hooks'
+import { Fill } from '@/types/fills'
 
 const FillsRow = ({ fill }: { fill: Fill }) => {
 	const fills = useAppSelector((state) => state.fills)

@@ -1,18 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { Cylinder } from '../cylinder/cylinderSlice'
-import FillType from '@/components/Fills/FillType'
-
-export type FillType = 'air' | 'nitrox' | 'trimix'
-
-export type Fill = {
-	id: number
-	type: FillType
-	start: number
-	end: number
-	o2: number
-	he: number
-	cylinder: null | Cylinder
-}
+import { Fill } from '@/types/fills'
+import { Cylinder } from '@/types/cylinder'
 
 const initialState: Fill[] = [
 	{

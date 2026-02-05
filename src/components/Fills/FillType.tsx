@@ -6,13 +6,10 @@ import {
 	ListboxOptions,
 } from '@headlessui/react'
 import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/24/outline'
-import {
-	Fill,
-	FillType as IFillType,
-	updateFill,
-} from '@/redux/fills/fillsSlice'
+import { updateFill } from '@/redux/fills/fillsSlice'
 import { useAppDispatch, useAppSelector } from '@/redux/hooks'
 import { useState } from 'react'
+import { Fill, FillType as IFillType } from '@/types/fills'
 
 type FillTypeProps = {
 	index: number

@@ -1,12 +1,5 @@
+import { Client } from '@/types/client'
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-
-export type Client = {
-	id: number
-	name: string
-	nitroxCert: string
-	advancedNitroxCert: string
-	trimixCert: string
-}
 
 type InitialState = {
 	selectedClient: Client | null

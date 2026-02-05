@@ -1,4 +1,5 @@
-import { Cylinder } from '@/redux/cylinder/cylinderSlice'
+import dayjs from 'dayjs'
+import { Cylinder } from './cylinder'
 
 export type VisualHistory = {
 	id: number
@@ -34,7 +35,7 @@ export type VisualHistory = {
 	rebuilt: boolean
 
 	status: 'acceptable' | 'marginal' | 'fail'
-	date: string
+	date: dayjs.Dayjs
 	oxygenCleaned: boolean
 	markedOxygenClean: boolean
 }

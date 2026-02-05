@@ -2,7 +2,6 @@ import dayjs from 'dayjs'
 import clsx from 'clsx'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import { useAppDispatch, useAppSelector } from '@/redux/hooks'
-import { MAINTENANCE_TYPE } from '@/redux/history/historySlice'
 import { useMemo } from 'react'
 import { updateAddServiceModalOpen } from '@/redux/modal/modalSlice'
 import {
@@ -13,6 +12,7 @@ import {
 	PlayIcon,
 	WrenchIcon,
 } from '@heroicons/react/20/solid'
+import { MAINTENANCE_TYPE } from '@/types/maintenance'
 dayjs.extend(relativeTime)
 
 const MaintenanceHistory = () => {

@@ -207,6 +207,9 @@ Visual.init(
 		},
 		date: {
 			type: DataTypes.DATE,
+			get() {
+				return dayjs(this.getDataValue('date'))
+			},
 		},
 		oxygenCleaned: {
 			type: DataTypes.BOOLEAN,
