@@ -1,5 +1,4 @@
-import { Client } from '@/redux/client/clientSlice'
-import {} from '@/redux/client/clientSlice'
+import { Client } from '@/types/client'
 import { LinkIcon } from '@heroicons/react/24/outline'
 import Link from 'next/link'
 
