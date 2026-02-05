@@ -11,8 +11,8 @@ import {
 import { FormEvent, Fragment } from 'react'
 import TextInput from '../UI/FormElements/TextInput'
 import DatePicker from '../UI/FormElements/DatePicker'
-import { MAINTENANCE_TYPE } from '@/redux/history/historySlice'
 import ListBox from '../UI/FormElements/ListBox'
+import { MAINTENANCE_TYPE } from '@/types/maintenance'
 
 const SERVICE_ITEMS = [
 	{

@@ -2,6 +2,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import dayjs from 'dayjs'
 import { VisualHistory } from '@/types/visuals'
 import { FillHistory } from '@/types/fills'
+import { CompressorMaintenance, MAINTENANCE_TYPE } from '@/types/maintenance'
 
 export enum TAB {
 	FILLS = 'FILLS',
@@ -9,22 +10,6 @@ export enum TAB {
 	COMP_MAINTENANCE = 'COMPRESSOR_MAINTENANCE',
 	CLIENTS = 'CLIENTS',
 	CYLINDERS = 'CYLINDERS',
-}
-
-export enum MAINTENANCE_TYPE {
-	START = 'start',
-	AIR_TEST = 'air-test',
-	GENERAL = 'general',
-	FILTER_CHANGE = 'filter-change',
-	OIL_CHANGE = 'oil-change',
-}
-
-export type CompressorMaintenance = {
-	id: number
-	date: string
-	type: MAINTENANCE_TYPE
-	title: string
-	content: string
 }
 
 type InitialState = {
