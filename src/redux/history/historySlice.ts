@@ -1,18 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { Cylinder } from '../cylinder/cylinderSlice'
 import dayjs from 'dayjs'
 import { VisualHistory } from '@/types/visuals'
-
-export type FillHistory = {
-	id: number
-	name: string
-	date: string
-	oxygen: number
-	helium: number
-	startPressure: number
-	endPressure: number
-	Cylinder: Cylinder
-}
+import { FillHistory } from '@/types/fills'
 
 export enum TAB {
 	FILLS = 'FILLS',

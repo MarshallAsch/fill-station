@@ -1,4 +1,4 @@
-import { FillHistory } from '@/redux/history/historySlice'
+import { FillHistory } from '@/types/fills'
 
 const HistoryRow = ({ fill }: { fill: FillHistory }) => {
 	return (

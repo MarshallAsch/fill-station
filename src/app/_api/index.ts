@@ -1,6 +1,6 @@
-import { FillHistory } from '@/redux/history/historySlice'
 import { Client, NewClientDTO, NewCylinderDTO } from '@/types/client'
 import { Cylinder } from '@/types/cylinder'
+import { FillHistory } from '@/types/fills'
 import { VisualHistory } from '@/types/visuals'
 import axios from 'axios'
 
