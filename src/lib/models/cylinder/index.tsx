@@ -133,7 +133,7 @@ Cylinder.init(
 	},
 )
 
-Client.hasMany(Cylinder)
 Cylinder.belongsTo(Client, { foreignKey: 'ownerId' })
+Client.hasMany(Cylinder, { foreignKey: 'ownerId' })
 
 // Cylinder.sync({ alter: true })
