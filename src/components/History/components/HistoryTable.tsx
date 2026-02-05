@@ -2,8 +2,8 @@ import { useAppDispatch, useAppSelector } from '@/redux/hooks'
 import HistoryRow from './HistoryRow'
 import { useQuery } from '@tanstack/react-query'
 import { getAllFills } from '@/app/_api'
-import { Fill } from '@/redux/fills/fillsSlice'
 import { setFillHistory } from '@/redux/history/historySlice'
+import { Fill } from '@/types/fills'
 
 function useLoadFills() {
 	const { status, data, error } = useQuery({
