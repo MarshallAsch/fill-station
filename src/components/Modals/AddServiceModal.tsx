@@ -1,7 +1,6 @@
 import { useAppDispatch, useAppSelector } from '@/redux/hooks'
 import { updateAddServiceModalOpen } from '@/redux/modal/modalSlice'
 import {
-	Button,
 	Dialog,
 	DialogPanel,
 	DialogTitle,
@@ -13,6 +12,7 @@ import TextInput from '../UI/FormElements/TextInput'
 import DatePicker from '../UI/FormElements/DatePicker'
 import ListBox from '../UI/FormElements/ListBox'
 import { MAINTENANCE_TYPE } from '@/types/maintenance'
+import Button from '../UI/Button'
 
 const SERVICE_ITEMS = [
 	{
@@ -123,18 +123,10 @@ const AddServiceModal = () => {
 									/>
 
 									<div className='flex w-full justify-end gap-2'>
-										<Button
-											onClick={handleClose}
-											className='mt-3 inline-flex w-full cursor-pointer justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-xs inset-ring-1 inset-ring-gray-300 hover:bg-gray-50 sm:col-start-1 sm:mt-0'
-										>
+										<Button onClick={handleClose} variant='ghost'>
 											Cancel
 										</Button>
-										<Button
-											type='submit'
-											className='inline-flex w-full cursor-pointer justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 sm:col-start-2'
-										>
-											Add
-										</Button>
+										<Button type='submit'>Add</Button>
 									</div>
 								</form>
 							</DialogPanel>

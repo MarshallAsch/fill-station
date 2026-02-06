@@ -1,6 +1,7 @@
 import { useAppDispatch, useAppSelector } from '@/redux/hooks'
 import FillsRow from './FillsRow'
 import { addNewFill } from '@/redux/fills/fillsSlice'
+import Button from '../UI/Button'
 
 const FillsTable = () => {
 	const fills = useAppSelector((state) => state.fills)
@@ -8,23 +9,13 @@ const FillsTable = () => {
 	return (
 		<div className='px-4 sm:px-6 lg:px-8'>
 			<div className='flex justify-end'>
-				<div className='m sm:mt-0 sm:ml-16 sm:flex-none'>
-					<button
-						onClick={() => dispatch(addNewFill())}
-						type='button'
-						className='block cursor-pointer rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600'
-					>
+				<div className='sm:mt-0 sm:ml-16 sm:flex-none'>
+					<Button onClick={() => dispatch(addNewFill())} variant='ghost'>
 						Add Fill
-					</button>
+					</Button>
 				</div>
-				<div className='m sm:mt-0 sm:ml-5 sm:flex-none'>
-					<button
-						onClick={() => console.log(fills)}
-						type='button'
-						className='block cursor-pointer rounded-md bg-green-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600'
-					>
-						Submit
-					</button>
+				<div className='sm:mt-0 sm:ml-5 sm:flex-none'>
+					<Button onClick={() => console.log(fills)}>Submit</Button>
 				</div>
 			</div>
 			<div className='mt-8 flow-root'>
