@@ -13,6 +13,7 @@ import {
 	WrenchIcon,
 } from '@heroicons/react/20/solid'
 import { MAINTENANCE_TYPE } from '@/types/maintenance'
+import Button from '@/components/UI/Button'
 dayjs.extend(relativeTime)
 
 const MaintenanceHistory = () => {
@@ -120,15 +121,15 @@ const MaintenanceHistory = () => {
 				</div>
 			</div>
 			<div className='my-2 flex w-full items-center justify-end'>
-				<button
-					onClick={() => {
-						dispatch(updateAddServiceModalOpen(true))
-					}}
-					type='button'
-					className='block cursor-pointer rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600'
-				>
-					Record Service
-				</button>
+				<div>
+					<Button
+						onClick={() => {
+							dispatch(updateAddServiceModalOpen(true))
+						}}
+					>
+						Record Service
+					</Button>
+				</div>
 			</div>
 			<ul role='list' className='-mb-8'>
 				{timeline.map((event, eventIdx) => (

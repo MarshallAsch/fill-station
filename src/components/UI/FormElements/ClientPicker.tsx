@@ -2,7 +2,6 @@
 
 import { useAppDispatch, useAppSelector } from '@/redux/hooks'
 import {
-	Button,
 	Combobox,
 	ComboboxButton,
 	ComboboxInput,
@@ -17,6 +16,7 @@ import { updateAddClientModalOpen } from '@/redux/modal/modalSlice'
 import { useQuery } from '@tanstack/react-query'
 import { getAllClients } from '@/app/_api'
 import { Client } from '@/types/client'
+import Button from '../Button'
 
 function useLoadClients() {
 	const { status, data, error } = useQuery({
@@ -87,13 +87,14 @@ const ClientPicker = ({ disableAdd }: ClientPickerProps) => {
 					transition
 					className='absolute z-10 mt-1 max-h-60 w-75 overflow-auto rounded-md bg-white py-1 text-base shadow-lg outline outline-black/5 data-leave:transition data-leave:duration-100 data-leave:ease-in data-closed:data-leave:opacity-0 sm:text-sm'
 				>
-					<Button
-						onClick={() => dispatch(updateAddClientModalOpen(true))}
-						hidden={disableAdd}
-						className='cursor-pointer px-3 py-2 text-gray-900 select-none data-focus:bg-indigo-600 data-focus:text-white data-focus:outline-hidden'
-					>
-						Add new Client
-					</Button>
+					<div className='m-2 w-40'>
+						<Button
+							onClick={() => dispatch(updateAddClientModalOpen(true))}
+							disabled={disableAdd}
+						>
+							Add new Client
+						</Button>
+					</div>
 					{query.length > 0 && (
 						<ComboboxOption
 							value={{ id: null, name: query }}

@@ -9,7 +9,7 @@ import Threading from '@/components/Visual/Threading'
 import Valve from '@/components/Visual/Valve'
 import FinalStatus from '@/components/Visual/FinalStatus'
 import { FormEvent } from 'react'
-import { Button } from '@headlessui/react'
+import Button from '@/components/UI/Button'
 
 export default function Visual() {
 	const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
@@ -50,12 +50,9 @@ export default function Visual() {
 					<FinalStatus />
 
 					<div className='flex w-full justify-end py-10'>
-						<Button
-							className='cursor-pointer rounded-lg bg-blue-600 px-2.5 py-2 text-white hover:bg-blue-700'
-							type='submit'
-						>
-							Submit
-						</Button>
+						<div className='w-40'>
+							<Button type='submit'>Submit</Button>
+						</div>
 					</div>
 				</form>
 			</div>
