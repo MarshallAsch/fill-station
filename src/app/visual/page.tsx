@@ -10,6 +10,7 @@ import Valve from '@/components/Visual/Valve'
 import FinalStatus from '@/components/Visual/FinalStatus'
 import { FormEvent } from 'react'
 import Button from '@/components/UI/Button'
+import { useAppSelector } from '@/redux/hooks'
 
 export default function Visual() {
 	const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
@@ -21,6 +22,8 @@ export default function Visual() {
 
 		console.log(formData)
 	}
+	const client = useAppSelector((state) => state.clients.selectedClient)
+
 	return (
 		<div className='max-w-7xl'>
 			<div className='flex flex-col overflow-auto'>
@@ -32,7 +35,7 @@ export default function Visual() {
 
 				<form onSubmit={handleSubmit}>
 					<div className='flex w-full justify-center'>
-						<CylinderPicker />
+						<CylinderPicker filter={(c) => !client || client.id == c.ownerId} />
 					</div>
 
 					<TankInfo />
