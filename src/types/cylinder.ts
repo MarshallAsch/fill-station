@@ -1,13 +1,21 @@
 import dayjs from 'dayjs'
 
 export type Cylinder = {
+	id: number
 	serialNumber: string
-	birthDate: dayjs.Dayjs
+	birth: dayjs.Dayjs
 	lastHydro: dayjs.Dayjs
-	lastVis: {
-		date: dayjs.Dayjs
-		passed: boolean
-		oxygenClean: boolean
-		details: string
-	} | null
+	lastVis: dayjs.Dayjs
+	ownerId: number
+	oxygenClean: boolean
+	material?: 'steel' | 'aluminum' | 'composite'
+}
+
+export type NewCylinderDTO = {
+	serialNumber: string
+	birth: Date
+	lastHydro: Date
+	lastVis: Date
+	oxygenClean: boolean
+	material?: 'steel' | 'aluminum' | 'composite'
 }

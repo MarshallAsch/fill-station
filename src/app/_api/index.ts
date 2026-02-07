@@ -1,5 +1,5 @@
-import { Client, NewClientDTO, NewCylinderDTO } from '@/types/client'
-import { Cylinder } from '@/types/cylinder'
+import { Client, NewClientDTO } from '@/types/client'
+import { Cylinder, NewCylinderDTO } from '@/types/cylinder'
 import { FillHistory } from '@/types/fills'
 import { VisualHistory } from '@/types/visuals'
 import axios from 'axios'

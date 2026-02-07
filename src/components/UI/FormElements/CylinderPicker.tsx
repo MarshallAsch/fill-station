@@ -29,6 +29,7 @@ type CylinderPickerProps = {
 	index?: number
 	disableAdd?: boolean
 	showExpired?: boolean
+	filter?: (c: Cylinder) => boolean
 }
 
 function useLoadCylinder() {
@@ -52,6 +53,7 @@ const CylinderPicker = ({
 	index,
 	disableAdd,
 	showExpired = false,
+	filter = (c) => true,
 }: CylinderPickerProps) => {
 	const { cylinders } = useLoadCylinder()
 	const dispatch = useAppDispatch()
@@ -129,7 +131,7 @@ const CylinderPicker = ({
 							{query}
 						</ComboboxOption>
 					)}
-					{filteredCylinders.map((cylinder) => (
+					{filteredCylinders.filter(filter).map((cylinder) => (
 						<ComboboxOption
 							key={cylinder.serialNumber}
 							value={cylinder}
