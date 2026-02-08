@@ -15,14 +15,22 @@ export async function GET(request: Request) {
 export async function POST(request: Request) {
 	// For example, fetch data from your DB here
 
-	let { serialNumber, ownerId, birth, lastHydro, lastVis, oxygenClean } =
-		await request.json()
+	let {
+		serialNumber,
+		ownerId,
+		birth,
+		lastHydro,
+		lastVis,
+		oxygenClean,
+		servicePressure,
+	} = await request.json()
 
 	if (
 		!serialNumber ||
 		!birth ||
 		!lastHydro ||
 		!lastVis ||
+		!servicePressure ||
 		oxygenClean == undefined
 	) {
 		return Response.json(
@@ -40,6 +48,7 @@ export async function POST(request: Request) {
 			lastVis: dayjs(lastVis, 'YYYY-MM-DD'),
 			oxygenClean: oxygenClean,
 			ownerId: ownerId,
+			servicePressure: servicePressure,
 		})
 
 		return Response.json(result)
