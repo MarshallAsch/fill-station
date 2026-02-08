@@ -49,12 +49,25 @@ function generateCylinder(client: Client): Cylinder {
 
 function generateFill(cylinder: Cylinder): Fill {
 	let max = [2640, 3000, 3442][Math.trunc(Math.random() * 3)]
+
+	let fillType = Math.trunc(Math.random() * 3)
+	let o2: number | undefined = undefined
+	let he: number | undefined = undefined
+
+	if (fillType == 0) {
+		he = 20 + Math.random() * 80
+		o2 = Math.random() * (100 - he)
+	} else if (fillType == 1) {
+		o2 = 21 + Math.random() * 79
+	}
+
 	return Fill.build({
 		date: dayjs().subtract(Math.trunc(Math.random() * 180), 'day'),
 		CylinderId: cylinder.id,
 		startPressure: Math.trunc(Math.random() * (max - 200)),
 		endPressure: max,
-		helium: cylinder.owner?.trimixCert ? Math.random() * 45 : undefined,
+		helium: he,
+		oxygen: o2,
 	})
 }
 
@@ -188,7 +201,6 @@ export async function GET(request: Request) {
 	)
 
 	let inspector = clients.filter((c) => c.inspectionCert)[0]
-	console.log(inspector)
 
 	await Promise.all(
 		cylinders
