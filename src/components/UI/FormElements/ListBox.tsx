@@ -10,7 +10,7 @@ import { ChevronUpDownIcon } from '@heroicons/react/24/outline'
 import { useState } from 'react'
 
 type Item = {
-	id: number
+	id?: number
 	value: string
 	name: string
 }
@@ -45,9 +45,9 @@ const ListBox = ({ items, title, id, name }: ListBoxProps) => {
 					transition
 					className='absolute z-60 mt-1 max-h-60 w-full max-w-100 overflow-auto rounded-md bg-white py-1 text-base shadow-lg outline-1 outline-black/5 data-leave:transition data-leave:duration-100 data-leave:ease-in data-closed:data-leave:opacity-0 sm:text-sm'
 				>
-					{items.map((item) => (
+					{items.map((item, index) => (
 						<ListboxOption
-							key={item.id}
+							key={item.id || index}
 							value={item}
 							className='group relative cursor-default py-2 pr-9 pl-3 text-gray-900 select-none data-focus:bg-indigo-600 data-focus:text-white data-focus:outline-hidden'
 						>
