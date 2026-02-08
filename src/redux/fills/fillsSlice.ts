@@ -10,7 +10,7 @@ const initialState: Fill[] = [
 		end: 3000,
 		o2: 20.9,
 		he: 0,
-		cylinder: null,
+		cylinder: undefined,
 	},
 ]
 
@@ -26,7 +26,7 @@ const fillSlice = createSlice({
 				end: 0,
 				o2: 20.9,
 				he: 0,
-				cylinder: null,
+				cylinder: undefined,
 			})
 		},
 		removeFill: (state, action: PayloadAction<number>) => {
@@ -41,7 +41,7 @@ const fillSlice = createSlice({
 		},
 		updateCylinder: (
 			state,
-			action: PayloadAction<{ id: number; data: Cylinder | null }>,
+			action: PayloadAction<{ id: number; data: Cylinder | undefined }>,
 		) => {
 			const { id, data } = action.payload
 			const fillIndex = state.findIndex((fill) => fill.id === id)
