@@ -46,6 +46,8 @@ export class Cylinder extends Model<
 	declare lastHydro: dayjs.Dayjs
 	declare lastVis: dayjs.Dayjs
 
+	declare servicePressure: number
+
 	declare oxygenClean: boolean
 
 	// timestamps!
@@ -100,6 +102,14 @@ Cylinder.init(
 			type: DataTypes.STRING,
 			allowNull: false,
 			unique: true,
+		},
+		servicePressure: {
+			type: DataTypes.INTEGER.UNSIGNED,
+			allowNull: false,
+			defaultValue: 3000,
+			validate: {
+				isIn: [[2640, 3000, 3442]],
+			},
 		},
 		birth: {
 			type: DataTypes.DATE,

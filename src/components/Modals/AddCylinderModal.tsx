@@ -15,10 +15,12 @@ import {
 	BOOL_OPTION_NO,
 	BOOL_OPTIONS,
 	CYLINDER_MATERIAL_OPTIONS,
+	SERVICE_PRESSURE,
 } from '@/app/constants/FormConstants'
 import ClientPicker from '../UI/FormElements/ClientPicker'
 import DatePicker from '../UI/FormElements/DatePicker'
 import Button from '../UI/Button'
+import ListBox from '../UI/FormElements/ListBox'
 
 const AddCylinderModal = () => {
 	const { addCylinderModalOpen } = useAppSelector((state) => state.modal)
@@ -106,6 +108,13 @@ const AddCylinderModal = () => {
 										title='Cylinder material'
 										name='material'
 										options={CYLINDER_MATERIAL_OPTIONS}
+									/>
+
+									<ListBox
+										items={SERVICE_PRESSURE}
+										title='Rated service Pressure'
+										name='servicePressure'
+										id='fill_pressure'
 									/>
 
 									<RadioGroup

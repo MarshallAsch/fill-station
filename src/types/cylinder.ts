@@ -7,6 +7,7 @@ export type Cylinder = {
 	lastHydro: dayjs.Dayjs
 	lastVis: dayjs.Dayjs
 	ownerId: number
+	servicePressure: number
 	oxygenClean: boolean
 	material?: 'steel' | 'aluminum' | 'composite'
 }
@@ -16,6 +17,7 @@ export type NewCylinderDTO = {
 	birth: Date
 	lastHydro: Date
 	lastVis: Date
+	servicePressure: number
 	oxygenClean: boolean
 	material?: 'steel' | 'aluminum' | 'composite'
 }

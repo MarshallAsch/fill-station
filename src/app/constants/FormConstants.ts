@@ -46,3 +46,18 @@ export const PSI_INSPECTION_OPTIONS = [
 		value: 'reject',
 	},
 ]
+
+export const SERVICE_PRESSURE = [
+	{
+		name: '3000 psi',
+		value: '3000',
+	},
+	{
+		name: 'LP 2640 psi',
+		value: '2640',
+	},
+	{
+		name: 'HP 3442 psi',
+		value: '3442',
+	},
+]
