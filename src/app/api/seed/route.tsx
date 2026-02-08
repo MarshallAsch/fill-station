@@ -1,5 +1,6 @@
 import { Cylinder } from '@/lib/models/cylinder'
 import { Fill } from '@/lib/models/fill'
+import { Maintenance } from '@/lib/models/maintenance'
 
 import { Client } from '@/lib/models/client'
 import dayjs from 'dayjs'
@@ -7,6 +8,7 @@ import dayjs from 'dayjs'
 import { generate } from 'random-words'
 import { sequelize } from '@/lib/models/config'
 import { Visual } from '@/lib/models/visual'
+import { MAINTENANCE_TYPE } from '@/types/maintenance'
 
 function randomString(): string {
 	return (generate(2) as Array<string>).join('_')
@@ -89,6 +91,67 @@ function generateVis(cylinder: Cylinder, inspector: Client): Visual {
 	})
 }
 
+function generateMaintenance(): Maintenance[] {
+	return [
+		{
+			date: dayjs('2024-11-21T00:00:00.000'),
+			type: MAINTENANCE_TYPE.START,
+			title: 'Got the compressor',
+			description: '',
+			hours: 0,
+		},
+		{
+			date: dayjs('2025-01-10T00:00:00.000'),
+			type: MAINTENANCE_TYPE.AIR_TEST,
+			title: 'Air analysis done',
+			description: 'Buro Veritas',
+			hours: 2,
+		},
+		{
+			date: dayjs('2025-11-10T00:00:00.000'),
+			type: MAINTENANCE_TYPE.OIL_CHANGE,
+			title: 'Changed Oil',
+			description: '',
+			hours: 14,
+		},
+		{
+			date: dayjs('2025-07-10T00:00:00.000'),
+			type: MAINTENANCE_TYPE.FILTER_CHANGE,
+			title: 'Changed Filter',
+			description: 'P21 on the compressor',
+			hours: 7,
+		},
+		{
+			date: dayjs('2025-11-09T00:00:00.000'),
+			type: MAINTENANCE_TYPE.FILTER_CHANGE,
+			title: 'Changed Filter',
+			description: 'P21 on the compressor',
+			hours: 13,
+		},
+		{
+			date: dayjs('2025-11-09T00:00:00.000'),
+			type: MAINTENANCE_TYPE.AIR_TEST,
+			title: 'Air analysis done',
+			description: 'Aircheck Lab',
+			hours: 13,
+		},
+		{
+			date: dayjs('2025-11-10T00:00:00.000'),
+			type: MAINTENANCE_TYPE.FILTER_CHANGE,
+			title: 'Changed Filter',
+			description: 'P61 on the wall',
+			hours: 14,
+		},
+		{
+			date: dayjs('2025-11-10T00:00:00.000'),
+			type: MAINTENANCE_TYPE.GENERAL,
+			title: 'General Service',
+			description: 'Inspected things',
+			hours: 14,
+		},
+	].map((r) => Maintenance.build(r))
+}
+
 export async function GET(request: Request) {
 	if (process.env.NODE_ENV !== 'development') {
 		return Response.json(
@@ -135,6 +198,8 @@ export async function GET(request: Request) {
 			)
 			.flat(),
 	)
+
+	await Promise.all(generateMaintenance().map((r) => r.save()))
 
 	return Response.json({ message: 'cleared' }, { status: 200 })
 }

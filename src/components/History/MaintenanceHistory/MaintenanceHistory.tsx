@@ -1,9 +1,11 @@
 import dayjs from 'dayjs'
 import clsx from 'clsx'
 import relativeTime from 'dayjs/plugin/relativeTime'
-import { useAppDispatch, useAppSelector } from '@/redux/hooks'
-import { useMemo } from 'react'
-import { updateAddServiceModalOpen } from '@/redux/modal/modalSlice'
+import { useAppDispatch } from '@/redux/hooks'
+import {
+	updateAddServiceModalOpen,
+	updateServiceModalHours,
+} from '@/redux/modal/modalSlice'
 import {
 	BeakerIcon,
 	Cog6ToothIcon,
@@ -14,10 +16,37 @@ import {
 } from '@heroicons/react/20/solid'
 import { MAINTENANCE_TYPE } from '@/types/maintenance'
 import Button from '@/components/UI/Button'
+import { getAllMaintenance, getMaintenanceSummary } from '@/app/_api'
+import { useQuery } from '@tanstack/react-query'
 dayjs.extend(relativeTime)
 
+function useLoadMaintenance() {
+	const { status, data, error } = useQuery({
+		queryKey: ['maintenance'],
+		queryFn: getAllMaintenance,
+	})
+
+	return { maintenance: data, status, error }
+}
+
+function useLoadMaintenanceSummary() {
+	const { status, data, error } = useQuery({
+		queryKey: ['maintenance', 'summary'],
+		queryFn: getMaintenanceSummary,
+	})
+
+	const dispatch = useAppDispatch()
+	if (data?.last) {
+		dispatch(updateServiceModalHours(data?.last.hours))
+	}
+
+	return { summary: data, status, error }
+}
+
 const MaintenanceHistory = () => {
-	const { maintenanceTimeline } = useAppSelector((state) => state.history)
+	const { maintenance } = useLoadMaintenance()
+	const { summary } = useLoadMaintenanceSummary()
+
 	const dispatch = useAppDispatch()
 	const getColor = (type: MAINTENANCE_TYPE) => {
 		switch (type) {
@@ -61,39 +90,39 @@ const MaintenanceHistory = () => {
 		}
 	}
 
-	const timeline = [...maintenanceTimeline].sort((a, b) =>
-		dayjs(a.date).isBefore(dayjs(b.date)) ? 1 : 0,
-	)
+	const getTitle = (type: MAINTENANCE_TYPE) => {
+		switch (type) {
+			case 'start':
+				return 'Got the compressor'
+			case 'air-test':
+				return 'Air analysis done'
+			case 'oil-change':
+				return 'Changed Oil'
+			case 'general':
+				return 'General Service'
+			case 'filter-change':
+				return 'Changed Filter'
+			default:
+				return 'Unkown'
+		}
+	}
 
-	const getLastOilChange = useMemo(() => {
-		return maintenanceTimeline
-			.filter((item) => item.type === MAINTENANCE_TYPE.OIL_CHANGE)
-			.sort((a, b) => (dayjs(a.date).isBefore(dayjs(b.date)) ? 1 : 0))[0]
-	}, [maintenanceTimeline])
-
-	const getLastFilterChange = useMemo(() => {
-		return maintenanceTimeline
-			.filter((item) => item.type === MAINTENANCE_TYPE.FILTER_CHANGE)
-			.sort((a, b) => (dayjs(a.date).isBefore(dayjs(b.date)) ? 1 : 0))[0]
-	}, [maintenanceTimeline])
-
-	const getLastAirAnalysis = useMemo(() => {
-		return maintenanceTimeline
-			.filter((item) => item.type === MAINTENANCE_TYPE.AIR_TEST)
-			.sort((a, b) => (dayjs(a.date).isBefore(dayjs(b.date)) ? 1 : 0))[0]
-	}, [maintenanceTimeline])
-
-	const getCompressorAge = dayjs(
-		maintenanceTimeline.filter(
-			(item) => item.type === MAINTENANCE_TYPE.START,
-		)[0].date,
-	).from(dayjs(), true)
-
-	const lastMaintenance = [
-		getLastOilChange,
-		getLastFilterChange,
-		getLastAirAnalysis,
-	]
+	const getSummaryTitle = (type: MAINTENANCE_TYPE) => {
+		switch (type) {
+			case 'start':
+				return 'First Used'
+			case 'air-test':
+				return 'Last Air Analysis'
+			case 'oil-change':
+				return 'Last Oil Change'
+			case 'general':
+				return 'Last General Service'
+			case 'filter-change':
+				return 'Last Filter Change'
+			default:
+				return 'Unknown'
+		}
+	}
 
 	return (
 		<div className='flow-root w-full'>
@@ -101,24 +130,19 @@ const MaintenanceHistory = () => {
 				Compressor Maintenance Timeline
 			</h1>
 			<div className='my-8 grid grid-cols-1 gap-0.5 overflow-hidden rounded-2xl text-center md:grid-cols-2 lg:grid-cols-4'>
-				{lastMaintenance.map((item) => (
-					<div key={item.id} className='flex flex-col bg-gray-400/5 p-8'>
-						<dt className='text-3xl font-semibold text-black'>
-							{dayjs(item.date).format('DD/MM/YYYY')}
-						</dt>
-						<dd className='order-first text-xl font-semibold tracking-tight text-gray-500'>
-							Last {item.title}
-						</dd>
-					</div>
-				))}
-				<div className='flex flex-col bg-gray-400/5 p-8'>
-					<dt className='text-3xl font-semibold text-black'>
-						{getCompressorAge} old
-					</dt>
-					<dd className='order-first text-xl font-semibold tracking-tight text-gray-500'>
-						Compressor Age
-					</dd>
-				</div>
+				{summary &&
+					Object.entries(summary)
+						.filter(([key]) => key != 'last')
+						.map(([key, item]) => (
+							<div key={key} className='flex flex-col bg-gray-400/5 p-8'>
+								<dt className='text-3xl font-semibold text-black'>
+									{item.date.from(dayjs(), true)} ago
+								</dt>
+								<dd className='order-first text-xl font-semibold tracking-tight text-gray-500'>
+									{getSummaryTitle(item.type)}
+								</dd>
+							</div>
+						))}
 			</div>
 			<div className='my-2 flex w-full items-center justify-end'>
 				<div>
@@ -132,10 +156,10 @@ const MaintenanceHistory = () => {
 				</div>
 			</div>
 			<ul role='list' className='-mb-8'>
-				{timeline.map((event, eventIdx) => (
+				{maintenance?.map((event, eventIdx) => (
 					<li key={event.id}>
 						<div className='relative pb-8 hover:font-bold'>
-							{eventIdx !== timeline.length - 1 ? (
+							{eventIdx !== maintenance.length - 1 ? (
 								<span
 									aria-hidden='true'
 									className='absolute top-4 left-4 -ml-px h-full w-0.5 bg-gray-200'
@@ -154,13 +178,16 @@ const MaintenanceHistory = () => {
 								</div>
 								<div className='flex min-w-0 flex-1 justify-between space-x-4 pt-1.5'>
 									<div>
-										<p className='font-medium text-gray-900'>{event.title}</p>
-										<p className='text-sm text-gray-500'>{event.content}</p>
+										<p className='font-medium text-gray-900'>
+											{getTitle(event.type)}
+										</p>
+										<p className='text-sm text-gray-500'>{event.description}</p>
 									</div>
 									<div className='text-right text-sm whitespace-nowrap text-gray-500'>
-										<time dateTime={dayjs(event.date).format('DD/MM/YYYY')}>
-											{dayjs(event.date).format('DD/MM/YYYY')}
+										<time dateTime={event.date.format('DD/MM/YYYY')}>
+											{event.date.format('DD/MM/YYYY')}
 										</time>
+										<p className='text-sm text-gray-500'>{event.hours} hours</p>
 									</div>
 								</div>
 							</div>
