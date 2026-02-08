@@ -2,14 +2,18 @@
 
 import FormGroup from '@/components/UI/FormGroup'
 import PropertyRow from '@/components/VisHistory/PropertyRow'
+import { Client } from '@/lib/models/client'
 import { Cylinder } from '@/lib/models/cylinder'
 import { Visual } from '@/lib/models/visual'
 import {
 	CheckCircleIcon,
 	ExclamationCircleIcon,
 	ExclamationTriangleIcon,
+	ForwardIcon,
+	BackwardIcon,
 } from '@heroicons/react/24/solid'
 import dayjs from 'dayjs'
+import Link from 'next/link'
 
 export default async function TankVisual({
 	params,
@@ -18,7 +22,8 @@ export default async function TankVisual({
 }) {
 	const { slug: inspectionID } = await params
 
-	let vis = await Visual.findByPk(inspectionID, { include: Cylinder })
+	let vis = await Visual.findByPk(inspectionID, { include: [Cylinder, Client] })
+	let count = await Visual.count()
 
 	if (!vis) {
 		return <h1>Loading...</h1>
@@ -53,8 +58,22 @@ export default async function TankVisual({
 							{vis.id}
 						</p>
 						<p className='text-lg/8 text-gray-600'>
-							Inspected by: {vis.inspectorId}
+							Inspected by: {vis.Client.name} (#{vis.Client.id})
 						</p>
+					</div>
+
+					<div className='flex gap-2'>
+						{vis.id > 1 && (
+							<Link href={`/visual/${vis.id - 1}`}>
+								<BackwardIcon className='h-5' />
+							</Link>
+						)}
+
+						{vis.id < count && (
+							<Link href={`/visual/${vis.id + 1}`}>
+								<ForwardIcon className='h-5' />
+							</Link>
+						)}
 					</div>
 				</div>
 

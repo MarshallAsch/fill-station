@@ -17,7 +17,7 @@ import dayjs from 'dayjs'
 import { Client } from '../client'
 
 export class Visual extends Model<
-	InferAttributes<Visual, { omit: 'Cylinder' | 'inspector' }>,
+	InferAttributes<Visual, { omit: 'Cylinder' | 'Client' }>,
 	InferCreationAttributes<Visual, { omit: 'Cylinder' }>
 > {
 	// 'CreationOptional' is a special type that marks the field as optional
@@ -62,7 +62,7 @@ export class Visual extends Model<
 	declare markedOxygenClean: boolean
 
 	declare inspectorId: ForeignKey<Client['id']>
-	declare inspector: NonAttribute<Client>
+	declare Client: NonAttribute<Client>
 
 	// timestamps!
 	// createdAt can be undefined during creation
@@ -78,7 +78,7 @@ export class Visual extends Model<
 
 	declare static associations: {
 		cylinder: Association<Cylinder, Visual>
-		inspector: Association<Cylinder, Client>
+		Client: Association<Cylinder, Client>
 	}
 }
 
