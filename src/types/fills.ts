@@ -21,5 +21,5 @@ export type Fill = {
 	end: number
 	o2: number
 	he: number
-	cylinder: null | Cylinder
+	cylinder?: Cylinder
 }

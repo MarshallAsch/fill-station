@@ -29,7 +29,9 @@ type CylinderPickerProps = {
 	index?: number
 	disableAdd?: boolean
 	showExpired?: boolean
+	initialValue?: Cylinder
 	filter?: (c: Cylinder) => boolean
+	onChange?: (c: Cylinder | null) => void
 }
 
 function useLoadCylinder() {
@@ -54,14 +56,16 @@ const CylinderPicker = ({
 	disableAdd,
 	showExpired = false,
 	filter = (c) => true,
+	initialValue,
+	onChange,
 }: CylinderPickerProps) => {
 	const { cylinders } = useLoadCylinder()
 	const dispatch = useAppDispatch()
 
 	const [query, setQuery] = useState('')
-	const [selectedCylinder, setSelectedCylinder] = useState<Cylinder | null>(
-		null,
-	)
+	const [selectedCylinder, setSelectedCylinder] = useState<
+		Cylinder | null | undefined
+	>(initialValue)
 
 	const filteredCylinders =
 		query === ''
@@ -86,6 +90,7 @@ const CylinderPicker = ({
 			onChange={(cylinder) => {
 				setQuery('')
 				setSelectedCylinder(cylinder)
+				onChange && onChange(cylinder)
 			}}
 		>
 			<Label className='block text-sm/6 font-medium text-gray-900'>

@@ -41,9 +41,10 @@ type ClientPickerProps = {
 const ClientPicker = ({ disableAdd }: ClientPickerProps) => {
 	const dispatch = useAppDispatch()
 	const { clients, status, error } = useLoadClients()
+	const client = useAppSelector((state) => state.clients.selectedClient)
 
 	const [query, setQuery] = useState('')
-	const [selectedClient, setSelectedClient] = useState<Client | null>(null)
+	const [selectedClient, setSelectedClient] = useState<Client | null>(client)
 
 	const filteredClients =
 		query === ''
