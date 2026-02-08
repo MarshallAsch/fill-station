@@ -11,8 +11,11 @@ import { FormEvent, Fragment } from 'react'
 import TextInput from '../UI/FormElements/TextInput'
 import DatePicker from '../UI/FormElements/DatePicker'
 import ListBox from '../UI/FormElements/ListBox'
-import { MAINTENANCE_TYPE } from '@/types/maintenance'
+import { MAINTENANCE_TYPE, NewMaintenanceDTO } from '@/types/maintenance'
 import Button from '../UI/Button'
+import { newMaintenance } from '@/app/_api'
+import { useQueryClient } from '@tanstack/react-query'
+import NumberField from '../UI/FormElements/NumberField'
 
 const SERVICE_ITEMS = [
 	{
@@ -35,29 +38,31 @@ const SERVICE_ITEMS = [
 		value: MAINTENANCE_TYPE.OIL_CHANGE,
 		name: 'Oil Change',
 	},
-	{
-		id: 5,
-		value: MAINTENANCE_TYPE.START,
-		name: 'Start of Compressor History',
-	},
 ]
 
 const AddServiceModal = () => {
-	const { addServiceModalOpen } = useAppSelector((state) => state.modal)
+	const { addServiceModalOpen, serviceModalHours } = useAppSelector(
+		(state) => state.modal,
+	)
 	const dispatch = useAppDispatch()
+	const queryClient = useQueryClient()
 
 	const handleClose = () => {
 		dispatch(updateAddServiceModalOpen(false))
 	}
 
-	const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+	const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
 		event.preventDefault()
 
 		// For this to work properly, the name provided to each input should be unique and match the schema on the BE
 		const form = new FormData(event.target as HTMLFormElement)
-		const formData = Object.fromEntries(form.entries())
+		const formData: any = Object.fromEntries(form.entries())
 
-		console.log(formData)
+		let data = await newMaintenance(formData as NewMaintenanceDTO)
+		if (!(data instanceof String)) {
+			queryClient.invalidateQueries({ queryKey: ['maintenance'] })
+			handleClose()
+		}
 	}
 	return (
 		<Transition show={addServiceModalOpen} as={Fragment}>
@@ -88,13 +93,12 @@ const AddServiceModal = () => {
 								<DialogTitle>New Cylinder</DialogTitle>
 								<form className='flex flex-col gap-4' onSubmit={handleSubmit}>
 									<DialogTitle>Create Compressor Service Record</DialogTitle>
-									<TextInput
-										autoFocus
-										type='text'
-										id='title'
-										name='title'
-										ariaLabel='Service Title'
-										placeholder='What was done?'
+
+									<ListBox
+										items={SERVICE_ITEMS}
+										title='Type of Service'
+										name='type'
+										id='maintenance_type'
 									/>
 
 									<div className='flex flex-row space-x-2'>
@@ -106,11 +110,12 @@ const AddServiceModal = () => {
 										/>
 									</div>
 
-									<ListBox
-										items={SERVICE_ITEMS}
-										title='Type of Service'
-										name='maintenance_type'
-										id='maintenance_type'
+									<NumberField
+										id='hours'
+										name='hours'
+										min={serviceModalHours}
+										defaultValue={serviceModalHours}
+										helperText='Number of hours on the compressor'
 									/>
 
 									<TextInput
