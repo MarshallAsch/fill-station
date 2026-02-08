@@ -27,15 +27,15 @@ import { Fill } from '../fill'
 import { Visual } from '../visual'
 
 export class Cylinder extends Model<
-	InferAttributes<Cylinder, { omit: 'owner' }>,
-	InferCreationAttributes<Cylinder, { omit: 'owner' }>
+	InferAttributes<Cylinder, { omit: 'Client' }>,
+	InferCreationAttributes<Cylinder, { omit: 'Client' }>
 > {
 	// 'CreationOptional' is a special type that marks the field as optional
 	// when creating an instance of the model (such as using Model.create()).
 	declare id: CreationOptional<number>
 
 	declare ownerId: ForeignKey<Client['id']>
-	declare owner?: NonAttribute<Client>
+	declare Client?: NonAttribute<Client>
 
 	declare serialNumber: string
 	declare material: CreationOptional<

@@ -1,5 +1,14 @@
 import { FillHistory } from '@/types/fills'
 
+function getFillMix(fill: FillHistory): string {
+	if (fill.helium != 0) {
+		return `${fill.oxygen}/${fill.helium}`
+	} else if (fill.oxygen == 20.9) {
+		return 'air'
+	} else {
+		return `EAN ${fill.oxygen}`
+	}
+}
 const HistoryRow = ({ fill }: { fill: FillHistory }) => {
 	return (
 		<tr key={fill.id} className='hover:bg-gray-100'>
@@ -8,7 +17,7 @@ const HistoryRow = ({ fill }: { fill: FillHistory }) => {
 			</td>
 
 			<td className='px-3 py-4 text-center text-sm whitespace-nowrap text-gray-500'>
-				{fill.oxygen}/{fill.helium}
+				{getFillMix(fill)}
 			</td>
 			<td className='px-3 py-4 text-center text-sm whitespace-nowrap text-gray-500'>
 				{fill.startPressure}
