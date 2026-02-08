@@ -41,13 +41,14 @@ function generateCylinder(client: Client): Cylinder {
 		oxygenClean: Math.random() > 0.5,
 		material: Math.random() > 0.4 ? 'steel' : 'aluminum',
 		ownerId: client.id,
+		servicePressure: [2640, 3000, 3442][Math.trunc(Math.random() * 3)],
 	})
 
 	return c
 }
 
 function generateFill(cylinder: Cylinder): Fill {
-	let max = [2650, 3000, 3442][Math.trunc(Math.random() * 3)]
+	let max = [2640, 3000, 3442][Math.trunc(Math.random() * 3)]
 	return Fill.build({
 		date: dayjs().subtract(Math.trunc(Math.random() * 180), 'day'),
 		CylinderId: cylinder.id,
