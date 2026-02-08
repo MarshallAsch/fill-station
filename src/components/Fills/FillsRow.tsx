@@ -21,7 +21,11 @@ const FillsRow = ({ fill }: { fill: Fill }) => {
 						dispatch(
 							updateFill({
 								id: fill.id,
-								data: { ...fill, cylinder: val || undefined },
+								data: {
+									...fill,
+									cylinder: val || undefined,
+									end: fill.end === 0 && val ? val.servicePressure : fill.end,
+								},
 							}),
 						)
 					}

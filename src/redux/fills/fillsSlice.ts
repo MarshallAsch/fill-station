@@ -7,7 +7,7 @@ const initialState: Fill[] = [
 		id: 0,
 		type: 'air',
 		start: 0,
-		end: 3000,
+		end: 0,
 		o2: 20.9,
 		he: 0,
 		cylinder: undefined,
