@@ -23,7 +23,7 @@ type ListBoxProps = {
 }
 
 const ListBox = ({ items, title, id, name }: ListBoxProps) => {
-	const [selected, setSelected] = useState<Item | null>(items[1])
+	const [selected, setSelected] = useState<Item | null>(items[0])
 
 	return (
 		<Listbox value={selected} onChange={setSelected}>
