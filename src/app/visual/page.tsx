@@ -11,6 +11,7 @@ import FinalStatus from '@/components/Visual/FinalStatus'
 import { FormEvent } from 'react'
 import Button from '@/components/UI/Button'
 import { useAppSelector } from '@/redux/hooks'
+import ClientPicker from '@/components/UI/FormElements/ClientPicker'
 
 export default function Visual() {
 	const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
@@ -34,7 +35,8 @@ export default function Visual() {
 				</div>
 
 				<form onSubmit={handleSubmit}>
-					<div className='flex w-full justify-center'>
+					<div className='flex w-full justify-center gap-6'>
+						<ClientPicker />
 						<CylinderPicker filter={(c) => !client || client.id == c.ownerId} />
 					</div>
 

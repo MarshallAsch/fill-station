@@ -9,7 +9,6 @@ import {
 } from '@/app/constants/FormConstants'
 import RadioGroup from '../UI/FormElements/RadioGroup'
 import DatePicker from '../UI/FormElements/DatePicker'
-import ClientPicker from '../UI/FormElements/ClientPicker'
 
 const FinalStatus = () => {
 	return (
@@ -39,8 +38,6 @@ const FinalStatus = () => {
 					description='If the tank and valve were already clean or if they were cleaned as
 						part of this Vis'
 				/>
-
-				<ClientPicker />
 			</>
 		</FormGroup>
 	)
