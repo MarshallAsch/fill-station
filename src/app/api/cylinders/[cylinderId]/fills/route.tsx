@@ -35,14 +35,21 @@ export async function POST(
 		)
 	}
 
-	let { serialNumber, birth, lastHydro, lastVis, oxygenClean } =
-		await request.json()
+	let {
+		serialNumber,
+		birth,
+		lastHydro,
+		lastVis,
+		oxygenClean,
+		servicePressure,
+	} = await request.json()
 
 	if (
 		!serialNumber ||
 		!birth ||
 		!lastHydro ||
 		!lastVis ||
+		!servicePressure ||
 		oxygenClean == undefined
 	) {
 		return Response.json(
@@ -58,6 +65,7 @@ export async function POST(
 			lastHydro: dayjs(lastHydro, 'YYYY-MM-DD'),
 			lastVis: dayjs(lastVis, 'YYYY-MM-DD'),
 			oxygenClean: oxygenClean,
+			servicePressure: servicePressure,
 		})
 
 		return Response.json(result)
