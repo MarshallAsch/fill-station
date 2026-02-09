@@ -18,6 +18,7 @@ import { MAINTENANCE_TYPE } from '@/types/maintenance'
 import Button from '@/components/UI/Button'
 import { getAllMaintenance, getMaintenanceSummary } from '@/app/_api'
 import { useQuery } from '@tanstack/react-query'
+import Tooltip from '@/components/UI/Tooltip'
 dayjs.extend(relativeTime)
 
 function useLoadMaintenance() {
@@ -136,7 +137,9 @@ const MaintenanceHistory = () => {
 						.map(([key, item]) => (
 							<div key={key} className='flex flex-col bg-gray-400/5 p-8'>
 								<dt className='text-3xl font-semibold text-black'>
-									{item.date.from(dayjs(), true)} ago
+									<Tooltip message={item.date.format('DD/MM/YYYY')}>
+										{item.date.from(dayjs(), true)} ago
+									</Tooltip>
 								</dt>
 								<dd className='order-first text-xl font-semibold tracking-tight text-gray-500'>
 									{getSummaryTitle(item.type)}
