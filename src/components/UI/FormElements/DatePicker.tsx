@@ -198,11 +198,12 @@ export default function DatePicker({
 				id={id}
 				type='hidden'
 				name={name}
-				value={
-					mode === 'month'
-						? selectedDate.format('MMM YYYY')
-						: selectedDate.format('YYYY-MM-DD')
-				}
+				value={selectedDate
+					.hour(0)
+					.minute(0)
+					.second(0)
+					.millisecond(0)
+					.toISOString()}
 			/>
 		</div>
 	)
