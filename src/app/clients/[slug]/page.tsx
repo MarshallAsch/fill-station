@@ -2,7 +2,9 @@
 
 import FormGroup from '@/components/UI/FormGroup'
 import PropertyRow from '@/components/VisHistory/PropertyRow'
+import CylinderListTable from '@/components/Cylinders/CylinderListTable'
 import { Client } from '@/lib/models/client'
+import { Cylinder } from '@/lib/models/cylinder'
 
 export default async function ClientDetails({
 	params,
@@ -11,7 +13,7 @@ export default async function ClientDetails({
 }) {
 	const { slug: clientId } = await params
 
-	let client = await Client.findByPk(clientId)
+	let client = await Client.findByPk(clientId, { include: Cylinder })
 
 	return (
 		<div className='max-w-7xl'>
@@ -38,6 +40,12 @@ export default async function ClientDetails({
 					</div>
 				</FormGroup>
 			</div>
+
+			<div className='flex flex-col items-center justify-center gap-3 py-6'>
+				<h1 className='text-2xl font-semibold text-gray-900'>Cylinders</h1>
+			</div>
+
+			<CylinderListTable cylinders={client?.Cylinders || []} />
 		</div>
 	)
 }
