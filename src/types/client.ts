@@ -4,6 +4,7 @@ export type Client = {
 	nitroxCert: string
 	advancedNitroxCert: string
 	trimixCert: string
+	inspectionCert?: string
 }
 
 export type NewClientDTO = {
