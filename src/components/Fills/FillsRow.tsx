@@ -32,7 +32,12 @@ const FillsRow = ({ fill }: { fill: Fill }) => {
 				/>
 			</td>
 			<td className='py-4 text-sm font-medium whitespace-nowrap text-gray-900'>
-				<FillType index={fill.id} item={fill} />
+				<FillType
+					index={fill.id}
+					item={fill}
+					client={client || undefined}
+					cylinder={fill.cylinder}
+				/>
 			</td>
 			<td className='px-3 py-4 text-sm whitespace-nowrap text-gray-500'>
 				<NumberInput
