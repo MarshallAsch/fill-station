@@ -7,13 +7,17 @@ import {
 } from '@headlessui/react'
 import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/24/outline'
 import { updateFill } from '@/redux/fills/fillsSlice'
-import { useAppDispatch, useAppSelector } from '@/redux/hooks'
+import { useAppDispatch } from '@/redux/hooks'
 import { useState } from 'react'
 import { Fill, FillType as IFillType } from '@/types/fills'
+import { Client } from '@/types/client'
+import { Cylinder } from '@/types/cylinder'
 
 type FillTypeProps = {
 	index: number
 	item: Fill
+	client?: Client
+	cylinder?: Cylinder
 }
 
 type FillOption = {
@@ -23,15 +27,14 @@ type FillOption = {
 	disabledReason?: string
 }
 
-const FillType = ({ index, item }: FillTypeProps) => {
-	const client = useAppSelector((state) => state.clients.selectedClient)
+const FillType = ({ index, item, client, cylinder }: FillTypeProps) => {
 	const dispatch = useAppDispatch()
 
-	const nitroxUse = !!(
-		client &&
-		(client.nitroxCert || client.advancedNitroxCert)
-	)
-	const trimixUse = !!(client && client.trimixCert)
+	const nitroxUse =
+		cylinder?.oxygenClean == true &&
+		!!(client && (client.nitroxCert || client.advancedNitroxCert))
+	const trimixUse =
+		cylinder?.oxygenClean == true && !!(client && client.trimixCert)
 
 	const options: FillOption[] = [
 		{ value: 'air', label: 'Air', enabled: true },
