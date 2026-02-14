@@ -16,14 +16,14 @@ const FinalStatus = () => {
 		<FormGroup title='Final Status' description=''>
 			<>
 				<ClientPicker
-					name={'inspector'}
+					name={'inspectorId'}
 					label={'Select the Inspector'}
 					addLabel={'Add new Inspector'}
 					filter={(c) => !!c.inspectionCert}
 				/>
 				<RadioGroup
 					title='Cylinder Status'
-					name='external_psi_standards'
+					name='status'
 					options={PSI_INSPECTION_OPTIONS}
 					defaultValue={PSI_INSPECTION_OPTION_ACCEPTABLE}
 				/>
@@ -32,14 +32,14 @@ const FinalStatus = () => {
 
 				<RadioGroup
 					title='Valve and Tank Cleaned for Oxygen Service'
-					name='valve_tank_cleaned'
+					name='oxygenCleaned'
 					options={BOOL_OPTIONS}
 					defaultValue={BOOL_OPTION_NO}
 				/>
 
 				<RadioGroup
 					title='Valve and Tank Marked Clean for Oxygen Service'
-					name='valve_tank_marked'
+					name='markedOxygenClean'
 					options={BOOL_OPTIONS}
 					defaultValue={BOOL_OPTION_NO}
 					description='If the tank and valve were already clean or if they were cleaned as

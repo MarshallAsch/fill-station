@@ -15,14 +15,14 @@ const External = () => {
 			<>
 				<RadioGroup
 					title='Evidence of Heat Damage'
-					name='heat_damage'
+					name='heat'
 					options={BOOL_OPTIONS}
 					defaultValue={BOOL_OPTION_NO}
 				/>
 
 				<RadioGroup
 					title='Evidence of Re-painting'
-					name='repainting'
+					name='painted'
 					options={BOOL_OPTIONS}
 					defaultValue={BOOL_OPTION_NO}
 				/>
@@ -43,7 +43,7 @@ const External = () => {
 
 				<RadioGroup
 					title='Hammer tone test - bell like sound'
-					name='hammer_tone'
+					name='bell'
 					options={BOOL_OPTIONS}
 					defaultValue={BOOL_OPTION_YES}
 					description='Make sure that the valve is removed first'
@@ -51,28 +51,28 @@ const External = () => {
 
 				<TextArea
 					id='exterior-surface'
-					name='exterior_surface'
+					name='exteriorDescription'
 					placeholder='Description of exterior surface'
 					ariaLabel='Exterior Surface'
 				/>
 
 				<TextArea
 					id='exterior-marks'
-					name='exterior_marks'
+					name='exteriorMarks'
 					placeholder='Location and depth of marks, pits, gouges of more than 0.015"+'
 					ariaLabel='Exterior Marks'
 				/>
 
 				<RadioGroup
 					title='Line corrosion around boot and other accessories'
-					name='corrosion'
+					name='lineCorrosion'
 					options={BOOL_OPTIONS}
 					defaultValue={BOOL_OPTION_NO}
 				/>
 
 				<RadioGroup
 					title='Comparison to PSI Standards/Manufacturers'
-					name='external_psi_standards'
+					name='externalStandards'
 					options={PSI_INSPECTION_OPTIONS}
 					defaultValue={PSI_INSPECTION_OPTION_ACCEPTABLE}
 				/>

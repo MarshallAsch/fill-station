@@ -12,8 +12,12 @@ import { FormEvent } from 'react'
 import Button from '@/components/UI/Button'
 import { useAppSelector } from '@/redux/hooks'
 import ClientPicker from '@/components/UI/FormElements/ClientPicker'
+import { newVisual } from '../_api'
+import { useQueryClient } from '@tanstack/react-query'
 
 export default function Visual() {
+	const queryClient = useQueryClient()
+
 	const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
 		event.preventDefault()
 
@@ -21,9 +25,22 @@ export default function Visual() {
 		const form = new FormData(event.target as HTMLFormElement)
 		const formData = Object.fromEntries(form.entries())
 
+		let cylinder = cylinders.find((c) => c.serialNumber == formData.cylinder)
+
+		console.log(cylinder?.id)
 		console.log(formData)
+
+		if (!cylinder) {
+			return
+		}
+
+		const data = newVisual(cylinder.id, formData)
+		if (!(data instanceof String)) {
+			queryClient.invalidateQueries({ queryKey: ['fills'] })
+		}
 	}
 	const client = useAppSelector((state) => state.clients.selectedClient)
+	const { cylinders } = useAppSelector((state) => state.cylinders)
 
 	return (
 		<div className='max-w-7xl'>

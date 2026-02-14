@@ -6,7 +6,7 @@ import {
 	MaintenanceSummary,
 	NewMaintenanceDTO,
 } from '@/types/maintenance'
-import { VisualHistory } from '@/types/visuals'
+import { NewVisualDTO, VisualHistory } from '@/types/visuals'
 import axios from 'axios'
 import dayjs from 'dayjs'
 
@@ -86,6 +86,17 @@ export async function newCylinder(
 	let result = await axiosInstance.post(
 		`/api/clients/${clientId}/cylinders`,
 		cylinder,
+	)
+	return result.status == 201 ? result.data : result.data.message
+}
+
+export async function newVisual(
+	cylinderId: number,
+	visual: NewVisualDTO,
+): Promise<Cylinder | string> {
+	let result = await axiosInstance.post(
+		`/api/cylinders/${cylinderId}/visuals`,
+		visual,
 	)
 	return result.status == 201 ? result.data : result.data.message
 }

@@ -12,34 +12,34 @@ const Valve = () => {
 			<>
 				<RadioGroup
 					title='Burst Disk Replaced'
-					name='burst_disk_replaced'
+					name='burstDiskReplaced'
 					options={BOOL_OPTIONS}
 					defaultValue={BOOL_OPTION_NO}
 				/>
 				<RadioGroup
 					title='O-Ring Replaced'
-					name='oring_replaced'
+					name='oringReplaced'
 					options={BOOL_OPTIONS}
 					defaultValue={BOOL_OPTION_YES}
 				/>
 
 				<RadioGroup
 					title='Has Dip Tube'
-					name='has_dip_tube'
+					name='dipTube'
 					options={BOOL_OPTIONS}
 					defaultValue={BOOL_OPTION_YES}
 				/>
 
 				<RadioGroup
 					title='Service Needed'
-					name='service_needed'
+					name='needService'
 					options={BOOL_OPTIONS}
 					defaultValue={BOOL_OPTION_NO}
 				/>
 
 				<RadioGroup
 					title='Valve Rebuilt'
-					name='valve_rebuilt'
+					name='rebuilt'
 					options={BOOL_OPTIONS}
 					defaultValue={BOOL_OPTION_NO}
 				/>
