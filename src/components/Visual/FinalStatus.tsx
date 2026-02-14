@@ -9,11 +9,18 @@ import {
 } from '@/app/constants/FormConstants'
 import RadioGroup from '../UI/FormElements/RadioGroup'
 import DatePicker from '../UI/FormElements/DatePicker'
+import ClientPicker from '../UI/FormElements/ClientPicker'
 
 const FinalStatus = () => {
 	return (
 		<FormGroup title='Final Status' description=''>
 			<>
+				<ClientPicker
+					name={'inspector'}
+					label={'Select the Inspector'}
+					addLabel={'Add new Inspector'}
+					filter={(c) => !!c.inspectionCert}
+				/>
 				<RadioGroup
 					title='Cylinder Status'
 					name='external_psi_standards'

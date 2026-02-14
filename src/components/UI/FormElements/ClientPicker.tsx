@@ -36,9 +36,19 @@ function useLoadClients() {
 
 type ClientPickerProps = {
 	disableAdd?: boolean
+	label?: string
+	addLabel?: string
+	name?: string
+	filter?: (c: Client) => boolean
 }
 
-const ClientPicker = ({ disableAdd }: ClientPickerProps) => {
+const ClientPicker = ({
+	disableAdd,
+	name = 'client',
+	label = 'Select a Client',
+	addLabel = 'Add new Client',
+	filter,
+}: ClientPickerProps) => {
 	const dispatch = useAppDispatch()
 	const { clients, status, error } = useLoadClients()
 	const client = useAppSelector((state) => state.clients.selectedClient)
@@ -46,10 +56,12 @@ const ClientPicker = ({ disableAdd }: ClientPickerProps) => {
 	const [query, setQuery] = useState('')
 	const [selectedClient, setSelectedClient] = useState<Client | null>(client)
 
+	const preFiltered = filter ? clients.filter(filter) : clients
+
 	const filteredClients =
 		query === ''
-			? clients
-			: clients.filter((person) => {
+			? preFiltered
+			: preFiltered.filter((person) => {
 					return person.name.toLowerCase().includes(query.toLowerCase())
 				})
 
@@ -66,13 +78,13 @@ const ClientPicker = ({ disableAdd }: ClientPickerProps) => {
 			}}
 		>
 			<Label className='block text-sm/6 font-medium text-gray-900'>
-				Select a Client
+				{label}
 			</Label>
 
 			<div className='relative mt-2'>
 				<ComboboxInput
 					className='block w-full rounded-md bg-white py-1.5 pr-12 pl-3 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6'
-					name='client'
+					name={name}
 					onChange={(e) => setQuery(e.target.value)}
 					displayValue={(client: Client) => client && client.name}
 				/>
@@ -93,7 +105,7 @@ const ClientPicker = ({ disableAdd }: ClientPickerProps) => {
 							onClick={() => dispatch(updateAddClientModalOpen(true))}
 							disabled={disableAdd}
 						>
-							Add new Client
+							{addLabel}
 						</Button>
 					</div>
 					{query.length > 0 && (
