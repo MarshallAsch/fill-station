@@ -2,8 +2,9 @@ import { useAppDispatch, useAppSelector } from '@/redux/hooks'
 import FillsRow from './FillsRow'
 import { addNewFill } from '@/redux/fills/fillsSlice'
 import Button from '../UI/Button'
+import { Client } from '@/types/client'
 
-const FillsTable = () => {
+const FillsTable = ({ client }: { client?: Client }) => {
 	const fills = useAppSelector((state) => state.fills)
 	const dispatch = useAppDispatch()
 	return (
@@ -57,7 +58,12 @@ const FillsTable = () => {
 								</thead>
 								<tbody className='h-full divide-y divide-gray-200 bg-white'>
 									{fills.map((fill) => (
-										<FillsRow key={fill.id} fill={fill} />
+										<FillsRow
+											disableDelete={fills.length === 1}
+											key={fill.id}
+											fill={fill}
+											client={client}
+										/>
 									))}
 								</tbody>
 							</table>

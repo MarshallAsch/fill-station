@@ -8,12 +8,14 @@ import Internal from '@/components/Visual/Internal'
 import Threading from '@/components/Visual/Threading'
 import Valve from '@/components/Visual/Valve'
 import FinalStatus from '@/components/Visual/FinalStatus'
-import { FormEvent } from 'react'
+import { FormEvent, useState } from 'react'
 import Button from '@/components/UI/Button'
-import { useAppSelector } from '@/redux/hooks'
 import ClientPicker from '@/components/UI/FormElements/ClientPicker'
+import { Client } from '@/types/client'
 
 export default function Visual() {
+	const [client, setClient] = useState<Client>()
+
 	const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
 		event.preventDefault()
 
@@ -23,7 +25,6 @@ export default function Visual() {
 
 		console.log(formData)
 	}
-	const client = useAppSelector((state) => state.clients.selectedClient)
 
 	return (
 		<div className='max-w-7xl'>
@@ -36,7 +37,7 @@ export default function Visual() {
 
 				<form onSubmit={handleSubmit}>
 					<div className='flex w-full justify-center gap-6'>
-						<ClientPicker />
+						<ClientPicker onChange={(c) => setClient(c)} />
 						<CylinderPicker filter={(c) => !client || client.id == c.ownerId} />
 					</div>
 

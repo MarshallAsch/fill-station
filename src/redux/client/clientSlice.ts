@@ -2,12 +2,10 @@ import { Client } from '@/types/client'
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
 type InitialState = {
-	selectedClient: Client | null
 	allClients: Client[]
 }
 
 const initialState: InitialState = {
-	selectedClient: null,
 	allClients: [],
 }
 
@@ -47,22 +45,9 @@ const clientSlice = createSlice({
 				}
 			}
 		},
-		selectClient: (state, action: PayloadAction<number>) => {
-			const clientIndex = state.allClients.findIndex(
-				(client: Client) => client.id === action.payload,
-			)
-			if (clientIndex) {
-				state.selectedClient = state.allClients[clientIndex]
-			}
-		},
 	},
 })
 
-export const {
-	setClients,
-	addNewClient,
-	removeClient,
-	updateClient,
-	selectClient,
-} = clientSlice.actions
+export const { setClients, addNewClient, removeClient, updateClient } =
+	clientSlice.actions
 export default clientSlice.reducer

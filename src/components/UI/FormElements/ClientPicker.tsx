@@ -11,7 +11,7 @@ import {
 } from '@headlessui/react'
 import { useState } from 'react'
 import { ChevronDownIcon } from '@heroicons/react/24/outline'
-import { selectClient, setClients } from '@/redux/client/clientSlice'
+import { setClients } from '@/redux/client/clientSlice'
 import { updateAddClientModalOpen } from '@/redux/modal/modalSlice'
 import { useQuery } from '@tanstack/react-query'
 import { getAllClients } from '@/app/_api'
@@ -40,6 +40,7 @@ type ClientPickerProps = {
 	addLabel?: string
 	name?: string
 	filter?: (c: Client) => boolean
+	onChange?: (c: Client) => void
 }
 
 const ClientPicker = ({
@@ -48,13 +49,12 @@ const ClientPicker = ({
 	label = 'Select a Client',
 	addLabel = 'Add new Client',
 	filter,
+	onChange,
 }: ClientPickerProps) => {
 	const dispatch = useAppDispatch()
 	const { clients, status, error } = useLoadClients()
-	const client = useAppSelector((state) => state.clients.selectedClient)
-
 	const [query, setQuery] = useState('')
-	const [selectedClient, setSelectedClient] = useState<Client | null>(client)
+	const [selectedClient, setSelectedClient] = useState<Client>()
 
 	const preFiltered = filter ? clients.filter(filter) : clients
 
@@ -73,7 +73,7 @@ const ClientPicker = ({
 				setQuery('')
 				if (client) {
 					setSelectedClient(client)
-					dispatch(selectClient(client?.id))
+					onChange && onChange(client)
 				}
 			}}
 		>
