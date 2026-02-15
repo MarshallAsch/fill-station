@@ -6,7 +6,7 @@ import DatePicker from '../UI/FormElements/DatePicker'
 import { CYLINDER_MATERIAL_OPTIONS } from '@/app/constants/FormConstants'
 import { Cylinder } from '@/types/cylinder'
 
-const TankInfo = ({ cylinder }: { readonly cylinder?: Cylinder }) => {
+const TankInfo = ({ cylinder }: { cylinder?: Cylinder }) => {
 	return (
 		<FormGroup title='Tank Info' description=''>
 			<>

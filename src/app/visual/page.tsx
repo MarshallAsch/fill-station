@@ -8,7 +8,7 @@ import Internal from '@/components/Visual/Internal'
 import Threading from '@/components/Visual/Threading'
 import Valve from '@/components/Visual/Valve'
 import FinalStatus from '@/components/Visual/FinalStatus'
-import { FormEvent, useState } from 'react'
+import { useState } from 'react'
 import Button from '@/components/UI/Button'
 import ClientPicker from '@/components/UI/FormElements/ClientPicker'
 import { Client } from '@/types/client'
@@ -18,13 +18,8 @@ export default function Visual() {
 	const [client, setClient] = useState<Client>()
 	const [cylinder, setCylinder] = useState<Cylinder>()
 
-	const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
-		event.preventDefault()
-
-		// For this to work properly, the name provided to each input should be unique and match the schema on the BE
-		const form = new FormData(event.target as HTMLFormElement)
+	const handleSubmit = (form: FormData) => {
 		const formData = Object.fromEntries(form.entries())
-
 		console.log(formData)
 	}
 
@@ -37,7 +32,7 @@ export default function Visual() {
 					</h1>
 				</div>
 
-				<form onSubmit={handleSubmit}>
+				<form action={handleSubmit}>
 					<div className='flex w-full justify-center gap-6'>
 						<ClientPicker onChange={(c) => setClient(c)} />
 						<CylinderPicker

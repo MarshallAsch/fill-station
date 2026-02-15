@@ -7,7 +7,7 @@ import {
 	Transition,
 	TransitionChild,
 } from '@headlessui/react'
-import { FormEvent, Fragment } from 'react'
+import { Fragment } from 'react'
 import TextInput from '../UI/FormElements/TextInput'
 import { newClient } from '@/app/_api'
 import { NewClientDTO } from '@/types/client'
@@ -23,10 +23,7 @@ const AddClientModal = () => {
 		dispatch(updateAddClientModalOpen(false))
 	}
 
-	const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
-		event.preventDefault()
-
-		const form = new FormData(event.target as HTMLFormElement)
+	const handleSubmit = async (form: FormData) => {
 		const formData = Object.fromEntries(form.entries())
 
 		const data = await newClient(formData as NewClientDTO)
@@ -62,7 +59,7 @@ const AddClientModal = () => {
 						>
 							<DialogPanel className='relative transform overflow-hidden rounded-lg bg-white px-4 pt-5 pb-4 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:p-6'>
 								<DialogTitle>New Client</DialogTitle>
-								<form className='flex flex-col gap-4' onSubmit={handleSubmit}>
+								<form className='flex flex-col gap-4' action={handleSubmit}>
 									<DialogTitle>
 										Add the new Clients information to save it for next time.
 									</DialogTitle>
