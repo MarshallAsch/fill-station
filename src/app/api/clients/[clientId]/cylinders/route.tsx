@@ -30,7 +30,7 @@ export async function POST(
 
 	if (!client) {
 		return Response.json(
-			{ message: `Client Not Fount with ID: ${clientId}` },
+			{ message: `Client Not Found with ID: ${clientId}` },
 			{ status: 404 },
 		)
 	}
