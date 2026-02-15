@@ -79,6 +79,14 @@ export async function newClient(
 	return result.status == 201 ? result.data : result.data.message
 }
 
+export async function updateClient(
+	client: NewClientDTO,
+): Promise<Client | string> {
+	let result = await axiosInstance.put(`/api/clients/${client.id}`, client)
+
+	return result.status == 200 ? result.data : result.data.message
+}
+
 export async function newCylinder(
 	clientId: number,
 	cylinder: NewCylinderDTO,
