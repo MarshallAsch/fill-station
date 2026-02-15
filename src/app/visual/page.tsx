@@ -12,9 +12,11 @@ import { FormEvent, useState } from 'react'
 import Button from '@/components/UI/Button'
 import ClientPicker from '@/components/UI/FormElements/ClientPicker'
 import { Client } from '@/types/client'
+import { Cylinder } from '@/types/cylinder'
 
 export default function Visual() {
 	const [client, setClient] = useState<Client>()
+	const [cylinder, setCylinder] = useState<Cylinder>()
 
 	const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
 		event.preventDefault()
@@ -38,10 +40,13 @@ export default function Visual() {
 				<form onSubmit={handleSubmit}>
 					<div className='flex w-full justify-center gap-6'>
 						<ClientPicker onChange={(c) => setClient(c)} />
-						<CylinderPicker filter={(c) => !client || client.id == c.ownerId} />
+						<CylinderPicker
+							onChange={(c) => setCylinder(c)}
+							filter={(c) => !client || client.id == c.ownerId}
+						/>
 					</div>
 
-					<TankInfo />
+					<TankInfo cylinder={cylinder} />
 
 					<VisualInfo />
 

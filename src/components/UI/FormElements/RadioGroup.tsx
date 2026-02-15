@@ -5,6 +5,8 @@ type RadioGroupProps = {
 		label: string
 	}[]
 	defaultValue?: string | number
+	value?: string | number
+	readOnly?: boolean
 	name: string
 	description?: string
 	required?: boolean
@@ -15,7 +17,9 @@ const RadioGroup = ({
 	options,
 	name,
 	description,
+	value,
 	defaultValue,
+	readOnly,
 }: RadioGroupProps) => {
 	return (
 		<fieldset className='w-full'>
@@ -33,8 +37,12 @@ const RadioGroup = ({
 							name={name}
 							type='radio'
 							value={option.value}
+							checked={value === undefined ? undefined : value == option.value}
+							readOnly={readOnly}
 							defaultChecked={
-								option.value === (defaultValue ?? options[0].value)
+								value
+									? undefined
+									: option.value === (defaultValue ?? options[0].value)
 							}
 							className='absolute inset-0 cursor-pointer appearance-none focus:outline-none disabled:cursor-not-allowed'
 						/>
