@@ -1,5 +1,3 @@
-import { useAppDispatch, useAppSelector } from '@/redux/hooks'
-import { updateAddClientModalOpen } from '@/redux/modal/modalSlice'
 import {
 	Dialog,
 	DialogPanel,
@@ -10,30 +8,41 @@ import {
 import { Fragment } from 'react'
 import TextInput from '../UI/FormElements/TextInput'
 import { newClient } from '@/app/_api'
-import { NewClientDTO } from '@/types/client'
+import { Client, NewClientDTO } from '@/types/client'
 import { useQueryClient } from '@tanstack/react-query'
 import Button from '../UI/Button'
 
-const AddClientModal = () => {
-	const { addClientModalOpen } = useAppSelector((state) => state.modal)
-	const dispatch = useAppDispatch()
+export type ClientModalProps = {
+	title?: string
+	description?: string
+	cancelText?: string
+	submitText?: string
+	client?: Client
+	onSubmit?: (client: NewClientDTO) => Promise<Client | string>
+	handleClose: () => void
+}
+
+const ClientModal = ({
+	title = 'New Client',
+	description = 'Add the new Clients information to save it for next time.',
+	submitText = 'Add',
+	cancelText = 'Cancel',
+	client,
+	handleClose,
+	onSubmit = newClient,
+}: ClientModalProps) => {
 	const queryClient = useQueryClient()
-
-	const handleClose = () => {
-		dispatch(updateAddClientModalOpen(false))
-	}
-
 	const handleSubmit = async (form: FormData) => {
 		const formData = Object.fromEntries(form.entries())
 
-		const data = await newClient(formData as NewClientDTO)
-		if (!(data instanceof String)) {
+		const result = await onSubmit(formData as NewClientDTO)
+		if (!(result instanceof String)) {
 			queryClient.invalidateQueries({ queryKey: ['clients'] })
 			handleClose()
 		}
 	}
 	return (
-		<Transition show={addClientModalOpen} as={Fragment}>
+		<Transition show={true} as={Fragment}>
 			<Dialog as='div' onClose={handleClose} className='relative z-50'>
 				<TransitionChild
 					as={Fragment}
@@ -58,17 +67,16 @@ const AddClientModal = () => {
 							leaveTo='opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95'
 						>
 							<DialogPanel className='relative transform overflow-hidden rounded-lg bg-white px-4 pt-5 pb-4 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:p-6'>
-								<DialogTitle>New Client</DialogTitle>
+								<DialogTitle>{title}</DialogTitle>
 								<form className='flex flex-col gap-4' action={handleSubmit}>
-									<DialogTitle>
-										Add the new Clients information to save it for next time.
-									</DialogTitle>
+									<DialogTitle>{description}</DialogTitle>
 									<TextInput
 										autoFocus
 										type='text'
 										id='name'
 										name='name'
 										ariaLabel='Name'
+										defaultValue={client?.name}
 										placeholder='First and Last Name'
 									/>
 
@@ -78,6 +86,7 @@ const AddClientModal = () => {
 										id='nitroxCert'
 										name='nitroxCert'
 										ariaLabel='Nitrox Certification'
+										defaultValue={client?.nitroxCert}
 										placeholder='Certification number to use <40% nitrox'
 									/>
 
@@ -86,6 +95,7 @@ const AddClientModal = () => {
 										type='text'
 										id='advancedNitroxCert'
 										name='advancedNitroxCert'
+										defaultValue={client?.advancedNitroxCert}
 										ariaLabel='Advanced Nitrox Certification'
 										placeholder='Certification number to use up to 100% oxygen'
 									/>
@@ -95,6 +105,7 @@ const AddClientModal = () => {
 										type='text'
 										id='trimixCert'
 										name='trimixCert'
+										defaultValue={client?.trimixCert}
 										ariaLabel='Trimix Certification'
 										placeholder='Certification number to helium in the breathing mix'
 									/>
@@ -104,15 +115,20 @@ const AddClientModal = () => {
 										type='text'
 										id='inspectionCert'
 										name='inspectionCert'
+										defaultValue={client?.inspectionCert}
 										ariaLabel='Visual Inspection Certification'
 										placeholder='Certification number to perform visual inspections on tanks'
 									/>
 
+									{client && (
+										<input type='hidden' name='id' value={client.id} />
+									)}
+
 									<div className='flex w-full justify-end gap-2'>
 										<Button variant='ghost' onClick={handleClose}>
-											Cancel
+											{cancelText}
 										</Button>
-										<Button type='submit'>Add</Button>
+										<Button type='submit'>{submitText}</Button>
 									</div>
 								</form>
 							</DialogPanel>
@@ -124,4 +140,4 @@ const AddClientModal = () => {
 	)
 }
 
-export default AddClientModal
+export default ClientModal

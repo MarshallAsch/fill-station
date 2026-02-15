@@ -1,6 +1,8 @@
+import { Client } from '@/types/client'
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
 type InitialState = {
+	editClient?: Client
 	addCylinderModalOpen: boolean
 	addServiceModalOpen: boolean
 	addClientModalOpen: boolean
@@ -8,6 +10,7 @@ type InitialState = {
 }
 
 const initialState: InitialState = {
+	editClient: undefined,
 	addCylinderModalOpen: false,
 	addServiceModalOpen: false,
 	addClientModalOpen: false,
@@ -30,6 +33,9 @@ const modalSlice = createSlice({
 		updateAddClientModalOpen(state, action: PayloadAction<boolean>) {
 			state.addClientModalOpen = action.payload
 		},
+		updateEditClientModal(state, action: PayloadAction<Client | undefined>) {
+			state.editClient = action.payload
+		},
 	},
 })
 
@@ -38,5 +44,6 @@ export const {
 	updateAddClientModalOpen,
 	updateAddServiceModalOpen,
 	updateServiceModalHours,
+	updateEditClientModal,
 } = modalSlice.actions
 export default modalSlice.reducer

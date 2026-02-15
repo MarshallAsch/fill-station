@@ -1,18 +1,42 @@
-import { useAppSelector } from '@/redux/hooks'
+import { useAppDispatch, useAppSelector } from '@/redux/hooks'
 import { ReactNode } from 'react'
 import AddCylinderModal from '../Modals/AddCylinderModal'
 import AddServiceModal from '../Modals/AddServiceModal'
-import AddClientModal from '../Modals/AddClientModal'
+import ClientModal from '../Modals/ClientModal'
+import { updateClient } from '@/app/_api'
+import {
+	updateAddClientModalOpen,
+	updateEditClientModal,
+} from '@/redux/modal/modalSlice'
 
 const ModalProvider = ({ children }: { children: ReactNode }) => {
-	const { addCylinderModalOpen, addClientModalOpen, addServiceModalOpen } =
-		useAppSelector((state) => state.modal)
+	const {
+		addCylinderModalOpen,
+		addClientModalOpen,
+		addServiceModalOpen,
+		editClient,
+	} = useAppSelector((state) => state.modal)
+	const dispatch = useAppDispatch()
 
 	return (
 		<>
 			{addCylinderModalOpen && <AddCylinderModal />}
 			{addServiceModalOpen && <AddServiceModal />}
-			{addClientModalOpen && <AddClientModal />}
+			{addClientModalOpen && (
+				<ClientModal
+					handleClose={() => dispatch(updateAddClientModalOpen(false))}
+				/>
+			)}
+			{editClient && (
+				<ClientModal
+					client={editClient}
+					title='Edit Client'
+					submitText='Update'
+					description={`Update ${editClient.name}'s details.`}
+					onSubmit={updateClient}
+					handleClose={() => dispatch(updateEditClientModal(undefined))}
+				/>
+			)}
 			{children}
 		</>
 	)
