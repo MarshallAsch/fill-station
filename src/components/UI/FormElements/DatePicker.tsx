@@ -9,6 +9,10 @@ type DatePickerProps = {
 	name: string
 	id: string
 	description?: string
+	value?: Dayjs
+	readOnly?: boolean
+	defaultValue?: Dayjs
+	onChange?: (date: Dayjs) => void
 }
 
 export default function DatePicker({
@@ -17,12 +21,13 @@ export default function DatePicker({
 	name,
 	id,
 	description,
+	readOnly = false,
+	defaultValue,
+	value,
+	onChange,
 }: DatePickerProps) {
-	const [value, setValue] = useState<Dayjs | null>(null)
 	const today = dayjs()
-	const [selectedDate, setSelectedDate] = useState<Dayjs>(
-		value ? dayjs(value) : today,
-	)
+	const [selectedDate, setSelectedDate] = useState<Dayjs>(defaultValue || today)
 	const [currentMonth, setCurrentMonth] = useState(selectedDate)
 	const [open, setOpen] = useState(false)
 	const ref = useRef<HTMLDivElement | null>(null)
@@ -58,7 +63,7 @@ export default function DatePicker({
 
 	const selectDate = (date: Dayjs) => {
 		setSelectedDate(date)
-		setValue(date)
+		onChange && onChange(date)
 		setOpen(false)
 	}
 
@@ -74,12 +79,12 @@ export default function DatePicker({
 			<label>{title}</label>
 			<button
 				type='button'
-				onClick={() => setOpen((o) => !o)}
+				onClick={() => !readOnly && setOpen((o) => !o)}
 				className='flex w-full items-center justify-between rounded-lg border border-gray-300 bg-white px-3 py-2 text-left text-sm shadow-sm hover:border-gray-400'
 			>
 				{mode === 'month'
-					? selectedDate.format('MMMM YYYY')
-					: selectedDate.format('MMM DD YYYY')}
+					? (value || selectedDate).format('MMMM YYYY')
+					: (value || selectedDate).format('MMM DD YYYY')}
 				<span className=''>
 					<CalendarDaysIcon className='h-5 w-5' />
 				</span>
@@ -198,7 +203,7 @@ export default function DatePicker({
 				id={id}
 				type='hidden'
 				name={name}
-				value={selectedDate
+				value={(value || selectedDate)
 					.hour(0)
 					.minute(0)
 					.second(0)

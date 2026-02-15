@@ -31,7 +31,7 @@ type CylinderPickerProps = {
 	showExpired?: boolean
 	initialValue?: Cylinder
 	filter?: (c: Cylinder) => boolean
-	onChange?: (c: Cylinder | null) => void
+	onChange?: (c?: Cylinder) => void
 }
 
 function useLoadCylinder() {
@@ -90,7 +90,9 @@ const CylinderPicker = ({
 			onChange={(cylinder) => {
 				setQuery('')
 				setSelectedCylinder(cylinder)
-				onChange && onChange(cylinder)
+				if (cylinder) {
+					onChange && onChange(cylinder)
+				}
 			}}
 		>
 			<Label className='block text-sm/6 font-medium text-gray-900'>
