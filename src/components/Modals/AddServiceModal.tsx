@@ -7,7 +7,7 @@ import {
 	Transition,
 	TransitionChild,
 } from '@headlessui/react'
-import { FormEvent, Fragment } from 'react'
+import { Fragment } from 'react'
 import TextInput from '../UI/FormElements/TextInput'
 import DatePicker from '../UI/FormElements/DatePicker'
 import ListBox from '../UI/FormElements/ListBox'
@@ -51,11 +51,7 @@ const AddServiceModal = () => {
 		dispatch(updateAddServiceModalOpen(false))
 	}
 
-	const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
-		event.preventDefault()
-
-		// For this to work properly, the name provided to each input should be unique and match the schema on the BE
-		const form = new FormData(event.target as HTMLFormElement)
+	const handleSubmit = async (form: FormData) => {
 		const formData: any = Object.fromEntries(form.entries())
 
 		let data = await newMaintenance(formData as NewMaintenanceDTO)
@@ -91,7 +87,7 @@ const AddServiceModal = () => {
 						>
 							<DialogPanel className='transform overflow-hidden rounded-lg bg-white px-4 pt-5 pb-4 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:p-6'>
 								<DialogTitle>New Cylinder</DialogTitle>
-								<form className='flex flex-col gap-4' onSubmit={handleSubmit}>
+								<form className='flex flex-col gap-4' action={handleSubmit}>
 									<DialogTitle>Create Compressor Service Record</DialogTitle>
 
 									<ListBox
