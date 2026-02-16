@@ -12,6 +12,7 @@ const navigation = [
 	{ name: 'Fills', value: TAB.FILLS, icon: AirTank },
 	{ name: 'Visual Inspections', value: TAB.VIS_INSPECTION, icon: EyeIcon },
 	{ name: 'Client List', value: TAB.CLIENTS, icon: UsersIcon },
+	{ name: 'Cylinder List', value: TAB.CYLINDERS, icon: AirTank },
 	{
 		name: 'Compressor Maintenance',
 		value: TAB.COMP_MAINTENANCE,
