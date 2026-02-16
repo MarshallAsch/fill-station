@@ -3,6 +3,7 @@ import FillsRow from './FillsRow'
 import { addNewFill } from '@/redux/fills/fillsSlice'
 import Button from '../UI/Button'
 import { Client } from '@/types/client'
+import { PlusCircleIcon } from '@heroicons/react/24/outline'
 
 const FillsTable = ({ client }: { client?: Client }) => {
 	const fills = useAppSelector((state) => state.fills)
@@ -65,6 +66,21 @@ const FillsTable = ({ client }: { client?: Client }) => {
 											client={client}
 										/>
 									))}
+									<tr>
+										<td
+											colSpan={6}
+											className='h-full bg-gray-50 py-3.5 pr-3 pl-4 text-center text-sm font-semibold text-gray-900 sm:pl-6'
+										>
+											<div>
+												<Button
+													onClick={() => dispatch(addNewFill())}
+													variant='ghost'
+												>
+													<PlusCircleIcon className='h-10 w-10' />
+												</Button>
+											</div>
+										</td>
+									</tr>
 								</tbody>
 							</table>
 						</div>
