@@ -7,6 +7,7 @@ import MaintenanceHistory from '@/components/History/MaintenanceHistory/Maintena
 import HistoryTable from '@/components/History/components/HistoryTable'
 import VisHistory from '@/components/History/VisHistory'
 import ClientList from '@/components/History/ClientList'
+import CylinderList from '@/components/History/CylinderList'
 
 export default function History() {
 	const { selectedTab } = useAppSelector((state) => state.history)
@@ -21,6 +22,8 @@ export default function History() {
 				return <MaintenanceHistory />
 			case TAB.CLIENTS:
 				return <ClientList />
+			case TAB.CYLINDERS:
+				return <CylinderList />
 			default:
 				return <HistoryTable />
 		}

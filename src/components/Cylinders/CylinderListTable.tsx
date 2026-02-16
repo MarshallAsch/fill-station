@@ -4,8 +4,10 @@ import { Cylinder as CylinderModel } from '@/lib/models/cylinder'
 
 const CylinderListTable = ({
 	cylinders,
+	showOwner = false,
 }: {
 	cylinders: Cylinder[] | CylinderModel[]
+	showOwner?: boolean
 }) => {
 	return (
 		<div className='mt-8 flow-root'>
@@ -21,6 +23,14 @@ const CylinderListTable = ({
 									>
 										Serial number
 									</th>
+									{showOwner && (
+										<th
+											scope='col'
+											className='py-3.5 pr-3 pl-4 text-center text-sm font-semibold text-gray-900 sm:pl-6'
+										>
+											Owner
+										</th>
+									)}
 									<th
 										scope='col'
 										className='px-3 py-3.5 text-center text-sm font-semibold text-gray-900'
@@ -51,11 +61,21 @@ const CylinderListTable = ({
 									>
 										Next Vis
 									</th>
+									<th
+										scope='col'
+										className='px-3 py-3.5 text-center text-sm font-semibold text-gray-900'
+									>
+										Do Inspection
+									</th>
 								</tr>
 							</thead>
 							<tbody className='divide-y divide-gray-200 bg-white'>
 								{cylinders.map((cylinder) => (
-									<CylinderListRow key={cylinder.id} cylinder={cylinder} />
+									<CylinderListRow
+										key={cylinder.id}
+										cylinder={cylinder}
+										showOwner={showOwner}
+									/>
 								))}
 							</tbody>
 						</table>
