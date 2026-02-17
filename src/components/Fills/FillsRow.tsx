@@ -3,7 +3,7 @@ import CylinderPicker from '../UI/FormElements/CylinderPicker'
 import FillType from './FillType'
 import { removeFill, updateFill } from '@/redux/fills/fillsSlice'
 import NumberInput from '../UI/FormElements/NumberInput'
-import { useAppDispatch } from '@/redux/hooks'
+import { useAppDispatch, useAppSelector } from '@/redux/hooks'
 import { Fill } from '@/types/fills'
 import { Client } from '@/types/client'
 
@@ -15,12 +15,17 @@ type FillsRowProps = {
 
 const FillsRow = ({ disableDelete = false, fill, client }: FillsRowProps) => {
 	const dispatch = useAppDispatch()
+	const usedCylinders = useAppSelector((state) => state.fills)
+		.map((f) => f.cylinder?.id)
+		.filter((id) => id !== undefined)
 
 	return (
 		<tr key={fill.id}>
 			<td className='py-4 pr-3 pl-4 text-sm font-medium whitespace-nowrap text-gray-900 sm:pl-6'>
 				<CylinderPicker
-					filter={(c) => !client || client.id == c.ownerId}
+					filter={(c) =>
+						(!client || client.id == c.ownerId) && !usedCylinders.includes(c.id)
+					}
 					initialValue={fill.cylinder}
 					onChange={(val) =>
 						dispatch(
