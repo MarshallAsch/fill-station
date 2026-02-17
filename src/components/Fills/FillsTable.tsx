@@ -8,6 +8,7 @@ import { PlusCircleIcon } from '@heroicons/react/24/outline'
 const FillsTable = ({ client }: { client?: Client }) => {
 	const fills = useAppSelector((state) => state.fills)
 	const dispatch = useAppDispatch()
+
 	return (
 		<div className='px-4 sm:px-6 lg:px-8'>
 			<div className='flex justify-end'>
