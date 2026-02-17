@@ -1,13 +1,15 @@
 'use client'
 
-import React, { useState } from 'react'
+import React from 'react'
 import DatePicker from '@/components/UI/FormElements/DatePicker'
 import ClientPicker from '@/components/UI/FormElements/ClientPicker'
 import FillsTable from '@/components/Fills/FillsTable'
-import { Client } from '@/types/client'
+import { useAppDispatch, useAppSelector } from '@/redux/hooks'
+import { updateClient } from '@/redux/fills/fillsSlice'
 
 export default function Fills() {
-	const [client, setClient] = useState<Client>()
+	const dispatch = useAppDispatch()
+	const client = useAppSelector((state) => state.fills).client
 
 	return (
 		<div className='max-w-7xl'>
@@ -16,7 +18,10 @@ export default function Fills() {
 
 				<div className='flex gap-2'>
 					<DatePicker title='Fill Date' name='fillDate' id='fill-date' />
-					<ClientPicker onChange={(c) => setClient(c)} />
+					<ClientPicker
+						initialValue={client}
+						onChange={(c) => dispatch(updateClient(c))}
+					/>
 				</div>
 
 				<FillsTable client={client} />

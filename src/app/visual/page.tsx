@@ -8,15 +8,14 @@ import Internal from '@/components/Visual/Internal'
 import Threading from '@/components/Visual/Threading'
 import Valve from '@/components/Visual/Valve'
 import FinalStatus from '@/components/Visual/FinalStatus'
-import { useState } from 'react'
 import Button from '@/components/UI/Button'
 import ClientPicker from '@/components/UI/FormElements/ClientPicker'
-import { Client } from '@/types/client'
-import { Cylinder } from '@/types/cylinder'
+import { useAppDispatch, useAppSelector } from '@/redux/hooks'
+import { updateClient, updateCylinder } from '@/redux/visuals/visualsSlice'
 
 export default function Visual() {
-	const [client, setClient] = useState<Client>()
-	const [cylinder, setCylinder] = useState<Cylinder>()
+	const dispatch = useAppDispatch()
+	const { client, cylinder } = useAppSelector((state) => state.visuals)
 
 	const handleSubmit = (form: FormData) => {
 		const formData = Object.fromEntries(form.entries())
@@ -34,9 +33,13 @@ export default function Visual() {
 
 				<form action={handleSubmit}>
 					<div className='flex w-full justify-center gap-6'>
-						<ClientPicker onChange={(c) => setClient(c)} />
+						<ClientPicker
+							initialValue={client}
+							onChange={(c) => dispatch(updateClient(c))}
+						/>
 						<CylinderPicker
-							onChange={(c) => setCylinder(c)}
+							initialValue={cylinder}
+							onChange={(c) => dispatch(updateCylinder(c))}
 							filter={(c) => !client || client.id == c.ownerId}
 						/>
 					</div>
