@@ -12,6 +12,8 @@ import {
 } from '@headlessui/react'
 import { useEffect, useState } from 'react'
 import { ChevronDownIcon } from '@heroicons/react/24/outline'
+import { ExclamationTriangleIcon } from '@heroicons/react/24/solid'
+
 import { updateAddCylinderModalOpen } from '@/redux/modal/modalSlice'
 import { updateCylinder } from '@/redux/fills/fillsSlice'
 import { useQuery } from '@tanstack/react-query'
@@ -21,6 +23,7 @@ import dayjs from 'dayjs'
 import duration from 'dayjs/plugin/duration'
 import { Cylinder } from '@/types/cylinder'
 import Button from '../Button'
+import Tooltip from '../Tooltip'
 
 dayjs.extend(duration)
 
@@ -138,19 +141,33 @@ const CylinderPicker = ({
 							{query}
 						</ComboboxOption>
 					)}
-					{filteredCylinders.filter(filter).map((cylinder) => (
-						<ComboboxOption
-							key={cylinder.serialNumber}
-							value={cylinder}
-							disabled={
-								!showExpired &&
-								dayjs.duration(dayjs().diff(cylinder.lastHydro)).asYears() > 5
-							}
-							className='cursor-pointer px-3 py-2 text-gray-900 select-none data-focus:bg-indigo-600 data-focus:text-white data-focus:outline-hidden'
-						>
-							{cylinder.serialNumber}
-						</ComboboxOption>
-					))}
+					{filteredCylinders.filter(filter).map((cylinder) => {
+						let needsHydro =
+							dayjs.duration(dayjs().diff(cylinder.lastHydro)).asYears() > 5
+						let needsVis =
+							dayjs.duration(dayjs().diff(cylinder.lastVis)).asMonths() > 12
+
+						return (
+							<ComboboxOption
+								key={cylinder.serialNumber}
+								value={cylinder}
+								disabled={!showExpired && needsHydro}
+								className='flex cursor-pointer justify-between gap-2 px-3 py-2 text-gray-900 select-none data-focus:bg-indigo-600 data-focus:text-white data-focus:outline-hidden'
+							>
+								{cylinder.serialNumber}
+								{(needsHydro || needsVis) && (
+									<Tooltip
+										position='left'
+										message={`Needs ${needsHydro ? 'Hydro' : 'Visual'}`}
+									>
+										<ExclamationTriangleIcon
+											className={`size-5 ${needsHydro ? 'fill-red-600' : 'fill-amber-500'} `}
+										/>
+									</Tooltip>
+								)}
+							</ComboboxOption>
+						)
+					})}
 				</ComboboxOptions>
 			</div>
 		</Combobox>
