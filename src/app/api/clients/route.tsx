@@ -1,11 +1,26 @@
+import { auth } from '@/auth'
 import { Client } from '@/lib/models/client'
 
 export async function GET(request: Request) {
+	const session = await auth()
+	if (!session)
+		return Response.json(
+			{ error: 'auth', message: 'Must be logged in' },
+			{ status: 401 },
+		)
+
 	let clients = await Client.findAll()
 	return Response.json(clients)
 }
 
 export async function POST(request: Request) {
+	const session = await auth()
+	if (!session)
+		return Response.json(
+			{ error: 'auth', message: 'Must be logged in' },
+			{ status: 401 },
+		)
+
 	let { name, nitroxCert, advancedNitroxCert, trimixCert, inspectionCert } =
 		await request.json()
 

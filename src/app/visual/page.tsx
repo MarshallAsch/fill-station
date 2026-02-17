@@ -13,10 +13,16 @@ import Button from '@/components/UI/Button'
 import ClientPicker from '@/components/UI/FormElements/ClientPicker'
 import { Client } from '@/types/client'
 import { Cylinder } from '@/types/cylinder'
+import { useSession } from 'next-auth/react'
 
 export default function Visual() {
 	const [client, setClient] = useState<Client>()
 	const [cylinder, setCylinder] = useState<Cylinder>()
+
+	const session = useSession()
+	if (session.status !== 'authenticated') {
+		return <div>Not Authorized</div>
+	}
 
 	const handleSubmit = (form: FormData) => {
 		const formData = Object.fromEntries(form.entries())
