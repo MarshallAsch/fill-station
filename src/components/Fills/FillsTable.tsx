@@ -6,7 +6,7 @@ import { Client } from '@/types/client'
 import { PlusCircleIcon } from '@heroicons/react/24/outline'
 
 const FillsTable = ({ client }: { client?: Client }) => {
-	const fills = useAppSelector((state) => state.fills)
+	const fills = useAppSelector((state) => state.fills).fills
 	const dispatch = useAppDispatch()
 
 	return (

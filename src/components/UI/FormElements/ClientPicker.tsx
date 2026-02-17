@@ -39,6 +39,7 @@ type ClientPickerProps = {
 	label?: string
 	addLabel?: string
 	name?: string
+	initialValue?: Client
 	filter?: (c: Client) => boolean
 	onChange?: (c: Client) => void
 }
@@ -48,13 +49,16 @@ const ClientPicker = ({
 	name = 'client',
 	label = 'Select a Client',
 	addLabel = 'Add new Client',
+	initialValue,
 	filter,
 	onChange,
 }: ClientPickerProps) => {
 	const dispatch = useAppDispatch()
 	const { clients, status, error } = useLoadClients()
 	const [query, setQuery] = useState('')
-	const [selectedClient, setSelectedClient] = useState<Client>()
+	const [selectedClient, setSelectedClient] = useState<
+		Client | null | undefined
+	>(initialValue)
 
 	const preFiltered = filter ? clients.filter(filter) : clients
 

@@ -16,7 +16,7 @@ type FillsRowProps = {
 const FillsRow = ({ disableDelete = false, fill, client }: FillsRowProps) => {
 	const dispatch = useAppDispatch()
 	const usedCylinders = useAppSelector((state) => state.fills)
-		.map((f) => f.cylinder?.id)
+		.fills.map((f) => f.cylinder?.id)
 		.filter((id) => id !== undefined)
 
 	return (
