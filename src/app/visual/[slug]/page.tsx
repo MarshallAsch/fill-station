@@ -1,5 +1,6 @@
 'use server'
 
+import { auth } from '@/auth'
 import FormGroup from '@/components/UI/FormGroup'
 import PropertyRow from '@/components/VisHistory/PropertyRow'
 import { Client } from '@/lib/models/client'
@@ -20,6 +21,11 @@ export default async function TankVisual({
 }: {
 	params: Promise<{ slug: string }>
 }) {
+	const session = await auth()
+	if (!session) {
+		return <div>Not Authorized</div>
+	}
+
 	const { slug: inspectionID } = await params
 
 	let vis = await Visual.findByPk(inspectionID, { include: [Cylinder, Client] })

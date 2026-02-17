@@ -1,5 +1,6 @@
 'use server'
 
+import { auth } from '@/auth'
 import CylinderListTable from '@/components/Cylinders/CylinderListTable'
 import { Client } from '@/lib/models/client'
 import { Cylinder } from '@/lib/models/cylinder'
@@ -9,6 +10,11 @@ export default async function ClientDetails({
 }: {
 	params: Promise<{ slug: string }>
 }) {
+	const session = await auth()
+	if (!session) {
+		return <div>Not Authorized</div>
+	}
+
 	const { slug: clientId } = await params
 
 	let client = await Client.findByPk(clientId, { include: Cylinder })

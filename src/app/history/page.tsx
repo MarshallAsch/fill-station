@@ -8,9 +8,15 @@ import HistoryTable from '@/components/History/components/HistoryTable'
 import VisHistory from '@/components/History/VisHistory'
 import ClientList from '@/components/History/ClientList'
 import CylinderList from '@/components/History/CylinderList'
+import { useSession } from 'next-auth/react'
 
 export default function History() {
 	const { selectedTab } = useAppSelector((state) => state.history)
+
+	const session = useSession()
+	if (session.status !== 'authenticated') {
+		return <div>Not Authorized</div>
+	}
 
 	const getTabComponent = () => {
 		switch (selectedTab) {

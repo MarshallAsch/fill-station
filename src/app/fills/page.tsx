@@ -5,9 +5,15 @@ import DatePicker from '@/components/UI/FormElements/DatePicker'
 import ClientPicker from '@/components/UI/FormElements/ClientPicker'
 import FillsTable from '@/components/Fills/FillsTable'
 import { Client } from '@/types/client'
+import { useSession } from 'next-auth/react'
 
 export default function Fills() {
 	const [client, setClient] = useState<Client>()
+
+	const session = useSession()
+	if (session.status !== 'authenticated') {
+		return <div>Not Authorized</div>
+	}
 
 	return (
 		<div className='max-w-7xl'>

@@ -1,3 +1,4 @@
+import { auth } from '@/auth'
 import { Client } from '@/lib/models/client'
 import { Fill } from '@/lib/models/fill'
 import dayjs from 'dayjs'
@@ -9,6 +10,13 @@ export async function GET(
 	request: Request,
 	{ params }: { params: Promise<{ cylinderId: string }> },
 ) {
+	const session = await auth()
+	if (!session)
+		return Response.json(
+			{ error: 'auth', message: 'Must be logged in' },
+			{ status: 401 },
+		)
+
 	const { cylinderId } = await params
 
 	let cylinders = await Fill.findAll({
@@ -24,6 +32,13 @@ export async function POST(
 	request: Request,
 	{ params }: { params: Promise<{ cylinderId: string }> },
 ) {
+	const session = await auth()
+	if (!session)
+		return Response.json(
+			{ error: 'auth', message: 'Must be logged in' },
+			{ status: 401 },
+		)
+
 	const { cylinderId } = await params
 
 	let client = await Client.findByPk(cylinderId)

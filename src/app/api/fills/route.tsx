@@ -1,8 +1,16 @@
+import { auth } from '@/auth'
 import { Cylinder } from '@/lib/models/cylinder'
 import { Fill } from '@/lib/models/fill'
 import dayjs from 'dayjs'
 
 export async function GET(request: Request) {
+	const session = await auth()
+	if (!session)
+		return Response.json(
+			{ error: 'auth', message: 'Must be logged in' },
+			{ status: 401 },
+		)
+
 	let fills = await Fill.findAll({
 		include: Cylinder,
 	})
@@ -19,6 +27,13 @@ type FillDto = {
 }
 
 export async function POST(request: Request) {
+	const session = await auth()
+	if (!session)
+		return Response.json(
+			{ error: 'auth', message: 'Must be logged in' },
+			{ status: 401 },
+		)
+
 	let fills: FillDto[] = await request.json()
 	let cylinders: Cylinder[] = []
 
