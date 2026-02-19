@@ -1,10 +1,9 @@
 'use server'
 
+import CylinderListTable from '@/components/Cylinders/CylinderListTable'
 import FormGroup from '@/components/UI/FormGroup'
 import PropertyRow from '@/components/VisHistory/PropertyRow'
-import CylinderListTable from '@/components/Cylinders/CylinderListTable'
 import { Client } from '@/lib/models/client'
-import { Cylinder } from '@/lib/models/cylinder'
 
 export default async function ClientDetails({
 	params,
@@ -13,7 +12,7 @@ export default async function ClientDetails({
 }) {
 	const { slug: clientId } = await params
 
-	let client = await Client.findByPk(clientId, { include: Cylinder })
+	let client = await Client.findByPk(clientId)
 
 	return (
 		<div className='max-w-7xl'>
