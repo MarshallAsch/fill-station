@@ -7,7 +7,7 @@ import { JSX } from 'react'
 
 type Props = {
 	title: string
-	description: string
+	description?: string
 	children: JSX.Element
 	badge?: 'acceptable' | 'marginal' | 'fail'
 }
