@@ -4,10 +4,28 @@ import { addNewFill } from '@/redux/fills/fillsSlice'
 import Button from '../UI/Button'
 import { Client } from '@/types/client'
 import { PlusCircleIcon } from '@heroicons/react/24/outline'
+import { useEffect, useState, useTransition } from 'react'
+
+const ROWS_PER_PAGE = 20
 
 const FillsTable = ({ client }: { client?: Client }) => {
 	const fills = useAppSelector((state) => state.fills).fills
+
+	const [page, setPage] = useState(1)
+	const [, startTransition] = useTransition()
+
 	const dispatch = useAppDispatch()
+
+	const start = (page - 1) * ROWS_PER_PAGE
+	const end = start + ROWS_PER_PAGE
+	const paginatedFills = fills.slice(start, end)
+	const totalPages = Math.ceil(fills.length / ROWS_PER_PAGE)
+
+	useEffect(() => {
+		startTransition(() => {
+			setPage(1)
+		})
+	}, [fills.length])
 
 	return (
 		<div className='px-4 sm:px-6 lg:px-8'>
@@ -59,7 +77,7 @@ const FillsTable = ({ client }: { client?: Client }) => {
 									</tr>
 								</thead>
 								<tbody className='h-full divide-y divide-gray-200 bg-white'>
-									{fills.map((fill) => (
+									{paginatedFills.map((fill) => (
 										<FillsRow
 											disableDelete={fills.length === 1}
 											key={fill.id}
@@ -84,6 +102,29 @@ const FillsTable = ({ client }: { client?: Client }) => {
 									</tr>
 								</tbody>
 							</table>
+							<div className='flex items-center justify-between px-4 py-4'>
+								<p className='text-sm text-gray-600'>
+									Page {page} of {totalPages}
+								</p>
+
+								<div className='flex gap-2'>
+									<Button
+										variant='ghost'
+										onClick={() => setPage((p) => Math.max(p - 1, 1))}
+										disabled={page === 1}
+									>
+										Previous
+									</Button>
+
+									<Button
+										variant='ghost'
+										onClick={() => setPage((p) => Math.min(p + 1, totalPages))}
+										disabled={page >= totalPages}
+									>
+										Next
+									</Button>
+								</div>
+							</div>
 						</div>
 					</div>
 				</div>

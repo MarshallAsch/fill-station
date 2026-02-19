@@ -2,18 +2,14 @@
 
 import FormGroup from '@/components/UI/FormGroup'
 import PropertyRow from '@/components/VisHistory/PropertyRow'
-import { Client } from '@/lib/models/client'
 import { Cylinder } from '@/lib/models/cylinder'
 import { Visual } from '@/lib/models/visual'
 import {
 	CheckCircleIcon,
 	ExclamationCircleIcon,
 	ExclamationTriangleIcon,
-	ForwardIcon,
-	BackwardIcon,
 } from '@heroicons/react/24/solid'
 import dayjs from 'dayjs'
-import Link from 'next/link'
 
 export default async function TankVisual({
 	params,
@@ -22,8 +18,7 @@ export default async function TankVisual({
 }) {
 	const { slug: inspectionID } = await params
 
-	let vis = await Visual.findByPk(inspectionID, { include: [Cylinder, Client] })
-	let count = await Visual.count()
+	let vis = await Visual.findByPk(inspectionID, { include: Cylinder })
 
 	if (!vis) {
 		return <h1>Loading...</h1>
@@ -58,26 +53,12 @@ export default async function TankVisual({
 							{vis.id}
 						</p>
 						<p className='text-lg/8 text-gray-600'>
-							Inspected by: {vis.Client.name} (#{vis.Client.id})
+							Inspected by: {vis.inspectorId}
 						</p>
-					</div>
-
-					<div className='flex gap-2'>
-						{vis.id > 1 && (
-							<Link href={`/visual/${vis.id - 1}`}>
-								<BackwardIcon className='h-5' />
-							</Link>
-						)}
-
-						{vis.id < count && (
-							<Link href={`/visual/${vis.id + 1}`}>
-								<ForwardIcon className='h-5' />
-							</Link>
-						)}
 					</div>
 				</div>
 
-				<FormGroup title='Cylinder Info' description=''>
+				<FormGroup title='Cylinder Info'>
 					<div className='flex flex-col gap-2'>
 						<PropertyRow title='Material' text={vis.Cylinder?.material} />
 						<PropertyRow
@@ -92,11 +73,7 @@ export default async function TankVisual({
 					</div>
 				</FormGroup>
 
-				<FormGroup
-					title='External'
-					description=''
-					badge={vis.externalStandards}
-				>
+				<FormGroup title='External' badge={vis.externalStandards}>
 					<div className='flex flex-col gap-2'>
 						<PropertyRow
 							title='Evidence of Heat Damage'
@@ -130,11 +107,7 @@ export default async function TankVisual({
 					</div>
 				</FormGroup>
 
-				<FormGroup
-					title='Internal'
-					description=''
-					badge={vis.threadingStandards}
-				>
+				<FormGroup title='Internal' badge={vis.threadingStandards}>
 					<div className='flex flex-col gap-2'>
 						<PropertyRow
 							title='Amount and composition of contents'
@@ -149,11 +122,7 @@ export default async function TankVisual({
 					</div>
 				</FormGroup>
 
-				<FormGroup
-					title='Threading'
-					description=''
-					badge={vis.threadingStandards}
-				>
+				<FormGroup title='Threading' badge={vis.threadingStandards}>
 					<div className='flex flex-col gap-2'>
 						<PropertyRow
 							title='Notes on Threads'
@@ -167,7 +136,7 @@ export default async function TankVisual({
 					</div>
 				</FormGroup>
 
-				<FormGroup title='Valve' description='' badge={vis.threadingStandards}>
+				<FormGroup title='Valve' badge={vis.threadingStandards}>
 					<div className='flex flex-col gap-2'>
 						<PropertyRow
 							title='Burst disk replaced'
@@ -190,7 +159,7 @@ export default async function TankVisual({
 					</div>
 				</FormGroup>
 
-				<FormGroup title='Final' description='' badge={vis.status}>
+				<FormGroup title='Final' badge={vis.status}>
 					<div className='flex flex-col gap-2'>
 						<PropertyRow
 							title='O2 cleaned'

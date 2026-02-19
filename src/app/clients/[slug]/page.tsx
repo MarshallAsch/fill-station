@@ -1,8 +1,9 @@
 'use server'
 
 import CylinderListTable from '@/components/Cylinders/CylinderListTable'
+import FormGroup from '@/components/UI/FormGroup'
+import PropertyRow from '@/components/VisHistory/PropertyRow'
 import { Client } from '@/lib/models/client'
-import { Cylinder } from '@/lib/models/cylinder'
 
 export default async function ClientDetails({
 	params,
@@ -11,7 +12,7 @@ export default async function ClientDetails({
 }) {
 	const { slug: clientId } = await params
 
-	let client = await Client.findByPk(clientId, { include: Cylinder })
+	let client = await Client.findByPk(clientId)
 
 	return (
 		<div className='max-w-7xl'>
@@ -21,25 +22,28 @@ export default async function ClientDetails({
 						Client Details: {client?.name}
 					</h1>
 				</div>
+
+				<FormGroup title='Certifications'>
+					<div className='flex flex-col gap-2'>
+						<PropertyRow title='Nitrox' text={client?.nitroxCert || 'None'} />
+						<PropertyRow
+							title='Advanced Nitrox'
+							text={client?.advancedNitroxCert || 'None'}
+						/>
+						<PropertyRow title='Trimix' text={client?.trimixCert || 'None'} />
+						<PropertyRow
+							title='Inspection'
+							text={client?.inspectionCert || 'None'}
+						/>
+						<PropertyRow title='Total Fills' text='0' />
+					</div>
+				</FormGroup>
 				<div className='flex flex-col items-center justify-center gap-3 py-6'>
-					<h1 className='text-2xl font-semibold text-gray-900'>
-						Certifications
-					</h1>
+					<h1 className='text-2xl font-semibold text-gray-900'>Cylinders</h1>
 				</div>
-				Nitrox: {client?.nitroxCert || 'None'}
-				<br />
-				Advanced Nitrox: {client?.advancedNitroxCert || 'None'}
-				<br />
-				Trimix: {client?.trimixCert || 'None'}
-				<br />
-				Inspection: {client?.inspectionCert || 'None'}
-			</div>
 
-			<div className='flex flex-col items-center justify-center gap-3 py-6'>
-				<h1 className='text-2xl font-semibold text-gray-900'>Cylinders</h1>
+				<CylinderListTable cylinders={client?.Cylinders || []} />
 			</div>
-
-			<CylinderListTable cylinders={client?.Cylinders || []} />
 		</div>
 	)
 }

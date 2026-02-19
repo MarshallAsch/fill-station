@@ -3,11 +3,20 @@ import VisHistoryRow from './VisHistoryRow'
 import { useQuery } from '@tanstack/react-query'
 import { setVisHistory } from '@/redux/history/historySlice'
 import { getAllVisuals } from '@/app/_api'
+import { useEffect, useState, useTransition } from 'react'
+import Button from '@/components/UI/Button'
+import dayjs from 'dayjs'
+
+const ROWS_PER_PAGE = 20
 
 function useLoadVisuals() {
 	const { status, data, error } = useQuery({
 		queryKey: ['fills'],
 		queryFn: getAllVisuals,
+		select: (data) =>
+			[...data].sort(
+				(a, b) => dayjs(b.date).valueOf() - dayjs(a.date).valueOf(),
+			),
 	})
 
 	const dispatch = useAppDispatch()
@@ -22,6 +31,19 @@ function useLoadVisuals() {
 
 const VisHistoryTable = () => {
 	const { visuals, status, error } = useLoadVisuals()
+	const [page, setPage] = useState(1)
+	const [, startTransition] = useTransition()
+
+	const start = (page - 1) * ROWS_PER_PAGE
+	const end = start + ROWS_PER_PAGE
+	const paginatedVisuals = visuals.slice(start, end)
+	const totalPages = Math.ceil(visuals.length / ROWS_PER_PAGE)
+
+	useEffect(() => {
+		startTransition(() => {
+			setPage(1)
+		})
+	}, [visuals.length])
 
 	return (
 		<div className='min-w-full'>
@@ -65,11 +87,34 @@ const VisHistoryTable = () => {
 									</tr>
 								</thead>
 								<tbody className='divide-y divide-gray-200 bg-white'>
-									{visuals.map((vis) => (
+									{paginatedVisuals.map((vis) => (
 										<VisHistoryRow key={vis.id} visual={vis} />
 									))}
 								</tbody>
 							</table>
+							<div className='flex items-center justify-between px-4 py-4'>
+								<p className='text-sm text-gray-600'>
+									Page {page} of {totalPages}
+								</p>
+
+								<div className='flex gap-2'>
+									<Button
+										variant='ghost'
+										onClick={() => setPage((p) => Math.max(p - 1, 1))}
+										disabled={page === 1}
+									>
+										Previous
+									</Button>
+
+									<Button
+										variant='ghost'
+										onClick={() => setPage((p) => Math.min(p + 1, totalPages))}
+										disabled={page >= totalPages}
+									>
+										Next
+									</Button>
+								</div>
+							</div>
 						</div>
 					</div>
 				</div>
