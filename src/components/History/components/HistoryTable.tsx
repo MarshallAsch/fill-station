@@ -4,6 +4,10 @@ import { useQuery } from '@tanstack/react-query'
 import { getAllFills } from '@/app/_api'
 import { setFillHistory } from '@/redux/history/historySlice'
 import { Fill } from '@/types/fills'
+import { useEffect, useState, useTransition } from 'react'
+import Button from '@/components/UI/Button'
+
+const ROWS_PER_PAGE = 20
 
 function useLoadFills() {
 	const { status, data, error } = useQuery({
@@ -23,6 +27,20 @@ function useLoadFills() {
 
 const HistoryTable = () => {
 	const { fills, status, error } = useLoadFills()
+
+	const [page, setPage] = useState(1)
+	const [, startTransition] = useTransition()
+
+	const start = (page - 1) * ROWS_PER_PAGE
+	const end = start + ROWS_PER_PAGE
+	const paginatedFills = fills.slice(start, end)
+	const totalPages = Math.ceil(fills.length / ROWS_PER_PAGE)
+
+	useEffect(() => {
+		startTransition(() => {
+			setPage(1)
+		})
+	}, [fills.length])
 
 	return (
 		<div className='min-w-full'>
@@ -66,11 +84,34 @@ const HistoryTable = () => {
 									</tr>
 								</thead>
 								<tbody className='divide-y divide-gray-200 bg-white'>
-									{fills.map((fill) => (
+									{paginatedFills.map((fill) => (
 										<HistoryRow key={fill.id} fill={fill} />
 									))}
 								</tbody>
 							</table>
+							<div className='flex items-center justify-between px-4 py-4'>
+								<p className='text-sm text-gray-600'>
+									Page {page} of {totalPages}
+								</p>
+
+								<div className='flex gap-2'>
+									<Button
+										variant='ghost'
+										onClick={() => setPage((p) => Math.max(p - 1, 1))}
+										disabled={page === 1}
+									>
+										Previous
+									</Button>
+
+									<Button
+										variant='ghost'
+										onClick={() => setPage((p) => Math.min(p + 1, totalPages))}
+										disabled={page >= totalPages}
+									>
+										Next
+									</Button>
+								</div>
+							</div>
 						</div>
 					</div>
 				</div>

@@ -109,7 +109,7 @@ const VisHistoryTable = () => {
 									<Button
 										variant='ghost'
 										onClick={() => setPage((p) => Math.min(p + 1, totalPages))}
-										disabled={page === totalPages}
+										disabled={page >= totalPages}
 									>
 										Next
 									</Button>
