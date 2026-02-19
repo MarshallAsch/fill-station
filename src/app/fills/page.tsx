@@ -9,7 +9,7 @@ import { updateClient } from '@/redux/fills/fillsSlice'
 
 export default function Fills() {
 	const dispatch = useAppDispatch()
-	const client = useAppSelector((state) => state.fills).client
+	const client = useAppSelector((state) => state.fills.client)
 
 	return (
 		<div className='max-w-7xl'>

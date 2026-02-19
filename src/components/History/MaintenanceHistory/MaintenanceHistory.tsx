@@ -133,9 +133,12 @@ const MaintenanceHistory = () => {
 			<div className='my-8 grid grid-cols-1 gap-0.5 overflow-hidden rounded-2xl text-center md:grid-cols-2 lg:grid-cols-4'>
 				{summary &&
 					Object.entries(summary)
-						.filter(([key]) => key != 'last')
+						.filter(([key, value]) => key !== 'last' && value !== null)
 						.map(([key, item]) => (
-							<div key={key} className='flex flex-col bg-gray-400/5 p-8'>
+							<div
+								key={key}
+								className='flex flex-col items-center bg-gray-400/5 p-8'
+							>
 								<dt className='text-3xl font-semibold text-black'>
 									<Tooltip message={item.date.format('DD/MM/YYYY')}>
 										{item.date.from(dayjs(), true)} ago
@@ -159,44 +162,50 @@ const MaintenanceHistory = () => {
 				</div>
 			</div>
 			<ul role='list' className='-mb-8'>
-				{maintenance?.map((event, eventIdx) => (
-					<li key={event.id}>
-						<div className='relative pb-8 hover:font-bold'>
-							{eventIdx !== maintenance.length - 1 ? (
-								<span
-									aria-hidden='true'
-									className='absolute top-4 left-4 -ml-px h-full w-0.5 bg-gray-200'
-								/>
-							) : null}
-							<div className='relative flex items-center space-x-3'>
-								<div>
+				{maintenance
+					?.sort((a, b) => dayjs(b.date).valueOf() - dayjs(a.date).valueOf())
+					.map((event, eventIdx) => (
+						<li key={event.id}>
+							<div className='relative pb-8 hover:font-bold'>
+								{eventIdx !== maintenance.length - 1 ? (
 									<span
-										className={clsx(
-											getColor(event.type),
-											'flex size-8 items-center justify-center rounded-full ring-8 ring-white',
-										)}
-									>
-										{getIcon(event.type)}
-									</span>
-								</div>
-								<div className='flex min-w-0 flex-1 justify-between space-x-4 pt-1.5'>
+										aria-hidden='true'
+										className='absolute top-4 left-4 -ml-px h-full w-0.5 bg-gray-200'
+									/>
+								) : null}
+								<div className='relative flex items-center space-x-3'>
 									<div>
-										<p className='font-medium text-gray-900'>
-											{getTitle(event.type)}
-										</p>
-										<p className='text-sm text-gray-500'>{event.description}</p>
+										<span
+											className={clsx(
+												getColor(event.type),
+												'flex size-8 items-center justify-center rounded-full ring-8 ring-white',
+											)}
+										>
+											{getIcon(event.type)}
+										</span>
 									</div>
-									<div className='text-right text-sm whitespace-nowrap text-gray-500'>
-										<time dateTime={event.date.format('DD/MM/YYYY')}>
-											{event.date.format('DD/MM/YYYY')}
-										</time>
-										<p className='text-sm text-gray-500'>{event.hours} hours</p>
+									<div className='flex min-w-0 flex-1 justify-between space-x-4 pt-1.5'>
+										<div>
+											<p className='font-medium text-gray-900'>
+												{getTitle(event.type)}
+											</p>
+											<p className='text-sm text-gray-500'>
+												{event.description}
+											</p>
+										</div>
+										<div className='text-right text-sm whitespace-nowrap text-gray-500'>
+											<time dateTime={event.date.format('DD/MM/YYYY')}>
+												{event.date.format('DD/MM/YYYY')}
+											</time>
+											<p className='text-sm text-gray-500'>
+												{event.hours} hours
+											</p>
+										</div>
 									</div>
 								</div>
 							</div>
-						</div>
-					</li>
-				))}
+						</li>
+					))}
 			</ul>
 		</div>
 	)

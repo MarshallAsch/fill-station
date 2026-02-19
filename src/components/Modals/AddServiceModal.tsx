@@ -38,6 +38,11 @@ const SERVICE_ITEMS = [
 		value: MAINTENANCE_TYPE.OIL_CHANGE,
 		name: 'Oil Change',
 	},
+	{
+		id: 5,
+		value: MAINTENANCE_TYPE.START,
+		name: 'Compressor Born',
+	},
 ]
 
 const AddServiceModal = () => {

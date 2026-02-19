@@ -1,11 +1,9 @@
-import dayjs from 'dayjs'
-
 export type Cylinder = {
 	id: number
 	serialNumber: string
-	birth: dayjs.Dayjs
-	lastHydro: dayjs.Dayjs
-	lastVis: dayjs.Dayjs
+	birth: string
+	lastHydro: string
+	lastVis: string
 	ownerId: number
 	servicePressure: number
 	oxygenClean: boolean
