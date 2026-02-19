@@ -58,7 +58,7 @@ export default async function TankVisual({
 					</div>
 				</div>
 
-				<FormGroup title='Cylinder Info' description=''>
+				<FormGroup title='Cylinder Info'>
 					<div className='flex flex-col gap-2'>
 						<PropertyRow title='Material' text={vis.Cylinder?.material} />
 						<PropertyRow
@@ -73,11 +73,7 @@ export default async function TankVisual({
 					</div>
 				</FormGroup>
 
-				<FormGroup
-					title='External'
-					description=''
-					badge={vis.externalStandards}
-				>
+				<FormGroup title='External' badge={vis.externalStandards}>
 					<div className='flex flex-col gap-2'>
 						<PropertyRow
 							title='Evidence of Heat Damage'
@@ -111,11 +107,7 @@ export default async function TankVisual({
 					</div>
 				</FormGroup>
 
-				<FormGroup
-					title='Internal'
-					description=''
-					badge={vis.threadingStandards}
-				>
+				<FormGroup title='Internal' badge={vis.threadingStandards}>
 					<div className='flex flex-col gap-2'>
 						<PropertyRow
 							title='Amount and composition of contents'
@@ -130,11 +122,7 @@ export default async function TankVisual({
 					</div>
 				</FormGroup>
 
-				<FormGroup
-					title='Threading'
-					description=''
-					badge={vis.threadingStandards}
-				>
+				<FormGroup title='Threading' badge={vis.threadingStandards}>
 					<div className='flex flex-col gap-2'>
 						<PropertyRow
 							title='Notes on Threads'
@@ -148,7 +136,7 @@ export default async function TankVisual({
 					</div>
 				</FormGroup>
 
-				<FormGroup title='Valve' description='' badge={vis.threadingStandards}>
+				<FormGroup title='Valve' badge={vis.threadingStandards}>
 					<div className='flex flex-col gap-2'>
 						<PropertyRow
 							title='Burst disk replaced'
@@ -171,7 +159,7 @@ export default async function TankVisual({
 					</div>
 				</FormGroup>
 
-				<FormGroup title='Final' description='' badge={vis.status}>
+				<FormGroup title='Final' badge={vis.status}>
 					<div className='flex flex-col gap-2'>
 						<PropertyRow
 							title='O2 cleaned'
