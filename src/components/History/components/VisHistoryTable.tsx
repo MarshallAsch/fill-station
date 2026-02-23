@@ -3,9 +3,10 @@ import VisHistoryRow from './VisHistoryRow'
 import { useQuery } from '@tanstack/react-query'
 import { setVisHistory } from '@/redux/history/historySlice'
 import { getAllVisuals } from '@/app/_api'
-import { useEffect, useState, useTransition } from 'react'
+import { useEffect, useMemo, useState, useTransition } from 'react'
 import Button from '@/components/UI/Button'
 import dayjs from 'dayjs'
+import { VisualHistory } from '@/types/visuals'
 
 const ROWS_PER_PAGE = 20
 
@@ -22,9 +23,47 @@ function useLoadVisuals() {
 	const dispatch = useAppDispatch()
 	const { visHistory: visuals } = useAppSelector((state) => state.history)
 
-	if (data) {
-		dispatch(setVisHistory(data))
-	}
+	const formedData = useMemo<VisualHistory[]>(() => {
+		if (!data) return []
+		return data.map((item) => {
+			const cyl = item.Cylinder
+			return {
+				...item,
+				date: item.date ? dayjs(item.date).toISOString() : undefined,
+				createdAt: item.createdAt
+					? dayjs(item.createdAt).toISOString()
+					: undefined,
+				updatedAt: item.updatedAt
+					? dayjs(item.updatedAt).toISOString()
+					: undefined,
+				Cylinder: cyl
+					? {
+							...cyl,
+							id: cyl.id,
+							birth: cyl.birth ? dayjs(cyl.birth).toISOString() : undefined,
+							lastHydro: cyl.lastHydro
+								? dayjs(cyl.lastHydro).toISOString()
+								: undefined,
+							lastVis: cyl.lastVis
+								? dayjs(cyl.lastVis).toISOString()
+								: undefined,
+							createdAt: cyl.createdAt
+								? dayjs(cyl.createdAt).toISOString()
+								: undefined,
+							updatedAt: cyl.updatedAt
+								? dayjs(cyl.updatedAt).toISOString()
+								: undefined,
+						}
+					: undefined,
+			} as VisualHistory
+		})
+	}, [data])
+
+	useEffect(() => {
+		if (!data) return
+
+		dispatch(setVisHistory(formedData))
+	}, [data, formedData, visuals, dispatch])
 
 	return { visuals, status, error }
 }

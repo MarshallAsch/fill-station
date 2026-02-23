@@ -20,8 +20,8 @@ const CylinderListRow = ({
 	cylinder: Cylinder | CylinderModel
 	showOwner?: boolean
 }) => {
-	let nextHydro = cylinder.lastHydro.add(5, 'year')
-	let nextVis = cylinder.lastVis.add(1, 'year')
+	const nextHydro = dayjs(cylinder.lastHydro).add(5, 'year')
+	const nextVis = dayjs(cylinder.lastVis).add(1, 'year')
 
 	return (
 		<tr key={cylinder.id} className='hover:bg-gray-100'>
@@ -52,10 +52,10 @@ const CylinderListRow = ({
 				</span>
 			</td>
 			<td className='px-3 py-4 text-center text-sm whitespace-nowrap text-gray-500'>
-				{cylinder.lastHydro.format('MM/YYYY')}
+				{dayjs(cylinder.lastHydro).format('MM/YYYY')}
 			</td>
 			<td className='px-3 py-4 text-center text-sm whitespace-nowrap text-gray-500'>
-				{cylinder.lastVis.format('MM/YYYY')}
+				{dayjs(cylinder.lastVis).format('MM/YYYY')}
 			</td>
 			<td className='px-3 py-4 text-center text-sm whitespace-nowrap text-gray-500'>
 				<Tooltip message={nextHydro.format('MM/YYYY')}>

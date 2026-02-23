@@ -4,10 +4,12 @@ export type Cylinder = {
 	birth: string
 	lastHydro: string
 	lastVis: string
-	ownerId: number
+	ownerId?: number
 	servicePressure: number
 	oxygenClean: boolean
 	material?: 'steel' | 'aluminum' | 'composite'
+	createdAt: string | undefined
+	updatedAt: string | undefined
 }
 
 export type NewCylinderDTO = {
