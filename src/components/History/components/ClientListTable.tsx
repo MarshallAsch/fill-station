@@ -3,6 +3,9 @@ import { useQuery } from '@tanstack/react-query'
 import { getAllClients } from '@/app/_api'
 import { setClients } from '@/redux/client/clientSlice'
 import ClientsRow from './ClientsRow'
+import dayjs from 'dayjs'
+import { useEffect, useMemo } from 'react'
+import { Client } from '@/types/client'
 
 function useLoadClients() {
 	const { status, data, error } = useQuery({
@@ -13,9 +16,22 @@ function useLoadClients() {
 	const dispatch = useAppDispatch()
 	const { allClients: clients } = useAppSelector((state) => state.clients)
 
-	if (data) {
-		dispatch(setClients(data))
-	}
+	const formedData = useMemo<Client[]>(() => {
+		if (!data) return []
+		return data.map((data) => {
+			return {
+				...data,
+				updatedAt: dayjs(data.updatedAt).toISOString(),
+				createdAt: dayjs(data.createdAt).toISOString(),
+			}
+		})
+	}, [data])
+
+	useEffect(() => {
+		if (!data) return
+
+		dispatch(setClients(formedData))
+	}, [data, formedData, clients, dispatch])
 
 	return { clients, status, error }
 }

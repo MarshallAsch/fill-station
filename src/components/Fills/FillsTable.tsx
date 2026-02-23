@@ -9,7 +9,7 @@ import { useEffect, useState, useTransition } from 'react'
 const ROWS_PER_PAGE = 20
 
 const FillsTable = ({ client }: { client?: Client }) => {
-	const fills = useAppSelector((state) => state.fills).fills
+	const fills = useAppSelector((state) => state.fills.fills)
 
 	const [page, setPage] = useState(1)
 	const [, startTransition] = useTransition()

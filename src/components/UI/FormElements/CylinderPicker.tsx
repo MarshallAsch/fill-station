@@ -47,7 +47,23 @@ function useLoadCylinder() {
 	const { cylinders } = useAppSelector((state) => state.cylinders)
 
 	if (data) {
-		dispatch(setCylinders(data))
+		const formedData = data.map((data) => {
+			return {
+				...data,
+				birth: data.birth ? dayjs(data.birth).toISOString() : undefined,
+				lastHydro: data.lastHydro
+					? dayjs(data.lastHydro).toISOString()
+					: undefined,
+				lastVis: data.lastVis ? dayjs(data.lastVis).toISOString() : undefined,
+				createdAt: data.createdAt
+					? dayjs(data.createdAt).toISOString()
+					: undefined,
+				updatedAt: data.updatedAt
+					? dayjs(data.updatedAt).toISOString()
+					: undefined,
+			}
+		})
+		dispatch(setCylinders(formedData))
 	}
 
 	return { cylinders, status, error }

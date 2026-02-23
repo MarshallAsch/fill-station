@@ -3,6 +3,9 @@ import CylinderListTable from '../Cylinders/CylinderListTable'
 import { useAppDispatch, useAppSelector } from '@/redux/hooks'
 import { getAllCylinders } from '@/app/_api'
 import { useQuery } from '@tanstack/react-query'
+import dayjs from 'dayjs'
+import { useEffect, useMemo } from 'react'
+import { Cylinder } from '@/types/cylinder'
 
 function useLoadCylinder() {
 	const { status, data, error } = useQuery({
@@ -13,9 +16,26 @@ function useLoadCylinder() {
 	const dispatch = useAppDispatch()
 	const { cylinders } = useAppSelector((state) => state.cylinders)
 
-	if (data) {
-		dispatch(setCylinders(data))
-	}
+	const formedData = useMemo<Cylinder[]>(() => {
+		if (!data) return []
+		return data.map((data) => {
+			return {
+				...data,
+				id: data.id,
+				birth: data.birth ? dayjs(data.birth).toISOString() : '',
+				lastHydro: data.lastHydro ? dayjs(data.lastHydro).toISOString() : '',
+				lastVis: data.lastVis ? dayjs(data.lastVis).toISOString() : '',
+				createdAt: data.createdAt ? dayjs(data.createdAt).toISOString() : '',
+				updatedAt: data.updatedAt ? dayjs(data.updatedAt).toISOString() : '',
+			}
+		})
+	}, [data])
+
+	useEffect(() => {
+		if (!data) return
+
+		dispatch(setCylinders(formedData))
+	}, [data, formedData, cylinders, dispatch])
 
 	return { cylinders, status, error }
 }

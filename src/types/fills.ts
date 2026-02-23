@@ -1,15 +1,16 @@
-import dayjs from 'dayjs'
 import { Cylinder } from './cylinder'
 
 export type FillHistory = {
 	id: number
 	name: string
-	date: dayjs.Dayjs
+	date: string
 	oxygen: number
 	helium: number
 	startPressure: number
 	endPressure: number
 	Cylinder: Cylinder
+	createdAt?: string
+	updatedAt?: string
 }
 
 export type FillType = 'air' | 'nitrox' | 'trimix'

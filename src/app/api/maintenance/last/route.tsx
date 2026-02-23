@@ -5,7 +5,7 @@ import dayjs from 'dayjs'
 import customParseFormat from 'dayjs/plugin/customParseFormat'
 dayjs.extend(customParseFormat)
 
-export async function GET(request: Request) {
+export async function GET() {
 	let lookups = [
 		Maintenance.findOne({
 			where: {

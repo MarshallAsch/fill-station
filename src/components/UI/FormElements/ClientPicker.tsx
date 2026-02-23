@@ -11,12 +11,13 @@ import {
 } from '@headlessui/react'
 import { useState } from 'react'
 import { ChevronDownIcon } from '@heroicons/react/24/outline'
-import { setClients } from '@/redux/client/clientSlice'
 import { updateAddClientModalOpen } from '@/redux/modal/modalSlice'
 import { useQuery } from '@tanstack/react-query'
 import { getAllClients } from '@/app/_api'
 import { Client } from '@/types/client'
 import Button from '../Button'
+import dayjs from 'dayjs'
+import { setClients } from '@/redux/client/clientSlice'
 
 function useLoadClients() {
 	const { status, data, error } = useQuery({
@@ -28,7 +29,14 @@ function useLoadClients() {
 	const { allClients: clients } = useAppSelector((state) => state.clients)
 
 	if (data) {
-		dispatch(setClients(data))
+		const formedData = data.map((data) => {
+			return {
+				...data,
+				updatedAt: dayjs(data.updatedAt).toISOString(),
+				createdAt: dayjs(data.createdAt).toISOString(),
+			}
+		})
+		dispatch(setClients(formedData))
 	}
 
 	return { clients, status, error }

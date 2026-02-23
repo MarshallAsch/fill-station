@@ -4,13 +4,14 @@ import {
 	LinkIcon,
 	XCircleIcon,
 } from '@heroicons/react/24/outline'
+import dayjs from 'dayjs'
 import Link from 'next/link'
 
 const VisHistoryRow = ({ visual }: { visual: VisualHistory }) => {
 	return (
 		<tr key={visual.id} className='hover:bg-gray-100'>
 			<td className='py-4 pr-3 pl-4 text-center text-sm font-medium whitespace-nowrap text-gray-900 sm:pl-6'>
-				{visual.date.format('MMM D, YYYY')}
+				{dayjs(visual.date).format('MMM D, YYYY')}
 			</td>
 			<td className='py-4 pr-3 pl-4 text-center text-sm font-medium whitespace-nowrap text-gray-900 sm:pl-6'>
 				{visual.Cylinder?.serialNumber}
