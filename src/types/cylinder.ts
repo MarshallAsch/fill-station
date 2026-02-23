@@ -1,15 +1,15 @@
 export type Cylinder = {
 	id: number
 	serialNumber: string
-	birth: string
-	lastHydro: string
-	lastVis: string
+	birth: string | undefined
+	lastHydro: string | undefined
+	lastVis: string | undefined
 	ownerId?: number
 	servicePressure: number
 	oxygenClean: boolean
 	material?: 'steel' | 'aluminum' | 'composite'
-	createdAt: string | undefined
-	updatedAt: string | undefined
+	createdAt?: string
+	updatedAt?: string
 }
 
 export type NewCylinderDTO = {

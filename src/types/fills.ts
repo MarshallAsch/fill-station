@@ -9,8 +9,8 @@ export type FillHistory = {
 	startPressure: number
 	endPressure: number
 	Cylinder: Cylinder
-	createdAt: string | undefined
-	updatedAt: string | undefined
+	createdAt?: string
+	updatedAt?: string
 }
 
 export type FillType = 'air' | 'nitrox' | 'trimix'

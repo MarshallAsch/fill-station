@@ -38,6 +38,6 @@ export type VisualHistory = {
 	oxygenCleaned: boolean
 	markedOxygenClean: boolean
 
-	createdAt: string | undefined
-	updatedAt: string | undefined
+	createdAt?: string
+	updatedAt?: string
 }
