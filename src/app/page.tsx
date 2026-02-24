@@ -1,12 +1,7 @@
-import {
-	EyeIcon,
-	TableCellsIcon,
-	SparklesIcon,
-	UserGroupIcon,
-} from '@heroicons/react/24/outline'
-import React from 'react'
+import { EyeIcon, TableCellsIcon } from '@heroicons/react/24/outline'
 import Link from 'next/link'
 import AirTank from '@/icons/AirTank'
+import Services from '@/components/Home/Services'
 
 export default function Home() {
 	return (
@@ -43,47 +38,12 @@ export default function Home() {
 					</Link>
 				</div>
 			</div>
-			<h3 className='text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl md:text-5xl'>
-				Services Offered
-			</h3>
-			<div className='mx-auto mt-5 max-w-md sm:flex sm:justify-center md:mt-8'>
-				<div className='-mx-6 grid grid-cols-3 gap-1 overflow-hidden sm:mx-0 sm:rounded-2xl md:grid-cols-5'>
-					<div>
-						<AirTank />
-						<p>Air</p>
-					</div>
-
-					<div>
-						<AirTank />
-						<p>Nitrox</p>
-					</div>
-
-					<div>
-						<AirTank />
-						<p>Oxygen</p>
-					</div>
-
-					<div>
-						<AirTank />
-						<p>Helium</p>
-					</div>
-
-					<div>
-						<EyeIcon />
-						<p>Visual Cylinder Inspections</p>
-					</div>
-
-					<div>
-						<SparklesIcon />
-						<p>Oxygen Clean Cylinder + valves</p>
-					</div>
-
-					<div>
-						<UserGroupIcon />
-						<p>Training</p>
-					</div>
-				</div>
+			<div className='my-10 text-center'>
+				<h2 className='text-4xl font-semibold tracking-tight text-balance text-gray-900 sm:text-5xl'>
+					Services Offered
+				</h2>
 			</div>
+			<Services />
 		</div>
 	)
 }
