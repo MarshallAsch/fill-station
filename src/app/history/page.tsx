@@ -8,9 +8,12 @@ import HistoryTable from '@/components/History/components/HistoryTable'
 import VisHistory from '@/components/History/VisHistory'
 import ClientList from '@/components/History/ClientList'
 import CylinderListTable from '@/components/Cylinders/CylinderListTable'
+import useLoadCylinder from '@/hooks/useLoadCylinders'
 
 export default function History() {
 	const { selectedTab } = useAppSelector((state) => state.history)
+
+	const { cylinders } = useLoadCylinder()
 
 	const getTabComponent = () => {
 		switch (selectedTab) {
@@ -23,7 +26,7 @@ export default function History() {
 			case TAB.CLIENTS:
 				return <ClientList />
 			case TAB.CYLINDERS:
-				return <CylinderListTable showOwner />
+				return <CylinderListTable cylinders={cylinders} showOwner />
 			default:
 				return <HistoryTable />
 		}
