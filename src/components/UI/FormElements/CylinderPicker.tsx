@@ -1,7 +1,6 @@
 'use client'
 
-import { useAppDispatch, useAppSelector } from '@/redux/hooks'
-import { setCylinders } from '@/redux/cylinder/cylinderSlice'
+import { useAppDispatch } from '@/redux/hooks'
 import {
 	Combobox,
 	ComboboxButton,
@@ -16,14 +15,13 @@ import { ExclamationTriangleIcon } from '@heroicons/react/24/solid'
 
 import { updateAddCylinderModalOpen } from '@/redux/modal/modalSlice'
 import { updateCylinder } from '@/redux/fills/fillsSlice'
-import { useQuery } from '@tanstack/react-query'
-import { getAllCylinders } from '@/app/_api'
 
 import dayjs from 'dayjs'
 import duration from 'dayjs/plugin/duration'
 import { Cylinder } from '@/types/cylinder'
 import Button from '../Button'
 import Tooltip from '../Tooltip'
+import useLoadCylinder from '@/hooks/useLoadCylinders'
 
 dayjs.extend(duration)
 
@@ -35,38 +33,6 @@ type CylinderPickerProps = {
 	initialValue?: Cylinder
 	filter?: (c: Cylinder) => boolean
 	onChange?: (c?: Cylinder) => void
-}
-
-function useLoadCylinder() {
-	const { status, data, error } = useQuery({
-		queryKey: ['cylinders'],
-		queryFn: getAllCylinders,
-	})
-
-	const dispatch = useAppDispatch()
-	const { cylinders } = useAppSelector((state) => state.cylinders)
-
-	if (data) {
-		const formedData = data.map((data) => {
-			return {
-				...data,
-				birth: data.birth ? dayjs(data.birth).toISOString() : undefined,
-				lastHydro: data.lastHydro
-					? dayjs(data.lastHydro).toISOString()
-					: undefined,
-				lastVis: data.lastVis ? dayjs(data.lastVis).toISOString() : undefined,
-				createdAt: data.createdAt
-					? dayjs(data.createdAt).toISOString()
-					: undefined,
-				updatedAt: data.updatedAt
-					? dayjs(data.updatedAt).toISOString()
-					: undefined,
-			}
-		})
-		dispatch(setCylinders(formedData))
-	}
-
-	return { cylinders, status, error }
 }
 
 const CylinderPicker = ({

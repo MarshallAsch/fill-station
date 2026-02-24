@@ -1,14 +1,8 @@
 import CylinderListRow from './CylinderListRow'
-import { Cylinder } from '@/types/cylinder'
-import { Cylinder as CylinderModel } from '@/lib/models/cylinder'
+import useLoadCylinder from '@/hooks/useLoadCylinders'
 
-const CylinderListTable = ({
-	cylinders,
-	showOwner = false,
-}: {
-	cylinders: Cylinder[] | CylinderModel[]
-	showOwner?: boolean
-}) => {
+const CylinderListTable = ({ showOwner = false }: { showOwner?: boolean }) => {
+	const { cylinders } = useLoadCylinder()
 	return (
 		<div className='mt-8 flow-root'>
 			<div className='overflow-x-auto'>

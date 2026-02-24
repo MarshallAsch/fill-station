@@ -10,8 +10,10 @@ import {
 import RadioGroup from '../UI/FormElements/RadioGroup'
 import DatePicker from '../UI/FormElements/DatePicker'
 import ClientPicker from '../UI/FormElements/ClientPicker'
+import { useAppSelector } from '@/redux/hooks'
 
 const FinalStatus = () => {
+	const clients = useAppSelector((state) => state.clients.allClients)
 	return (
 		<FormGroup title='Final Status' description=''>
 			<>
@@ -20,6 +22,7 @@ const FinalStatus = () => {
 					label={'Select the Inspector'}
 					addLabel={'Add new Inspector'}
 					filter={(c) => !!c.inspectionCert}
+					clients={clients}
 				/>
 				<RadioGroup
 					title='Cylinder Status'

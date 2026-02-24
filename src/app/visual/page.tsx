@@ -12,10 +12,15 @@ import Button from '@/components/UI/Button'
 import ClientPicker from '@/components/UI/FormElements/ClientPicker'
 import { useAppDispatch, useAppSelector } from '@/redux/hooks'
 import { updateClient, updateCylinder } from '@/redux/visuals/visualsSlice'
+import useLoadClients from '@/hooks/useLoadClients'
 
 export default function Visual() {
 	const dispatch = useAppDispatch()
 	const { client, cylinder } = useAppSelector((state) => state.visuals)
+
+	// This loads the Clients for all components in the page.
+	// Components in the page should get this data from the store to prevent multiple loads
+	const { clients } = useLoadClients()
 
 	const handleSubmit = (form: FormData) => {
 		const formData = Object.fromEntries(form.entries())
@@ -36,6 +41,7 @@ export default function Visual() {
 						<ClientPicker
 							initialValue={client}
 							onChange={(c) => dispatch(updateClient(c))}
+							clients={clients}
 						/>
 						<CylinderPicker
 							initialValue={cylinder}

@@ -27,6 +27,8 @@ const AddCylinderModal = () => {
 	const dispatch = useAppDispatch()
 	const queryClient = useQueryClient()
 
+	const clients = useAppSelector((state) => state.clients.allClients)
+
 	const handleClose = () => {
 		dispatch(updateAddCylinderModalOpen(false))
 	}
@@ -73,7 +75,7 @@ const AddCylinderModal = () => {
 										Add the new cylinders information to save it for next time.
 									</DialogTitle>
 
-									<ClientPicker disableAdd={true} />
+									<ClientPicker disableAdd={true} clients={clients} />
 
 									<TextInput
 										autoFocus
