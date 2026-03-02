@@ -41,7 +41,6 @@ export default function Visual() {
 				<form action={handleSubmit}>
 					<div className='flex w-full justify-center gap-6'>
 						<ClientPicker
-							initialValue={client}
 							onChange={(c) => dispatch(setSelectedClient(c))}
 							clients={clients}
 						/>
