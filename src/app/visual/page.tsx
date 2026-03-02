@@ -11,12 +11,14 @@ import FinalStatus from '@/components/Visual/FinalStatus'
 import Button from '@/components/UI/Button'
 import ClientPicker from '@/components/UI/FormElements/ClientPicker'
 import { useAppDispatch, useAppSelector } from '@/redux/hooks'
-import { updateClient, updateCylinder } from '@/redux/visuals/visualsSlice'
+import { updateCylinder } from '@/redux/visuals/visualsSlice'
 import useLoadClients from '@/hooks/useLoadClients'
+import { setSelectedClient } from '@/redux/client/clientSlice'
 
 export default function Visual() {
 	const dispatch = useAppDispatch()
-	const { client, cylinder } = useAppSelector((state) => state.visuals)
+	const { cylinder } = useAppSelector((state) => state.visuals)
+	const { selectedClient: client } = useAppSelector((state) => state.clients)
 
 	// This loads the Clients for all components in the page.
 	// Components in the page should get this data from the store to prevent multiple loads
@@ -40,7 +42,7 @@ export default function Visual() {
 					<div className='flex w-full justify-center gap-6'>
 						<ClientPicker
 							initialValue={client}
-							onChange={(c) => dispatch(updateClient(c))}
+							onChange={(c) => dispatch(setSelectedClient(c))}
 							clients={clients}
 						/>
 						<CylinderPicker

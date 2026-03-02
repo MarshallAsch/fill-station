@@ -21,27 +21,34 @@ import ClientPicker from '../UI/FormElements/ClientPicker'
 import DatePicker from '../UI/FormElements/DatePicker'
 import Button from '../UI/Button'
 import ListBox from '../UI/FormElements/ListBox'
+import { newCylinder } from '@/app/_api'
+import { NewCylinderDTO } from '@/types/cylinder'
 
 const AddCylinderModal = () => {
 	const { addCylinderModalOpen } = useAppSelector((state) => state.modal)
 	const dispatch = useAppDispatch()
 	const queryClient = useQueryClient()
 
-	const clients = useAppSelector((state) => state.clients.allClients)
+	const { allClients: clients, selectedClient } = useAppSelector(
+		(state) => state.clients,
+	)
 
 	const handleClose = () => {
 		dispatch(updateAddCylinderModalOpen(false))
 	}
 
 	const handleSubmit = async (form: FormData) => {
-		const formData = Object.fromEntries(form.entries())
-		console.log(formData)
+		const formData = Object.fromEntries(
+			form.entries(),
+		) as unknown as NewCylinderDTO
 
-		// const data = await newCylinder(1, formData as NewCylinderDTO)
-		// if (!(data instanceof String)) {
-		// 	queryClient.invalidateQueries({ queryKey: ['cylinders'] })
-		// 	handleClose()
-		// }
+		if (selectedClient) {
+			const data = await newCylinder(selectedClient?.id, formData)
+			if (!(data instanceof String)) {
+				queryClient.invalidateQueries({ queryKey: ['cylinders'] })
+				handleClose()
+			}
+		}
 	}
 	return (
 		<Transition show={addCylinderModalOpen} as={Fragment}>
@@ -101,6 +108,7 @@ const AddCylinderModal = () => {
 									</div>
 
 									<DatePicker name='lastVis' title='Last Vis' id='last-vis' />
+									<DatePicker name='birth' title='Birth' id='birth' />
 
 									<RadioGroup
 										title='Cylinder material'

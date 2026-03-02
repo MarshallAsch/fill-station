@@ -1,11 +1,9 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { Fill } from '@/types/fills'
 import { Cylinder } from '@/types/cylinder'
-import { Client } from '@/types/client'
 
 type InitialState = {
 	fills: Fill[]
-	client?: Client
 }
 
 const initialState: InitialState = {
@@ -26,9 +24,6 @@ const fillSlice = createSlice({
 	name: 'fills',
 	initialState,
 	reducers: {
-		updateClient: (state, action: PayloadAction<Client | undefined>) => {
-			state.client = action.payload
-		},
 		addNewFill: (state) => {
 			state.fills.push({
 				id: state.fills.length,
@@ -63,11 +58,6 @@ const fillSlice = createSlice({
 	},
 })
 
-export const {
-	addNewFill,
-	removeFill,
-	updateFill,
-	updateCylinder,
-	updateClient,
-} = fillSlice.actions
+export const { addNewFill, removeFill, updateFill, updateCylinder } =
+	fillSlice.actions
 export default fillSlice.reducer
