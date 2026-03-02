@@ -2,10 +2,7 @@ import dayjs from 'dayjs'
 import clsx from 'clsx'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import { useAppDispatch } from '@/redux/hooks'
-import {
-	updateAddServiceModalOpen,
-	updateServiceModalHours,
-} from '@/redux/modal/modalSlice'
+import { updateAddServiceModalOpen } from '@/redux/modal/modalSlice'
 import {
 	BeakerIcon,
 	Cog6ToothIcon,
@@ -16,33 +13,12 @@ import {
 } from '@heroicons/react/20/solid'
 import { MAINTENANCE_TYPE } from '@/types/maintenance'
 import Button from '@/components/UI/Button'
-import { getAllMaintenance, getMaintenanceSummary } from '@/app/_api'
-import { useQuery } from '@tanstack/react-query'
 import Tooltip from '@/components/UI/Tooltip'
+import {
+	useLoadMaintenance,
+	useLoadMaintenanceSummary,
+} from '@/hooks/useLoadMaintenance'
 dayjs.extend(relativeTime)
-
-function useLoadMaintenance() {
-	const { status, data, error } = useQuery({
-		queryKey: ['maintenance'],
-		queryFn: getAllMaintenance,
-	})
-
-	return { maintenance: data, status, error }
-}
-
-function useLoadMaintenanceSummary() {
-	const { status, data, error } = useQuery({
-		queryKey: ['maintenance', 'summary'],
-		queryFn: getMaintenanceSummary,
-	})
-
-	const dispatch = useAppDispatch()
-	if (data?.last) {
-		dispatch(updateServiceModalHours(data?.last.hours))
-	}
-
-	return { summary: data, status, error }
-}
 
 const MaintenanceHistory = () => {
 	const { maintenance } = useLoadMaintenance()
