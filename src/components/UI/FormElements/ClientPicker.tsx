@@ -1,6 +1,6 @@
 'use client'
 
-import { useAppDispatch } from '@/redux/hooks'
+import { useAppDispatch, useAppSelector } from '@/redux/hooks'
 import {
 	Combobox,
 	ComboboxButton,
@@ -14,13 +14,13 @@ import { ChevronDownIcon } from '@heroicons/react/24/outline'
 import { updateAddClientModalOpen } from '@/redux/modal/modalSlice'
 import { Client } from '@/types/client'
 import Button from '../Button'
+import { setSelectedClient } from '@/redux/client/clientSlice'
 
 type ClientPickerProps = {
 	disableAdd?: boolean
 	label?: string
 	addLabel?: string
 	name?: string
-	initialValue?: Client
 	filter?: (c: Client) => boolean
 	onChange?: (c: Client) => void
 	clients: Client[]
@@ -31,16 +31,14 @@ const ClientPicker = ({
 	name = 'client',
 	label = 'Select a Client',
 	addLabel = 'Add new Client',
-	initialValue,
 	filter,
 	onChange,
 	clients,
 }: ClientPickerProps) => {
 	const dispatch = useAppDispatch()
 	const [query, setQuery] = useState('')
-	const [selectedClient, setSelectedClient] = useState<
-		Client | null | undefined
-	>(initialValue)
+
+	const { selectedClient } = useAppSelector((state) => state.clients)
 
 	const preFiltered = filter ? clients.filter(filter) : clients
 
@@ -58,7 +56,7 @@ const ClientPicker = ({
 			onChange={(client) => {
 				setQuery('')
 				if (client) {
-					setSelectedClient(client)
+					dispatch(setSelectedClient(client))
 					onChange && onChange(client)
 				}
 			}}
