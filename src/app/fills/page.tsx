@@ -38,8 +38,11 @@ export default function Fills() {
 
 		const data = await addNewFill(fillData)
 
-		if (!data.error) {
+		console.log({ data })
+
+		if (data === undefined) {
 			dispatch(resetFills())
+			dispatch(setSelectedClient(undefined))
 		}
 	}
 

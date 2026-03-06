@@ -110,5 +110,5 @@ export async function newMaintenance(
 export async function addNewFill(fills: FillDto[]): Promise<Fill[] | string> {
 	const result = await axiosInstance.post('/api/fills', fills)
 
-	return result.status == 201 ? result.data : result.data.message
+	return (await result.status) == 201 ? result.data : result.data.message
 }

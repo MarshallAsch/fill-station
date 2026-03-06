@@ -44,8 +44,6 @@ export async function POST(request: Request) {
 			}),
 		)
 
-		await console.log({ created })
-
 		return await Response.json(created)
 	} catch (err: any) {
 		console.error('error:', err)
