@@ -1,6 +1,6 @@
 import { Client, NewClientDTO } from '@/types/client'
 import { Cylinder, NewCylinderDTO } from '@/types/cylinder'
-import { FillHistory } from '@/types/fills'
+import { Fill, FillHistory } from '@/types/fills'
 import {
 	CompressorMaintenance,
 	MaintenanceSummary,
@@ -9,6 +9,7 @@ import {
 import { VisualHistory } from '@/types/visuals'
 import axios from 'axios'
 import dayjs from 'dayjs'
+import { FillDto } from '../api/fills/route'
 
 const axiosInstance = axios.create()
 
@@ -35,46 +36,46 @@ axiosInstance.interceptors.response.use((response) => {
 })
 
 export async function getAllClients(): Promise<Client[]> {
-	let result = await axiosInstance.get('/api/clients')
+	const result = await axiosInstance.get('/api/clients')
 	return result.data
 }
 
 export async function getAllFills(): Promise<FillHistory[]> {
-	let result = await axiosInstance.get('/api/fills')
+	const result = await axiosInstance.get('/api/fills')
 	return result.data //.map((v: any) => ({ ...v, date: dayjs(v.date) }))
 }
 
 export async function getAllVisuals(): Promise<VisualHistory[]> {
-	let result = await axiosInstance.get('/api/visuals')
+	const result = await axiosInstance.get('/api/visuals')
 	return result.data //.map((v: any) => ({ ...v, date: dayjs(v.date) }))
 }
 
 export async function getAllCylinders(): Promise<Cylinder[]> {
-	let result = await axiosInstance.get('/api/cylinders')
+	const result = await axiosInstance.get('/api/cylinders')
 	return result.data
 }
 
 export async function getAllMaintenance(): Promise<CompressorMaintenance[]> {
-	let result = await axiosInstance.get('/api/maintenance')
+	const result = await axiosInstance.get('/api/maintenance')
 	return result.data //.map((v: any) => ({ ...v, date: dayjs(v.date) }))
 }
 
 export async function getMaintenanceSummary(): Promise<MaintenanceSummary> {
-	let result = await axiosInstance.get('/api/maintenance/last')
+	const result = await axiosInstance.get('/api/maintenance/last')
 	return result.data
 }
 
 export async function getClientCylinders(
 	clientId: number | string,
 ): Promise<Cylinder[]> {
-	let result = await axiosInstance.get(`/api/clients/${clientId}/cylinders`)
+	const result = await axiosInstance.get(`/api/clients/${clientId}/cylinders`)
 	return result.data
 }
 
 export async function newClient(
 	client: NewClientDTO,
 ): Promise<Client | string> {
-	let result = await axiosInstance.post('/api/clients', client)
+	const result = await axiosInstance.post('/api/clients', client)
 
 	return result.status == 201 ? result.data : result.data.message
 }
@@ -82,7 +83,7 @@ export async function newClient(
 export async function updateClient(
 	client: NewClientDTO,
 ): Promise<Client | string> {
-	let result = await axiosInstance.put(`/api/clients/${client.id}`, client)
+	const result = await axiosInstance.put(`/api/clients/${client.id}`, client)
 
 	return result.status == 200 ? result.data : result.data.message
 }
@@ -91,7 +92,7 @@ export async function newCylinder(
 	clientId: number,
 	cylinder: NewCylinderDTO,
 ): Promise<Cylinder | string> {
-	let result = await axiosInstance.post(
+	const result = await axiosInstance.post(
 		`/api/clients/${clientId}/cylinders`,
 		cylinder,
 	)
@@ -101,7 +102,13 @@ export async function newCylinder(
 export async function newMaintenance(
 	record: NewMaintenanceDTO,
 ): Promise<CompressorMaintenance | string> {
-	let result = await axiosInstance.post('/api/maintenance', record)
+	const result = await axiosInstance.post('/api/maintenance', record)
+
+	return result.status == 201 ? result.data : result.data.message
+}
+
+export async function addNewFill(fills: FillDto[]): Promise<Fill[] | string> {
+	const result = await axiosInstance.post('/api/fills', fills)
 
 	return result.status == 201 ? result.data : result.data.message
 }

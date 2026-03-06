@@ -8,7 +8,11 @@ import { useEffect, useState, useTransition } from 'react'
 
 const ROWS_PER_PAGE = 20
 
-const FillsTable = ({ client }: { client?: Client }) => {
+type FillsTableProps = {
+	client?: Client
+}
+
+const FillsTable = ({ client }: FillsTableProps) => {
 	const fills = useAppSelector((state) => state.fills.fills)
 
 	const [page, setPage] = useState(1)
@@ -36,7 +40,7 @@ const FillsTable = ({ client }: { client?: Client }) => {
 					</Button>
 				</div>
 				<div className='sm:mt-0 sm:ml-5 sm:flex-none'>
-					<Button onClick={() => console.log(fills)}>Submit</Button>
+					<Button type='submit'>Submit</Button>
 				</div>
 			</div>
 			<div className='mt-8 flow-root'>

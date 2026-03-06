@@ -60,6 +60,7 @@ const ClientPicker = ({
 					onChange && onChange(client)
 				}
 			}}
+			className='w-full'
 		>
 			<Label className='block text-sm/6 font-medium text-gray-900'>
 				{label}
