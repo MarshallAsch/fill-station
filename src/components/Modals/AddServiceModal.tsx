@@ -16,6 +16,7 @@ import Button from '../UI/Button'
 import { newMaintenance } from '@/app/_api'
 import { useQueryClient } from '@tanstack/react-query'
 import NumberField from '../UI/FormElements/NumberField'
+import { toast } from 'react-toastify'
 
 const SERVICE_ITEMS = [
 	{
@@ -60,9 +61,12 @@ const AddServiceModal = () => {
 		const formData: any = Object.fromEntries(form.entries())
 
 		let data = await newMaintenance(formData as NewMaintenanceDTO)
-		if (!(data instanceof String)) {
+		if (typeof data !== 'string') {
+			toast.success('Saved service record')
 			queryClient.invalidateQueries({ queryKey: ['maintenance'] })
 			handleClose()
+		} else {
+			toast.error(`failed to save service record ${data}`)
 		}
 	}
 	return (

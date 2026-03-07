@@ -11,6 +11,7 @@ import { newClient } from '@/app/_api'
 import { Client, NewClientDTO } from '@/types/client'
 import { useQueryClient } from '@tanstack/react-query'
 import Button from '../UI/Button'
+import { toast } from 'react-toastify'
 
 export type ClientModalProps = {
 	title?: string
@@ -36,9 +37,12 @@ const ClientModal = ({
 		const formData = Object.fromEntries(form.entries())
 
 		const result = await onSubmit(formData as NewClientDTO)
-		if (!(result instanceof String)) {
+		if (typeof result !== 'string') {
+			toast.success('Saved new Client')
 			queryClient.invalidateQueries({ queryKey: ['clients'] })
 			handleClose()
+		} else {
+			toast.error(`Failed to create new Client ${result}`)
 		}
 	}
 	return (
