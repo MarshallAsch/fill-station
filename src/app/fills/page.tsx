@@ -11,6 +11,7 @@ import { FillDto } from '../api/fills/route'
 import { addNewFill } from '../_api'
 import dayjs from 'dayjs'
 import { resetFills } from '@/redux/fills/fillsSlice'
+import { useSession } from 'next-auth/react'
 
 export default function Fills() {
 	const dispatch = useAppDispatch()
@@ -19,6 +20,11 @@ export default function Fills() {
 	const fills = useAppSelector((state) => state.fills.fills)
 
 	const { clients } = useLoadClients()
+
+	const session = useSession()
+	if (session.status !== 'authenticated') {
+		return <div>Not Authorized</div>
+	}
 
 	const handleSubmit = async (form: FormData) => {
 		const formData = Object.fromEntries(form.entries())

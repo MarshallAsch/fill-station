@@ -5,12 +5,19 @@ import FormGroup from '@/components/UI/FormGroup'
 import PropertyRow from '@/components/VisHistory/PropertyRow'
 import { Client } from '@/lib/models/client'
 import { Cylinder } from '@/lib/models/cylinder'
+import { auth } from '@/auth'
 
 export default async function ClientDetails({
 	params,
 }: {
 	params: Promise<{ slug: string }>
 }) {
+	const session = await auth()
+	if (!session)
+		return Response.json(
+			{ error: 'auth', message: 'Must be logged in' },
+			{ status: 401 },
+		)
 	const { slug: clientId } = await params
 
 	const client = await Client.findByPk(clientId, {
