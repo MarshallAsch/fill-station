@@ -7,11 +7,11 @@ export default function Copyright() {
 			{'Copyright © '}
 			<Link className='underline' href='https://marshallasch.ca/'>
 				Marshall Asch
-			</Link>,
+			</Link>
+			,
 			<Link className='underline' href='https://kellenwiltshire.com/'>
 				Kellen Wiltshire
-			</Link>
-			{' '}
+			</Link>{' '}
 			{new Date().getFullYear()}.
 		</div>
 	)

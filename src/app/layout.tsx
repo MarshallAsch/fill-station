@@ -4,6 +4,25 @@ import Navbar from '@/components/Layout/Navbar'
 import Providers from '@/components/Layout/Providers'
 import { ReactNode } from 'react'
 
+import { Metadata } from 'next'
+
+export const metadata: Metadata = {
+	title: {
+		template: '%s | Fill Station',
+		default: 'Dive Tec Fill Station',
+	},
+	applicationName: 'Fill Station',
+	authors: [{ name: 'Marshall Asch' }, { name: 'Kellen Wiltshire' }],
+	keywords: [
+		'scuba diving',
+		'scuba',
+		'dive shop',
+		'fill station',
+		'compressor',
+	],
+	description: 'Fill station and Service tracker for small dive shops',
+}
+
 export default function Layout({ children }: { children: ReactNode }) {
 	return (
 		<Providers>
