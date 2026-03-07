@@ -55,9 +55,17 @@ const fillSlice = createSlice({
 				state.fills[fillIndex].cylinder = data
 			}
 		},
+		resetFills: (state) => {
+			state.fills = initialState.fills
+		},
 	},
 })
 
-export const { addNewFill, removeFill, updateFill, updateCylinder } =
-	fillSlice.actions
+export const {
+	addNewFill,
+	removeFill,
+	updateFill,
+	updateCylinder,
+	resetFills,
+} = fillSlice.actions
 export default fillSlice.reducer
