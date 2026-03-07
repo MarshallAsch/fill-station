@@ -16,6 +16,8 @@ import useLoadClients from '@/hooks/useLoadClients'
 import { setSelectedClient } from '@/redux/client/clientSlice'
 import { useSession } from 'next-auth/react'
 
+import { newVisual } from '../_api'
+
 export default function Visual() {
 	const dispatch = useAppDispatch()
 	const { cylinder } = useAppSelector((state) => state.visuals)
@@ -33,7 +35,14 @@ export default function Visual() {
 	const handleSubmit = (form: FormData) => {
 		const formData = Object.fromEntries(form.entries())
 		console.log(formData)
+
+		if (!cylinder) {
+			return
+		}
+
+		// const data = newVisual(cylinder.id, formData)
 	}
+
 
 	return (
 		<div className='max-w-7xl'>
