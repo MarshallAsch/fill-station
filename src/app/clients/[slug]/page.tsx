@@ -27,9 +27,12 @@ export default async function ClientDetails({
 					lastVis: data.lastVis ? dayjs(data.lastVis).toISOString() : '',
 					createdAt: data.createdAt ? dayjs(data.createdAt).toISOString() : '',
 					updatedAt: data.updatedAt ? dayjs(data.updatedAt).toISOString() : '',
-					material: (data.material === 'steel' || data.material === 'aluminum' || data.material === 'composite')
-						? data.material
-						: undefined,
+					material:
+						data.material === 'steel' ||
+						data.material === 'aluminum' ||
+						data.material === 'composite'
+							? data.material
+							: undefined,
 				} as Cylinder
 			}) || []
 

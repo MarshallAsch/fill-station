@@ -40,7 +40,7 @@ export default function Fills() {
 
 		console.log({ data })
 
-		if (data === undefined) {
+		if (!(data instanceof String)) {
 			dispatch(resetFills())
 			dispatch(setSelectedClient(undefined))
 		}

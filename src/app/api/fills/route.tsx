@@ -34,14 +34,16 @@ export async function POST(request: Request) {
 	}
 
 	try {
-		const created = await fills.map((fill, index) =>
-			cylinders[index].createFill({
-				date: fill.date,
-				startPressure: fill.startPressure,
-				endPressure: fill.endPressure,
-				oxygen: fill.oxygen,
-				helium: fill.helium,
-			}),
+		const created = await Promise.all(
+			fills.map((fill, index) =>
+				cylinders[index].createFill({
+					date: fill.date,
+					startPressure: fill.startPressure,
+					endPressure: fill.endPressure,
+					oxygen: fill.oxygen,
+					helium: fill.helium,
+				}),
+			),
 		)
 
 		return await Response.json(created)
