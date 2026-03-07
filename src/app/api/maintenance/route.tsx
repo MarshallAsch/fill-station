@@ -6,7 +6,12 @@ import customParseFormat from 'dayjs/plugin/customParseFormat'
 dayjs.extend(customParseFormat)
 
 export async function GET(request: Request) {
-	let result = await Maintenance.findAll({ order: [['date', 'ASC']] })
+	let result = await Maintenance.findAll({
+		order: [
+			['date', 'ASC'],
+			['hours', 'DESC'],
+		],
+	})
 	return Response.json(result)
 }
 
