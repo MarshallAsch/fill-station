@@ -1,11 +1,13 @@
 import { Cylinder } from '@/types/cylinder'
 import CylinderListRow from './CylinderListRow'
 
+import { Cylinder as CylinderDB } from '@/lib/models/cylinder'
+
 const CylinderListTable = ({
 	cylinders,
 	showOwner = false,
 }: {
-	cylinders: Cylinder[]
+	cylinders: Cylinder[] | CylinderDB[]
 	showOwner?: boolean
 }) => {
 	return (

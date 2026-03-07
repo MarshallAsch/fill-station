@@ -4,8 +4,7 @@ import CylinderListTable from '@/components/Cylinders/CylinderListTable'
 import FormGroup from '@/components/UI/FormGroup'
 import PropertyRow from '@/components/VisHistory/PropertyRow'
 import { Client } from '@/lib/models/client'
-import { Cylinder } from '@/types/cylinder'
-import dayjs from 'dayjs'
+import { Cylinder } from '@/lib/models/cylinder'
 
 export default async function ClientDetails({
 	params,
@@ -14,27 +13,11 @@ export default async function ClientDetails({
 }) {
 	const { slug: clientId } = await params
 
-	const client = await Client.findByPk(clientId)
+	const client = await Client.findByPk(clientId, {
+		include: Cylinder,
+	})
 
-	const cylinders: Cylinder[] = !client
-		? []
-		: client.Cylinders?.map((data) => {
-				return {
-					...data,
-					id: data.id,
-					birth: data.birth ? dayjs(data.birth).toISOString() : '',
-					lastHydro: data.lastHydro ? dayjs(data.lastHydro).toISOString() : '',
-					lastVis: data.lastVis ? dayjs(data.lastVis).toISOString() : '',
-					createdAt: data.createdAt ? dayjs(data.createdAt).toISOString() : '',
-					updatedAt: data.updatedAt ? dayjs(data.updatedAt).toISOString() : '',
-					material:
-						data.material === 'steel' ||
-						data.material === 'aluminum' ||
-						data.material === 'composite'
-							? data.material
-							: undefined,
-				} as Cylinder
-			}) || []
+	const cylinders: Cylinder[] = client?.Cylinders || []
 
 	return (
 		<div className='max-w-7xl'>
