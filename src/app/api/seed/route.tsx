@@ -168,6 +168,7 @@ function generateMaintenance(): Maintenance[] {
 
 export async function GET(request: Request) {
 	if (process.env.NODE_ENV !== 'development') {
+		await sequelize.sync({ force: true })
 		return Response.json(
 			{ message: 'Only available when running in dev mode' },
 			{ status: 400 },
