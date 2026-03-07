@@ -42,12 +42,12 @@ export async function getAllClients(): Promise<Client[]> {
 
 export async function getAllFills(): Promise<FillHistory[]> {
 	const result = await axiosInstance.get('/api/fills')
-	return result.data //.map((v: any) => ({ ...v, date: dayjs(v.date) }))
+	return result.data
 }
 
 export async function getAllVisuals(): Promise<VisualHistory[]> {
 	const result = await axiosInstance.get('/api/visuals')
-	return result.data //.map((v: any) => ({ ...v, date: dayjs(v.date) }))
+	return result.data
 }
 
 export async function getAllCylinders(): Promise<Cylinder[]> {
@@ -57,7 +57,7 @@ export async function getAllCylinders(): Promise<Cylinder[]> {
 
 export async function getAllMaintenance(): Promise<CompressorMaintenance[]> {
 	const result = await axiosInstance.get('/api/maintenance')
-	return result.data //.map((v: any) => ({ ...v, date: dayjs(v.date) }))
+	return result.data
 }
 
 export async function getMaintenanceSummary(): Promise<MaintenanceSummary> {
