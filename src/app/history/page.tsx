@@ -10,10 +10,17 @@ import ClientList from '@/components/History/ClientList'
 import CylinderListTable from '@/components/Cylinders/CylinderListTable'
 import useLoadCylinder from '@/hooks/useLoadCylinders'
 
+import { useSession } from 'next-auth/react'
+
 export default function History() {
 	const { selectedTab } = useAppSelector((state) => state.history)
 
 	const { cylinders } = useLoadCylinder()
+
+	const session = useSession()
+	if (session.status !== 'authenticated') {
+		return <div>Not Authorized</div>
+	}
 
 	const getTabComponent = () => {
 		switch (selectedTab) {

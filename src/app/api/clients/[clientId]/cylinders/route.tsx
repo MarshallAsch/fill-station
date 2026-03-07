@@ -1,7 +1,7 @@
 import { Client } from '@/lib/models/client'
 import { Cylinder } from '@/lib/models/cylinder'
 import dayjs from 'dayjs'
-
+import { auth } from '@/auth'
 import customParseFormat from 'dayjs/plugin/customParseFormat'
 dayjs.extend(customParseFormat)
 
@@ -9,6 +9,13 @@ export async function GET(
 	request: Request,
 	{ params }: { params: Promise<{ clientId: string }> },
 ) {
+	const session = await auth()
+	if (!session)
+		return Response.json(
+			{ error: 'auth', message: 'Must be logged in' },
+			{ status: 401 },
+		)
+
 	const { clientId } = await params
 
 	let cylinders = await Cylinder.findAll({
@@ -24,6 +31,12 @@ export async function POST(
 	request: Request,
 	{ params }: { params: Promise<{ clientId: string }> },
 ) {
+	const session = await auth()
+	if (!session)
+		return Response.json(
+			{ error: 'auth', message: 'Must be logged in' },
+			{ status: 401 },
+		)
 	const { clientId } = await params
 
 	const client = await Client.findByPk(clientId)

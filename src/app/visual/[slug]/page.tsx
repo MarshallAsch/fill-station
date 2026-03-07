@@ -10,12 +10,20 @@ import {
 	ExclamationTriangleIcon,
 } from '@heroicons/react/24/solid'
 import dayjs from 'dayjs'
+import { auth } from '@/auth'
 
 export default async function TankVisual({
 	params,
 }: {
 	params: Promise<{ slug: string }>
 }) {
+	const session = await auth()
+	if (!session)
+		return Response.json(
+			{ error: 'auth', message: 'Must be logged in' },
+			{ status: 401 },
+		)
+
 	const { slug: inspectionID } = await params
 
 	let vis = await Visual.findByPk(inspectionID, { include: Cylinder })

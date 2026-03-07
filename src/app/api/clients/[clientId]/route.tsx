@@ -1,9 +1,15 @@
 import { Client } from '@/lib/models/client'
-
+import { auth } from '@/auth'
 export async function GET(
 	request: Request,
 	{ params }: { params: Promise<{ clientId: string }> },
 ) {
+	const session = await auth()
+	if (!session)
+		return Response.json(
+			{ error: 'auth', message: 'Must be logged in' },
+			{ status: 401 },
+		)
 	const { clientId } = await params
 	let client = await Client.findByPk(clientId)
 	return Response.json(client)
@@ -13,6 +19,12 @@ export async function PUT(
 	request: Request,
 	{ params }: { params: Promise<{ clientId: string }> },
 ) {
+	const session = await auth()
+	if (!session)
+		return Response.json(
+			{ error: 'auth', message: 'Must be logged in' },
+			{ status: 401 },
+		)
 	let { name, nitroxCert, advancedNitroxCert, trimixCert, inspectionCert } =
 		await request.json()
 

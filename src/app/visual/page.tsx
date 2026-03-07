@@ -14,6 +14,7 @@ import { useAppDispatch, useAppSelector } from '@/redux/hooks'
 import { updateCylinder } from '@/redux/visuals/visualsSlice'
 import useLoadClients from '@/hooks/useLoadClients'
 import { setSelectedClient } from '@/redux/client/clientSlice'
+import { useSession } from 'next-auth/react'
 
 export default function Visual() {
 	const dispatch = useAppDispatch()
@@ -23,6 +24,11 @@ export default function Visual() {
 	// This loads the Clients for all components in the page.
 	// Components in the page should get this data from the store to prevent multiple loads
 	const { clients } = useLoadClients()
+
+	const session = useSession()
+	if (session.status !== 'authenticated') {
+		return <div>Not Authorized</div>
+	}
 
 	const handleSubmit = (form: FormData) => {
 		const formData = Object.fromEntries(form.entries())
