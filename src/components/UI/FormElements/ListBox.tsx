@@ -20,10 +20,13 @@ type ListBoxProps = {
 	title: string
 	id: string
 	name: string
+	defaultValue?: Item
 }
 
-const ListBox = ({ items, title, id, name }: ListBoxProps) => {
-	const [selected, setSelected] = useState<Item | null>(items[0])
+const ListBox = ({ items, title, id, name, defaultValue }: ListBoxProps) => {
+	const [selected, setSelected] = useState<Item | null>(
+		defaultValue || items[0],
+	)
 
 	return (
 		<Listbox value={selected} onChange={setSelected}>

@@ -3,6 +3,7 @@ import {
 	CheckCircleIcon,
 	XCircleIcon,
 	InformationCircleIcon,
+	Cog6ToothIcon,
 } from '@heroicons/react/24/outline'
 import dayjs from 'dayjs'
 import Tooltip from '../UI/Tooltip'
@@ -10,6 +11,9 @@ import relativeTime from 'dayjs/plugin/relativeTime'
 
 import { Cylinder as CylinderModel } from '@/lib/models/cylinder'
 import Link from 'next/link'
+import Button from '../UI/Button'
+import { useAppDispatch } from '@/redux/hooks'
+import { updateEditCylinderModal } from '@/redux/modal/modalSlice'
 
 dayjs.extend(relativeTime)
 
@@ -20,6 +24,8 @@ const CylinderListRow = ({
 	cylinder: Cylinder | CylinderModel
 	showOwner?: boolean
 }) => {
+	const dispatch = useAppDispatch()
+
 	const nextHydro = dayjs(cylinder.lastHydro).add(5, 'year')
 	const nextVis = dayjs(cylinder.lastVis).add(1, 'year')
 
@@ -79,6 +85,15 @@ const CylinderListRow = ({
 						Inspect now
 					</Link>
 				)}
+			</td>
+			<td className='px-3 py-4 text-center text-sm whitespace-nowrap text-gray-500'>
+				<Button
+					onClick={() =>
+						dispatch(updateEditCylinderModal(cylinder as Cylinder))
+					}
+				>
+					<Cog6ToothIcon className='h-5' />
+				</Button>
 			</td>
 		</tr>
 	)
