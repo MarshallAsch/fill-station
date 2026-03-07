@@ -6,7 +6,7 @@ const VisualInfo = () => {
 		<FormGroup title='Vis Info' description=''>
 			<RadioGroup
 				title='Valve Type'
-				name='valve_type'
+				name='valve'
 				options={[
 					{
 						label: 'Din',

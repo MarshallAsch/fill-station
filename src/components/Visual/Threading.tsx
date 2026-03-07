@@ -13,29 +13,22 @@ const Threading = () => {
 			<>
 				<TextArea
 					id='thread-description'
-					name='thread_description'
+					name='threadingDescription'
 					placeholder='Description'
 					ariaLabel='Thread Description'
 				/>
 
 				<NumberField
 					id='damagedThreads'
-					name='damagedThreads'
+					name='badThreadCount'
 					min={0}
 					max={20}
 					helperText='How many damaged threads are visible?'
 				/>
 
-				<TextArea
-					id='oring-surface'
-					name='oring_surface'
-					placeholder='O-ring surface'
-					ariaLabel='O-ring Surface'
-				/>
-
 				<RadioGroup
 					title='Comparison to PSI Standards/Manufacturers'
-					name='threading_psi_standards'
+					name='threadingStandards'
 					options={PSI_INSPECTION_OPTIONS}
 					defaultValue={PSI_INSPECTION_OPTION_ACCEPTABLE}
 				/>
