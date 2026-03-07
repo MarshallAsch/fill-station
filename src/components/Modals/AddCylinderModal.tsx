@@ -23,6 +23,7 @@ import Button from '../UI/Button'
 import ListBox from '../UI/FormElements/ListBox'
 import { newCylinder } from '@/app/_api'
 import { NewCylinderDTO } from '@/types/cylinder'
+import { toast } from 'react-toastify'
 
 const AddCylinderModal = () => {
 	const { addCylinderModalOpen } = useAppSelector((state) => state.modal)
@@ -44,9 +45,12 @@ const AddCylinderModal = () => {
 
 		if (selectedClient) {
 			const data = await newCylinder(selectedClient?.id, formData)
-			if (!(data instanceof String)) {
+			if (typeof data !== 'string') {
+				toast.success('Saved new Cylinder')
 				queryClient.invalidateQueries({ queryKey: ['cylinders'] })
 				handleClose()
+			} else {
+				toast.error(`Failed to create cylinder: ${data}`)
 			}
 		}
 	}

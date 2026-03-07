@@ -11,7 +11,7 @@ import axios from 'axios'
 import dayjs from 'dayjs'
 import { FillDto } from '../api/fills/route'
 
-const axiosInstance = axios.create()
+const axiosInstance = axios.create({validateStatus: (code) => code < 500 })
 
 // Regex to identify ISO 8601 date strings
 const dateRegExp = /\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z?/

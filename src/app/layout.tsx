@@ -5,6 +5,7 @@ import Providers from '@/components/Layout/Providers'
 import { ReactNode } from 'react'
 
 import { Metadata } from 'next'
+import { Slide, ToastContainer } from 'react-toastify'
 
 export const metadata: Metadata = {
 	title: {
@@ -31,6 +32,20 @@ export default function Layout({ children }: { children: ReactNode }) {
 					<Navbar />
 					<main className='font-montserrat-regular flex min-h-screen justify-center'>
 						{children}
+
+						<ToastContainer
+							position='bottom-left'
+							autoClose={5000}
+							hideProgressBar={false}
+							newestOnTop={false}
+							closeOnClick
+							rtl={false}
+							pauseOnFocusLoss
+							draggable
+							pauseOnHover
+							theme='colored'
+							transition={Slide}
+						/>
 					</main>
 					<Copyright />
 				</body>

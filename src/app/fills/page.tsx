@@ -12,6 +12,7 @@ import { addNewFill } from '../_api'
 import dayjs from 'dayjs'
 import { resetFills } from '@/redux/fills/fillsSlice'
 import { useSession } from 'next-auth/react'
+import { toast } from 'react-toastify'
 
 export default function Fills() {
 	const dispatch = useAppDispatch()
@@ -46,9 +47,12 @@ export default function Fills() {
 
 		console.log({ data })
 
-		if (!(data instanceof String)) {
+		if (typeof data !== 'string') {
+			toast.success('Saved fills')
 			dispatch(resetFills())
 			dispatch(setSelectedClient(undefined))
+		} else {
+			toast.error(`failed to save fills ${data}`)
 		}
 	}
 

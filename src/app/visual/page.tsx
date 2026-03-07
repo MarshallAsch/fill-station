@@ -15,6 +15,7 @@ import { updateCylinder } from '@/redux/visuals/visualsSlice'
 import useLoadClients from '@/hooks/useLoadClients'
 import { setSelectedClient } from '@/redux/client/clientSlice'
 import { useSession } from 'next-auth/react'
+import { toast } from 'react-toastify'
 
 export default function Visual() {
 	const dispatch = useAppDispatch()
@@ -33,6 +34,8 @@ export default function Visual() {
 	const handleSubmit = (form: FormData) => {
 		const formData = Object.fromEntries(form.entries())
 		console.log(formData)
+
+		toast.success('Saved Visual Inspection')
 	}
 
 	return (
