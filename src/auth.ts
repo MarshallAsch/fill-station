@@ -9,8 +9,12 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 			name: 'Marshalls Lab',
 			type: 'oidc',
 			issuer: 'https://home.marshallasch.ca/authelia',
+			wellKnown:
+				'https://home.marshallasch.ca/authelia/.well-known/openid-configuration',
 			clientId: process.env.AUTH_CLIENT_ID,
 			clientSecret: process.env.AUTH_CLIENT_SECRET,
+			allowDangerousEmailAccountLinking: true,
+			idToken: false,
 			checks: ['pkce', 'state'],
 			style: {
 				logo: 'https://www.authelia.com/images/branding/logo-cropped.png',
