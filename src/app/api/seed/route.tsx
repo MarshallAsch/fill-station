@@ -1,7 +1,6 @@
 import { Cylinder } from '@/lib/models/cylinder'
 import { Fill } from '@/lib/models/fill'
 import { Maintenance } from '@/lib/models/maintenance'
-import { auth } from '@/auth'
 import { Client } from '@/lib/models/client'
 import dayjs from 'dayjs'
 
@@ -167,15 +166,8 @@ function generateMaintenance(): Maintenance[] {
 }
 
 export async function GET(request: Request) {
-	const session = await auth()
-	if (!session)
-		return Response.json(
-			{ error: 'auth', message: 'Must be logged in' },
-			{ status: 401 },
-		)
-
 	if (process.env.NODE_ENV !== 'development') {
-		await sequelize.sync({ force: true })
+		await sequelize.sync({ alter: true })
 		return Response.json(
 			{ message: 'Only available when running in dev mode' },
 			{ status: 400 },
