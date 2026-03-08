@@ -1,5 +1,6 @@
 import { Client } from '@/lib/models/client'
 import { auth } from '@/auth'
+
 export async function GET(
 	request: Request,
 	{ params }: { params: Promise<{ clientId: string }> },
