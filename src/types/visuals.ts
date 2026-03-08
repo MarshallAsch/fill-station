@@ -43,10 +43,7 @@ export type VisualHistory = {
 	updatedAt?: string
 }
 
-export type VisualForm = {
-	id: number
-	Cylinder?: Cylinder
-
+export type NewVisualDTO = {
 	valve: 'din' | 'yoke' | 'h' | 'none'
 
 	heat: boolean
@@ -80,6 +77,6 @@ export type VisualForm = {
 	date: dayjs.Dayjs
 	oxygenCleaned: boolean
 	markedOxygenClean: boolean
-}
 
-export type NewVisualDTO = {}
+	inspectorId: string
+}

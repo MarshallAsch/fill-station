@@ -4,6 +4,7 @@ import { Visual } from '@/lib/models/visual'
 import dayjs from 'dayjs'
 import { auth } from '@/auth'
 import customParseFormat from 'dayjs/plugin/customParseFormat'
+import { NewVisualDTO } from '@/types/visuals'
 dayjs.extend(customParseFormat)
 
 export async function GET(
@@ -82,7 +83,7 @@ export async function POST(
 		oxygenCleaned,
 		markedOxygenClean,
 		inspectorId,
-	} = await request.json()
+	} = (await request.json()) as NewVisualDTO
 
 	const inspector = await Client.findByPk(inspectorId)
 
@@ -127,9 +128,10 @@ export async function POST(
 			date,
 			oxygenCleaned,
 			markedOxygenClean,
+
+			inspectorId: inspector.id,
 		})
 
-		result.setInspector(inspector)
 		result = await result.save()
 
 		return Response.json(result)
