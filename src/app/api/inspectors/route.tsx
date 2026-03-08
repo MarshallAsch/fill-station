@@ -8,7 +8,7 @@ export async function GET(request: Request) {
 			{ error: 'auth', message: 'Must be logged in' },
 			{ status: 401 },
 		)
-	let clients = await Client.findAll({
+	const clients = await Client.findAll({
 		where: {
 			inspectionCert: {
 				[Op.not]: '',

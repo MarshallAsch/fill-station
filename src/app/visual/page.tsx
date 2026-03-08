@@ -12,30 +12,59 @@ import Button from '@/components/UI/Button'
 import ClientPicker from '@/components/UI/FormElements/ClientPicker'
 import { useAppDispatch, useAppSelector } from '@/redux/hooks'
 import { updateCylinder } from '@/redux/visuals/visualsSlice'
-import useLoadClients from '@/hooks/useLoadClients'
-import { setSelectedClient } from '@/redux/client/clientSlice'
 import { useSession } from 'next-auth/react'
 import { toast } from 'react-toastify'
+import { NewVisualDTO } from '@/types/visuals'
+import { newVisual } from '../_api'
+import { useQueryClient } from '@tanstack/react-query'
 
 export default function Visual() {
 	const dispatch = useAppDispatch()
 	const { cylinder } = useAppSelector((state) => state.visuals)
-	const { selectedClient: client } = useAppSelector((state) => state.clients)
-
-	// This loads the Clients for all components in the page.
-	// Components in the page should get this data from the store to prevent multiple loads
-	const { clients } = useLoadClients()
+	const { selectedClient: client, selectedInspector: inspector } =
+		useAppSelector((state) => state.clients)
+	const queryClient = useQueryClient()
 
 	const session = useSession()
 	if (session.status !== 'authenticated') {
 		return <div>Not Authorized</div>
 	}
 
-	const handleSubmit = (form: FormData) => {
-		const formData = Object.fromEntries(form.entries())
-		console.log(formData)
+	const handleSubmit = async (form: FormData) => {
+		const formData: any = Object.fromEntries(form.entries())
+		formData.inspectorId = inspector?.id
 
-		toast.success('Saved Visual Inspection')
+		formData.heat = formData.heat === '1' ? true : false
+		formData.painted = formData.painted === '1' ? true : false
+		formData.odor = formData.odor === '1' ? true : false
+		formData.bow = formData.bow === '1' ? true : false
+		formData.bulges = formData.bulges === '1' ? true : false
+		formData.bell = formData.bell === '1' ? true : false
+		formData.lineCorrosion = formData.lineCorrosion === '1' ? true : false
+		formData.burstDiskReplaced =
+			formData.burstDiskReplaced === '1' ? true : false
+		formData.oringReplaced = formData.oringReplaced === '1' ? true : false
+		formData.dipTube = formData.dipTube === '1' ? true : false
+		formData.needService = formData.needService === '1' ? true : false
+		formData.rebuilt = formData.rebuilt === '1' ? true : false
+		formData.oxygenCleaned = formData.oxygenCleaned === '1' ? true : false
+		formData.markedOxygenClean =
+			formData.markedOxygenClean === '1' ? true : false
+
+		formData.badThreadCount = parseInt(formData.badThreadCount, 10)
+
+		if (cylinder) {
+			const data = await newVisual(cylinder.id, formData as NewVisualDTO)
+
+			if (typeof data !== 'string') {
+				toast.success('Saved new Visual Inspection')
+				queryClient.invalidateQueries({ queryKey: ['visuals'] })
+			} else {
+				toast.error(`Failed to create Inspection: ${data}`)
+			}
+		} else {
+			toast.error(`Must select n cylinder`)
+		}
 	}
 
 	return (
@@ -49,14 +78,12 @@ export default function Visual() {
 
 				<form action={handleSubmit}>
 					<div className='flex w-full justify-center gap-6'>
-						<ClientPicker
-							onChange={(c) => dispatch(setSelectedClient(c))}
-							clients={clients}
-						/>
+						<ClientPicker />
 						<CylinderPicker
 							initialValue={cylinder}
 							onChange={(c) => dispatch(updateCylinder(c))}
 							filter={(c) => !client || client.id == c.ownerId}
+							visPage={true}
 						/>
 					</div>
 

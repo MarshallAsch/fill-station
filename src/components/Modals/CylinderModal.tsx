@@ -1,5 +1,4 @@
-import { useAppDispatch, useAppSelector } from '@/redux/hooks'
-import { updateAddCylinderModalOpen } from '@/redux/modal/modalSlice'
+import { useAppSelector } from '@/redux/hooks'
 import {
 	Dialog,
 	DialogPanel,
@@ -13,6 +12,7 @@ import { useQueryClient } from '@tanstack/react-query'
 import RadioGroup from '../UI/FormElements/RadioGroup'
 import {
 	BOOL_OPTION_NO,
+	BOOL_OPTION_YES,
 	BOOL_OPTIONS,
 	CYLINDER_MATERIAL_OPTIONS,
 	SERVICE_PRESSURE,
@@ -22,21 +22,36 @@ import DatePicker from '../UI/FormElements/DatePicker'
 import Button from '../UI/Button'
 import ListBox from '../UI/FormElements/ListBox'
 import { newCylinder } from '@/app/_api'
-import { NewCylinderDTO } from '@/types/cylinder'
+import { Cylinder, NewCylinderDTO } from '@/types/cylinder'
 import { toast } from 'react-toastify'
+import dayjs from 'dayjs'
 
-const AddCylinderModal = () => {
-	const { addCylinderModalOpen } = useAppSelector((state) => state.modal)
-	const dispatch = useAppDispatch()
+export type CylinderModalProps = {
+	title?: string
+	description?: string
+	cancelText?: string
+	submitText?: string
+	cylinder?: Cylinder
+	onSubmit?: (
+		ownerId: number,
+		cylinderId: number | undefined,
+		cylinder: NewCylinderDTO,
+	) => Promise<Cylinder | string>
+	handleClose: () => void
+}
+
+const CylinderModal = ({
+	title = 'New Cylinder',
+	description = 'Add the new cylinders information to save it for next time.',
+	submitText = 'Add',
+	cancelText = 'Cancel',
+	cylinder,
+	handleClose,
+	onSubmit = newCylinder,
+}: CylinderModalProps) => {
 	const queryClient = useQueryClient()
 
-	const { allClients: clients, selectedClient } = useAppSelector(
-		(state) => state.clients,
-	)
-
-	const handleClose = () => {
-		dispatch(updateAddCylinderModalOpen(false))
-	}
+	const { selectedClient } = useAppSelector((state) => state.clients)
 
 	const handleSubmit = async (form: FormData) => {
 		const formData = Object.fromEntries(
@@ -44,7 +59,11 @@ const AddCylinderModal = () => {
 		) as unknown as NewCylinderDTO
 
 		if (selectedClient) {
-			const data = await newCylinder(selectedClient?.id, formData)
+			const data = await onSubmit(
+				selectedClient?.id,
+				cylinder?.id,
+				formData as NewCylinderDTO,
+			)
 			if (typeof data !== 'string') {
 				toast.success('Saved new Cylinder')
 				queryClient.invalidateQueries({ queryKey: ['cylinders'] })
@@ -55,7 +74,7 @@ const AddCylinderModal = () => {
 		}
 	}
 	return (
-		<Transition show={addCylinderModalOpen} as={Fragment}>
+		<Transition show={true} as={Fragment}>
 			<Dialog as='div' onClose={handleClose} className='relative z-50'>
 				<TransitionChild
 					as={Fragment}
@@ -80,13 +99,11 @@ const AddCylinderModal = () => {
 							leaveTo='opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95'
 						>
 							<DialogPanel className='relative transform overflow-hidden rounded-lg bg-white px-4 pt-5 pb-4 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:p-6'>
-								<DialogTitle>New Cylinder</DialogTitle>
+								<DialogTitle>{title}</DialogTitle>
 								<form className='flex flex-col gap-4' action={handleSubmit}>
-									<DialogTitle>
-										Add the new cylinders information to save it for next time.
-									</DialogTitle>
+									<DialogTitle>{description}</DialogTitle>
 
-									<ClientPicker disableAdd={true} clients={clients} />
+									<ClientPicker disableAdd={true} />
 
 									<TextInput
 										autoFocus
@@ -94,30 +111,38 @@ const AddCylinderModal = () => {
 										id='serial-number'
 										name='serialNumber'
 										ariaLabel='Serial Number'
+										defaultValue={cylinder?.serialNumber}
 										placeholder='Serial Number'
 									/>
 
 									<div className='flex flex-row space-x-2'>
 										<DatePicker
-											name='firstHydro'
+											name='birth'
 											title='First Hydro'
-											id='first-hydro'
+											id='birth'
+											defaultValue={dayjs(cylinder?.birth)}
 										/>
 
 										<DatePicker
 											name='lastHydro'
 											title='Last Hydro'
 											id='last-hydro'
+											defaultValue={dayjs(cylinder?.lastHydro)}
 										/>
 									</div>
 
-									<DatePicker name='lastVis' title='Last Vis' id='last-vis' />
-									<DatePicker name='birth' title='Birth' id='birth' />
+									<DatePicker
+										name='lastVis'
+										title='Last Vis'
+										id='last-vis'
+										defaultValue={dayjs(cylinder?.lastVis)}
+									/>
 
 									<RadioGroup
 										title='Cylinder material'
 										name='material'
 										options={CYLINDER_MATERIAL_OPTIONS}
+										defaultValue={cylinder?.material}
 									/>
 
 									<ListBox
@@ -125,20 +150,27 @@ const AddCylinderModal = () => {
 										title='Rated service Pressure'
 										name='servicePressure'
 										id='fill_pressure'
+										defaultValue={SERVICE_PRESSURE.find(
+											(i) => i.value == cylinder?.servicePressure.toString(),
+										)}
 									/>
 
 									<RadioGroup
 										title='Tank and Valve have been cleaned for oxygen service to 100%'
 										name='oxygenClean'
 										options={BOOL_OPTIONS}
-										defaultValue={BOOL_OPTION_NO}
+										defaultValue={
+											cylinder?.oxygenClean == true
+												? BOOL_OPTION_YES
+												: BOOL_OPTION_NO
+										}
 									/>
 
 									<div className='flex w-full justify-end gap-2'>
 										<Button onClick={handleClose} variant='ghost'>
-											Cancel
+											{cancelText}
 										</Button>
-										<Button type='submit'>Add</Button>
+										<Button type='submit'>{submitText}</Button>
 									</div>
 								</form>
 							</DialogPanel>
@@ -150,4 +182,4 @@ const AddCylinderModal = () => {
 	)
 }
 
-export default AddCylinderModal
+export default CylinderModal

@@ -8,7 +8,7 @@ export async function GET(request: Request) {
 			{ error: 'auth', message: 'Must be logged in' },
 			{ status: 401 },
 		)
-	let clients = await Client.findAll()
+	const clients = await Client.findAll()
 	return Response.json(clients)
 }
 
@@ -19,7 +19,7 @@ export async function POST(request: Request) {
 			{ error: 'auth', message: 'Must be logged in' },
 			{ status: 401 },
 		)
-	let { name, nitroxCert, advancedNitroxCert, trimixCert, inspectionCert } =
+	const { name, nitroxCert, advancedNitroxCert, trimixCert, inspectionCert } =
 		await request.json()
 
 	if (name == undefined) {
@@ -30,7 +30,7 @@ export async function POST(request: Request) {
 	}
 
 	try {
-		let result = await Client.create({
+		const result = await Client.create({
 			name: name,
 			nitroxCert: nitroxCert,
 			advancedNitroxCert: advancedNitroxCert,

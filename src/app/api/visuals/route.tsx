@@ -13,7 +13,7 @@ export async function GET(request: Request) {
 			{ status: 401 },
 		)
 
-	let visual = await Visual.findAll({
+	const visual = await Visual.findAll({
 		include: Cylinder,
 	})
 	return Response.json(visual)

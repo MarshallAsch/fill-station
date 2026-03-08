@@ -4,11 +4,13 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 type InitialState = {
 	allClients: Client[]
 	selectedClient: Client | undefined
+	selectedInspector: Client | undefined
 }
 
 const initialState: InitialState = {
 	allClients: [],
 	selectedClient: undefined,
+	selectedInspector: undefined,
 }
 
 const clientSlice = createSlice({
@@ -50,6 +52,12 @@ const clientSlice = createSlice({
 		setSelectedClient: (state, action: PayloadAction<Client | undefined>) => {
 			state.selectedClient = action.payload
 		},
+		setSelectedInspector: (
+			state,
+			action: PayloadAction<Client | undefined>,
+		) => {
+			state.selectedInspector = action.payload
+		},
 	},
 })
 
@@ -59,5 +67,6 @@ export const {
 	removeClient,
 	updateClient,
 	setSelectedClient,
+	setSelectedInspector,
 } = clientSlice.actions
 export default clientSlice.reducer

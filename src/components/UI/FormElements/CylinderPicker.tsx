@@ -33,6 +33,7 @@ type CylinderPickerProps = {
 	initialValue?: Cylinder
 	filter?: (c: Cylinder) => boolean
 	onChange?: (c?: Cylinder) => void
+	visPage?: boolean
 }
 
 const CylinderPicker = ({
@@ -40,9 +41,10 @@ const CylinderPicker = ({
 	index,
 	disableAdd,
 	showExpired = false,
-	filter = (c) => true,
+	filter,
 	initialValue,
 	onChange,
+	visPage,
 }: CylinderPickerProps) => {
 	const { cylinders } = useLoadCylinder()
 	const dispatch = useAppDispatch()
@@ -79,6 +81,7 @@ const CylinderPicker = ({
 					onChange && onChange(cylinder)
 				}
 			}}
+			className='w-1/2'
 		>
 			<Label className='block text-sm/6 font-medium text-gray-900'>
 				Select a Cylinder
@@ -123,33 +126,35 @@ const CylinderPicker = ({
 							{query}
 						</ComboboxOption>
 					)}
-					{filteredCylinders.filter(filter).map((cylinder) => {
-						let needsHydro =
-							dayjs.duration(dayjs().diff(cylinder.lastHydro)).asYears() > 5
-						let needsVis =
-							dayjs.duration(dayjs().diff(cylinder.lastVis)).asMonths() > 12
+					{filter &&
+						filteredCylinders.filter(filter).map((cylinder) => {
+							const needsHydro =
+								dayjs.duration(dayjs().diff(cylinder.lastHydro)).asYears() > 5
+							const needsVis = visPage
+								? false
+								: dayjs.duration(dayjs().diff(cylinder.lastVis)).asMonths() > 12
 
-						return (
-							<ComboboxOption
-								key={cylinder.serialNumber}
-								value={cylinder}
-								disabled={!showExpired && needsHydro}
-								className='flex cursor-pointer justify-between gap-2 px-3 py-2 text-gray-900 select-none data-focus:bg-indigo-600 data-focus:text-white data-focus:outline-hidden'
-							>
-								{cylinder.serialNumber}
-								{(needsHydro || needsVis) && (
-									<Tooltip
-										position='left'
-										message={`Needs ${needsHydro ? 'Hydro' : 'Visual'}`}
-									>
-										<ExclamationTriangleIcon
-											className={`size-5 ${needsHydro ? 'fill-red-600' : 'fill-amber-500'} `}
-										/>
-									</Tooltip>
-								)}
-							</ComboboxOption>
-						)
-					})}
+							return (
+								<ComboboxOption
+									key={cylinder.serialNumber}
+									value={cylinder}
+									disabled={needsHydro || needsVis}
+									className='flex cursor-pointer justify-between gap-2 px-3 py-2 text-gray-900 select-none data-disabled:text-gray-300 data-focus:bg-indigo-600 data-focus:text-white data-focus:outline-hidden'
+								>
+									{cylinder.serialNumber}
+									{(needsHydro || needsVis) && (
+										<Tooltip
+											position='left'
+											message={`Needs ${needsHydro ? 'Hydro' : 'Visual'}`}
+										>
+											<ExclamationTriangleIcon
+												className={`size-5 ${needsHydro ? 'fill-red-600' : !showExpired ? 'fill-yellow-500' : 'fill-amber-500'} `}
+											/>
+										</Tooltip>
+									)}
+								</ComboboxOption>
+							)
+						})}
 				</ComboboxOptions>
 			</div>
 		</Combobox>

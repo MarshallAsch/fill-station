@@ -68,6 +68,12 @@ const CylinderListTable = ({
 									>
 										Do Inspection
 									</th>
+									<th
+										scope='col'
+										className='px-3 py-3.5 text-center text-sm font-semibold text-gray-900'
+									>
+										Edit
+									</th>
 								</tr>
 							</thead>
 							<tbody className='divide-y divide-gray-200 bg-white'>

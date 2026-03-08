@@ -26,13 +26,13 @@ function generateClient(): Client {
 }
 
 function generateCylinder(client: Client): Cylinder {
-	let birth = dayjs()
+	const birth = dayjs()
 		.year(1990 + Math.trunc(Math.random() * 30))
 		.month(5)
-	let maxYear = dayjs().year() - birth.year() - 1
-	let lastHydro = birth.add(Math.trunc(Math.random() * maxYear), 'year')
+	const maxYear = dayjs().year() - birth.year() - 1
+	const lastHydro = birth.add(Math.trunc(Math.random() * maxYear), 'year')
 
-	let c = Cylinder.build({
+	const c = Cylinder.build({
 		serialNumber: randomString(),
 		birth: birth,
 		lastHydro: lastHydro,
@@ -47,9 +47,9 @@ function generateCylinder(client: Client): Cylinder {
 }
 
 function generateFill(cylinder: Cylinder): Fill {
-	let max = [2640, 3000, 3442][Math.trunc(Math.random() * 3)]
+	const max = [2640, 3000, 3442][Math.trunc(Math.random() * 3)]
 
-	let fillType = Math.trunc(Math.random() * 3)
+	const fillType = Math.trunc(Math.random() * 3)
 	let o2: number | undefined = undefined
 	let he: number | undefined = undefined
 
@@ -178,10 +178,10 @@ export async function GET(request: Request) {
 	await sequelize.sync({ force: true })
 	await sequelize.query('SET FOREIGN_KEY_CHECKS = 1')
 
-	let clients = await Promise.all(
+	const clients = await Promise.all(
 		Array.from({ length: 10 }, () => generateClient().save()),
 	)
-	let cylinders = await Promise.all(
+	const cylinders = await Promise.all(
 		clients
 			.map((c) =>
 				Array.from({ length: Math.trunc(Math.random() * 15) }, () =>
@@ -200,7 +200,7 @@ export async function GET(request: Request) {
 			.flat(),
 	)
 
-	let inspector = clients.filter((c) => c.inspectionCert)[0]
+	const inspector = clients.filter((c) => c.inspectionCert)[0]
 
 	await Promise.all(
 		cylinders

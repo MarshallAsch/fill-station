@@ -8,7 +8,7 @@ import { useEffect, useMemo } from 'react'
 
 const useLoadVisuals = () => {
 	const { status, data, error } = useQuery({
-		queryKey: ['fills'],
+		queryKey: ['visuals'],
 		queryFn: getAllVisuals,
 		select: (data) =>
 			[...data].sort(

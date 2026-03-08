@@ -4,6 +4,7 @@ import { Visual } from '@/lib/models/visual'
 import dayjs from 'dayjs'
 import { auth } from '@/auth'
 import customParseFormat from 'dayjs/plugin/customParseFormat'
+import { NewVisualDTO } from '@/types/visuals'
 dayjs.extend(customParseFormat)
 
 export async function GET(
@@ -18,7 +19,7 @@ export async function GET(
 		)
 	const { cylinderId } = await params
 
-	let cylinders = await Visual.findAll({
+	const cylinders = await Visual.findAll({
 		where: {
 			CylinderId: cylinderId,
 		},
@@ -39,7 +40,7 @@ export async function POST(
 		)
 	const { cylinderId } = await params
 
-	let cylinder = await Cylinder.findByPk(cylinderId)
+	const cylinder = await Cylinder.findByPk(cylinderId)
 
 	if (!cylinder) {
 		return Response.json(
@@ -48,7 +49,7 @@ export async function POST(
 		)
 	}
 
-	let {
+	const {
 		valve,
 		heat,
 		painted,
@@ -82,9 +83,9 @@ export async function POST(
 		oxygenCleaned,
 		markedOxygenClean,
 		inspectorId,
-	} = await request.json()
+	} = (await request.json()) as NewVisualDTO
 
-	let inspector = await Client.findByPk(inspectorId)
+	const inspector = await Client.findByPk(inspectorId)
 
 	if (!inspector || !inspector.inspectionCert) {
 		return Response.json(
@@ -127,9 +128,10 @@ export async function POST(
 			date,
 			oxygenCleaned,
 			markedOxygenClean,
+
+			inspectorId: inspector.id,
 		})
 
-		result.setInspector(inspector)
 		result = await result.save()
 
 		return Response.json(result)

@@ -60,7 +60,7 @@ const AddServiceModal = () => {
 	const handleSubmit = async (form: FormData) => {
 		const formData: any = Object.fromEntries(form.entries())
 
-		let data = await newMaintenance(formData as NewMaintenanceDTO)
+		const data = await newMaintenance(formData as NewMaintenanceDTO)
 		if (typeof data !== 'string') {
 			toast.success('Saved service record')
 			queryClient.invalidateQueries({ queryKey: ['maintenance'] })

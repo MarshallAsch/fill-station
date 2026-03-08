@@ -17,7 +17,7 @@ export async function GET(
 		)
 	const { cylinderId } = await params
 
-	let cylinders = await Fill.findAll({
+	const cylinders = await Fill.findAll({
 		where: {
 			CylinderId: cylinderId,
 		},
@@ -38,7 +38,7 @@ export async function POST(
 		)
 	const { cylinderId } = await params
 
-	let client = await Client.findByPk(cylinderId)
+	const client = await Client.findByPk(cylinderId)
 
 	if (!client) {
 		return Response.json(
@@ -47,7 +47,7 @@ export async function POST(
 		)
 	}
 
-	let {
+	const {
 		serialNumber,
 		birth,
 		lastHydro,
@@ -71,7 +71,7 @@ export async function POST(
 	}
 
 	try {
-		let result = await client.createCylinder({
+		const result = await client.createCylinder({
 			serialNumber: serialNumber,
 			birth: dayjs(birth, 'YYYY-MM-DD'),
 			lastHydro: dayjs(lastHydro, 'YYYY-MM-DD'),

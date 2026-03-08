@@ -1,12 +1,14 @@
 import { useAppDispatch, useAppSelector } from '@/redux/hooks'
 import { ReactNode } from 'react'
-import AddCylinderModal from '../Modals/AddCylinderModal'
+import CylinderModal from '../Modals/CylinderModal'
 import AddServiceModal from '../Modals/AddServiceModal'
 import ClientModal from '../Modals/ClientModal'
 import { updateClient } from '@/app/_api'
 import {
 	updateAddClientModalOpen,
+	updateAddCylinderModalOpen,
 	updateEditClientModal,
+	updateEditCylinderModal,
 } from '@/redux/modal/modalSlice'
 
 const ModalProvider = ({ children }: { children: ReactNode }) => {
@@ -15,12 +17,17 @@ const ModalProvider = ({ children }: { children: ReactNode }) => {
 		addClientModalOpen,
 		addServiceModalOpen,
 		editClient,
+		editCylinder,
 	} = useAppSelector((state) => state.modal)
 	const dispatch = useAppDispatch()
 
 	return (
 		<>
-			{addCylinderModalOpen && <AddCylinderModal />}
+			{addCylinderModalOpen && (
+				<CylinderModal
+					handleClose={() => dispatch(updateAddCylinderModalOpen(false))}
+				/>
+			)}
 			{addServiceModalOpen && <AddServiceModal />}
 			{addClientModalOpen && (
 				<ClientModal
@@ -35,6 +42,16 @@ const ModalProvider = ({ children }: { children: ReactNode }) => {
 					description={`Update ${editClient.name}'s details.`}
 					onSubmit={updateClient}
 					handleClose={() => dispatch(updateEditClientModal(undefined))}
+				/>
+			)}
+			{editCylinder && (
+				<CylinderModal
+					cylinder={editCylinder}
+					title='Edit Cylinder'
+					submitText='Update'
+					description={`Update ${editCylinder?.serialNumber}'s details.`}
+					onSubmit={async () => ''}
+					handleClose={() => dispatch(updateEditCylinderModal(undefined))}
 				/>
 			)}
 			{children}

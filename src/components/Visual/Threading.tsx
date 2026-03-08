@@ -23,6 +23,7 @@ const Threading = () => {
 					name='badThreadCount'
 					min={0}
 					max={20}
+					defaultValue={0}
 					helperText='How many damaged threads are visible?'
 				/>
 
