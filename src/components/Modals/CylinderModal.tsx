@@ -34,6 +34,7 @@ export type CylinderModalProps = {
 	cylinder?: Cylinder
 	onSubmit?: (
 		ownerId: number,
+		cylinderId: number | undefined,
 		cylinder: NewCylinderDTO,
 	) => Promise<Cylinder | string>
 	handleClose: () => void
@@ -62,6 +63,7 @@ const CylinderModal = ({
 		if (selectedClient) {
 			const data = await onSubmit(
 				selectedClient?.id,
+				cylinder?.id,
 				formData as NewCylinderDTO,
 			)
 			if (typeof data !== 'string') {

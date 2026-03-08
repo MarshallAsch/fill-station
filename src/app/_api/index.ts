@@ -90,6 +90,7 @@ export async function updateClient(
 
 export async function newCylinder(
 	clientId: number,
+	cylinderId: number | undefined,
 	cylinder: NewCylinderDTO,
 ): Promise<Cylinder | string> {
 	const result = await axiosInstance.post(
@@ -97,6 +98,16 @@ export async function newCylinder(
 		cylinder,
 	)
 	return result.status == 201 ? result.data : result.data.message
+}
+
+export async function updateCylinder(
+	clientId: number,
+	cylinderId: number | undefined,
+	cylinder: NewCylinderDTO,
+): Promise<Client | string> {
+	const result = await axiosInstance.put(`/api/cylinders/${cylinderId}`, cylinder)
+
+	return result.status == 200 ? result.data : result.data.message
 }
 
 export async function newMaintenance(
