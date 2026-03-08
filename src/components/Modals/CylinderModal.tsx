@@ -51,9 +51,7 @@ const CylinderModal = ({
 }: CylinderModalProps) => {
 	const queryClient = useQueryClient()
 
-	const { allClients: clients, selectedClient } = useAppSelector(
-		(state) => state.clients,
-	)
+	const { selectedClient } = useAppSelector((state) => state.clients)
 
 	const handleSubmit = async (form: FormData) => {
 		const formData = Object.fromEntries(
@@ -105,7 +103,7 @@ const CylinderModal = ({
 								<form className='flex flex-col gap-4' action={handleSubmit}>
 									<DialogTitle>{description}</DialogTitle>
 
-									<ClientPicker disableAdd={true} clients={clients} />
+									<ClientPicker disableAdd={true} />
 
 									<TextInput
 										autoFocus

@@ -14,24 +14,26 @@ import { ChevronDownIcon } from '@heroicons/react/24/outline'
 import { updateAddClientModalOpen } from '@/redux/modal/modalSlice'
 import { Client } from '@/types/client'
 import Button from '../Button'
-import { setSelectedClient } from '@/redux/client/clientSlice'
+import { setSelectedInspector } from '@/redux/client/clientSlice'
 import useLoadClients from '@/hooks/useLoadClients'
 
-type ClientPickerProps = {
+type InspectorPickerProps = {
 	disableAdd?: boolean
 }
 
-const ClientPicker = ({ disableAdd }: ClientPickerProps) => {
+const InspectorPicker = ({ disableAdd }: InspectorPickerProps) => {
 	const { clients } = useLoadClients()
 	const dispatch = useAppDispatch()
 	const [query, setQuery] = useState('')
 
 	const { selectedClient } = useAppSelector((state) => state.clients)
 
+	const preFiltered = clients.filter((c) => !!c.inspectionCert)
+
 	const filteredClients =
 		query === ''
-			? clients
-			: clients.filter((person) => {
+			? preFiltered
+			: preFiltered.filter((person) => {
 					return person.name.toLowerCase().includes(query.toLowerCase())
 				})
 
@@ -42,13 +44,13 @@ const ClientPicker = ({ disableAdd }: ClientPickerProps) => {
 			onChange={(client) => {
 				setQuery('')
 				if (client) {
-					dispatch(setSelectedClient(client))
+					dispatch(setSelectedInspector(client))
 				}
 			}}
-			className='w-1/2'
+			className='w-full'
 		>
 			<Label className='block text-sm/6 font-medium text-gray-900'>
-				Select a Client
+				Select an Inspector
 			</Label>
 
 			<div className='relative mt-2'>
@@ -75,7 +77,7 @@ const ClientPicker = ({ disableAdd }: ClientPickerProps) => {
 							onClick={() => dispatch(updateAddClientModalOpen(true))}
 							disabled={disableAdd}
 						>
-							Add new Client
+							Add new Inspector
 						</Button>
 					</div>
 					{query.length > 0 && (
@@ -103,4 +105,4 @@ const ClientPicker = ({ disableAdd }: ClientPickerProps) => {
 	)
 }
 
-export default ClientPicker
+export default InspectorPicker

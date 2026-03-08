@@ -5,7 +5,6 @@ import DatePicker from '@/components/UI/FormElements/DatePicker'
 import ClientPicker from '@/components/UI/FormElements/ClientPicker'
 import FillsTable from '@/components/Fills/FillsTable'
 import { useAppDispatch, useAppSelector } from '@/redux/hooks'
-import useLoadClients from '@/hooks/useLoadClients'
 import { setSelectedClient } from '@/redux/client/clientSlice'
 import { FillDto } from '../api/fills/route'
 import { addNewFill } from '../_api'
@@ -20,8 +19,6 @@ export default function Fills() {
 
 	const fills = useAppSelector((state) => state.fills.fills)
 
-	const { clients } = useLoadClients()
-
 	const session = useSession()
 	if (session.status !== 'authenticated') {
 		return <div>Not Authorized</div>
@@ -30,7 +27,7 @@ export default function Fills() {
 	const handleSubmit = async (form: FormData) => {
 		const formData = Object.fromEntries(form.entries())
 
-		const { fillDate } = formData
+		const { fillDate, material } = formData
 
 		const fillData: FillDto[] = fills.map((fill) => {
 			return {
@@ -40,12 +37,11 @@ export default function Fills() {
 				endPressure: fill.end,
 				oxygen: fill.o2,
 				helium: fill.he,
+				material,
 			}
 		})
 
 		const data = await addNewFill(fillData)
-
-		console.log({ data })
 
 		if (typeof data !== 'string') {
 			toast.success('Saved fills')
@@ -66,10 +62,7 @@ export default function Fills() {
 
 				<div className='flex gap-2'>
 					<DatePicker title='Fill Date' name='fillDate' id='fill-date' />
-					<ClientPicker
-						clients={clients}
-						onChange={(c) => dispatch(setSelectedClient(c))}
-					/>
+					<ClientPicker />
 				</div>
 
 				<FillsTable client={client} />

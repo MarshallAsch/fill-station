@@ -12,8 +12,6 @@ import Button from '@/components/UI/Button'
 import ClientPicker from '@/components/UI/FormElements/ClientPicker'
 import { useAppDispatch, useAppSelector } from '@/redux/hooks'
 import { updateCylinder } from '@/redux/visuals/visualsSlice'
-import useLoadClients from '@/hooks/useLoadClients'
-import { setSelectedClient } from '@/redux/client/clientSlice'
 import { useSession } from 'next-auth/react'
 import { toast } from 'react-toastify'
 
@@ -21,10 +19,6 @@ export default function Visual() {
 	const dispatch = useAppDispatch()
 	const { cylinder } = useAppSelector((state) => state.visuals)
 	const { selectedClient: client } = useAppSelector((state) => state.clients)
-
-	// This loads the Clients for all components in the page.
-	// Components in the page should get this data from the store to prevent multiple loads
-	const { clients } = useLoadClients()
 
 	const session = useSession()
 	if (session.status !== 'authenticated') {
@@ -49,14 +43,12 @@ export default function Visual() {
 
 				<form action={handleSubmit}>
 					<div className='flex w-full justify-center gap-6'>
-						<ClientPicker
-							onChange={(c) => dispatch(setSelectedClient(c))}
-							clients={clients}
-						/>
+						<ClientPicker />
 						<CylinderPicker
 							initialValue={cylinder}
 							onChange={(c) => dispatch(updateCylinder(c))}
 							filter={(c) => !client || client.id == c.ownerId}
+							visPage={true}
 						/>
 					</div>
 
