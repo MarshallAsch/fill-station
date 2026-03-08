@@ -1,3 +1,4 @@
+'use client'
 import { Cylinder } from '@/types/cylinder'
 import {
 	CheckCircleIcon,
