@@ -12,7 +12,7 @@ export async function GET(request: Request) {
 			{ status: 401 },
 		)
 
-	let cylinders = await Cylinder.findAll()
+	const cylinders = await Cylinder.findAll()
 
 	return Response.json(cylinders)
 }
@@ -25,7 +25,7 @@ export async function POST(request: Request) {
 			{ status: 401 },
 		)
 
-	let {
+	const {
 		serialNumber,
 		ownerId,
 		birth,
@@ -51,7 +51,7 @@ export async function POST(request: Request) {
 
 	console.log(dayjs(birth, 'YYYY-MM-DD'))
 	try {
-		let result = await Cylinder.create({
+		const result = await Cylinder.create({
 			serialNumber: serialNumber,
 			birth: dayjs(birth, 'YYYY-MM-DD'),
 			lastHydro: dayjs(lastHydro, 'YYYY-MM-DD'),

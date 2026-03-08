@@ -18,7 +18,7 @@ export async function GET(
 		)
 	const { cylinderId } = await params
 
-	let cylinders = await Visual.findAll({
+	const cylinders = await Visual.findAll({
 		where: {
 			CylinderId: cylinderId,
 		},
@@ -39,7 +39,7 @@ export async function POST(
 		)
 	const { cylinderId } = await params
 
-	let cylinder = await Cylinder.findByPk(cylinderId)
+	const cylinder = await Cylinder.findByPk(cylinderId)
 
 	if (!cylinder) {
 		return Response.json(
@@ -48,7 +48,7 @@ export async function POST(
 		)
 	}
 
-	let {
+	const {
 		valve,
 		heat,
 		painted,
@@ -84,7 +84,7 @@ export async function POST(
 		inspectorId,
 	} = await request.json()
 
-	let inspector = await Client.findByPk(inspectorId)
+	const inspector = await Client.findByPk(inspectorId)
 
 	if (!inspector || !inspector.inspectionCert) {
 		return Response.json(

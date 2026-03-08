@@ -12,7 +12,7 @@ export async function GET() {
 			{ error: 'auth', message: 'Must be logged in' },
 			{ status: 401 },
 		)
-	let lookups = [
+	const lookups = [
 		Maintenance.findOne({
 			where: {
 				type: MAINTENANCE_TYPE.START,
@@ -47,9 +47,9 @@ export async function GET() {
 		}),
 	]
 
-	let [gotten, oil, filter, air, last] = await Promise.all(lookups)
+	const [gotten, oil, filter, air, last] = await Promise.all(lookups)
 
-	let results = {
+	const results = {
 		gotten,
 		oil,
 		filter,

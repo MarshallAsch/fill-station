@@ -17,7 +17,7 @@ export async function PUT(
 	}
 	const { cylinderId } = await params
 
-	let cylinder = await Cylinder.findByPk(cylinderId)
+	const cylinder = await Cylinder.findByPk(cylinderId)
 
 	if (!cylinder) {
 		return Response.json(
@@ -26,7 +26,7 @@ export async function PUT(
 		)
 	}
 
-	let {
+	const {
 		serialNumber,
 		birth,
 		lastHydro,
@@ -43,7 +43,7 @@ export async function PUT(
 	cylinder.servicePressure = servicePressure
 
 	try {
-		let result = await cylinder.save()
+		const result = await cylinder.save()
 		return Response.json(result)
 	} catch (err: any) {
 		console.error('error:', err)

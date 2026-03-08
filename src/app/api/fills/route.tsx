@@ -9,7 +9,7 @@ export async function GET() {
 			{ error: 'auth', message: 'Must be logged in' },
 			{ status: 401 },
 		)
-	let fills = await Fill.findAll({
+	const fills = await Fill.findAll({
 		include: Cylinder,
 	})
 	return Response.json(fills)

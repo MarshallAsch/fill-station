@@ -12,7 +12,7 @@ export async function GET(
 			{ status: 401 },
 		)
 	const { clientId } = await params
-	let client = await Client.findByPk(clientId)
+	const client = await Client.findByPk(clientId)
 	return Response.json(client)
 }
 
@@ -26,11 +26,11 @@ export async function PUT(
 			{ error: 'auth', message: 'Must be logged in' },
 			{ status: 401 },
 		)
-	let { name, nitroxCert, advancedNitroxCert, trimixCert, inspectionCert } =
+	const { name, nitroxCert, advancedNitroxCert, trimixCert, inspectionCert } =
 		await request.json()
 
 	const { clientId } = await params
-	let client = await Client.findByPk(clientId)
+	const client = await Client.findByPk(clientId)
 
 	if (!client) {
 		return Response.json(
@@ -46,7 +46,7 @@ export async function PUT(
 	client.inspectionCert = inspectionCert
 
 	try {
-		let result = await client.save()
+		const result = await client.save()
 		return Response.json(result)
 	} catch (err: any) {
 		console.error('error:', err)

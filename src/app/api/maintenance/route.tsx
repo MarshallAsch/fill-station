@@ -12,7 +12,7 @@ export async function GET(request: Request) {
 			{ error: 'auth', message: 'Must be logged in' },
 			{ status: 401 },
 		)
-	let result = await Maintenance.findAll({
+	const result = await Maintenance.findAll({
 		order: [
 			['date', 'ASC'],
 			['hours', 'DESC'],
@@ -28,8 +28,8 @@ export async function POST(request: Request) {
 			{ error: 'auth', message: 'Must be logged in' },
 			{ status: 401 },
 		)
-	let record: NewMaintenanceDTO = await request.json()
+	const record: NewMaintenanceDTO = await request.json()
 
-	let result = await Maintenance.create(record)
+	const result = await Maintenance.create(record)
 	return Response.json(result)
 }

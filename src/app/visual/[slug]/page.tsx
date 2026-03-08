@@ -26,7 +26,7 @@ export default async function TankVisual({
 
 	const { slug: inspectionID } = await params
 
-	let vis = await Visual.findByPk(inspectionID, { include: Cylinder })
+	const vis = await Visual.findByPk(inspectionID, { include: Cylinder })
 
 	if (!vis) {
 		return <h1>Loading...</h1>

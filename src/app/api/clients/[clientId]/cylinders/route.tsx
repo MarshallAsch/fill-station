@@ -18,7 +18,7 @@ export async function GET(
 
 	const { clientId } = await params
 
-	let cylinders = await Cylinder.findAll({
+	const cylinders = await Cylinder.findAll({
 		where: {
 			ownerId: clientId,
 		},
