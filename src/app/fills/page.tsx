@@ -27,7 +27,7 @@ export default function Fills() {
 	const handleSubmit = async (form: FormData) => {
 		const formData = Object.fromEntries(form.entries())
 
-		const { fillDate, material } = formData
+		const { fillDate } = formData
 
 		const fillData: FillDto[] = fills.map((fill) => {
 			return {
@@ -37,7 +37,6 @@ export default function Fills() {
 				endPressure: fill.end,
 				oxygen: fill.o2,
 				helium: fill.he,
-				material,
 			}
 		})
 

@@ -55,6 +55,7 @@ export async function POST(
 		lastVis,
 		oxygenClean,
 		servicePressure,
+		material,
 	} = await request.json()
 
 	if (
@@ -63,6 +64,7 @@ export async function POST(
 		!lastHydro ||
 		!lastVis ||
 		!servicePressure ||
+		!material ||
 		oxygenClean == undefined
 	) {
 		return Response.json(
@@ -79,6 +81,7 @@ export async function POST(
 			lastVis: dayjs(lastVis, 'YYYY-MM-DD'),
 			oxygenClean: oxygenClean,
 			servicePressure: servicePressure,
+			material: material,
 		})
 
 		return Response.json(result)
