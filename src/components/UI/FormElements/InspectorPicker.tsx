@@ -26,7 +26,7 @@ const InspectorPicker = ({ disableAdd }: InspectorPickerProps) => {
 	const dispatch = useAppDispatch()
 	const [query, setQuery] = useState('')
 
-	const { selectedClient } = useAppSelector((state) => state.clients)
+	const { selectedInspector } = useAppSelector((state) => state.clients)
 
 	const preFiltered = clients.filter((c) => !!c.inspectionCert)
 
@@ -40,7 +40,7 @@ const InspectorPicker = ({ disableAdd }: InspectorPickerProps) => {
 	return (
 		<Combobox
 			as='div'
-			value={selectedClient}
+			value={selectedInspector}
 			onChange={(client) => {
 				setQuery('')
 				if (client) {
