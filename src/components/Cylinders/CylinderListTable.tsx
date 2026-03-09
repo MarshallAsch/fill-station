@@ -1,15 +1,16 @@
 import { Cylinder } from '@/types/cylinder'
 import CylinderListRow from './CylinderListRow'
-
 import { Cylinder as CylinderDB } from '@/lib/models/cylinder'
+
+type CylinderListProps = {
+	cylinders: Cylinder[] | CylinderDB[]
+	showOwner?: boolean
+}
 
 const CylinderListTable = ({
 	cylinders,
 	showOwner = false,
-}: {
-	cylinders: Cylinder[] | CylinderDB[]
-	showOwner?: boolean
-}) => {
+}: CylinderListProps) => {
 	return (
 		<div className='mt-8 flow-root'>
 			<div className='overflow-x-auto'>
@@ -80,7 +81,7 @@ const CylinderListTable = ({
 								{cylinders.map((cylinder) => (
 									<CylinderListRow
 										key={cylinder.id}
-										cylinder={cylinder}
+										cylinder={JSON.parse(JSON.stringify(cylinder))}
 										showOwner={showOwner}
 									/>
 								))}

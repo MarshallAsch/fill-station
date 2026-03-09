@@ -9,7 +9,7 @@ import { useEffect, useState, useTransition } from 'react'
 const ROWS_PER_PAGE = 20
 
 type FillsTableProps = {
-	client?: Client
+	client: Client | null
 }
 
 const FillsTable = ({ client }: FillsTableProps) => {

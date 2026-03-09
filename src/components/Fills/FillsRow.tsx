@@ -10,7 +10,7 @@ import { Client } from '@/types/client'
 type FillsRowProps = {
 	disableDelete?: boolean
 	fill: Fill
-	client?: Client
+	client: Client | null
 }
 
 const FillsRow = ({ disableDelete = false, fill, client }: FillsRowProps) => {

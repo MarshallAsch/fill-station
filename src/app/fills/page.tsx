@@ -45,7 +45,7 @@ export default function Fills() {
 		if (typeof data !== 'string') {
 			toast.success('Saved fills')
 			dispatch(resetFills())
-			dispatch(setSelectedClient(undefined))
+			dispatch(setSelectedClient(null))
 		} else {
 			toast.error(`failed to save fills ${data}`)
 		}
