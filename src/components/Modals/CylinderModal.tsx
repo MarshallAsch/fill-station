@@ -1,4 +1,4 @@
-import { useAppSelector } from '@/redux/hooks'
+import { useAppDispatch, useAppSelector } from '@/redux/hooks'
 import {
 	Dialog,
 	DialogPanel,
@@ -6,7 +6,7 @@ import {
 	Transition,
 	TransitionChild,
 } from '@headlessui/react'
-import { Fragment } from 'react'
+import { Fragment, useEffect } from 'react'
 import TextInput from '../UI/FormElements/TextInput'
 import { useQueryClient } from '@tanstack/react-query'
 import RadioGroup from '../UI/FormElements/RadioGroup'
@@ -25,6 +25,7 @@ import { newCylinder } from '@/app/_api'
 import { Cylinder, NewCylinderDTO } from '@/types/cylinder'
 import { toast } from 'react-toastify'
 import dayjs from 'dayjs'
+import { setSelectedClient } from '@/redux/client/clientSlice'
 
 export type CylinderModalProps = {
 	title?: string
@@ -50,8 +51,18 @@ const CylinderModal = ({
 	onSubmit = newCylinder,
 }: CylinderModalProps) => {
 	const queryClient = useQueryClient()
+	const dispatch = useAppDispatch()
 
-	const { selectedClient } = useAppSelector((state) => state.clients)
+	const { selectedClient, allClients: clients } = useAppSelector(
+		(state) => state.clients,
+	)
+
+	useEffect(() => {
+		const cylinderOwner = clients.find(
+			(client) => client.id === cylinder?.ownerId,
+		)
+		dispatch(setSelectedClient(cylinderOwner || null))
+	}, [clients, cylinder, dispatch])
 
 	const handleSubmit = async (form: FormData) => {
 		const formData = Object.fromEntries(
