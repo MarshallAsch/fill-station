@@ -2,6 +2,7 @@ import { Cylinder } from '@/lib/models/cylinder'
 import { Fill } from '@/lib/models/fill'
 import dayjs from 'dayjs'
 import { auth } from '@/auth'
+import { FillDto } from '@/types/fills'
 export async function GET() {
 	const session = await auth()
 	if (!session)
@@ -13,15 +14,6 @@ export async function GET() {
 		include: Cylinder,
 	})
 	return Response.json(fills)
-}
-
-export type FillDto = {
-	date: dayjs.Dayjs
-	cylinderId?: number
-	startPressure: number
-	endPressure: number
-	oxygen: number
-	helium: number
 }
 
 export async function POST(request: Request) {

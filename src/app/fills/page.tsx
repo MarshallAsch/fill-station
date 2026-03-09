@@ -6,12 +6,12 @@ import ClientPicker from '@/components/UI/FormElements/ClientPicker'
 import FillsTable from '@/components/Fills/FillsTable'
 import { useAppDispatch, useAppSelector } from '@/redux/hooks'
 import { setSelectedClient } from '@/redux/client/clientSlice'
-import { FillDto } from '../api/fills/route'
 import { addNewFill } from '../_api'
 import dayjs from 'dayjs'
 import { resetFills } from '@/redux/fills/fillsSlice'
 import { useSession } from 'next-auth/react'
 import { toast } from 'react-toastify'
+import { FillDto } from '@/types/fills'
 
 export default function Fills() {
 	const dispatch = useAppDispatch()

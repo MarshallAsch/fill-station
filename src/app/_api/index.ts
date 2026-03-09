@@ -1,6 +1,6 @@
 import { Client, NewClientDTO } from '@/types/client'
 import { Cylinder, NewCylinderDTO } from '@/types/cylinder'
-import { Fill, FillHistory } from '@/types/fills'
+import { Fill, FillDto, FillHistory } from '@/types/fills'
 import {
 	CompressorMaintenance,
 	MaintenanceSummary,
@@ -9,7 +9,6 @@ import {
 import { NewVisualDTO, VisualHistory } from '@/types/visuals'
 import axios from 'axios'
 import dayjs from 'dayjs'
-import { FillDto } from '../api/fills/route'
 
 const axiosInstance = axios.create({validateStatus: (code) => code < 500 })
 

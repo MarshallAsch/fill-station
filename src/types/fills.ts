@@ -1,3 +1,4 @@
+import dayjs from 'dayjs'
 import { Cylinder } from './cylinder'
 
 export type FillHistory = {
@@ -23,4 +24,14 @@ export type Fill = {
 	o2: number
 	he: number
 	cylinder?: Cylinder
+}
+
+
+export type FillDto = {
+	date: dayjs.Dayjs
+	cylinderId?: number
+	startPressure: number
+	endPressure: number
+	oxygen: number
+	helium: number
 }

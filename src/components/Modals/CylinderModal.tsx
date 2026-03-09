@@ -27,7 +27,7 @@ import { toast } from 'react-toastify'
 import dayjs from 'dayjs'
 import { setSelectedClient } from '@/redux/client/clientSlice'
 
-export type CylinderModalProps = {
+type CylinderModalProps = {
 	title?: string
 	description?: string
 	cancelText?: string

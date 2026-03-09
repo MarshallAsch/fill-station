@@ -13,7 +13,7 @@ import { useQueryClient } from '@tanstack/react-query'
 import Button from '../UI/Button'
 import { toast } from 'react-toastify'
 
-export type ClientModalProps = {
+type ClientModalProps = {
 	title?: string
 	description?: string
 	cancelText?: string
