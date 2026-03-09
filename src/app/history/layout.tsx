@@ -33,9 +33,6 @@ const Layout = ({ children }: { children: ReactNode }) => {
 
 	const selectedTab = params.get('tab')
 
-	const handleClick = (tab: TAB) => {
-		router.push(`/history?tab=${tab}`)
-	}
 	return (
 		<div className='flex grow border-t border-gray-200'>
 			{/* Static sidebar for desktop */}
@@ -51,7 +48,9 @@ const Layout = ({ children }: { children: ReactNode }) => {
 											{navigation.map((item) => (
 												<li key={item.name}>
 													<button
-														onClick={() => handleClick(item.value)}
+														onClick={() =>
+															router.push(`/history?tab=${item.value}`)
+														}
 														className={clsx(
 															item.value === selectedTab
 																? 'bg-gray-50 text-indigo-600'
