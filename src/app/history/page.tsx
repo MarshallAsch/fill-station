@@ -1,5 +1,6 @@
 'use client'
 
+import { Suspense } from 'react'
 import MaintenanceHistory from '@/components/History/MaintenanceHistory/MaintenanceHistory'
 import HistoryTable from '@/components/History/components/HistoryTable'
 import VisHistory from '@/components/History/VisHistory'
@@ -11,7 +12,7 @@ import { useSession } from 'next-auth/react'
 import { useSearchParams } from 'next/navigation'
 import { TAB } from './layout'
 
-export default function History() {
+const HistoryContent = () => {
 	const params = useSearchParams()
 
 	const { cylinders } = useLoadCylinder()
@@ -42,5 +43,13 @@ export default function History() {
 		<div className='container flex w-full flex-wrap justify-center'>
 			{getTabComponent()}
 		</div>
+	)
+}
+
+export default function History() {
+	return (
+		<Suspense fallback={<div>Loading...</div>}>
+			<HistoryContent />
+		</Suspense>
 	)
 }

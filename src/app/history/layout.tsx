@@ -1,6 +1,6 @@
 'use client'
 
-import { ReactNode } from 'react'
+import { ReactNode, Suspense } from 'react'
 import clsx from 'clsx'
 
 import { ClockIcon, EyeIcon, UsersIcon } from '@heroicons/react/24/outline'
@@ -27,7 +27,7 @@ const navigation = [
 	},
 ]
 
-const Layout = ({ children }: { children: ReactNode }) => {
+const LayoutContent = ({ children }: { children: ReactNode }) => {
 	const router = useRouter()
 	const params = useSearchParams()
 
@@ -90,6 +90,14 @@ const Layout = ({ children }: { children: ReactNode }) => {
 				</div>
 			</div>
 		</div>
+	)
+}
+
+const Layout = ({ children }: { children: ReactNode }) => {
+	return (
+		<Suspense fallback={<div>Loading...</div>}>
+			<LayoutContent>{children}</LayoutContent>
+		</Suspense>
 	)
 }
 
