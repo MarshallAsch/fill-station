@@ -3,14 +3,14 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
 type InitialState = {
 	allClients: Client[]
-	selectedClient: Client | undefined
-	selectedInspector: Client | undefined
+	selectedClient: Client | null
+	selectedInspector: Client | null
 }
 
 const initialState: InitialState = {
 	allClients: [],
-	selectedClient: undefined,
-	selectedInspector: undefined,
+	selectedClient: null,
+	selectedInspector: null,
 }
 
 const clientSlice = createSlice({
@@ -49,13 +49,10 @@ const clientSlice = createSlice({
 				}
 			}
 		},
-		setSelectedClient: (state, action: PayloadAction<Client | undefined>) => {
+		setSelectedClient: (state, action: PayloadAction<Client | null>) => {
 			state.selectedClient = action.payload
 		},
-		setSelectedInspector: (
-			state,
-			action: PayloadAction<Client | undefined>,
-		) => {
+		setSelectedInspector: (state, action: PayloadAction<Client | null>) => {
 			state.selectedInspector = action.payload
 		},
 	},
