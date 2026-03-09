@@ -1,8 +1,6 @@
 'use client'
 
-import React from 'react'
-import { useAppSelector } from '@/redux/hooks'
-import { TAB } from '@/redux/history/historySlice'
+import { Suspense } from 'react'
 import MaintenanceHistory from '@/components/History/MaintenanceHistory/MaintenanceHistory'
 import HistoryTable from '@/components/History/components/HistoryTable'
 import VisHistory from '@/components/History/VisHistory'
@@ -11,9 +9,11 @@ import CylinderListTable from '@/components/Cylinders/CylinderListTable'
 import useLoadCylinder from '@/hooks/useLoadCylinders'
 
 import { useSession } from 'next-auth/react'
+import { useSearchParams } from 'next/navigation'
+import { TAB } from './layout'
 
-export default function History() {
-	const { selectedTab } = useAppSelector((state) => state.history)
+const HistoryContent = () => {
+	const params = useSearchParams()
 
 	const { cylinders } = useLoadCylinder()
 
@@ -23,7 +23,7 @@ export default function History() {
 	}
 
 	const getTabComponent = () => {
-		switch (selectedTab) {
+		switch (params.get('tab')) {
 			case TAB.FILLS:
 				return <HistoryTable />
 			case TAB.VIS_INSPECTION:
@@ -43,5 +43,13 @@ export default function History() {
 		<div className='container flex w-full flex-wrap justify-center'>
 			{getTabComponent()}
 		</div>
+	)
+}
+
+export default function History() {
+	return (
+		<Suspense fallback={<div>Loading...</div>}>
+			<HistoryContent />
+		</Suspense>
 	)
 }

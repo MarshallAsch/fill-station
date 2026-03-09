@@ -1,12 +1,19 @@
 'use client'
 
-import { ReactNode } from 'react'
+import { ReactNode, Suspense } from 'react'
 import clsx from 'clsx'
 
 import { ClockIcon, EyeIcon, UsersIcon } from '@heroicons/react/24/outline'
 import AirTank from '@/icons/AirTank'
-import { setSelectedTab, TAB } from '@/redux/history/historySlice'
-import { useAppDispatch, useAppSelector } from '@/redux/hooks'
+import { useRouter, useSearchParams } from 'next/navigation'
+
+export enum TAB {
+	FILLS = 'FILLS',
+	VIS_INSPECTION = 'VISUAL_INSPECTION',
+	COMP_MAINTENANCE = 'COMPRESSOR_MAINTENANCE',
+	CLIENTS = 'CLIENTS',
+	CYLINDERS = 'CYLINDERS',
+}
 
 const navigation = [
 	{ name: 'Fills', value: TAB.FILLS, icon: AirTank },
@@ -20,13 +27,16 @@ const navigation = [
 	},
 ]
 
-const Layout = ({ children }: { children: ReactNode }) => {
-	const { selectedTab } = useAppSelector((state) => state.history)
-	const dispatch = useAppDispatch()
+const LayoutContent = ({ children }: { children: ReactNode }) => {
+	const router = useRouter()
+	const params = useSearchParams()
 
-	const handleClick = (val: TAB) => {
-		dispatch(setSelectedTab(val))
-	}
+	const tab = params.get('tab')
+
+	const selectedTab = (Object.values(TAB) as Array<unknown>).includes(tab)
+		? tab
+		: TAB.FILLS
+
 	return (
 		<div className='flex grow border-t border-gray-200'>
 			{/* Static sidebar for desktop */}
@@ -42,7 +52,9 @@ const Layout = ({ children }: { children: ReactNode }) => {
 											{navigation.map((item) => (
 												<li key={item.name}>
 													<button
-														onClick={() => handleClick(item.value)}
+														onClick={() =>
+															router.push(`/history?tab=${item.value}`)
+														}
 														className={clsx(
 															item.value === selectedTab
 																? 'bg-gray-50 text-indigo-600'
@@ -78,6 +90,14 @@ const Layout = ({ children }: { children: ReactNode }) => {
 				</div>
 			</div>
 		</div>
+	)
+}
+
+const Layout = ({ children }: { children: ReactNode }) => {
+	return (
+		<Suspense fallback={<div>Loading...</div>}>
+			<LayoutContent>{children}</LayoutContent>
+		</Suspense>
 	)
 }
 
