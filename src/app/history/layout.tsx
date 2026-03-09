@@ -31,7 +31,7 @@ const Layout = ({ children }: { children: ReactNode }) => {
 	const router = useRouter()
 	const params = useSearchParams()
 
-	const selectedTab = params.get('tab')
+	const selectedTab = params.get('tab') || TAB.FILLS
 
 	return (
 		<div className='flex grow border-t border-gray-200'>
