@@ -5,8 +5,15 @@ import clsx from 'clsx'
 
 import { ClockIcon, EyeIcon, UsersIcon } from '@heroicons/react/24/outline'
 import AirTank from '@/icons/AirTank'
-import { setSelectedTab, TAB } from '@/redux/history/historySlice'
-import { useAppDispatch, useAppSelector } from '@/redux/hooks'
+import { useRouter, useSearchParams } from 'next/navigation'
+
+export enum TAB {
+	FILLS = 'FILLS',
+	VIS_INSPECTION = 'VISUAL_INSPECTION',
+	COMP_MAINTENANCE = 'COMPRESSOR_MAINTENANCE',
+	CLIENTS = 'CLIENTS',
+	CYLINDERS = 'CYLINDERS',
+}
 
 const navigation = [
 	{ name: 'Fills', value: TAB.FILLS, icon: AirTank },
@@ -21,11 +28,13 @@ const navigation = [
 ]
 
 const Layout = ({ children }: { children: ReactNode }) => {
-	const { selectedTab } = useAppSelector((state) => state.history)
-	const dispatch = useAppDispatch()
+	const router = useRouter()
+	const params = useSearchParams()
 
-	const handleClick = (val: TAB) => {
-		dispatch(setSelectedTab(val))
+	const selectedTab = params.get('tab')
+
+	const handleClick = (tab: TAB) => {
+		router.push(`/history?tab=${tab}`)
 	}
 	return (
 		<div className='flex grow border-t border-gray-200'>
