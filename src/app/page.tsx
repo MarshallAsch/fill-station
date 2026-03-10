@@ -1,9 +1,27 @@
+'use client'
+
+import { Suspense, useEffect } from 'react'
+import { useSearchParams } from 'next/navigation'
 import { EyeIcon, TableCellsIcon } from '@heroicons/react/24/outline'
 import Link from 'next/link'
+import { toast } from 'react-toastify'
 import AirTank from '@/icons/AirTank'
 import Services from '@/components/Home/Services'
 
-export default function Home() {
+function Home() {
+	const searchParams = useSearchParams()
+
+	useEffect(() => {
+		if (searchParams.get('redirected') === 'true') {
+			toast.warning(
+				'You need to be logged in to access that page. Please sign in first.',
+				{
+					position: 'bottom-left',
+					autoClose: 5000,
+				},
+			)
+		}
+	}, [searchParams])
 	return (
 		<div className='text-center'>
 			<h1 className='text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl md:text-6xl'>
@@ -45,5 +63,13 @@ export default function Home() {
 			</div>
 			<Services />
 		</div>
+	)
+}
+
+export default function Page() {
+	return (
+		<Suspense fallback={<div>Loading...</div>}>
+			<Home />
+		</Suspense>
 	)
 }

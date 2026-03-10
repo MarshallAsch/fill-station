@@ -12,7 +12,6 @@ import Button from '@/components/UI/Button'
 import ClientPicker from '@/components/UI/FormElements/ClientPicker'
 import { useAppDispatch, useAppSelector } from '@/redux/hooks'
 import { updateCylinder } from '@/redux/visuals/visualsSlice'
-import { useSession } from 'next-auth/react'
 import { toast } from 'react-toastify'
 import { NewVisualDTO } from '@/types/visuals'
 import { newVisual } from '../_api'
@@ -25,31 +24,29 @@ export default function Visual() {
 		useAppSelector((state) => state.clients)
 	const queryClient = useQueryClient()
 
-	const session = useSession()
-	if (session.status !== 'authenticated') {
-		return <div>Not Authorized</div>
-	}
-
 	const handleSubmit = async (form: FormData) => {
 		const formData: any = Object.fromEntries(form.entries())
 		formData.inspectorId = inspector?.id
 
-		formData.heat = formData.heat === '1' ? true : false
-		formData.painted = formData.painted === '1' ? true : false
-		formData.odor = formData.odor === '1' ? true : false
-		formData.bow = formData.bow === '1' ? true : false
-		formData.bulges = formData.bulges === '1' ? true : false
-		formData.bell = formData.bell === '1' ? true : false
-		formData.lineCorrosion = formData.lineCorrosion === '1' ? true : false
-		formData.burstDiskReplaced =
-			formData.burstDiskReplaced === '1' ? true : false
-		formData.oringReplaced = formData.oringReplaced === '1' ? true : false
-		formData.dipTube = formData.dipTube === '1' ? true : false
-		formData.needService = formData.needService === '1' ? true : false
-		formData.rebuilt = formData.rebuilt === '1' ? true : false
-		formData.oxygenCleaned = formData.oxygenCleaned === '1' ? true : false
-		formData.markedOxygenClean =
-			formData.markedOxygenClean === '1' ? true : false
+		const booleanFields = [
+			'heat',
+			'painted',
+			'odor',
+			'bow',
+			'bulges',
+			'bell',
+			'lineCorrosion',
+			'burstDiskReplaced',
+			'oringReplaced',
+			'dipTube',
+			'needService',
+			'rebuilt',
+			'oxygenCleaned',
+			'markedOxygenClean',
+		]
+		booleanFields.forEach((field) => {
+			formData[field] = formData[field] === '1'
+		})
 
 		formData.badThreadCount = parseInt(formData.badThreadCount, 10)
 

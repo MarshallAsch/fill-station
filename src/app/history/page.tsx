@@ -7,8 +7,6 @@ import VisHistory from '@/components/History/VisHistory'
 import ClientList from '@/components/History/ClientList'
 import CylinderListTable from '@/components/Cylinders/CylinderListTable'
 import useLoadCylinder from '@/hooks/useLoadCylinders'
-
-import { useSession } from 'next-auth/react'
 import { useSearchParams } from 'next/navigation'
 import { TAB } from './layout'
 
@@ -16,11 +14,6 @@ const HistoryContent = () => {
 	const params = useSearchParams()
 
 	const { cylinders } = useLoadCylinder()
-
-	const session = useSession()
-	if (session.status !== 'authenticated') {
-		return <div>Not Authorized</div>
-	}
 
 	const getTabComponent = () => {
 		switch (params.get('tab')) {

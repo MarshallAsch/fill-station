@@ -22,4 +22,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 		},
 	],
 	adapter: SequelizeAdapter(sequelize),
+	pages: {
+		signIn: '/',
+	},
 })
