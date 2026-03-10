@@ -1,5 +1,7 @@
 'use client'
-import { signIn, signOut, useSession } from 'next-auth/react'
+import { signIn, useSession } from 'next-auth/react'
+import ProfileButton from './ProfileButton'
+import Button from './Button'
 
 type LoginProps = {}
 
@@ -9,21 +11,15 @@ const Login = ({}: LoginProps) => {
 	return (
 		<>
 			{session.status == 'authenticated' ? (
-				<button
-					type='button'
-					onClick={() => signOut()}
-					className='text-sm/6 font-semibold text-gray-900'
-				>
-					Logout
-				</button>
+				<ProfileButton />
 			) : (
-				<button
+				<Button
 					type='button'
 					onClick={() => signIn('authelia')}
 					className='text-sm/6 font-semibold text-gray-900'
 				>
 					Log in <span aria-hidden='true'>&rarr;</span>
-				</button>
+				</Button>
 			)}
 		</>
 	)

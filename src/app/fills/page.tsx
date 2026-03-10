@@ -9,7 +9,6 @@ import { setSelectedClient } from '@/redux/client/clientSlice'
 import { addNewFill } from '../_api'
 import dayjs from 'dayjs'
 import { resetFills } from '@/redux/fills/fillsSlice'
-import { useSession } from 'next-auth/react'
 import { toast } from 'react-toastify'
 import { FillDto } from '@/types/fills'
 
@@ -18,11 +17,6 @@ export default function Fills() {
 	const client = useAppSelector((state) => state.clients.selectedClient)
 
 	const fills = useAppSelector((state) => state.fills.fills)
-
-	const session = useSession()
-	if (session.status !== 'authenticated') {
-		return <div>Not Authorized</div>
-	}
 
 	const handleSubmit = async (form: FormData) => {
 		const formData = Object.fromEntries(form.entries())
