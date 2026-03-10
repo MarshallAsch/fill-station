@@ -13,8 +13,6 @@ export async function proxy(request: NextRequest) {
 			(page) => pathname === page || pathname.startsWith(page + '/'),
 		) || pathname.startsWith('/api/auth')
 
-	console.log({ isPublicPage })
-
 	// If it's a public page, allow access
 	if (isPublicPage) {
 		return NextResponse.next()
