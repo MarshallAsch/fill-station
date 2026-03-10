@@ -2,7 +2,7 @@ import { auth } from '@/auth'
 import { NextRequest, NextResponse } from 'next/server'
 
 // Pages that don't require authentication
-const publicPages = ['/', '/api/auth']
+const publicPages = ['/', '/api/auth', '/about']
 
 export async function proxy(request: NextRequest) {
 	const { pathname } = request.nextUrl
@@ -12,6 +12,8 @@ export async function proxy(request: NextRequest) {
 		publicPages.some(
 			(page) => pathname === page || pathname.startsWith(page + '/'),
 		) || pathname.startsWith('/api/auth')
+
+	console.log({ isPublicPage })
 
 	// If it's a public page, allow access
 	if (isPublicPage) {
