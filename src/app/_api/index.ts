@@ -1,4 +1,5 @@
 import { Client, NewClientDTO } from '@/types/client'
+import { ContactDTO, NewContactDTO } from '@/types/contact'
 import { Cylinder, NewCylinderDTO } from '@/types/cylinder'
 import { Fill, FillDto, FillHistory } from '@/types/fills'
 import {
@@ -128,6 +129,14 @@ export async function newVisual(
 	visual: NewVisualDTO,
 ): Promise<Client | string> {
 	const result = await axiosInstance.post(`/api/cylinders/${cylinderId}/visuals`, visual)
+
+	return result.status == 200 ? result.data : result.data.message
+}
+
+export async function newContact(
+	contact: NewContactDTO,
+): Promise<ContactDTO| string> {
+	const result = await axiosInstance.post('/api/contact', contact)
 
 	return result.status == 200 ? result.data : result.data.message
 }
