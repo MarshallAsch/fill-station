@@ -36,6 +36,8 @@ Implement granular role-based permissions across all API endpoints and pages. Fo
 | User management | - | - | - | Y |
 | Admin settings | - | - | - | Y |
 
+Note: Fills are immutable records — there is no edit (PUT) operation on fills.
+
 ## Architecture
 
 ### Centralized Permissions Config (`src/lib/permissions.ts`)
@@ -44,6 +46,9 @@ Single source of truth for all access rules, consumed by middleware, API routes,
 
 ```typescript
 PERMISSIONS = {
+  // Public pages (no auth required) — not in this config, handled by proxy.ts publicPages
+  // Public pages: '/', '/about', '/contact'
+
   pages: {
     '/dashboard':  ['user', 'filler', 'inspector', 'admin'],
     '/profile':    ['user', 'filler', 'inspector', 'admin'],
@@ -53,23 +58,36 @@ PERMISSIONS = {
     '/history':    ['filler', 'inspector', 'admin'],
     '/settings':   ['admin'],
   },
+
   api: {
-    '/api/fills':       { GET: ['filler', 'inspector', 'admin'], POST: ['filler', 'inspector', 'admin'], DELETE: ['admin'] },
-    '/api/visuals':     { GET: ['filler', 'inspector', 'admin'], POST: ['inspector', 'admin'], DELETE: ['admin'] },
-    '/api/clients':     { GET: ['filler', 'inspector', 'admin'], POST: ['filler', 'inspector', 'admin'], DELETE: ['admin'] },
-    '/api/cylinders':   { GET: ['filler', 'inspector', 'admin'], POST: ['filler', 'inspector', 'admin'], DELETE: ['admin'] },
-    '/api/maintenance': { GET: ['filler', 'inspector', 'admin'], POST: ['filler', 'inspector', 'admin'], DELETE: ['admin'] },
-    '/api/users':       { PUT: ['admin'] },
-    '/api/profile':     { PUT: ['user', 'filler', 'inspector', 'admin'] },
+    '/api/fills':                          { GET: ['filler', 'inspector', 'admin'], POST: ['filler', 'inspector', 'admin'], DELETE: ['admin'] },
+    '/api/clients':                        { GET: ['filler', 'inspector', 'admin'], POST: ['filler', 'inspector', 'admin'] },
+    '/api/clients/:clientId':              { GET: ['filler', 'inspector', 'admin'], PUT: ['filler', 'inspector', 'admin'], DELETE: ['admin'] },
+    '/api/clients/:clientId/cylinders':    { GET: ['filler', 'inspector', 'admin'], POST: ['filler', 'inspector', 'admin'] },
+    '/api/cylinders':                      { GET: ['filler', 'inspector', 'admin'], POST: ['filler', 'inspector', 'admin'] },
+    '/api/cylinders/:cylinderId':          { PUT: ['filler', 'inspector', 'admin'], DELETE: ['admin'] },
+    '/api/cylinders/:cylinderId/fills':    { GET: ['filler', 'inspector', 'admin'], POST: ['filler', 'inspector', 'admin'] },
+    '/api/cylinders/:cylinderId/visuals':  { GET: ['filler', 'inspector', 'admin'], POST: ['inspector', 'admin'], DELETE: ['admin'] },
+    '/api/visuals':                        { GET: ['filler', 'inspector', 'admin'] },
+    '/api/inspectors':                     { GET: ['filler', 'inspector', 'admin'] },
+    '/api/maintenance':                    { GET: ['filler', 'inspector', 'admin'], POST: ['filler', 'inspector', 'admin'], DELETE: ['admin'] },
+    '/api/maintenance/last':               { GET: ['filler', 'inspector', 'admin'] },
+    '/api/users':                          { GET: ['admin'] },
+    '/api/users/:userId':                  { PUT: ['admin'] },
+    '/api/profile':                        { PUT: ['user', 'filler', 'inspector', 'admin'] },
   }
 }
 ```
 
+#### Route Matching Strategy
+
+The middleware uses **pattern matching with dynamic segments**. Route patterns use `:param` syntax (e.g., `/api/clients/:clientId`). The middleware strips actual IDs from the request path and matches against these patterns. Matching uses longest-prefix-first ordering so `/api/maintenance/last` takes priority over a hypothetical `/api/maintenance/:id`.
+
 ### Middleware (`proxy.ts`)
 
 Extended to read the permissions config:
-- Page routes: look up path in `PERMISSIONS.pages`. If user's role not listed, redirect to `/`.
-- API routes: look up path and HTTP method in `PERMISSIONS.api`. If unauthorized, return 403 JSON.
+- Page routes: look up path in `PERMISSIONS.pages`. If user's role not listed, redirect to `/`. Public pages (`/`, `/about`, `/contact`) bypass role checks entirely.
+- API routes: normalize the request path to a pattern (replace dynamic segments with `:param`), look up the pattern and HTTP method in `PERMISSIONS.api`. If unauthorized, return 403 JSON.
 
 ### `requireRole(session, roles)` Helper
 
@@ -82,7 +100,7 @@ if (check) return check
 
 ### Navigation Filtering
 
-Navbar reads `PERMISSIONS.pages` and filters visible links based on the current user's role. Pages not in a role's list are hidden from navigation.
+Navbar reads `PERMISSIONS.pages` and filters visible links based on the current user's role. The role is available client-side via `useSession()` — the existing session callback in `src/auth.ts` already propagates `role` to the session object.
 
 Navigation by role:
 - `user`: Profile, Dashboard
@@ -96,12 +114,13 @@ Navigation by role:
 
 Located in `src/lib/permissions.ts`. Conditionally adds client filtering for the `user` role.
 
-Entity relationship map (internal to the helper):
+Entity relationship map (internal to the helper). Note: the Cylinder model uses `ownerId` as its FK to Client, not `clientId`.
 
 | Scope type | Entities | Filter strategy |
 |---|---|---|
-| direct | Client, Cylinder | `WHERE clientId = ?` |
-| indirect | Fill, Visual | `INCLUDE Cylinder WHERE cylinder.clientId = ?` |
+| direct (Client) | Client | `WHERE id = ?` (user's clientId) |
+| direct (Cylinder) | Cylinder | `WHERE ownerId = ?` (user's clientId) |
+| indirect | Fill, Visual | `INCLUDE Cylinder WHERE cylinder.ownerId = ?` (user's clientId) |
 | none | Maintenance | No client relationship (not accessible to user role) |
 
 Behavior by role:
@@ -119,7 +138,7 @@ const fills = await Fill.findAll(options)
 
 ## Dashboard Page (`/dashboard`)
 
-A server component accessible to all roles at `/dashboard`.
+A server component accessible to all roles at `/dashboard`. The dashboard fetches data server-side using Sequelize queries directly (not via API routes), applying `scopeQuery` for data scoping.
 
 - For `user` role: shows their linked client's cylinders, recent fills, and recent visuals — all scoped via `scopeQuery`
 - For `filler`/`inspector`/`admin`: shows their linked client's data if they have one, otherwise a summary or prompt
@@ -144,6 +163,8 @@ Fields:
 - `details` — JSON field with before/after values for updates, or created/deleted record data
 - `createdAt` — timestamp
 
+Note: the `.tsx` extension matches the existing project convention for model files.
+
 ### `auditLog(user, action, entity, entityId, details)` Helper
 
 Located in `src/lib/audit.ts`. Async, non-blocking — if the audit write fails, logs the error but does not fail the original request.
@@ -163,6 +184,12 @@ Not logged:
 
 Admin-only section on the settings page showing recent audit entries in a chronological table. No filtering or search in the initial version.
 
+## Edge Cases
+
+### Admin self-demotion
+
+An admin must not be allowed to change their own role to a non-admin value if they are the only admin. The `/api/users/:userId` PUT handler should check: if the target user is the requesting user and the new role is not `admin`, query for the count of remaining admins. If count would drop to zero, return 400 with "Cannot remove the last admin."
+
 ## Files
 
 ### New files
@@ -171,22 +198,26 @@ Admin-only section on the settings page showing recent audit entries in a chrono
 - `src/lib/audit.ts` — `auditLog()` helper function
 - `src/app/dashboard/page.tsx` — dashboard page (server component)
 - `src/components/Dashboard/` — dashboard UI components
+- `src/app/api/users/route.tsx` — GET handler for listing users (admin only)
 
 ### Modified files
-- `src/proxy.ts` — extend middleware with role-based page/API access checks
+- `src/proxy.ts` — extend middleware with role-based page/API access checks using pattern matching
 - `src/types/next-auth.d.ts` — tighten role type to `'user' | 'admin' | 'filler' | 'inspector'`
-- `src/components/Layout/Navbar.tsx` — filter nav links by role
-- `src/app/api/clients/route.tsx` — add `requireRole()`, DELETE handler, `auditLog()`
+- `src/components/Layout/Navbar.tsx` — filter nav links by role using permissions config
+- `src/app/api/clients/route.tsx` — add `requireRole()`
 - `src/app/api/clients/[clientId]/route.tsx` — add `requireRole()`, DELETE handler, `auditLog()`
-- `src/app/api/cylinders/route.tsx` — add `requireRole()`, DELETE handler, `auditLog()`
+- `src/app/api/clients/[clientId]/cylinders/route.tsx` — add `requireRole()`
+- `src/app/api/cylinders/route.tsx` — add `requireRole()`
 - `src/app/api/cylinders/[cylinderId]/route.tsx` — add `requireRole()`, DELETE handler, `auditLog()`
-- `src/app/api/fills/route.tsx` — add `requireRole()`, `scopeQuery()`, DELETE handler, `auditLog()`
-- `src/app/api/cylinders/[cylinderId]/fills/route.tsx` — add `requireRole()`, `scopeQuery()`
-- `src/app/api/visuals/route.tsx` — add `requireRole()`, `scopeQuery()`, DELETE handler, `auditLog()`
-- `src/app/api/cylinders/[cylinderId]/visuals/route.tsx` — add `requireRole()`, restrict POST to inspector/admin
+- `src/app/api/cylinders/[cylinderId]/fills/route.tsx` — add `requireRole()`
+- `src/app/api/cylinders/[cylinderId]/visuals/route.tsx` — add `requireRole()`, restrict POST to inspector/admin, `auditLog()`
+- `src/app/api/fills/route.tsx` — add `requireRole()`, DELETE handler, `auditLog()`
+- `src/app/api/visuals/route.tsx` — add `requireRole()`
+- `src/app/api/inspectors/route.tsx` — add `requireRole()`
 - `src/app/api/maintenance/route.tsx` — add `requireRole()`, DELETE handler, `auditLog()`
-- `src/app/api/users/[userId]/route.tsx` — add `auditLog()` for role/client changes
-- `src/app/settings/page.tsx` — add audit log table section
+- `src/app/api/maintenance/last/route.tsx` — add `requireRole()`
+- `src/app/api/users/[userId]/route.tsx` — add `auditLog()`, add admin self-demotion guard
+- `src/app/settings/page.tsx` — add audit log table section, use new GET `/api/users` route
 
 ### Unchanged
 - `src/app/api/profile/route.tsx` — already correct (self only, role update blocked)
