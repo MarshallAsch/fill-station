@@ -1,7 +1,5 @@
 import { auth } from '@/auth'
-import { User } from '@/lib/models/user'
-
-const VALID_ROLES = ['user', 'admin']
+import { User, VALID_ROLES } from '@/lib/models/user'
 
 export async function PUT(
 	request: Request,

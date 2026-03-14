@@ -9,6 +9,8 @@ import {
 import { sequelize } from '../config'
 import { Client } from '../client'
 
+export const VALID_ROLES = ['user', 'admin', 'filler', 'inspector']
+
 export class User extends Model<
 	InferAttributes<User>,
 	InferCreationAttributes<User>
@@ -19,7 +21,7 @@ export class User extends Model<
 	declare emailVerified: CreationOptional<Date | null>
 	declare image: CreationOptional<string | null>
 	declare theme: CreationOptional<'light' | 'dark' | 'system'>
-	declare role: CreationOptional<string>
+	declare role: CreationOptional<'user' | 'admin' | 'filler' | 'inspector'>
 	declare clientId: ForeignKey<CreationOptional<number | null>>
 }
 
@@ -49,7 +51,7 @@ User.init(
 			defaultValue: 'system',
 		},
 		role: {
-			type: DataTypes.STRING,
+			type: DataTypes.ENUM('user', 'admin', 'filler', 'inspector'),
 			allowNull: false,
 			defaultValue: 'user',
 		},

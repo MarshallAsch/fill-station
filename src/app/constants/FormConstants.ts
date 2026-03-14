@@ -56,6 +56,14 @@ export const ROLE_OPTIONS = [
 		name: 'Admin',
 		value: 'admin',
 	},
+	{
+		name: 'Fill Operator',
+		value: 'filler',
+	},
+	{
+		name: 'Inspector',
+		value: 'inspector',
+	},
 ]
 
 export const SERVICE_PRESSURE = [
