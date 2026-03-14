@@ -1,23 +1,12 @@
-import { auth } from '@/auth'
+import { requireRole, isErrorResponse } from '@/lib/permissions'
 import { User, VALID_ROLES } from '@/lib/models/user'
 
 export async function PUT(
 	request: Request,
 	{ params }: { params: Promise<{ userId: string }> },
 ) {
-	const session = await auth()
-	if (!session?.user)
-		return Response.json(
-			{ error: 'auth', message: 'Must be logged in' },
-			{ status: 401 },
-		)
-
-	if (session.user.role !== 'admin') {
-		return Response.json(
-			{ error: 'forbidden', message: 'Admin access required' },
-			{ status: 403 },
-		)
-	}
+	const result = await requireRole(['admin'])
+	if (isErrorResponse(result)) return result
 
 	const { userId } = await params
 	const { role, clientId } = await request.json()
@@ -27,6 +16,19 @@ export async function PUT(
 			{ error: 'invalid', message: 'Invalid role value' },
 			{ status: 400 },
 		)
+	}
+
+	if (role !== undefined && role !== 'admin') {
+		// Check if this is self-demotion
+		if (userId === result.user!.id) {
+			const adminCount = await User.count({ where: { role: 'admin' } })
+			if (adminCount <= 1) {
+				return Response.json(
+					{ error: 'forbidden', message: 'Cannot remove the last admin' },
+					{ status: 400 },
+				)
+			}
+		}
 	}
 
 	try {
