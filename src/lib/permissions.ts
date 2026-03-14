@@ -5,6 +5,9 @@
 
 import { auth } from '@/auth'
 import { Session } from 'next-auth'
+import { User } from '@/lib/models/user'
+import { Cylinder } from '@/lib/models/cylinder'
+import { FindOptions, Includeable } from 'sequelize'
 
 export type Role = 'user' | 'admin' | 'filler' | 'inspector'
 
@@ -103,4 +106,64 @@ export function matchApiRoute(
 		}
 	}
 	return null
+}
+
+type ScopeEntity = 'client' | 'cylinder' | 'fill' | 'visual'
+
+export function scopeQuery(
+	user: User,
+	entity: ScopeEntity,
+	options: FindOptions = {},
+): FindOptions | Response {
+	// Non-user roles get unscoped access
+	if (user.role !== 'user') return options
+
+	// User role requires a linked client
+	if (!user.clientId) {
+		return Response.json(
+			{
+				error: 'no_client',
+				message: 'No linked client. Contact the shop to link your account.',
+			},
+			{ status: 403 },
+		)
+	}
+
+	const clientId = user.clientId
+
+	switch (entity) {
+		case 'client':
+			return {
+				...options,
+				where: { ...((options.where as object) ?? {}), id: clientId },
+			}
+		case 'cylinder':
+			return {
+				...options,
+				where: { ...((options.where as object) ?? {}), ownerId: clientId },
+			}
+		case 'fill':
+		case 'visual': {
+			// Merge ownerId filter into existing Cylinder include if present,
+			// otherwise append a new one. Avoids duplicate Cylinder joins.
+			const existingIncludes = ((options.include as Includeable[]) ?? []).slice()
+			const cylIdx = existingIncludes.findIndex(
+				(inc) => typeof inc === 'object' && 'model' in inc && inc.model === Cylinder,
+			)
+			if (cylIdx >= 0) {
+				const existing = existingIncludes[cylIdx] as Record<string, unknown>
+				existingIncludes[cylIdx] = {
+					...existing,
+					where: { ...((existing.where as object) ?? {}), ownerId: clientId },
+				}
+			} else {
+				existingIncludes.push({
+					model: Cylinder,
+					where: { ownerId: clientId },
+					attributes: [],
+				})
+			}
+			return { ...options, include: existingIncludes }
+		}
+	}
 }
