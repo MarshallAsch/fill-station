@@ -4,6 +4,7 @@ import Button from '@/components/UI/Button'
 import TextArea from '@/components/UI/FormElements/TextArea'
 import TextInput from '@/components/UI/FormElements/TextInput'
 import { newContact } from '../_api'
+import { toast } from 'react-toastify'
 
 export default function Contact() {
 	const handleSubmit = async (form: FormData) => {
