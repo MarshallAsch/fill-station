@@ -10,7 +10,7 @@ import { Cylinder } from '@/lib/models/cylinder'
 import { FindOptions, Includeable } from 'sequelize'
 import { Role } from './permissions'
 
-export { Role } from './permissions'
+export type { Role } from './permissions'
 
 export async function requireRole(
 	roles: Role[],

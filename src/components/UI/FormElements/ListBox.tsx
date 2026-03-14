@@ -32,7 +32,7 @@ const ListBox = ({
 	defaultValue,
 	onChange,
 }: ListBoxProps) => {
-	const [selected, setSelected] = useState<Item | null>(
+	const [selected, setSelected] = useState<Item | undefined>(
 		defaultValue || items[0],
 	)
 
