@@ -148,9 +148,12 @@ Behavior by role:
 - `user` without `clientId`: returns 403 Response with message "No linked client. Contact the shop to link your account."
 - `filler`, `inspector`, `admin`: returns `queryOptions` unchanged
 
+The `scopeQuery` helper accepts the full database user object (from `User.findByPk`), not the session user. This is because `clientId` is not propagated to the session — only `role` is. API routes that use `scopeQuery` must perform a `User.findByPk(session.user.id)` lookup to access `clientId`. This is intentional: `clientId` is only needed for data-scoped queries (primarily the `user` role and dashboard), not for every request.
+
 Usage in API routes:
 
 ```typescript
+const dbUser = await User.findByPk(session.user.id)
 const options = scopeQuery(dbUser, 'fill', { order: [['date', 'DESC']] })
 if (options instanceof Response) return options
 const fills = await Fill.findAll(options)
