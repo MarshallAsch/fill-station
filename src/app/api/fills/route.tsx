@@ -1,6 +1,5 @@
 import { Cylinder } from '@/lib/models/cylinder'
 import { Fill } from '@/lib/models/fill'
-import dayjs from 'dayjs'
 import { auth } from '@/auth'
 import { FillDto } from '@/types/fills'
 export async function GET() {

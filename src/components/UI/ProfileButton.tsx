@@ -3,7 +3,7 @@ import { UserIcon } from '@heroicons/react/20/solid'
 import { signOut } from 'next-auth/react'
 
 const userNavigation = [
-	{ name: 'Your profile', href: '#' },
+	{ name: 'Your profile', href: '/profile' },
 	{ name: 'Settings', href: '#' },
 ]
 
