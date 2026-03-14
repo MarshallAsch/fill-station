@@ -8,18 +8,14 @@ import { Dialog, DialogPanel } from '@headlessui/react'
 
 import Login from '../UI/Login'
 import { useSession } from 'next-auth/react'
-
-const navigation = [
-	{ name: 'Fills', href: '/fills' },
-	{ name: 'Visual', href: '/visual' },
-	{ name: 'History', href: '/history' },
-	{ name: 'Clients', href: '/clients' },
-]
+import { getNavItems, Role } from '@/lib/permissions'
 
 const Navbar = () => {
 	const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
 	const session = useSession()
+	const role = (session?.data?.user?.role ?? 'user') as Role
+	const navigation = getNavItems(role)
 
 	return (
 		<header className='sticky top-0 z-9999 bg-white dark:bg-gray-900'>
