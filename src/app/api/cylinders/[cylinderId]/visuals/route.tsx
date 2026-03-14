@@ -5,6 +5,7 @@ import dayjs from 'dayjs'
 import { requireRole, isErrorResponse } from '@/lib/permissions'
 import customParseFormat from 'dayjs/plugin/customParseFormat'
 import { NewVisualDTO } from '@/types/visuals'
+import { auditLog } from '@/lib/audit'
 dayjs.extend(customParseFormat)
 
 export async function GET(
@@ -29,8 +30,8 @@ export async function POST(
 	request: Request,
 	{ params }: { params: Promise<{ cylinderId: string }> },
 ) {
-	const result = await requireRole(['inspector', 'admin'])
-	if (isErrorResponse(result)) return result
+	const session = await requireRole(['inspector', 'admin'])
+	if (isErrorResponse(session)) return session
 
 	const { cylinderId } = await params
 
@@ -127,6 +128,9 @@ export async function POST(
 		})
 
 		result = await result.save()
+		await auditLog(session.user!.id!, 'create', 'visual', result.id, {
+			cylinderId,
+		})
 
 		return Response.json(result)
 	} catch (err: any) {

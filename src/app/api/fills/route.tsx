@@ -2,6 +2,7 @@ import { Cylinder } from '@/lib/models/cylinder'
 import { Fill } from '@/lib/models/fill'
 import { requireRole, isErrorResponse } from '@/lib/permissions'
 import { FillDto } from '@/types/fills'
+import { auditLog } from '@/lib/audit'
 export async function GET() {
 	const result = await requireRole(['filler', 'inspector', 'admin'])
 	if (isErrorResponse(result)) return result
@@ -43,6 +44,14 @@ export async function POST(request: Request) {
 			),
 		)
 
+		await Promise.all(
+			created.map((fill, index) =>
+				auditLog(result.user!.id!, 'create', 'fill', fill.id, {
+					cylinderId: fills[index].cylinderId,
+				}),
+			),
+		)
+
 		return await Response.json(created)
 	} catch (err: any) {
 		console.error('error:', err)
@@ -68,5 +77,6 @@ export async function DELETE(request: Request) {
 	}
 
 	await fill.destroy()
+	await auditLog(result.user!.id!, 'delete', 'fill', id)
 	return Response.json({ message: 'Fill deleted' })
 }

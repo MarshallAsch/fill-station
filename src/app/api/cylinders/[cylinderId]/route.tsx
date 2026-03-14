@@ -1,5 +1,6 @@
 import dayjs from 'dayjs'
 import { requireRole, isErrorResponse } from '@/lib/permissions'
+import { auditLog } from '@/lib/audit'
 import customParseFormat from 'dayjs/plugin/customParseFormat'
 import { Cylinder } from '@/lib/models/cylinder'
 dayjs.extend(customParseFormat)
@@ -68,5 +69,8 @@ export async function DELETE(
 	}
 
 	await cylinder.destroy()
+	await auditLog(result.user!.id!, 'delete', 'cylinder', cylinderId, {
+		serialNumber: cylinder.serialNumber,
+	})
 	return Response.json({ message: 'Cylinder deleted' })
 }

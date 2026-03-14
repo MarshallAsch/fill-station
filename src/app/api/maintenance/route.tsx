@@ -2,6 +2,7 @@ import { Maintenance } from '@/lib/models/maintenance'
 import { NewMaintenanceDTO } from '@/types/maintenance'
 import dayjs from 'dayjs'
 import { requireRole, isErrorResponse } from '@/lib/permissions'
+import { auditLog } from '@/lib/audit'
 import customParseFormat from 'dayjs/plugin/customParseFormat'
 dayjs.extend(customParseFormat)
 
@@ -43,5 +44,6 @@ export async function DELETE(request: Request) {
 	}
 
 	await record.destroy()
+	await auditLog(result.user!.id!, 'delete', 'maintenance', id)
 	return Response.json({ message: 'Maintenance record deleted' })
 }

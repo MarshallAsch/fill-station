@@ -1,5 +1,6 @@
 import { Client } from '@/lib/models/client'
 import { requireRole, isErrorResponse } from '@/lib/permissions'
+import { auditLog } from '@/lib/audit'
 
 export async function GET(
 	request: Request,
@@ -68,5 +69,8 @@ export async function DELETE(
 	}
 
 	await client.destroy()
+	await auditLog(result.user!.id!, 'delete', 'client', clientId, {
+		name: client.name,
+	})
 	return Response.json({ message: 'Client deleted' })
 }

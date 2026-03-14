@@ -1,5 +1,6 @@
 import { requireRole, isErrorResponse } from '@/lib/permissions'
 import { User, VALID_ROLES } from '@/lib/models/user'
+import { auditLog } from '@/lib/audit'
 
 export async function PUT(
 	request: Request,
@@ -45,6 +46,10 @@ export async function PUT(
 		if (clientId !== undefined) user.clientId = clientId
 
 		await user.save()
+		await auditLog(result.user!.id!, 'update', 'user', userId, {
+			role,
+			clientId,
+		})
 
 		return Response.json(user)
 	} catch (err: any) {
