@@ -40,7 +40,7 @@ Components (src/components/) — select from Redux store
 
 ### Authentication
 
-NextAuth v5 (beta) with Authelia OIDC provider. Middleware in `src/middleware.ts` protects all routes except `/`, `/about`, `/contact`, and `/api/auth/*`. Every protected API route checks `auth()` session. Session augmented with `role` via callback in `src/auth.ts` and typed in `src/types/next-auth.d.ts`. Admin routes check `session.user.role !== 'admin'`; admin API routes live under `src/app/api/users/`.
+NextAuth v5 (beta) with Authelia OIDC provider. Middleware in `src/proxy.ts` protects all routes except `/`, `/about`, `/contact`, and `/api/auth/*`. Every protected API route checks `auth()` session. Session augmented with `role` via callback in `src/auth.ts` and typed in `src/types/next-auth.d.ts`. Admin routes check `session.user.role !== 'admin'`; admin API routes live under `src/app/api/users/`.
 
 ### Database
 
