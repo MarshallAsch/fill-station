@@ -38,11 +38,11 @@ const LayoutContent = ({ children }: { children: ReactNode }) => {
 		: TAB.FILLS
 
 	return (
-		<div className='flex grow border-t border-gray-200'>
+		<div className='flex grow border-t border-gray-200 dark:border-gray-700'>
 			{/* Static sidebar for desktop */}
 			<div className='fixed inset-y-0 z-50 flex w-72 flex-col'>
 				{/* Sidebar component, swap this element with another sidebar if you like */}
-				<div className='mt-24 flex grow flex-col gap-y-5 overflow-y-auto border-t border-r border-gray-200 bg-white px-6'>
+				<div className='mt-24 flex grow flex-col gap-y-5 overflow-y-auto border-t border-r border-gray-200 bg-white px-6 dark:border-gray-700 dark:bg-gray-900'>
 					<nav className='flex flex-1 flex-col'>
 						<ul role='list' className='flex flex-1 flex-col gap-y-7'>
 							<li>
@@ -57,8 +57,8 @@ const LayoutContent = ({ children }: { children: ReactNode }) => {
 														}
 														className={clsx(
 															item.value === selectedTab
-																? 'bg-gray-50 text-indigo-600'
-																: 'text-gray-700 hover:bg-gray-50 hover:text-indigo-600',
+																? 'bg-gray-50 text-indigo-600 dark:bg-gray-800'
+																: 'text-gray-700 hover:bg-gray-50 hover:text-indigo-600 dark:text-gray-300 dark:hover:bg-gray-800',
 															'group flex w-full cursor-pointer gap-x-3 rounded-md p-2 text-sm/6 font-semibold',
 														)}
 													>
@@ -67,7 +67,7 @@ const LayoutContent = ({ children }: { children: ReactNode }) => {
 															className={clsx(
 																item.value === selectedTab
 																	? 'text-indigo-600'
-																	: 'text-gray-400 group-hover:text-indigo-600',
+																	: 'text-gray-400 group-hover:text-indigo-600 dark:text-gray-500',
 																'size-6 shrink-0',
 															)}
 														/>

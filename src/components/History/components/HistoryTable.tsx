@@ -28,30 +28,30 @@ const HistoryTable = () => {
 				<div className='-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8'>
 					<div className='inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8'>
 						<div className='shadow-sm outline-1 outline-black/5 sm:rounded-lg'>
-							<table className='relative min-w-full divide-y divide-gray-300'>
-								<thead className='bg-gray-50'>
+							<table className='relative min-w-full divide-y divide-gray-300 dark:divide-gray-700'>
+								<thead className='bg-gray-50 dark:bg-gray-800'>
 									<tr>
 										<th
 											scope='col'
-											className='py-3.5 pr-3 pl-4 text-center text-sm font-semibold text-gray-900 sm:pl-6'
+											className='py-3.5 pr-3 pl-4 text-center text-sm font-semibold text-gray-900 dark:text-gray-100 sm:pl-6'
 										>
 											Date
 										</th>
 										<th
 											scope='col'
-											className='px-3 py-3.5 text-center text-sm font-semibold text-gray-900'
+											className='px-3 py-3.5 text-center text-sm font-semibold text-gray-900 dark:text-gray-100'
 										>
 											Mix
 										</th>
 										<th
 											scope='col'
-											className='px-3 py-3.5 text-center text-sm font-semibold text-gray-900'
+											className='px-3 py-3.5 text-center text-sm font-semibold text-gray-900 dark:text-gray-100'
 										>
 											Start Pressure
 										</th>
 										<th
 											scope='col'
-											className='px-3 py-3.5 text-center text-sm font-semibold text-gray-900'
+											className='px-3 py-3.5 text-center text-sm font-semibold text-gray-900 dark:text-gray-100'
 										>
 											End Pressure
 										</th>
@@ -63,14 +63,14 @@ const HistoryTable = () => {
 										</th>
 									</tr>
 								</thead>
-								<tbody className='divide-y divide-gray-200 bg-white'>
+								<tbody className='divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-gray-900'>
 									{paginatedFills.map((fill) => (
 										<HistoryRow key={fill.id} fill={fill} />
 									))}
 								</tbody>
 							</table>
 							<div className='flex items-center justify-between px-4 py-4'>
-								<p className='text-sm text-gray-600'>
+								<p className='text-sm text-gray-600 dark:text-gray-400'>
 									Page {page} of {totalPages}
 								</p>
 

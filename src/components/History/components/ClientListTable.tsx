@@ -9,36 +9,36 @@ const ClientListTable = () => {
 			<div className='overflow-x-auto'>
 				<div className='inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8'>
 					<div className='shadow-sm outline-1 outline-black/5 sm:rounded-lg'>
-						<table className='relative min-w-full divide-y divide-gray-300'>
-							<thead className='bg-gray-50'>
+						<table className='relative min-w-full divide-y divide-gray-300 dark:divide-gray-700'>
+							<thead className='bg-gray-50 dark:bg-gray-800'>
 								<tr>
 									<th
 										scope='col'
-										className='py-3.5 pr-3 pl-4 text-center text-sm font-semibold text-gray-900 sm:pl-6'
+										className='py-3.5 pr-3 pl-4 text-center text-sm font-semibold text-gray-900 dark:text-gray-100 sm:pl-6'
 									>
 										Full Name
 									</th>
 									<th
 										scope='col'
-										className='px-3 py-3.5 text-center text-sm font-semibold text-gray-900'
+										className='px-3 py-3.5 text-center text-sm font-semibold text-gray-900 dark:text-gray-100'
 									>
 										Highest Certification
 									</th>
 									<th
 										scope='col'
-										className='px-3 py-3.5 text-center text-sm font-semibold text-gray-900'
+										className='px-3 py-3.5 text-center text-sm font-semibold text-gray-900 dark:text-gray-100'
 									>
 										Details
 									</th>
 									<th
 										scope='col'
-										className='px-3 py-3.5 text-center text-sm font-semibold text-gray-900'
+										className='px-3 py-3.5 text-center text-sm font-semibold text-gray-900 dark:text-gray-100'
 									>
 										Edit
 									</th>
 								</tr>
 							</thead>
-							<tbody className='divide-y divide-gray-200 bg-white'>
+							<tbody className='divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-gray-900'>
 								{clients.map((client) => (
 									<ClientsRow key={client.id} client={client} />
 								))}

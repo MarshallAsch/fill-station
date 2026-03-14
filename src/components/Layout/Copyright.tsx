@@ -3,7 +3,7 @@ import Link from 'next/link'
 
 export default function Copyright() {
 	return (
-		<div className='my-2 flex w-full justify-center text-sm'>
+		<div className='my-2 flex w-full justify-center text-sm dark:text-gray-400'>
 			{'Copyright © '}
 			<Link className='underline' href='https://marshallasch.ca/'>
 				Marshall Asch

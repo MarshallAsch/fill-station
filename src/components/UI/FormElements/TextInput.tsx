@@ -27,9 +27,9 @@ const TextInput = ({
 				type={type}
 				placeholder={placeholder}
 				aria-label={ariaLabel}
-				className='block w-full rounded-md bg-white px-3 py-1.5 text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6'
+				className='block w-full rounded-md bg-white px-3 py-1.5 text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 dark:bg-gray-800 dark:text-gray-100 dark:outline-gray-600 dark:placeholder:text-gray-500 sm:text-sm/6'
 			/>
-			{description && <p className='text-xs text-gray-600'>{description}</p>}
+			{description && <p className='text-xs text-gray-600 dark:text-gray-400'>{description}</p>}
 		</div>
 	)
 }

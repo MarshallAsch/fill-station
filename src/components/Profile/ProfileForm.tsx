@@ -29,7 +29,7 @@ const ProfileForm = ({ user }: ProfileFormProps) => {
 	}
 
 	return (
-		<div className='w-full max-w-md rounded-lg border border-gray-200 bg-white p-6 shadow-sm'>
+		<div className='w-full max-w-md rounded-lg border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-800'>
 			{user.image && (
 				<div className='mb-6 flex justify-center'>
 					<img
@@ -45,7 +45,7 @@ const ProfileForm = ({ user }: ProfileFormProps) => {
 					<div>
 						<label
 							htmlFor='profile-name'
-							className='mb-1 block text-sm font-medium text-gray-500'
+							className='mb-1 block text-sm font-medium text-gray-500 dark:text-gray-400'
 						>
 							Name
 						</label>
@@ -62,7 +62,7 @@ const ProfileForm = ({ user }: ProfileFormProps) => {
 					<div>
 						<label
 							htmlFor='profile-email'
-							className='mb-1 block text-sm font-medium text-gray-500'
+							className='mb-1 block text-sm font-medium text-gray-500 dark:text-gray-400'
 						>
 							Email
 						</label>
@@ -78,10 +78,10 @@ const ProfileForm = ({ user }: ProfileFormProps) => {
 					</div>
 					<Tooltip message='Can only be changed by an admin'>
 						<div>
-							<label className='mb-1 block text-sm font-medium text-gray-500'>
+							<label className='mb-1 block text-sm font-medium text-gray-500 dark:text-gray-400'>
 								Role
 							</label>
-							<p className='px-3 py-1.5 text-sm text-gray-500'>
+							<p className='px-3 py-1.5 text-sm text-gray-500 dark:text-gray-400'>
 								{user.role}
 							</p>
 						</div>
@@ -105,25 +105,25 @@ const ProfileForm = ({ user }: ProfileFormProps) => {
 				</div>
 			) : (
 				<>
-					<dl className='divide-y divide-gray-100'>
+					<dl className='divide-y divide-gray-100 dark:divide-gray-700'>
 						<div className='px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4'>
-							<dt className='text-sm font-medium text-gray-500'>Name</dt>
-							<dd className='mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0'>
+							<dt className='text-sm font-medium text-gray-500 dark:text-gray-400'>Name</dt>
+							<dd className='mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0 dark:text-gray-100'>
 								{name || '—'}
 							</dd>
 						</div>
 						<div className='px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4'>
-							<dt className='text-sm font-medium text-gray-500'>Email</dt>
-							<dd className='mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0'>
+							<dt className='text-sm font-medium text-gray-500 dark:text-gray-400'>Email</dt>
+							<dd className='mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0 dark:text-gray-100'>
 								{email || '—'}
 							</dd>
 						</div>
 							<div className='px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4'>
-								<dt className='text-sm font-medium text-gray-500'>
+								<dt className='text-sm font-medium text-gray-500 dark:text-gray-400'>
 
 									Role
 								</dt>
-								<dd className='mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0'>
+								<dd className='mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0 dark:text-gray-100'>
 									<Tooltip message='Can only be changed by an admin'>
 										{user.role}
 									</Tooltip>
