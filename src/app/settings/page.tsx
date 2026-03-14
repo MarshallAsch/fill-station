@@ -4,27 +4,14 @@ import { User } from '@/lib/models/user'
 import { Client } from '@/lib/models/client'
 import { Profile } from '@/types/profile'
 import UserListTable from '@/components/Settings/UserListTable'
+import { AuditLog } from '@/lib/models/audit'
+import AuditLogTable from '@/components/Settings/AuditLogTable'
 
 export default async function Settings() {
 	const session = await auth()
 
 	if (!session?.user) {
 		return redirect('/')
-	}
-
-	if (session.user.role !== 'admin') {
-		return (
-			<div className='max-w-7xl'>
-				<div className='my-4 flex flex-col items-center justify-center'>
-					<h1 className='text-3xl font-semibold text-gray-900 dark:text-gray-100'>
-						Admin Settings
-					</h1>
-					<p className='mt-4 text-gray-500 dark:text-gray-400'>
-						You do not have permission to access this page.
-					</p>
-				</div>
-			</div>
-		)
 	}
 
 	const dbUsers = await User.findAll({
@@ -42,6 +29,12 @@ export default async function Settings() {
 		clientName: (u as any).client?.name ?? null,
 	}))
 
+	const auditEntries = await AuditLog.findAll({
+		order: [['createdAt', 'DESC']],
+		limit: 50,
+		include: [{ model: User, as: 'user', attributes: ['name', 'email'] }],
+	})
+
 	return (
 		<div className='max-w-7xl'>
 			<div className='my-4 flex flex-col items-center justify-center gap-6'>
@@ -49,6 +42,10 @@ export default async function Settings() {
 					Admin Settings
 				</h1>
 				<UserListTable users={users} />
+				<h2 className='text-2xl font-semibold text-gray-900 dark:text-gray-100'>
+					Audit Log
+				</h2>
+				<AuditLogTable entries={JSON.parse(JSON.stringify(auditEntries))} />
 			</div>
 		</div>
 	)
