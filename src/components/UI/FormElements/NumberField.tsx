@@ -17,7 +17,9 @@ const NumberField = ({
 }: Props) => {
 	return (
 		<>
-			{helperText && <p className='text-gray-500 dark:text-gray-400'>{helperText}</p>}
+			{helperText && (
+				<p className='text-gray-500 dark:text-gray-400'>{helperText}</p>
+			)}
 			<input
 				type='number'
 				id={id}

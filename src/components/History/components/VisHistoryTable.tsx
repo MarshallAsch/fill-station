@@ -32,7 +32,7 @@ const VisHistoryTable = () => {
 									<tr>
 										<th
 											scope='col'
-											className='py-3.5 pr-3 pl-4 text-center text-sm font-semibold text-gray-900 dark:text-gray-100 sm:pl-6'
+											className='py-3.5 pr-3 pl-4 text-center text-sm font-semibold text-gray-900 sm:pl-6 dark:text-gray-100'
 										>
 											Date
 										</th>
@@ -62,7 +62,7 @@ const VisHistoryTable = () => {
 										</th>
 									</tr>
 								</thead>
-								<tbody className='divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-gray-900'>
+								<tbody className='divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-900'>
 									{paginatedVisuals.map((vis) => (
 										<VisHistoryRow key={vis.id} visual={vis} />
 									))}

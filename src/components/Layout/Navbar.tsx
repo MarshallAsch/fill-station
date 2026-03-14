@@ -25,14 +25,17 @@ const Navbar = () => {
 		<header className='sticky top-0 z-9999 bg-white dark:bg-gray-900'>
 			<nav
 				aria-label='Global'
-				className='mx-auto flex max-w-7xl items-center justify-between bg-white p-6 dark:bg-gray-900 lg:px-8'
+				className='mx-auto flex max-w-7xl items-center justify-between bg-white p-6 lg:px-8 dark:bg-gray-900'
 			>
 				<Link href='/' className='-m-1.5 p-1.5'>
 					<span className='sr-only'>Marshalls Dive Station</span>
 					<LogoIcon />
 				</Link>
 				{session.status !== 'authenticated' ? (
-					<Link href='/about' className='text-sm/6 font-semibold text-gray-900 dark:text-gray-100'>
+					<Link
+						href='/about'
+						className='text-sm/6 font-semibold text-gray-900 dark:text-gray-100'
+					>
 						About
 					</Link>
 				) : (
@@ -82,7 +85,7 @@ const Navbar = () => {
 				className='lg:hidden'
 			>
 				<div className='fixed inset-0 z-50' />
-				<DialogPanel className='fixed inset-y-0 right-0 z-50 w-full overflow-y-auto bg-white p-6 dark:bg-gray-800 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10'>
+				<DialogPanel className='fixed inset-y-0 right-0 z-50 w-full overflow-y-auto bg-white p-6 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10 dark:bg-gray-800'>
 					<div className='flex items-center justify-between'>
 						<a href='#' className='-m-1.5 p-1.5'>
 							<span className='sr-only'>Marshalls Dive Station</span>

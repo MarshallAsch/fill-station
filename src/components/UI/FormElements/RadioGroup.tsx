@@ -26,7 +26,9 @@ const RadioGroup = ({
 	return (
 		<fieldset className='w-full'>
 			<div className='flex items-center justify-between'>
-				<div className='text-sm/6 font-medium text-gray-900 dark:text-gray-100'>{title}</div>
+				<div className='text-sm/6 font-medium text-gray-900 dark:text-gray-100'>
+					{title}
+				</div>
 			</div>
 			<div className='mt-2 grid grid-cols-3 gap-3 sm:grid-cols-4'>
 				{options.map((option) => (
@@ -55,7 +57,11 @@ const RadioGroup = ({
 					</label>
 				))}
 			</div>
-			{description && <p className='text-xs text-gray-600 dark:text-gray-400'>{description}</p>}
+			{description && (
+				<p className='text-xs text-gray-600 dark:text-gray-400'>
+					{description}
+				</p>
+			)}
 		</fieldset>
 	)
 }

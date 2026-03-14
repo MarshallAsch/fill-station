@@ -86,6 +86,14 @@ const ProfileForm = ({ user }: ProfileFormProps) => {
 							</p>
 						</div>
 					</Tooltip>
+					<div>
+						<label className='mb-1 block text-sm font-medium text-gray-500 dark:text-gray-400'>
+							Linked client
+						</label>
+						<p className='px-3 py-1.5 text-sm text-gray-500 dark:text-gray-400'>
+							{user.clientName ?? '—'}
+						</p>
+					</div>
 					<div className='flex gap-3 pt-2'>
 						<Button type='button' onClick={handleSave}>
 							Save
@@ -107,28 +115,39 @@ const ProfileForm = ({ user }: ProfileFormProps) => {
 				<>
 					<dl className='divide-y divide-gray-100 dark:divide-gray-700'>
 						<div className='px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4'>
-							<dt className='text-sm font-medium text-gray-500 dark:text-gray-400'>Name</dt>
+							<dt className='text-sm font-medium text-gray-500 dark:text-gray-400'>
+								Name
+							</dt>
 							<dd className='mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0 dark:text-gray-100'>
 								{name || '—'}
 							</dd>
 						</div>
 						<div className='px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4'>
-							<dt className='text-sm font-medium text-gray-500 dark:text-gray-400'>Email</dt>
+							<dt className='text-sm font-medium text-gray-500 dark:text-gray-400'>
+								Email
+							</dt>
 							<dd className='mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0 dark:text-gray-100'>
 								{email || '—'}
 							</dd>
 						</div>
-							<div className='px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4'>
-								<dt className='text-sm font-medium text-gray-500 dark:text-gray-400'>
-
-									Role
-								</dt>
-								<dd className='mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0 dark:text-gray-100'>
-									<Tooltip message='Can only be changed by an admin'>
-										{user.role}
-									</Tooltip>
-								</dd>
-							</div>
+						<div className='px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4'>
+							<dt className='text-sm font-medium text-gray-500 dark:text-gray-400'>
+								Role
+							</dt>
+							<dd className='mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0 dark:text-gray-100'>
+								<Tooltip message='Can only be changed by an admin'>
+									{user.role}
+								</Tooltip>
+							</dd>
+						</div>
+						<div className='px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4'>
+							<dt className='text-sm font-medium text-gray-500 dark:text-gray-400'>
+								Linked client
+							</dt>
+							<dd className='mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0 dark:text-gray-100'>
+								{user.clientName ?? '—'}
+							</dd>
+						</div>
 					</dl>
 					<div className='mt-4 flex justify-end'>
 						<div className='w-24'>

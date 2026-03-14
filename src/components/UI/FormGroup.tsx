@@ -26,10 +26,14 @@ const FormGroup = ({ title, description, children, badge }: Props) => {
 		}
 	}
 	return (
-		<div className='grid grid-cols-1 border-b border-gray-900/10 py-6 dark:border-gray-700 md:grid-cols-3'>
+		<div className='grid grid-cols-1 border-b border-gray-900/10 py-6 md:grid-cols-3 dark:border-gray-700'>
 			<div>
-				<h2 className='text-base/7 font-semibold text-gray-900 dark:text-gray-100'>{title}</h2>
-				<p className='mt-1 text-sm/6 text-gray-600 dark:text-gray-400'>{description}</p>
+				<h2 className='text-base/7 font-semibold text-gray-900 dark:text-gray-100'>
+					{title}
+				</h2>
+				<p className='mt-1 text-sm/6 text-gray-600 dark:text-gray-400'>
+					{description}
+				</p>
 				{badge && getBadge()}
 			</div>
 

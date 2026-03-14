@@ -7,6 +7,8 @@ export type Profile = {
 	image: string | null
 	theme: Theme
 	role: string
+	clientId: number | null
+	clientName: string | null
 }
 
 export type UpdateProfileDTO = {

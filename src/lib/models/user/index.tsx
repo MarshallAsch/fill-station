@@ -4,8 +4,10 @@ import {
 	InferCreationAttributes,
 	CreationOptional,
 	DataTypes,
+	ForeignKey,
 } from 'sequelize'
 import { sequelize } from '../config'
+import { Client } from '../client'
 
 export class User extends Model<
 	InferAttributes<User>,
@@ -18,6 +20,7 @@ export class User extends Model<
 	declare image: CreationOptional<string | null>
 	declare theme: CreationOptional<'light' | 'dark' | 'system'>
 	declare role: CreationOptional<string>
+	declare clientId: ForeignKey<CreationOptional<number | null>>
 }
 
 User.init(
@@ -50,6 +53,15 @@ User.init(
 			allowNull: false,
 			defaultValue: 'user',
 		},
+		clientId: {
+			type: DataTypes.INTEGER.UNSIGNED,
+			allowNull: true,
+			defaultValue: null,
+			references: {
+				model: Client,
+				key: 'id',
+			},
+		},
 	},
 	{
 		modelName: 'user',
@@ -58,3 +70,5 @@ User.init(
 		timestamps: false,
 	},
 )
+
+User.belongsTo(Client, { foreignKey: 'clientId', as: 'client' })

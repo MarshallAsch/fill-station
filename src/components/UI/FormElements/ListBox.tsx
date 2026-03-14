@@ -34,19 +34,19 @@ const ListBox = ({ items, title, id, name, defaultValue }: ListBoxProps) => {
 				{title}
 			</Label>
 			<div className=''>
-				<ListboxButton className='grid w-full cursor-default grid-cols-1 rounded-md bg-white py-1.5 pr-2 pl-3 text-left text-gray-900 outline-1 -outline-offset-1 outline-gray-300 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-indigo-600 dark:bg-gray-800 dark:text-gray-100 dark:outline-gray-600 sm:text-sm/6'>
+				<ListboxButton className='grid w-full cursor-default grid-cols-1 rounded-md bg-white py-1.5 pr-2 pl-3 text-left text-gray-900 outline-1 -outline-offset-1 outline-gray-300 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-indigo-600 sm:text-sm/6 dark:bg-gray-800 dark:text-gray-100 dark:outline-gray-600'>
 					<span className='col-start-1 row-start-1 flex w-full gap-2 pr-6'>
 						<span className='truncate'>{selected?.name}</span>
 					</span>
 					<ChevronUpDownIcon
 						aria-hidden='true'
-						className='col-start-1 row-start-1 size-5 self-center justify-self-end text-gray-500 dark:text-gray-400 sm:size-4'
+						className='col-start-1 row-start-1 size-5 self-center justify-self-end text-gray-500 sm:size-4 dark:text-gray-400'
 					/>
 				</ListboxButton>
 
 				<ListboxOptions
 					transition
-					className='absolute z-60 mt-1 max-h-60 w-full max-w-100 overflow-auto rounded-md bg-white py-1 text-base shadow-lg outline-1 outline-black/5 data-leave:transition data-leave:duration-100 data-leave:ease-in data-closed:data-leave:opacity-0 dark:bg-gray-800 dark:outline-gray-700 sm:text-sm'
+					className='absolute z-60 mt-1 max-h-60 w-full max-w-100 overflow-auto rounded-md bg-white py-1 text-base shadow-lg outline-1 outline-black/5 data-leave:transition data-leave:duration-100 data-leave:ease-in data-closed:data-leave:opacity-0 sm:text-sm dark:bg-gray-800 dark:outline-gray-700'
 				>
 					{items.map((item, index) => (
 						<ListboxOption

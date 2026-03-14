@@ -1,9 +1,9 @@
 import { auth } from '@/auth'
-import { sequelize } from '@/lib/models/config'
-import { QueryTypes } from 'sequelize'
 import ProfileForm from '@/components/Profile/ProfileForm'
 import ThemeSettings from '@/components/Profile/ThemeSettings'
-import { Profile as UserRecord } from '@/types/profile'
+import { User } from '@/lib/models/user'
+import { Client } from '@/lib/models/client'
+import type { Profile } from '@/types/profile'
 
 export default async function Profile() {
 	const session = await auth()
@@ -12,7 +12,9 @@ export default async function Profile() {
 		return (
 			<div className='max-w-7xl'>
 				<div className='my-4 flex flex-col items-center justify-center'>
-					<h1 className='text-3xl font-semibold text-gray-900 dark:text-gray-100'>Profile</h1>
+					<h1 className='text-3xl font-semibold text-gray-900 dark:text-gray-100'>
+						Profile
+					</h1>
 					<p className='mt-4 text-gray-500 dark:text-gray-400'>
 						You must be logged in to view your profile.
 					</p>
@@ -21,32 +23,48 @@ export default async function Profile() {
 		)
 	}
 
-	const [user] = await sequelize.query<UserRecord>(
-		'SELECT id, name, email, image, theme, role FROM users WHERE email = :email LIMIT 1',
-		{
-			replacements: { email: session.user.email },
-			type: QueryTypes.SELECT,
-		},
-	)
+	const result = await User.findByPk(session.user.id, {
+		include: [{ model: Client, as: 'client', attributes: ['name'] }],
+	})
 
-	if (!user) {
+	if (!result) {
 		return (
 			<div className='max-w-7xl'>
 				<div className='my-4 flex flex-col items-center justify-center'>
-					<h1 className='text-3xl font-semibold text-gray-900 dark:text-gray-100'>Profile</h1>
-					<p className='mt-4 text-gray-500 dark:text-gray-400'>User not found.</p>
+					<h1 className='text-3xl font-semibold text-gray-900 dark:text-gray-100'>
+						Profile
+					</h1>
+					<p className='mt-4 text-gray-500 dark:text-gray-400'>
+						User not found.
+					</p>
 				</div>
 			</div>
 		)
 	}
 
+	const client = result.get('client') as Client | null
+	const user: Profile = {
+		id: result.id,
+		name: result.name ?? null,
+		email: result.email ?? null,
+		image: result.image ?? null,
+		theme: result.theme,
+		role: result.role,
+		clientId: result.clientId ?? null,
+		clientName: client?.name ?? null,
+	}
+
 	return (
 		<div className='max-w-7xl'>
 			<div className='my-4 flex flex-col items-center justify-center gap-6'>
-				<h1 className='text-3xl font-semibold text-gray-900 dark:text-gray-100'>Profile</h1>
+				<h1 className='text-3xl font-semibold text-gray-900 dark:text-gray-100'>
+					Profile
+				</h1>
 				<ProfileForm user={user} />
 
-				<h2 className='text-2xl font-semibold text-gray-900 dark:text-gray-100'>Settings</h2>
+				<h2 className='text-2xl font-semibold text-gray-900 dark:text-gray-100'>
+					Settings
+				</h2>
 				<ThemeSettings initialTheme={user.theme} />
 			</div>
 		</div>

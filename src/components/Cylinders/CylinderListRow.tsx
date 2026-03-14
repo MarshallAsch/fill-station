@@ -32,24 +32,24 @@ const CylinderListRow = ({
 
 	return (
 		<tr key={cylinder.id} className='hover:bg-gray-100 dark:hover:bg-gray-800'>
-			<td className='py-4 pr-3 pl-4 text-center text-sm font-medium whitespace-nowrap text-gray-900 dark:text-gray-100 sm:pl-6'>
+			<td className='py-4 pr-3 pl-4 text-center text-sm font-medium whitespace-nowrap text-gray-900 sm:pl-6 dark:text-gray-100'>
 				{cylinder.serialNumber}
 			</td>
 			{showOwner && (
 				<th
 					scope='col'
-					className='py-3.5 pr-3 pl-4 text-center text-sm font-semibold text-gray-900 dark:text-gray-100 sm:pl-6'
+					className='py-3.5 pr-3 pl-4 text-center text-sm font-semibold text-gray-900 sm:pl-6 dark:text-gray-100'
 				>
 					<Link
 						href={`/clients/${cylinder.ownerId}`}
-						className='flex cursor-pointer flex-col items-center justify-between gap-2 bg-gray-400/5 dark:bg-gray-600/10 p-6 transition hover:bg-gray-400/10 dark:hover:bg-gray-600/20 sm:p-10'
+						className='flex cursor-pointer flex-col items-center justify-between gap-2 bg-gray-400/5 p-6 transition hover:bg-gray-400/10 sm:p-10 dark:bg-gray-600/10 dark:hover:bg-gray-600/20'
 					>
 						{cylinder.ownerId}
 						<InformationCircleIcon />
 					</Link>
 				</th>
 			)}
-			<td className='py-4 pr-3 pl-4 text-center text-sm font-medium whitespace-nowrap text-gray-900 dark:text-gray-100 sm:pl-6'>
+			<td className='py-4 pr-3 pl-4 text-center text-sm font-medium whitespace-nowrap text-gray-900 sm:pl-6 dark:text-gray-100'>
 				<span className='flex w-full justify-center'>
 					{cylinder.oxygenClean ? (
 						<CheckCircleIcon className='h-10' />
@@ -81,7 +81,7 @@ const CylinderListRow = ({
 				) : (
 					<Link
 						href={`/visual?client=${cylinder.ownerId}&cylinder=${cylinder.id}`}
-						className='flex cursor-pointer flex-col items-center justify-between gap-2 bg-gray-400/5 dark:bg-gray-600/10 p-6 transition hover:bg-gray-400/10 dark:hover:bg-gray-600/20 sm:p-10'
+						className='flex cursor-pointer flex-col items-center justify-between gap-2 bg-gray-400/5 p-6 transition hover:bg-gray-400/10 sm:p-10 dark:bg-gray-600/10 dark:hover:bg-gray-600/20'
 					>
 						Inspect now
 					</Link>

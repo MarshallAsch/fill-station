@@ -50,7 +50,7 @@ const actions = [
 
 const Services = () => {
 	return (
-		<div className='my-10 divide-y divide-gray-200 overflow-hidden rounded-lg bg-gray-200 shadow-sm dark:divide-gray-700 dark:bg-gray-700 sm:grid sm:grid-cols-2 sm:divide-y-0'>
+		<div className='my-10 divide-y divide-gray-200 overflow-hidden rounded-lg bg-gray-200 shadow-sm sm:grid sm:grid-cols-2 sm:divide-y-0 dark:divide-gray-700 dark:bg-gray-700'>
 			{actions.map((action, actionIdx) => (
 				<div
 					key={action.title}
@@ -63,7 +63,7 @@ const Services = () => {
 						actionIdx === actions.length - 1
 							? 'rounded-br-lg rounded-bl-lg sm:rounded-bl-none'
 							: '',
-						'group relative border-gray-200 bg-white p-6 focus-within:outline-2 focus-within:-outline-offset-2 focus-within:outline-indigo-600 dark:border-gray-700 dark:bg-gray-800 sm:odd:not-nth-last-2:border-b sm:even:border-l sm:even:not-last:border-b',
+						'group relative border-gray-200 bg-white p-6 focus-within:outline-2 focus-within:-outline-offset-2 focus-within:outline-indigo-600 sm:odd:not-nth-last-2:border-b sm:even:border-l sm:even:not-last:border-b dark:border-gray-700 dark:bg-gray-800',
 					)}
 				>
 					<div>
@@ -85,7 +85,9 @@ const Services = () => {
 								{action.title}
 							</p>
 						</h3>
-						<p className='mt-2 text-sm text-gray-500 dark:text-gray-400'>{action.description}</p>
+						<p className='mt-2 text-sm text-gray-500 dark:text-gray-400'>
+							{action.description}
+						</p>
 					</div>
 				</div>
 			))}

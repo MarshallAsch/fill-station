@@ -52,7 +52,7 @@ const FillsTable = ({ client }: FillsTableProps) => {
 									<tr>
 										<th
 											scope='col'
-											className='py-3.5 pr-3 pl-4 text-left text-sm font-semibold text-gray-900 dark:text-gray-100 sm:pl-6'
+											className='py-3.5 pr-3 pl-4 text-left text-sm font-semibold text-gray-900 sm:pl-6 dark:text-gray-100'
 										>
 											Cylinder
 										</th>
@@ -80,7 +80,7 @@ const FillsTable = ({ client }: FillsTableProps) => {
 										<th scope='col' className='py-3.5 pr-4 pl-3 sm:pr-6'></th>
 									</tr>
 								</thead>
-								<tbody className='h-full divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-gray-900'>
+								<tbody className='h-full divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-900'>
 									{paginatedFills.map((fill) => (
 										<FillsRow
 											disableDelete={fills.length === 1}
@@ -92,7 +92,7 @@ const FillsTable = ({ client }: FillsTableProps) => {
 									<tr>
 										<td
 											colSpan={6}
-											className='h-full bg-gray-50 dark:bg-gray-800 py-3.5 pr-3 pl-4 text-center text-sm font-semibold text-gray-900 dark:text-gray-100 sm:pl-6'
+											className='h-full bg-gray-50 py-3.5 pr-3 pl-4 text-center text-sm font-semibold text-gray-900 sm:pl-6 dark:bg-gray-800 dark:text-gray-100'
 										>
 											<div>
 												<Button
