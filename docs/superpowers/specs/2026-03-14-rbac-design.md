@@ -75,6 +75,7 @@ PERMISSIONS = {
     '/api/users':                          { GET: ['admin'] },
     '/api/users/:userId':                  { PUT: ['admin'] },
     '/api/profile':                        { PUT: ['user', 'filler', 'inspector', 'admin'] },
+    '/api/contact':                        { GET: ['admin'] },
   }
 }
 ```
@@ -83,11 +84,30 @@ PERMISSIONS = {
 
 The middleware uses **pattern matching with dynamic segments**. Route patterns use `:param` syntax (e.g., `/api/clients/:clientId`). The middleware strips actual IDs from the request path and matches against these patterns. Matching uses longest-prefix-first ordering so `/api/maintenance/last` takes priority over a hypothetical `/api/maintenance/:id`.
 
+#### Unmatched Route Behavior
+
+Routes not in the permissions config are handled as follows:
+
+- **Public routes** (`/`, `/about`, `/contact`, `/api/auth/*`, `/api/contact` POST): bypass permission checks entirely. These are defined in a `publicRoutes` list in `proxy.ts`, extending the existing `publicPages` array. The `/contact` page must be added to `publicPages` as it is currently missing.
+- **Dev-only routes** (`/api/seed`): bypass permission checks. Guarded internally by `NODE_ENV === 'development'` check.
+- **Catch-all** (`/api/[...not_found]`): the middleware allows unmatched API routes to fall through to the catch-all handler, which returns 404. No permission check needed since no data is exposed.
+- **Any other unmatched API route**: returns 403 (deny by default). This ensures new routes cannot accidentally be left unprotected.
+- **Any other unmatched page route**: Next.js handles this with its built-in 404 page.
+
+#### `/api/contact` Special Handling
+
+The contact route has mixed access: POST is public (contact form submissions), GET requires auth (viewing submissions, admin-only). This is handled by adding `/api/contact` POST to the public routes list, and adding a permissions config entry for GET:
+
+```typescript
+'/api/contact': { GET: ['admin'] },
+```
+
 ### Middleware (`proxy.ts`)
 
 Extended to read the permissions config:
-- Page routes: look up path in `PERMISSIONS.pages`. If user's role not listed, redirect to `/`. Public pages (`/`, `/about`, `/contact`) bypass role checks entirely.
-- API routes: normalize the request path to a pattern (replace dynamic segments with `:param`), look up the pattern and HTTP method in `PERMISSIONS.api`. If unauthorized, return 403 JSON.
+- Public routes: defined in `publicRoutes` list — bypass all permission checks. Includes `/`, `/about`, `/contact`, `/api/auth/*`, `/api/contact` POST, `/api/seed` (dev only).
+- Page routes: look up path in `PERMISSIONS.pages`. If user's role not listed, redirect to `/`.
+- API routes: normalize the request path to a pattern (replace dynamic segments with `:param`), look up the pattern and HTTP method in `PERMISSIONS.api`. If unauthorized or unmatched, return 403 JSON.
 
 ### `requireRole(session, roles)` Helper
 
@@ -221,5 +241,7 @@ An admin must not be allowed to change their own role to a non-admin value if th
 
 ### Unchanged
 - `src/app/api/profile/route.tsx` — already correct (self only, role update blocked)
-- `src/app/api/contact/route.tsx` — POST stays public, GET stays auth-only
-- `src/app/api/seed/route.tsx` — dev-only, unchanged
+- `src/app/api/contact/route.tsx` — POST stays public (in publicRoutes), GET restricted to admin via permissions config
+- `src/app/api/seed/route.tsx` — dev-only, bypasses permission checks, self-guards with NODE_ENV check
+- `src/app/api/auth/[...nextauth]/route.ts` — public auth routes, bypassed by publicRoutes
+- `src/app/api/[...not_found]/route.tsx` — catch-all 404, unmatched routes fall through to this
