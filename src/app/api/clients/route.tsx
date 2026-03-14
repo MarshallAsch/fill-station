@@ -1,5 +1,5 @@
 import { Client } from '@/lib/models/client'
-import { requireRole, isErrorResponse } from '@/lib/permissions'
+import { requireRole, isErrorResponse } from '@/lib/permissions-server'
 
 export async function GET(request: Request) {
 	const result = await requireRole(['filler', 'inspector', 'admin'])

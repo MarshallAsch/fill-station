@@ -1,5 +1,5 @@
 import dayjs from 'dayjs'
-import { requireRole, isErrorResponse } from '@/lib/permissions'
+import { requireRole, isErrorResponse } from '@/lib/permissions-server'
 import customParseFormat from 'dayjs/plugin/customParseFormat'
 import { Contact } from '@/lib/models/contact'
 import { NewContactDTO } from '@/types/contact'

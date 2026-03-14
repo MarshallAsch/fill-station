@@ -2,7 +2,11 @@ import { VisualHistory } from '@/types/visuals'
 
 const RecentVisuals = ({ visuals }: { visuals: VisualHistory[] }) => {
 	if (visuals.length === 0) {
-		return <p className='text-sm text-gray-500 dark:text-gray-400'>No visual inspections found.</p>
+		return (
+			<p className='text-sm text-gray-500 dark:text-gray-400'>
+				No visual inspections found.
+			</p>
+		)
 	}
 
 	return (
@@ -26,7 +30,10 @@ const RecentVisuals = ({ visuals }: { visuals: VisualHistory[] }) => {
 							</thead>
 							<tbody className='divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-900'>
 								{visuals.map((visual) => (
-									<tr key={visual.id} className='hover:bg-gray-100 dark:hover:bg-gray-800'>
+									<tr
+										key={visual.id}
+										className='hover:bg-gray-100 dark:hover:bg-gray-800'
+									>
 										<td className='py-4 pr-3 pl-4 text-center text-sm font-medium text-gray-900 sm:pl-6 dark:text-gray-100'>
 											{visual.date}
 										</td>

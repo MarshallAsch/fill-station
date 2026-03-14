@@ -1,4 +1,4 @@
-import { requireRole, isErrorResponse } from '@/lib/permissions'
+import { requireRole, isErrorResponse } from '@/lib/permissions-server'
 import { User } from '@/lib/models/user'
 import { Client } from '@/lib/models/client'
 

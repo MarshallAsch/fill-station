@@ -1,5 +1,5 @@
 import dayjs from 'dayjs'
-import { requireRole, isErrorResponse } from '@/lib/permissions'
+import { requireRole, isErrorResponse } from '@/lib/permissions-server'
 import { auditLog } from '@/lib/audit'
 import customParseFormat from 'dayjs/plugin/customParseFormat'
 import { Cylinder } from '@/lib/models/cylinder'

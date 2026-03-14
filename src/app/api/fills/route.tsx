@@ -1,6 +1,6 @@
 import { Cylinder } from '@/lib/models/cylinder'
 import { Fill } from '@/lib/models/fill'
-import { requireRole, isErrorResponse } from '@/lib/permissions'
+import { requireRole, isErrorResponse } from '@/lib/permissions-server'
 import { FillDto } from '@/types/fills'
 import { auditLog } from '@/lib/audit'
 export async function GET() {

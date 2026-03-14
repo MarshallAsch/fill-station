@@ -1,4 +1,4 @@
-import { requireRole, isErrorResponse } from '@/lib/permissions'
+import { requireRole, isErrorResponse } from '@/lib/permissions-server'
 import { User, VALID_ROLES } from '@/lib/models/user'
 import { auditLog } from '@/lib/audit'
 

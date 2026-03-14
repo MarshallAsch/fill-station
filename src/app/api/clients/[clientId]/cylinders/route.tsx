@@ -1,7 +1,7 @@
 import { Client } from '@/lib/models/client'
 import { Cylinder } from '@/lib/models/cylinder'
 import dayjs from 'dayjs'
-import { requireRole, isErrorResponse } from '@/lib/permissions'
+import { requireRole, isErrorResponse } from '@/lib/permissions-server'
 import customParseFormat from 'dayjs/plugin/customParseFormat'
 dayjs.extend(customParseFormat)
 
