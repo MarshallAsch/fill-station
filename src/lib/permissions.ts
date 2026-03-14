@@ -35,13 +35,11 @@ export const PERMISSIONS = {
 }
 
 const allNavItems = [
-	{ name: 'Profile', href: '/profile' },
 	{ name: 'Dashboard', href: '/dashboard' },
-	{ name: 'Fills', href: '/fills' },
-	{ name: 'Visual', href: '/visual' },
+	{ name: 'New Fill', href: '/fills' },
+	{ name: 'Record Visual', href: '/visual' },
 	{ name: 'History', href: '/history' },
 	{ name: 'Clients', href: '/clients' },
-	{ name: 'Settings', href: '/settings' },
 ]
 
 export function getNavItems(role: Role) {
