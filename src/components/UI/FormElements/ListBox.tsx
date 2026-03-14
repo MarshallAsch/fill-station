@@ -21,15 +21,28 @@ type ListBoxProps = {
 	id: string
 	name: string
 	defaultValue?: Item
+	onChange?: (item: Item) => void
 }
 
-const ListBox = ({ items, title, id, name, defaultValue }: ListBoxProps) => {
+const ListBox = ({
+	items,
+	title,
+	id,
+	name,
+	defaultValue,
+	onChange,
+}: ListBoxProps) => {
 	const [selected, setSelected] = useState<Item | null>(
 		defaultValue || items[0],
 	)
 
+	const handleChange = (item: Item) => {
+		setSelected(item)
+		onChange?.(item)
+	}
+
 	return (
-		<Listbox value={selected} onChange={setSelected}>
+		<Listbox value={selected} onChange={handleChange}>
 			<Label className='block text-sm/6 font-medium text-gray-900 dark:text-gray-100'>
 				{title}
 			</Label>

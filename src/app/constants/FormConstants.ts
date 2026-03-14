@@ -47,6 +47,17 @@ export const PSI_INSPECTION_OPTIONS = [
 	},
 ]
 
+export const ROLE_OPTIONS = [
+	{
+		name: 'User',
+		value: 'user',
+	},
+	{
+		name: 'Admin',
+		value: 'admin',
+	},
+]
+
 export const SERVICE_PRESSURE = [
 	{
 		name: '3000 psi',

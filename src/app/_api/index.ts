@@ -157,3 +157,21 @@ export async function updateTheme(
 
 	return result.status == 200 ? result.data : result.data.message
 }
+
+export async function updateUserRole(
+	userId: string,
+	role: string,
+): Promise<Profile | string> {
+	const result = await axiosInstance.put(`/api/users/${userId}`, { role })
+
+	return result.status == 200 ? result.data : result.data.message
+}
+
+export async function updateUserClient(
+	userId: string,
+	clientId: number | null,
+): Promise<Profile | string> {
+	const result = await axiosInstance.put(`/api/users/${userId}`, { clientId })
+
+	return result.status == 200 ? result.data : result.data.message
+}
