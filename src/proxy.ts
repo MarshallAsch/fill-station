@@ -2,7 +2,7 @@ import { auth } from '@/auth'
 import { NextRequest, NextResponse } from 'next/server'
 
 // Pages that don't require authentication
-const publicPages = ['/', '/api/auth', '/about']
+const publicPages = ['/', '/api/auth', '/about', '/contact']
 
 export async function proxy(request: NextRequest) {
 	const { pathname } = request.nextUrl

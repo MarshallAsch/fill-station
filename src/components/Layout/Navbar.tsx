@@ -63,6 +63,12 @@ const Navbar = () => {
 							>
 								About
 							</Link>
+							<Link
+								href='/contact'
+								className='text-sm/6 font-semibold text-gray-900'
+							>
+								Contact
+							</Link>
 						</div>
 					</>
 				)}
@@ -108,6 +114,12 @@ const Navbar = () => {
 									className='text-sm/6 font-semibold text-gray-900'
 								>
 									About
+								</Link>
+								<Link
+									href='/contact'
+									className='text-sm/6 font-semibold text-gray-900'
+								>
+									Contact
 								</Link>
 							</div>
 							<Login />
