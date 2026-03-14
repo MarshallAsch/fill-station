@@ -6,6 +6,7 @@ import Button from '@/components/UI/Button'
 import { toast } from 'react-toastify'
 import { updateProfile } from '@/app/_api'
 import { Profile } from '@/types/profile'
+import Tooltip from '@/components/UI/Tooltip'
 
 interface ProfileFormProps {
 	user: Profile
@@ -75,6 +76,16 @@ const ProfileForm = ({ user }: ProfileFormProps) => {
 							onChange={(e) => setEmail(e.target.value)}
 						/>
 					</div>
+					<Tooltip message='Can only be changed by an admin'>
+						<div>
+							<label className='mb-1 block text-sm font-medium text-gray-500'>
+								Role
+							</label>
+							<p className='px-3 py-1.5 text-sm text-gray-500'>
+								{user.role}
+							</p>
+						</div>
+					</Tooltip>
 					<div className='flex gap-3 pt-2'>
 						<Button type='button' onClick={handleSave}>
 							Save
@@ -107,6 +118,17 @@ const ProfileForm = ({ user }: ProfileFormProps) => {
 								{email || '—'}
 							</dd>
 						</div>
+							<div className='px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4'>
+								<dt className='text-sm font-medium text-gray-500'>
+
+									Role
+								</dt>
+								<dd className='mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0'>
+									<Tooltip message='Can only be changed by an admin'>
+										{user.role}
+									</Tooltip>
+								</dd>
+							</div>
 					</dl>
 					<div className='mt-4 flex justify-end'>
 						<div className='w-24'>

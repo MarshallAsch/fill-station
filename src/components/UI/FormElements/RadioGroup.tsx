@@ -10,6 +10,7 @@ type RadioGroupProps = {
 	name: string
 	description?: string
 	required?: boolean
+	onChange?: (value: string) => void
 }
 
 const RadioGroup = ({
@@ -20,6 +21,7 @@ const RadioGroup = ({
 	value,
 	defaultValue,
 	readOnly,
+	onChange,
 }: RadioGroupProps) => {
 	return (
 		<fieldset className='w-full'>
@@ -39,6 +41,7 @@ const RadioGroup = ({
 							value={option.value}
 							checked={value === undefined ? undefined : value == option.value}
 							readOnly={readOnly}
+							onChange={() => onChange?.(String(option.value))}
 							defaultChecked={
 								value
 									? undefined

@@ -8,7 +8,7 @@ import {
 	NewMaintenanceDTO,
 } from '@/types/maintenance'
 import { NewVisualDTO, VisualHistory } from '@/types/visuals'
-import { Profile, UpdateProfileDTO } from '@/types/profile'
+import { Profile, Theme, UpdateProfileDTO } from '@/types/profile'
 import axios from 'axios'
 import dayjs from 'dayjs'
 
@@ -146,6 +146,14 @@ export async function updateProfile(
 	profile: UpdateProfileDTO,
 ): Promise<Profile | string> {
 	const result = await axiosInstance.put('/api/profile', profile)
+
+	return result.status == 200 ? result.data : result.data.message
+}
+
+export async function updateTheme(
+	theme: Theme,
+): Promise<Profile | string> {
+	const result = await axiosInstance.put('/api/profile', { theme })
 
 	return result.status == 200 ? result.data : result.data.message
 }

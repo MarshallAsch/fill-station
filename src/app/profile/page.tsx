@@ -2,13 +2,8 @@ import { auth } from '@/auth'
 import { sequelize } from '@/lib/models/config'
 import { QueryTypes } from 'sequelize'
 import ProfileForm from '@/components/Profile/ProfileForm'
-
-interface UserRecord {
-	id: string
-	name: string | null
-	email: string | null
-	image: string | null
-}
+import ThemeSettings from '@/components/Profile/ThemeSettings'
+import { Profile as UserRecord } from '@/types/profile'
 
 export default async function Profile() {
 	const session = await auth()
@@ -27,7 +22,7 @@ export default async function Profile() {
 	}
 
 	const [user] = await sequelize.query<UserRecord>(
-		'SELECT id, name, email, image FROM users WHERE email = :email LIMIT 1',
+		'SELECT id, name, email, image, theme, role FROM users WHERE email = :email LIMIT 1',
 		{
 			replacements: { email: session.user.email },
 			type: QueryTypes.SELECT,
@@ -50,6 +45,9 @@ export default async function Profile() {
 			<div className='my-4 flex flex-col items-center justify-center gap-6'>
 				<h1 className='text-3xl font-semibold text-gray-900'>Profile</h1>
 				<ProfileForm user={user} />
+
+				<h2 className='text-2xl font-semibold text-gray-900'>Settings</h2>
+				<ThemeSettings initialTheme={user.theme} />
 			</div>
 		</div>
 	)

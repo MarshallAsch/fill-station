@@ -1,6 +1,7 @@
 import { auth } from '@/auth'
-import { sequelize } from '@/lib/models/config'
-import { QueryTypes } from 'sequelize'
+import { User } from '@/lib/models/user'
+
+const VALID_THEMES = ['light', 'dark', 'system']
 
 export async function PUT(request: Request) {
 	const session = await auth()
@@ -10,40 +11,43 @@ export async function PUT(request: Request) {
 			{ status: 401 },
 		)
 
-	const { name, email } = await request.json()
+	const { name, email, theme, role } = await request.json()
 
-	if (!name && !email) {
+	if (role !== undefined) {
+		return Response.json(
+			{ error: 'forbidden', message: 'Not authorized to update role' },
+			{ status: 403 },
+		)
+	}
+
+	if (!name && !email && !theme) {
 		return Response.json(
 			{ error: 'missing', message: 'Nothing to update' },
 			{ status: 400 },
 		)
 	}
+	if (theme && !VALID_THEMES.includes(theme)) {
+		return Response.json(
+			{ error: 'invalid', message: 'Invalid theme value' },
+			{ status: 400 },
+		)
+	}
 
 	try {
-		await sequelize.query(
-			'UPDATE users SET name = :name, email = :email WHERE email = :currentEmail',
-			{
-				replacements: {
-					name: name ?? null,
-					email: email ?? null,
-					currentEmail: session.user.email,
-				},
-				type: QueryTypes.UPDATE,
-			},
-		)
+		const user = await User.findByPk(session.user.id)
 
-		const [user] = await sequelize.query<{
-			id: string
-			name: string | null
-			email: string | null
-			image: string | null
-		}>(
-			'SELECT id, name, email, image FROM users WHERE email = :email LIMIT 1',
-			{
-				replacements: { email: email ?? session.user.email },
-				type: QueryTypes.SELECT,
-			},
-		)
+		if (!user) {
+			return Response.json(
+				{ error: 'not_found', message: 'User not found' },
+				{ status: 404 },
+			)
+		}
+
+		if (name !== undefined) user.name = name
+		if (email !== undefined) user.email = email
+		if (theme !== undefined) user.theme = theme
+
+		await user.save()
 
 		return Response.json(user)
 	} catch (err: any) {

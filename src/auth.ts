@@ -1,6 +1,7 @@
 import NextAuth from 'next-auth'
 import SequelizeAdapter from '@auth/sequelize-adapter'
 import { sequelize } from './lib/models/config'
+import { User } from './lib/models/user'
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
 	providers: [
@@ -21,7 +22,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 			},
 		},
 	],
-	adapter: SequelizeAdapter(sequelize),
+	adapter: SequelizeAdapter(sequelize, {
+		models: { User: User as any },
+	}),
 	pages: {
 		signIn: '/',
 	},
