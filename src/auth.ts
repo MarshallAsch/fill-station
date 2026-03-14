@@ -25,6 +25,15 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 	adapter: SequelizeAdapter(sequelize, {
 		models: { User: User as any },
 	}),
+	callbacks: {
+		async session({ session, user }) {
+			const dbUser = await User.findByPk(user.id)
+			if (session.user && dbUser) {
+				session.user.role = dbUser.role
+			}
+			return session
+		},
+	},
 	pages: {
 		signIn: '/',
 	},
