@@ -1,14 +1,11 @@
 import { Cylinder } from '@/lib/models/cylinder'
 import { Fill } from '@/lib/models/fill'
-import { auth } from '@/auth'
+import { requireRole, isErrorResponse } from '@/lib/permissions'
 import { FillDto } from '@/types/fills'
 export async function GET() {
-	const session = await auth()
-	if (!session)
-		return Response.json(
-			{ error: 'auth', message: 'Must be logged in' },
-			{ status: 401 },
-		)
+	const result = await requireRole(['filler', 'inspector', 'admin'])
+	if (isErrorResponse(result)) return result
+
 	const fills = await Fill.findAll({
 		include: Cylinder,
 	})
@@ -16,12 +13,9 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
-	const session = await auth()
-	if (!session)
-		return Response.json(
-			{ error: 'auth', message: 'Must be logged in' },
-			{ status: 401 },
-		)
+	const result = await requireRole(['filler', 'inspector', 'admin'])
+	if (isErrorResponse(result)) return result
+
 	const fills: FillDto[] = await request.json()
 	let cylinders: Cylinder[] = []
 
@@ -57,4 +51,22 @@ export async function POST(request: Request) {
 			{ status: 400 },
 		)
 	}
+}
+
+export async function DELETE(request: Request) {
+	const result = await requireRole(['admin'])
+	if (isErrorResponse(result)) return result
+
+	const { id } = await request.json()
+	const fill = await Fill.findByPk(id)
+
+	if (!fill) {
+		return Response.json(
+			{ error: 'not_found', message: 'Fill not found' },
+			{ status: 404 },
+		)
+	}
+
+	await fill.destroy()
+	return Response.json({ message: 'Fill deleted' })
 }

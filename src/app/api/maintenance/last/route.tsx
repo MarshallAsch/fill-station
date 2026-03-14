@@ -1,17 +1,14 @@
 import { Maintenance } from '@/lib/models/maintenance'
 import { MAINTENANCE_TYPE } from '@/types/maintenance'
 import dayjs from 'dayjs'
-import { auth } from '@/auth'
+import { requireRole, isErrorResponse } from '@/lib/permissions'
 import customParseFormat from 'dayjs/plugin/customParseFormat'
 dayjs.extend(customParseFormat)
 
 export async function GET() {
-	const session = await auth()
-	if (!session)
-		return Response.json(
-			{ error: 'auth', message: 'Must be logged in' },
-			{ status: 401 },
-		)
+	const result = await requireRole(['filler', 'inspector', 'admin'])
+	if (isErrorResponse(result)) return result
+
 	const lookups = [
 		Maintenance.findOne({
 			where: {

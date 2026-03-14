@@ -1,16 +1,12 @@
 import { Cylinder } from '@/lib/models/cylinder'
 import dayjs from 'dayjs'
-import { auth } from '@/auth'
+import { requireRole, isErrorResponse } from '@/lib/permissions'
 import customParseFormat from 'dayjs/plugin/customParseFormat'
 dayjs.extend(customParseFormat)
 
 export async function GET(request: Request) {
-	const session = await auth()
-	if (!session)
-		return Response.json(
-			{ error: 'auth', message: 'Must be logged in' },
-			{ status: 401 },
-		)
+	const result = await requireRole(['filler', 'inspector', 'admin'])
+	if (isErrorResponse(result)) return result
 
 	const cylinders = await Cylinder.findAll()
 
@@ -18,12 +14,8 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
-	const session = await auth()
-	if (!session)
-		return Response.json(
-			{ error: 'auth', message: 'Must be logged in' },
-			{ status: 401 },
-		)
+	const result = await requireRole(['filler', 'inspector', 'admin'])
+	if (isErrorResponse(result)) return result
 
 	const {
 		serialNumber,
