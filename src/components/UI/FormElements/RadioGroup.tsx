@@ -35,7 +35,7 @@ const RadioGroup = ({
 					<label
 						key={option.value}
 						aria-label={option.label}
-						className='group relative flex items-center justify-center rounded-md border border-gray-300 bg-white p-3 has-checked:border-indigo-600 has-checked:bg-indigo-600 has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-indigo-600 has-disabled:border-gray-400 has-disabled:bg-gray-200 has-disabled:opacity-25 dark:border-gray-600 dark:bg-gray-800 dark:has-disabled:border-gray-500 dark:has-disabled:bg-gray-700'
+						className='group bg-background relative flex items-center justify-center rounded-md border border-gray-300 p-3 has-checked:border-indigo-600 has-checked:bg-indigo-600 has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-indigo-600 has-disabled:border-gray-400 has-disabled:bg-gray-200 has-disabled:opacity-25 dark:border-gray-600 dark:bg-gray-800 dark:has-disabled:border-gray-500 dark:has-disabled:bg-gray-700'
 					>
 						<input
 							name={name}

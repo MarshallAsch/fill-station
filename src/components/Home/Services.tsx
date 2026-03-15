@@ -63,7 +63,7 @@ const Services = () => {
 						actionIdx === actions.length - 1
 							? 'rounded-br-lg rounded-bl-lg sm:rounded-bl-none'
 							: '',
-						'group relative border-gray-200 bg-white p-6 focus-within:outline-2 focus-within:-outline-offset-2 focus-within:outline-indigo-600 sm:odd:not-nth-last-2:border-b sm:even:border-l sm:even:not-last:border-b dark:border-gray-700 dark:bg-gray-800',
+						'group dark:border-border border-border bg-background relative p-6 focus-within:outline-2 focus-within:-outline-offset-2 focus-within:outline-indigo-600 sm:odd:not-nth-last-2:border-b sm:even:border-l sm:even:not-last:border-b dark:bg-gray-800',
 					)}
 				>
 					<div>

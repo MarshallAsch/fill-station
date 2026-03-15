@@ -29,7 +29,7 @@ const ProfileForm = ({ user }: ProfileFormProps) => {
 	}
 
 	return (
-		<div className='w-full max-w-md rounded-lg border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-800'>
+		<div className='dark:border-border border-border bg-background w-full max-w-md rounded-lg border p-6 shadow-sm dark:bg-gray-800'>
 			{user.image && (
 				<div className='mb-6 flex justify-center'>
 					<img

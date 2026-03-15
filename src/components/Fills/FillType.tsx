@@ -71,7 +71,7 @@ const FillType = ({ index, item, client, cylinder }: FillTypeProps) => {
 					Assigned to
 				</Label>
 				<div className='relative mt-2'>
-					<ListboxButton className='grid w-full cursor-default grid-cols-1 rounded-md bg-white py-1.5 pr-2 pl-3 text-left text-gray-900 outline-1 -outline-offset-1 outline-gray-300 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-indigo-600 sm:text-sm/6 dark:bg-gray-900 dark:text-gray-100'>
+					<ListboxButton className='bg-background dark:bg-background grid w-full cursor-default grid-cols-1 rounded-md py-1.5 pr-2 pl-3 text-left text-gray-900 outline-1 -outline-offset-1 outline-gray-300 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-indigo-600 sm:text-sm/6 dark:text-gray-100'>
 						<span className='col-start-1 row-start-1 truncate pr-6'>
 							{selectedFill.label}
 						</span>
@@ -83,7 +83,7 @@ const FillType = ({ index, item, client, cylinder }: FillTypeProps) => {
 
 					<ListboxOptions
 						transition
-						className='absolute z-10 mt-1 max-h-60 w-40 overflow-auto rounded-md bg-white py-1 text-base shadow-lg outline-1 outline-black/5 data-leave:transition data-leave:duration-100 data-leave:ease-in data-closed:data-leave:opacity-0 sm:text-sm dark:bg-gray-900'
+						className='bg-background dark:bg-background absolute z-10 mt-1 max-h-60 w-40 overflow-auto rounded-md py-1 text-base shadow-lg outline-1 outline-black/5 data-leave:transition data-leave:duration-100 data-leave:ease-in data-closed:data-leave:opacity-0 sm:text-sm'
 					>
 						{options.map((option) => (
 							<ListboxOption

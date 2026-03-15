@@ -80,7 +80,7 @@ const FillsTable = ({ client }: FillsTableProps) => {
 										<th scope='col' className='py-3.5 pr-4 pl-3 sm:pr-6'></th>
 									</tr>
 								</thead>
-								<tbody className='h-full divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-900'>
+								<tbody className='bg-background dark:bg-background h-full divide-y divide-gray-200 dark:divide-gray-700'>
 									{paginatedFills.map((fill) => (
 										<FillsRow
 											disableDelete={fills.length === 1}

@@ -28,7 +28,7 @@ const RecentVisuals = ({ visuals }: { visuals: VisualHistory[] }) => {
 									</th>
 								</tr>
 							</thead>
-							<tbody className='divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-900'>
+							<tbody className='bg-background dark:bg-background divide-y divide-gray-200 dark:divide-gray-700'>
 								{visuals.map((visual) => (
 									<tr
 										key={visual.id}

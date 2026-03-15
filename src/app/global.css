@@ -1,3 +1,36 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
 @custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+	--background: #ffffff;
+	--button: #4f39f6;
+	--light-text: #6a7282;
+	--text: #212938;
+	--white-text: #ffffff;
+	--border: #d1d5dc;
+}
+
+.dark {
+	--background: #101828;
+	--button: #4f39f6;
+	--light-text: #99a1af;
+	--text: #e2e4e7;
+	--white-text: #ffffff;
+	--border: #4a5565;
+}
+
+@theme {
+	--color-background: var(--background);
+	--color-button: var(--button);
+	--color-light-text: var(--light-text);
+	--color-text: var(--text);
+	--color-white-text: var(--white-text);
+	--color-border: var(--border);
+}
+
+@layer base {
+	body {
+		@apply transition-colors duration-300;
+	}
+}

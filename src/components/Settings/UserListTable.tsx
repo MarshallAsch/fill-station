@@ -36,7 +36,7 @@ const UserListTable = ({ users }: { users: Profile[] }) => {
 									</th>
 								</tr>
 							</thead>
-							<tbody className='divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-900'>
+							<tbody className='bg-background dark:bg-background divide-y divide-gray-200 dark:divide-gray-700'>
 								{users.map((user) => (
 									<UserRow key={user.id} user={user} />
 								))}

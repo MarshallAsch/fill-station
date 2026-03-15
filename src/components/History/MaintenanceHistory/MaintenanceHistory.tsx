@@ -113,7 +113,7 @@ const MaintenanceHistory = () => {
 						.map(([key, item]) => (
 							<div
 								key={key}
-								className='flex flex-col items-center bg-gray-400/5 p-8 dark:bg-gray-600/10'
+								className='dark:bg-background flex flex-col items-center bg-gray-400/5 p-8'
 							>
 								<dt className='text-3xl font-semibold text-black dark:text-gray-100'>
 									<Tooltip message={item.date.format('DD/MM/YYYY')}>

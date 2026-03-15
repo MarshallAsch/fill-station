@@ -18,10 +18,10 @@ const Navbar = () => {
 	const navigation = getNavItems(role)
 
 	return (
-		<header className='sticky top-0 z-9999 bg-white dark:bg-gray-900'>
+		<header className='bg-background dark:bg-background sticky top-0 z-9999'>
 			<nav
 				aria-label='Global'
-				className='mx-auto flex max-w-7xl items-center justify-between bg-white p-6 lg:px-8 dark:bg-gray-900'
+				className='bg-background dark:bg-background mx-auto flex max-w-7xl items-center justify-between p-6 lg:px-8'
 			>
 				<Link href='/' className='-m-1.5 p-1.5'>
 					<span className='sr-only'>Marshalls Dive Station</span>
@@ -81,7 +81,7 @@ const Navbar = () => {
 				className='lg:hidden'
 			>
 				<div className='fixed inset-0 z-50' />
-				<DialogPanel className='fixed inset-y-0 right-0 z-50 w-full overflow-y-auto bg-white p-6 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10 dark:bg-gray-800'>
+				<DialogPanel className='bg-background fixed inset-y-0 right-0 z-50 w-full overflow-y-auto p-6 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10 dark:bg-gray-800'>
 					<div className='flex items-center justify-between'>
 						<a href='#' className='-m-1.5 p-1.5'>
 							<span className='sr-only'>Marshalls Dive Station</span>
@@ -116,7 +116,7 @@ const Navbar = () => {
 								</Link>
 								<Link
 									href='/contact'
-									className='text-sm/6 font-semibold text-gray-900'
+									className='text-sm/6 font-semibold text-gray-900 dark:text-gray-100'
 								>
 									Contact
 								</Link>

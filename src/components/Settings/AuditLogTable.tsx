@@ -34,7 +34,7 @@ const AuditLogTable = ({ entries }: { entries: AuditEntry[] }) => {
 									</th>
 								</tr>
 							</thead>
-							<tbody className='divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-900'>
+							<tbody className='bg-background dark:bg-background divide-y divide-gray-200 dark:divide-gray-700'>
 								{entries.map((entry) => (
 									<tr
 										key={entry.id}

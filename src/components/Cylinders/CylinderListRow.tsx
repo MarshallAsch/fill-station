@@ -42,7 +42,7 @@ const CylinderListRow = ({
 				>
 					<Link
 						href={`/clients/${cylinder.ownerId}`}
-						className='flex cursor-pointer flex-col items-center justify-between gap-2 bg-gray-400/5 p-6 transition hover:bg-gray-400/10 sm:p-10 dark:bg-gray-600/10 dark:hover:bg-gray-600/20'
+						className='dark:bg-background flex cursor-pointer flex-col items-center justify-between gap-2 bg-gray-400/5 p-6 transition hover:bg-gray-400/10 sm:p-10 dark:hover:bg-gray-600/20'
 					>
 						{cylinder.ownerId}
 						<InformationCircleIcon />
@@ -81,7 +81,7 @@ const CylinderListRow = ({
 				) : (
 					<Link
 						href={`/visual?client=${cylinder.ownerId}&cylinder=${cylinder.id}`}
-						className='flex cursor-pointer flex-col items-center justify-between gap-2 bg-gray-400/5 p-6 transition hover:bg-gray-400/10 sm:p-10 dark:bg-gray-600/10 dark:hover:bg-gray-600/20'
+						className='dark:bg-background flex cursor-pointer flex-col items-center justify-between gap-2 bg-gray-400/5 p-6 transition hover:bg-gray-400/10 sm:p-10 dark:hover:bg-gray-600/20'
 					>
 						Inspect now
 					</Link>

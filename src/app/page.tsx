@@ -35,21 +35,21 @@ function Home() {
 				<div className='-mx-6 grid grid-cols-2 gap-0.5 overflow-hidden sm:mx-0 sm:rounded-2xl md:grid-cols-3'>
 					<Link
 						href='fills'
-						className='flex cursor-pointer flex-col items-center justify-between gap-2 bg-gray-400/5 p-6 transition hover:bg-gray-400/10 sm:p-10 dark:bg-gray-600/10 dark:hover:bg-gray-600/20'
+						className='dark:bg-background flex cursor-pointer flex-col items-center justify-between gap-2 bg-gray-400/5 p-6 transition hover:bg-gray-400/10 sm:p-10 dark:hover:bg-gray-600/20'
 					>
 						<AirTank />
 						<p>Fills</p>
 					</Link>
 					<Link
 						href='visual'
-						className='flex cursor-pointer flex-col items-center justify-between gap-2 bg-gray-400/5 p-6 transition hover:bg-gray-400/10 sm:p-10 dark:bg-gray-600/10 dark:hover:bg-gray-600/20'
+						className='dark:bg-background flex cursor-pointer flex-col items-center justify-between gap-2 bg-gray-400/5 p-6 transition hover:bg-gray-400/10 sm:p-10 dark:hover:bg-gray-600/20'
 					>
 						<EyeIcon />
 						<p>Visual</p>
 					</Link>
 					<Link
 						href='history'
-						className='flex cursor-pointer flex-col items-center justify-between gap-2 bg-gray-400/5 p-6 transition hover:bg-gray-400/10 sm:p-10 dark:bg-gray-600/10 dark:hover:bg-gray-600/20'
+						className='dark:bg-background flex cursor-pointer flex-col items-center justify-between gap-2 bg-gray-400/5 p-6 transition hover:bg-gray-400/10 sm:p-10 dark:hover:bg-gray-600/20'
 					>
 						<TableCellsIcon />
 						<p>History</p>

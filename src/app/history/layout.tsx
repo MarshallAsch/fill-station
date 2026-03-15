@@ -38,11 +38,11 @@ const LayoutContent = ({ children }: { children: ReactNode }) => {
 		: TAB.FILLS
 
 	return (
-		<div className='flex grow border-t border-gray-200 dark:border-gray-700'>
+		<div className='dark:border-border border-border flex grow border-t'>
 			{/* Static sidebar for desktop */}
 			<div className='fixed inset-y-0 z-50 flex w-72 flex-col'>
 				{/* Sidebar component, swap this element with another sidebar if you like */}
-				<div className='mt-24 flex grow flex-col gap-y-5 overflow-y-auto border-t border-r border-gray-200 bg-white px-6 dark:border-gray-700 dark:bg-gray-900'>
+				<div className='dark:border-border border-border bg-background dark:bg-background mt-24 flex grow flex-col gap-y-5 overflow-y-auto border-t border-r px-6'>
 					<nav className='flex flex-1 flex-col'>
 						<ul role='list' className='flex flex-1 flex-col gap-y-7'>
 							<li>

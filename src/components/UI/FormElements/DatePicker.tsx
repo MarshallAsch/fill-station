@@ -80,7 +80,7 @@ export default function DatePicker({
 			<button
 				type='button'
 				onClick={() => !readOnly && setOpen((o) => !o)}
-				className='flex w-full items-center justify-between rounded-lg border border-gray-300 bg-white px-3 py-2 text-left text-sm shadow-sm hover:border-gray-400 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 dark:hover:border-gray-500'
+				className='bg-background flex w-full items-center justify-between rounded-lg border border-gray-300 px-3 py-2 text-left text-sm shadow-sm hover:border-gray-400 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 dark:hover:border-gray-500'
 			>
 				{mode === 'month'
 					? (value || selectedDate).format('MMMM YYYY')
@@ -96,7 +96,7 @@ export default function DatePicker({
 			)}
 
 			{open && (
-				<div className='absolute z-50 mt-2 w-72 rounded-xl border border-gray-200 bg-white p-4 shadow-lg dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100'>
+				<div className='dark:border-border border-border bg-background absolute z-50 mt-2 w-72 rounded-xl border p-4 shadow-lg dark:bg-gray-800 dark:text-gray-100'>
 					{/* Header */}
 					<div className='mb-4 flex items-center justify-between'>
 						<button
