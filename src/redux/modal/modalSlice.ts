@@ -39,7 +39,10 @@ const modalSlice = createSlice({
 		updateEditClientModal(state, action: PayloadAction<Client | undefined>) {
 			state.editClient = action.payload
 		},
-		updateEditCylinderModal(state, action: PayloadAction<Cylinder | undefined>) {
+		updateEditCylinderModal(
+			state,
+			action: PayloadAction<Cylinder | undefined>,
+		) {
 			state.editCylinder = action.payload
 		},
 	},

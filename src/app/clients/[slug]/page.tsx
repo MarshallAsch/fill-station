@@ -23,7 +23,7 @@ export default async function ClientDetails({
 		<div className='max-w-7xl'>
 			<div className='flex flex-col overflow-auto'>
 				<div className='flex flex-col items-center justify-center gap-3 py-6'>
-					<h1 className='text-4xl font-semibold text-gray-900'>
+					<h1 className='text-text text-4xl font-semibold'>
 						Client Details: {client?.name}
 					</h1>
 				</div>
@@ -44,7 +44,7 @@ export default async function ClientDetails({
 					</div>
 				</FormGroup>
 				<div className='flex flex-col items-center justify-center gap-3 py-6'>
-					<h1 className='text-2xl font-semibold text-gray-900'>Cylinders</h1>
+					<h1 className='text-text text-2xl font-semibold'>Cylinders</h1>
 				</div>
 
 				<CylinderListTable cylinders={cylinders} />

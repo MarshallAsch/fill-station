@@ -26,16 +26,14 @@ const RadioGroup = ({
 	return (
 		<fieldset className='w-full'>
 			<div className='flex items-center justify-between'>
-				<div className='text-sm/6 font-medium text-gray-900 dark:text-gray-100'>
-					{title}
-				</div>
+				<div className='text-text text-sm/6 font-medium'>{title}</div>
 			</div>
 			<div className='mt-2 grid grid-cols-3 gap-3 sm:grid-cols-4'>
 				{options.map((option) => (
 					<label
 						key={option.value}
 						aria-label={option.label}
-						className='group bg-background relative flex items-center justify-center rounded-md border border-gray-300 p-3 has-checked:border-indigo-600 has-checked:bg-indigo-600 has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-indigo-600 has-disabled:border-gray-400 has-disabled:bg-gray-200 has-disabled:opacity-25 dark:border-gray-600 dark:bg-gray-800 dark:has-disabled:border-gray-500 dark:has-disabled:bg-gray-700'
+						className='group bg-background border-border has-checked:border-accent has-checked:bg-accent has-focus-visible:outline-accent has-disabled:border-disabled has-disabled:bg-disabled relative flex items-center justify-center rounded-md border p-3 has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-disabled:opacity-25'
 					>
 						<input
 							name={name}
@@ -51,17 +49,13 @@ const RadioGroup = ({
 							}
 							className='absolute inset-0 cursor-pointer appearance-none focus:outline-none disabled:cursor-not-allowed'
 						/>
-						<span className='text-sm font-medium text-gray-900 group-has-checked:text-white dark:text-gray-100'>
+						<span className='text-text text-sm font-medium group-has-checked:text-white'>
 							{option.label}
 						</span>
 					</label>
 				))}
 			</div>
-			{description && (
-				<p className='text-xs text-gray-600 dark:text-gray-400'>
-					{description}
-				</p>
-			)}
+			{description && <p className='text-light-text text-xs'>{description}</p>}
 		</fieldset>
 	)
 }

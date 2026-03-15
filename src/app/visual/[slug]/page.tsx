@@ -41,18 +41,18 @@ export default async function TankVisual({
 		<div className='max-w-7xl'>
 			<div className='flex flex-col overflow-auto'>
 				<div className='flex flex-col items-center justify-center gap-3 py-6'>
-					<h1 className='text-4xl font-semibold tracking-tight text-balance text-gray-900 sm:text-5xl'>
+					<h1 className='text-text text-4xl font-semibold tracking-tight text-balance sm:text-5xl'>
 						<span className='flex items-center justify-center gap-2'>
 							{getBadge()}
 							<span>{`Vis Results - ${vis.Cylinder?.serialNumber}`}</span>
 						</span>
 					</h1>
 					<div className='flex flex-col items-center justify-center gap-1'>
-						<p className='mt-2 text-lg/8 text-gray-600'>
+						<p className='text-light-text mt-2 text-lg/8'>
 							Date of Inspection: {dayjs(vis.date).format('DD/MM/YYYY')} #
 							{vis.id}
 						</p>
-						<p className='text-lg/8 text-gray-600'>
+						<p className='text-light-text text-lg/8'>
 							Inspected by: {vis.inspectorId}
 						</p>
 					</div>

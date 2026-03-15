@@ -22,9 +22,7 @@ export default async function Dashboard() {
 		return (
 			<div className='max-w-7xl'>
 				<div className='my-4 flex flex-col items-center justify-center gap-6'>
-					<h1 className='text-3xl font-semibold text-gray-900 dark:text-gray-100'>
-						Dashboard
-					</h1>
+					<h1 className='text-text text-3xl font-semibold'>Dashboard</h1>
 					<NoClientMessage />
 				</div>
 			</div>
@@ -55,26 +53,20 @@ export default async function Dashboard() {
 	return (
 		<div className='max-w-7xl'>
 			<div className='my-4 flex flex-col items-center justify-center gap-6'>
-				<h1 className='text-3xl font-semibold text-gray-900 dark:text-gray-100'>
-					Dashboard
-				</h1>
+				<h1 className='text-text text-3xl font-semibold'>Dashboard</h1>
 
 				<div className='w-full'>
-					<h2 className='mb-2 text-xl font-semibold text-gray-900 dark:text-gray-100'>
-						Cylinders
-					</h2>
+					<h2 className='text-text mb-2 text-xl font-semibold'>Cylinders</h2>
 					<CylindersList cylinders={JSON.parse(JSON.stringify(cylinders))} />
 				</div>
 
 				<div className='w-full'>
-					<h2 className='mb-2 text-xl font-semibold text-gray-900 dark:text-gray-100'>
-						Recent Fills
-					</h2>
+					<h2 className='text-text mb-2 text-xl font-semibold'>Recent Fills</h2>
 					<RecentFills fills={JSON.parse(JSON.stringify(fills))} />
 				</div>
 
 				<div className='w-full'>
-					<h2 className='mb-2 text-xl font-semibold text-gray-900 dark:text-gray-100'>
+					<h2 className='text-text mb-2 text-xl font-semibold'>
 						Recent Visual Inspections
 					</h2>
 					<RecentVisuals visuals={JSON.parse(JSON.stringify(visuals))} />

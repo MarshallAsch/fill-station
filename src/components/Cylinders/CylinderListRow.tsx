@@ -31,25 +31,25 @@ const CylinderListRow = ({
 	const nextVis = dayjs(cylinder.lastVis).add(1, 'year')
 
 	return (
-		<tr key={cylinder.id} className='hover:bg-gray-100 dark:hover:bg-gray-800'>
-			<td className='py-4 pr-3 pl-4 text-center text-sm font-medium whitespace-nowrap text-gray-900 sm:pl-6 dark:text-gray-100'>
+		<tr key={cylinder.id} className='hover:bg-hover'>
+			<td className='text-text py-4 pr-3 pl-4 text-center text-sm font-medium whitespace-nowrap sm:pl-6'>
 				{cylinder.serialNumber}
 			</td>
 			{showOwner && (
 				<th
 					scope='col'
-					className='py-3.5 pr-3 pl-4 text-center text-sm font-semibold text-gray-900 sm:pl-6 dark:text-gray-100'
+					className='text-text py-3.5 pr-3 pl-4 text-center text-sm font-semibold sm:pl-6'
 				>
 					<Link
 						href={`/clients/${cylinder.ownerId}`}
-						className='dark:bg-background flex cursor-pointer flex-col items-center justify-between gap-2 bg-gray-400/5 p-6 transition hover:bg-gray-400/10 sm:p-10 dark:hover:bg-gray-600/20'
+						className='bg-card-hover hover:bg-hover flex cursor-pointer flex-col items-center justify-between gap-2 p-6 transition sm:p-10'
 					>
 						{cylinder.ownerId}
 						<InformationCircleIcon />
 					</Link>
 				</th>
 			)}
-			<td className='py-4 pr-3 pl-4 text-center text-sm font-medium whitespace-nowrap text-gray-900 sm:pl-6 dark:text-gray-100'>
+			<td className='text-text py-4 pr-3 pl-4 text-center text-sm font-medium whitespace-nowrap sm:pl-6'>
 				<span className='flex w-full justify-center'>
 					{cylinder.oxygenClean ? (
 						<CheckCircleIcon className='h-10' />
@@ -58,36 +58,36 @@ const CylinderListRow = ({
 					)}
 				</span>
 			</td>
-			<td className='px-3 py-4 text-center text-sm whitespace-nowrap text-gray-500 dark:text-gray-400'>
+			<td className='text-light-text px-3 py-4 text-center text-sm whitespace-nowrap'>
 				{dayjs(cylinder.lastHydro).format('MM/YYYY')}
 			</td>
-			<td className='px-3 py-4 text-center text-sm whitespace-nowrap text-gray-500 dark:text-gray-400'>
+			<td className='text-light-text px-3 py-4 text-center text-sm whitespace-nowrap'>
 				{dayjs(cylinder.lastVis).format('MM/YYYY')}
 			</td>
-			<td className='px-3 py-4 text-center text-sm whitespace-nowrap text-gray-500 dark:text-gray-400'>
+			<td className='text-light-text px-3 py-4 text-center text-sm whitespace-nowrap'>
 				<Tooltip message={nextHydro.format('MM/YYYY')}>
 					{nextHydro.isBefore(dayjs()) ? 'now' : nextHydro.fromNow()}
 				</Tooltip>
 			</td>
-			<td className='px-3 py-4 text-center text-sm whitespace-nowrap text-gray-500 dark:text-gray-400'>
+			<td className='text-light-text px-3 py-4 text-center text-sm whitespace-nowrap'>
 				<Tooltip message={nextVis.format('MM/YYYY')}>
 					{nextVis.isBefore(dayjs()) ? 'now' : nextVis.fromNow()}
 				</Tooltip>
 			</td>
 
-			<td className='px-3 py-4 text-center text-sm whitespace-nowrap text-gray-500 dark:text-gray-400'>
+			<td className='text-light-text px-3 py-4 text-center text-sm whitespace-nowrap'>
 				{nextHydro.isBefore(dayjs()) ? (
 					'Needs Hydro First'
 				) : (
 					<Link
 						href={`/visual?client=${cylinder.ownerId}&cylinder=${cylinder.id}`}
-						className='dark:bg-background flex cursor-pointer flex-col items-center justify-between gap-2 bg-gray-400/5 p-6 transition hover:bg-gray-400/10 sm:p-10 dark:hover:bg-gray-600/20'
+						className='bg-card-hover hover:bg-hover flex cursor-pointer flex-col items-center justify-between gap-2 p-6 transition sm:p-10'
 					>
 						Inspect now
 					</Link>
 				)}
 			</td>
-			<td className='px-3 py-4 text-center text-sm whitespace-nowrap text-gray-500 dark:text-gray-400'>
+			<td className='text-light-text px-3 py-4 text-center text-sm whitespace-nowrap'>
 				<Button
 					onClick={() =>
 						dispatch(updateEditCylinderModal(cylinder as Cylinder))

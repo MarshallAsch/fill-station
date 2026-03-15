@@ -80,7 +80,7 @@ export default function DatePicker({
 			<button
 				type='button'
 				onClick={() => !readOnly && setOpen((o) => !o)}
-				className='bg-background flex w-full items-center justify-between rounded-lg border border-gray-300 px-3 py-2 text-left text-sm shadow-sm hover:border-gray-400 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 dark:hover:border-gray-500'
+				className='bg-background border-border hover:border-border flex w-full items-center justify-between rounded-lg border px-3 py-2 text-left text-sm shadow-sm'
 			>
 				{mode === 'month'
 					? (value || selectedDate).format('MMMM YYYY')
@@ -90,19 +90,17 @@ export default function DatePicker({
 				</span>
 			</button>
 			{description && (
-				<p className='-mt-2 text-xs text-gray-500 dark:text-gray-400'>
-					{description}
-				</p>
+				<p className='text-light-text -mt-2 text-xs'>{description}</p>
 			)}
 
 			{open && (
-				<div className='dark:border-border border-border bg-background absolute z-50 mt-2 w-72 rounded-xl border p-4 shadow-lg dark:bg-gray-800 dark:text-gray-100'>
+				<div className='border-border bg-background text-text absolute z-50 mt-2 w-72 rounded-xl border p-4 shadow-lg'>
 					{/* Header */}
 					<div className='mb-4 flex items-center justify-between'>
 						<button
 							type='button'
 							onClick={() => setCurrentMonth((m) => m.subtract(1, 'year'))}
-							className='rounded-md px-2 py-1 text-sm hover:bg-gray-100 dark:hover:bg-gray-700'
+							className='hover:bg-hover rounded-md px-2 py-1 text-sm'
 						>
 							<ChevronLeftIcon className='h-2 w-2' />
 						</button>
@@ -110,7 +108,7 @@ export default function DatePicker({
 						<button
 							type='button'
 							onClick={() => setCurrentMonth((m) => m.add(1, 'year'))}
-							className='rounded-md px-2 py-1 text-sm hover:bg-gray-100 dark:hover:bg-gray-700'
+							className='hover:bg-hover rounded-md px-2 py-1 text-sm'
 						>
 							<ChevronRightIcon className='h-2 w-2' />
 						</button>
@@ -121,7 +119,7 @@ export default function DatePicker({
 							<button
 								type='button'
 								onClick={() => setCurrentMonth((m) => m.subtract(1, 'month'))}
-								className='rounded-md px-2 py-1 text-sm hover:bg-gray-100 dark:hover:bg-gray-700'
+								className='hover:bg-hover rounded-md px-2 py-1 text-sm'
 							>
 								<ChevronLeftIcon className='h-2 w-2' />
 							</button>
@@ -129,7 +127,7 @@ export default function DatePicker({
 							<button
 								type='button'
 								onClick={() => setCurrentMonth((m) => m.add(1, 'month'))}
-								className='rounded-md px-2 py-1 text-sm hover:bg-gray-100 dark:hover:bg-gray-700'
+								className='hover:bg-hover rounded-md px-2 py-1 text-sm'
 							>
 								<ChevronRightIcon className='h-2 w-2' />
 							</button>
@@ -148,7 +146,7 @@ export default function DatePicker({
 										className={`\ rounded-lg px-2 py-2 text-sm transition ${
 											isSelected(date)
 												? 'bg-blue-600 text-white'
-												: 'hover:bg-gray-100 dark:hover:bg-gray-700'
+												: 'hover:bg-hover'
 										}`}
 									>
 										{date.format('MMM')}
@@ -161,7 +159,7 @@ export default function DatePicker({
 					{mode === 'date' && (
 						<>
 							{/* Weekdays */}
-							<div className='mb-2 grid grid-cols-7 text-center text-xs font-medium text-gray-500 dark:text-gray-400'>
+							<div className='text-light-text mb-2 grid grid-cols-7 text-center text-xs font-medium'>
 								{['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((d) => (
 									<div key={d}>{d}</div>
 								))}
@@ -181,7 +179,7 @@ export default function DatePicker({
 												: `\ h-9 rounded-lg text-sm transition ${
 														isSelected(date)
 															? 'bg-blue-600 text-white'
-															: 'hover:bg-gray-100 dark:hover:bg-gray-700'
+															: 'hover:bg-hover'
 													} \ ${
 														date.isSame(today, 'day') && !isSelected(date)
 															? 'border border-blue-500'

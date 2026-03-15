@@ -12,10 +12,8 @@ export default async function Profile() {
 		return (
 			<div className='max-w-7xl'>
 				<div className='my-4 flex flex-col items-center justify-center'>
-					<h1 className='text-3xl font-semibold text-gray-900 dark:text-gray-100'>
-						Profile
-					</h1>
-					<p className='mt-4 text-gray-500 dark:text-gray-400'>
+					<h1 className='text-text text-3xl font-semibold'>Profile</h1>
+					<p className='text-light-text mt-4'>
 						You must be logged in to view your profile.
 					</p>
 				</div>
@@ -31,12 +29,8 @@ export default async function Profile() {
 		return (
 			<div className='max-w-7xl'>
 				<div className='my-4 flex flex-col items-center justify-center'>
-					<h1 className='text-3xl font-semibold text-gray-900 dark:text-gray-100'>
-						Profile
-					</h1>
-					<p className='mt-4 text-gray-500 dark:text-gray-400'>
-						User not found.
-					</p>
+					<h1 className='text-text text-3xl font-semibold'>Profile</h1>
+					<p className='text-light-text mt-4'>User not found.</p>
 				</div>
 			</div>
 		)
@@ -57,14 +51,10 @@ export default async function Profile() {
 	return (
 		<div className='max-w-7xl'>
 			<div className='my-4 flex flex-col items-center justify-center gap-6'>
-				<h1 className='text-3xl font-semibold text-gray-900 dark:text-gray-100'>
-					Profile
-				</h1>
+				<h1 className='text-text text-3xl font-semibold'>Profile</h1>
 				<ProfileForm user={user} />
 
-				<h2 className='text-2xl font-semibold text-gray-900 dark:text-gray-100'>
-					Settings
-				</h2>
+				<h2 className='text-text text-2xl font-semibold'>Settings</h2>
 				<ThemeSettings initialTheme={user.theme} />
 			</div>
 		</div>

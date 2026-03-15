@@ -12,18 +12,18 @@ function getFillMix(fill: FillHistory): string {
 }
 const HistoryRow = ({ fill }: { fill: FillHistory }) => {
 	return (
-		<tr key={fill.id} className='hover:bg-gray-100 dark:hover:bg-gray-800'>
-			<td className='py-4 pr-3 pl-4 text-center text-sm font-medium whitespace-nowrap text-gray-900 sm:pl-6 dark:text-gray-100'>
+		<tr key={fill.id} className='hover:bg-hover'>
+			<td className='text-text py-4 pr-3 pl-4 text-center text-sm font-medium whitespace-nowrap sm:pl-6'>
 				{dayjs(fill.date).format('MMM D, YYYY')}
 			</td>
 
-			<td className='px-3 py-4 text-center text-sm whitespace-nowrap text-gray-500 dark:text-gray-400'>
+			<td className='text-light-text px-3 py-4 text-center text-sm whitespace-nowrap'>
 				{getFillMix(fill)}
 			</td>
-			<td className='px-3 py-4 text-center text-sm whitespace-nowrap text-gray-500 dark:text-gray-400'>
+			<td className='text-light-text px-3 py-4 text-center text-sm whitespace-nowrap'>
 				{fill.startPressure}
 			</td>
-			<td className='px-3 py-4 text-center text-sm whitespace-nowrap text-gray-500 dark:text-gray-400'>
+			<td className='text-light-text px-3 py-4 text-center text-sm whitespace-nowrap'>
 				{fill.endPressure}
 			</td>
 			<td className='py-4 pr-4 pl-3 text-center text-sm font-medium whitespace-nowrap sm:pr-6'>

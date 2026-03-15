@@ -15,17 +15,48 @@ export const PERMISSIONS = {
 		'/settings': ['admin'] as Role[],
 	},
 	api: {
-		'/api/fills': { GET: ['filler', 'inspector', 'admin'], POST: ['filler', 'inspector', 'admin'], DELETE: ['admin'] },
-		'/api/clients': { GET: ['filler', 'inspector', 'admin'], POST: ['filler', 'inspector', 'admin'] },
-		'/api/clients/:clientId': { GET: ['filler', 'inspector', 'admin'], PUT: ['filler', 'inspector', 'admin'], DELETE: ['admin'] },
-		'/api/clients/:clientId/cylinders': { GET: ['filler', 'inspector', 'admin'], POST: ['filler', 'inspector', 'admin'] },
-		'/api/cylinders': { GET: ['filler', 'inspector', 'admin'], POST: ['filler', 'inspector', 'admin'] },
-		'/api/cylinders/:cylinderId': { PUT: ['filler', 'inspector', 'admin'], DELETE: ['admin'] },
-		'/api/cylinders/:cylinderId/fills': { GET: ['filler', 'inspector', 'admin'], POST: ['filler', 'inspector', 'admin'] },
-		'/api/cylinders/:cylinderId/visuals': { GET: ['filler', 'inspector', 'admin'], POST: ['inspector', 'admin'], DELETE: ['admin'] },
+		'/api/fills': {
+			GET: ['filler', 'inspector', 'admin'],
+			POST: ['filler', 'inspector', 'admin'],
+			DELETE: ['admin'],
+		},
+		'/api/clients': {
+			GET: ['filler', 'inspector', 'admin'],
+			POST: ['filler', 'inspector', 'admin'],
+		},
+		'/api/clients/:clientId': {
+			GET: ['filler', 'inspector', 'admin'],
+			PUT: ['filler', 'inspector', 'admin'],
+			DELETE: ['admin'],
+		},
+		'/api/clients/:clientId/cylinders': {
+			GET: ['filler', 'inspector', 'admin'],
+			POST: ['filler', 'inspector', 'admin'],
+		},
+		'/api/cylinders': {
+			GET: ['filler', 'inspector', 'admin'],
+			POST: ['filler', 'inspector', 'admin'],
+		},
+		'/api/cylinders/:cylinderId': {
+			PUT: ['filler', 'inspector', 'admin'],
+			DELETE: ['admin'],
+		},
+		'/api/cylinders/:cylinderId/fills': {
+			GET: ['filler', 'inspector', 'admin'],
+			POST: ['filler', 'inspector', 'admin'],
+		},
+		'/api/cylinders/:cylinderId/visuals': {
+			GET: ['filler', 'inspector', 'admin'],
+			POST: ['inspector', 'admin'],
+			DELETE: ['admin'],
+		},
 		'/api/visuals': { GET: ['filler', 'inspector', 'admin'] },
 		'/api/inspectors': { GET: ['filler', 'inspector', 'admin'] },
-		'/api/maintenance': { GET: ['filler', 'inspector', 'admin'], POST: ['filler', 'inspector', 'admin'], DELETE: ['admin'] },
+		'/api/maintenance': {
+			GET: ['filler', 'inspector', 'admin'],
+			POST: ['filler', 'inspector', 'admin'],
+			DELETE: ['admin'],
+		},
 		'/api/maintenance/last': { GET: ['filler', 'inspector', 'admin'] },
 		'/api/users': { GET: ['admin'] },
 		'/api/users/:userId': { PUT: ['admin'] },
@@ -55,10 +86,7 @@ const apiPatterns = Object.keys(PERMISSIONS.api).sort(
 	(a, b) => b.split('/').length - a.split('/').length,
 )
 
-export function matchApiRoute(
-	pathname: string,
-	method: string,
-): Role[] | null {
+export function matchApiRoute(pathname: string, method: string): Role[] | null {
 	for (const pattern of apiPatterns) {
 		const patternParts = pattern.split('/')
 		const pathParts = pathname.split('/')

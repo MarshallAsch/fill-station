@@ -23,7 +23,7 @@ const Checkbox = ({
 						name={name}
 						type='checkbox'
 						aria-describedby='comments-description'
-						className='bg-background col-start-1 row-start-1 appearance-none rounded-sm border border-gray-300 checked:border-indigo-600 checked:bg-indigo-600 indeterminate:border-indigo-600 indeterminate:bg-indigo-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:border-gray-300 disabled:bg-gray-100 disabled:checked:bg-gray-100 dark:border-gray-600 dark:bg-gray-800 forced-colors:appearance-auto'
+						className='bg-background border-border checked:border-accent checked:bg-accent indeterminate:border-accent indeterminate:bg-accent focus-visible:outline-accent disabled:border-border disabled:bg-disabled disabled:checked:bg-disabled col-start-1 row-start-1 appearance-none rounded-sm border focus-visible:outline-2 focus-visible:outline-offset-2 forced-colors:appearance-auto'
 					/>
 					<svg
 						fill='none'
@@ -48,16 +48,10 @@ const Checkbox = ({
 				</div>
 			</div>
 			<div className='text-sm/6'>
-				<label
-					htmlFor={id}
-					className='font-medium text-gray-900 dark:text-gray-100'
-				>
+				<label htmlFor={id} className='text-text font-medium'>
 					{title}
 				</label>
-				<p
-					id='comments-description'
-					className='text-gray-500 dark:text-gray-400'
-				>
+				<p id='comments-description' className='text-light-text'>
 					{description}
 				</p>
 			</div>

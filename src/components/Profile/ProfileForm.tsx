@@ -29,7 +29,7 @@ const ProfileForm = ({ user }: ProfileFormProps) => {
 	}
 
 	return (
-		<div className='dark:border-border border-border bg-background w-full max-w-md rounded-lg border p-6 shadow-sm dark:bg-gray-800'>
+		<div className='border-border bg-background w-full max-w-md rounded-lg border p-6 shadow-sm'>
 			{user.image && (
 				<div className='mb-6 flex justify-center'>
 					<img
@@ -45,7 +45,7 @@ const ProfileForm = ({ user }: ProfileFormProps) => {
 					<div>
 						<label
 							htmlFor='profile-name'
-							className='mb-1 block text-sm font-medium text-gray-500 dark:text-gray-400'
+							className='text-light-text mb-1 block text-sm font-medium'
 						>
 							Name
 						</label>
@@ -62,7 +62,7 @@ const ProfileForm = ({ user }: ProfileFormProps) => {
 					<div>
 						<label
 							htmlFor='profile-email'
-							className='mb-1 block text-sm font-medium text-gray-500 dark:text-gray-400'
+							className='text-light-text mb-1 block text-sm font-medium'
 						>
 							Email
 						</label>
@@ -78,19 +78,17 @@ const ProfileForm = ({ user }: ProfileFormProps) => {
 					</div>
 					<Tooltip message='Can only be changed by an admin'>
 						<div>
-							<label className='mb-1 block text-sm font-medium text-gray-500 dark:text-gray-400'>
+							<label className='text-light-text mb-1 block text-sm font-medium'>
 								Role
 							</label>
-							<p className='px-3 py-1.5 text-sm text-gray-500 dark:text-gray-400'>
-								{user.role}
-							</p>
+							<p className='text-light-text px-3 py-1.5 text-sm'>{user.role}</p>
 						</div>
 					</Tooltip>
 					<div>
-						<label className='mb-1 block text-sm font-medium text-gray-500 dark:text-gray-400'>
+						<label className='text-light-text mb-1 block text-sm font-medium'>
 							Linked client
 						</label>
-						<p className='px-3 py-1.5 text-sm text-gray-500 dark:text-gray-400'>
+						<p className='text-light-text px-3 py-1.5 text-sm'>
 							{user.clientName ?? '—'}
 						</p>
 					</div>
@@ -113,38 +111,32 @@ const ProfileForm = ({ user }: ProfileFormProps) => {
 				</div>
 			) : (
 				<>
-					<dl className='divide-y divide-gray-100 dark:divide-gray-700'>
+					<dl className='divide-divider divide-y'>
 						<div className='px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4'>
-							<dt className='text-sm font-medium text-gray-500 dark:text-gray-400'>
-								Name
-							</dt>
-							<dd className='mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0 dark:text-gray-100'>
+							<dt className='text-light-text text-sm font-medium'>Name</dt>
+							<dd className='text-text mt-1 text-sm sm:col-span-2 sm:mt-0'>
 								{name || '—'}
 							</dd>
 						</div>
 						<div className='px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4'>
-							<dt className='text-sm font-medium text-gray-500 dark:text-gray-400'>
-								Email
-							</dt>
-							<dd className='mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0 dark:text-gray-100'>
+							<dt className='text-light-text text-sm font-medium'>Email</dt>
+							<dd className='text-text mt-1 text-sm sm:col-span-2 sm:mt-0'>
 								{email || '—'}
 							</dd>
 						</div>
 						<div className='px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4'>
-							<dt className='text-sm font-medium text-gray-500 dark:text-gray-400'>
-								Role
-							</dt>
-							<dd className='mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0 dark:text-gray-100'>
+							<dt className='text-light-text text-sm font-medium'>Role</dt>
+							<dd className='text-text mt-1 text-sm sm:col-span-2 sm:mt-0'>
 								<Tooltip message='Can only be changed by an admin'>
 									{user.role}
 								</Tooltip>
 							</dd>
 						</div>
 						<div className='px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4'>
-							<dt className='text-sm font-medium text-gray-500 dark:text-gray-400'>
+							<dt className='text-light-text text-sm font-medium'>
 								Linked client
 							</dt>
-							<dd className='mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0 dark:text-gray-100'>
+							<dd className='text-text mt-1 text-sm sm:col-span-2 sm:mt-0'>
 								{user.clientName ?? '—'}
 							</dd>
 						</div>

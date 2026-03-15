@@ -40,7 +40,7 @@ export default async function Layout({ children }: { children: ReactNode }) {
 	return (
 		<Providers initialTheme={theme}>
 			<html lang='en'>
-				<body className='dark:bg-background bg-background text-gray-900 dark:text-gray-100'>
+				<body className='bg-background text-text'>
 					<Navbar />
 					<main className='font-montserrat-regular flex min-h-screen justify-center'>
 						{children}

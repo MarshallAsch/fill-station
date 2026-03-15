@@ -9,14 +9,14 @@ import Link from 'next/link'
 
 const VisHistoryRow = ({ visual }: { visual: VisualHistory }) => {
 	return (
-		<tr key={visual.id} className='hover:bg-gray-100 dark:hover:bg-gray-800'>
-			<td className='py-4 pr-3 pl-4 text-center text-sm font-medium whitespace-nowrap text-gray-900 sm:pl-6 dark:text-gray-100'>
+		<tr key={visual.id} className='hover:bg-hover'>
+			<td className='text-text py-4 pr-3 pl-4 text-center text-sm font-medium whitespace-nowrap sm:pl-6'>
 				{dayjs(visual.date).format('MMM D, YYYY')}
 			</td>
-			<td className='py-4 pr-3 pl-4 text-center text-sm font-medium whitespace-nowrap text-gray-900 sm:pl-6 dark:text-gray-100'>
+			<td className='text-text py-4 pr-3 pl-4 text-center text-sm font-medium whitespace-nowrap sm:pl-6'>
 				{visual.Cylinder?.serialNumber}
 			</td>
-			<td className='items-center px-3 py-4 text-sm whitespace-nowrap text-gray-500 dark:text-gray-400'>
+			<td className='text-light-text items-center px-3 py-4 text-sm whitespace-nowrap'>
 				<span className='flex w-full justify-center'>
 					{visual.status == 'acceptable' ? (
 						<CheckCircleIcon className='h-10' />
@@ -25,7 +25,7 @@ const VisHistoryRow = ({ visual }: { visual: VisualHistory }) => {
 					)}
 				</span>
 			</td>
-			<td className='px-3 py-4 text-sm whitespace-nowrap text-gray-500 dark:text-gray-400'>
+			<td className='text-light-text px-3 py-4 text-sm whitespace-nowrap'>
 				<span className='flex w-full justify-center'>
 					{visual.markedOxygenClean ? (
 						<CheckCircleIcon className='h-10' />
@@ -34,7 +34,7 @@ const VisHistoryRow = ({ visual }: { visual: VisualHistory }) => {
 					)}
 				</span>
 			</td>
-			<td className='px-3 py-4 text-center text-sm whitespace-nowrap text-gray-500 dark:text-gray-400'>
+			<td className='text-light-text px-3 py-4 text-center text-sm whitespace-nowrap'>
 				<Link href={`/visual/${visual.id}`}>
 					<LinkIcon className='h-5' />
 				</Link>

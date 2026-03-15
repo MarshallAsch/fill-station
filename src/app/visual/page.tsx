@@ -68,7 +68,7 @@ export default function Visual() {
 		<div className='max-w-7xl'>
 			<div className='flex flex-col overflow-auto'>
 				<div className='flex flex-col items-center justify-center gap-3 py-6'>
-					<h1 className='text-4xl font-semibold text-gray-900 dark:text-gray-100'>
+					<h1 className='text-text text-4xl font-semibold'>
 						Record a Tank Vis
 					</h1>
 				</div>

@@ -12,9 +12,7 @@ import { Role } from './permissions'
 
 export type { Role } from './permissions'
 
-export async function requireRole(
-	roles: Role[],
-): Promise<Response | Session> {
+export async function requireRole(roles: Role[]): Promise<Response | Session> {
 	const session = await auth()
 	if (!session?.user) {
 		return Response.json(
@@ -54,8 +52,7 @@ export function scopeQuery(
 		return Response.json(
 			{
 				error: 'no_client',
-				message:
-					'No linked client. Contact the shop to link your account.',
+				message: 'No linked client. Contact the shop to link your account.',
 			},
 			{ status: 403 },
 		)
@@ -86,15 +83,10 @@ export function scopeQuery(
 			).slice()
 			const cylIdx = existingIncludes.findIndex(
 				(inc) =>
-					typeof inc === 'object' &&
-					'model' in inc &&
-					inc.model === Cylinder,
+					typeof inc === 'object' && 'model' in inc && inc.model === Cylinder,
 			)
 			if (cylIdx >= 0) {
-				const existing = existingIncludes[cylIdx] as Record<
-					string,
-					unknown
-				>
+				const existing = existingIncludes[cylIdx] as Record<string, unknown>
 				existingIncludes[cylIdx] = {
 					...existing,
 					where: {

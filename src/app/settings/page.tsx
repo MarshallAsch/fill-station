@@ -38,13 +38,9 @@ export default async function Settings() {
 	return (
 		<div className='max-w-7xl'>
 			<div className='my-4 flex flex-col items-center justify-center gap-6'>
-				<h1 className='text-3xl font-semibold text-gray-900 dark:text-gray-100'>
-					Admin Settings
-				</h1>
+				<h1 className='text-text text-3xl font-semibold'>Admin Settings</h1>
 				<UserListTable users={users} />
-				<h2 className='text-2xl font-semibold text-gray-900 dark:text-gray-100'>
-					Audit Log
-				</h2>
+				<h2 className='text-text text-2xl font-semibold'>Audit Log</h2>
 				<AuditLogTable entries={JSON.parse(JSON.stringify(auditEntries))} />
 			</div>
 		</div>

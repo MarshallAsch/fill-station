@@ -17,9 +17,7 @@ const NumberField = ({
 }: Props) => {
 	return (
 		<>
-			{helperText && (
-				<p className='text-gray-500 dark:text-gray-400'>{helperText}</p>
-			)}
+			{helperText && <p className='text-light-text'>{helperText}</p>}
 			<input
 				type='number'
 				id={id}
@@ -27,7 +25,7 @@ const NumberField = ({
 				defaultValue={defaultValue}
 				min={min}
 				max={max}
-				className='bg-background rounded border border-gray-300 p-2 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100'
+				className='bg-background border-border text-text rounded border p-2'
 			/>
 		</>
 	)

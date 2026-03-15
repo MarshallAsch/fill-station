@@ -7,36 +7,36 @@ const UserListTable = ({ users }: { users: Profile[] }) => {
 			<div className='overflow-x-auto'>
 				<div className='inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8'>
 					<div className='shadow-sm outline-1 outline-black/5 sm:rounded-lg dark:outline-white/10'>
-						<table className='relative min-w-full divide-y divide-gray-300 dark:divide-gray-700'>
-							<thead className='bg-gray-50 dark:bg-gray-800'>
+						<table className='divide-divider-strong relative min-w-full divide-y'>
+							<thead className='bg-surface'>
 								<tr>
 									<th
 										scope='col'
-										className='py-3.5 pr-3 pl-4 text-center text-sm font-semibold text-gray-900 sm:pl-6 dark:text-gray-100'
+										className='text-text py-3.5 pr-3 pl-4 text-center text-sm font-semibold sm:pl-6'
 									>
 										Name
 									</th>
 									<th
 										scope='col'
-										className='px-3 py-3.5 text-center text-sm font-semibold text-gray-900 dark:text-gray-100'
+										className='text-text px-3 py-3.5 text-center text-sm font-semibold'
 									>
 										Email
 									</th>
 									<th
 										scope='col'
-										className='px-3 py-3.5 text-center text-sm font-semibold text-gray-900 dark:text-gray-100'
+										className='text-text px-3 py-3.5 text-center text-sm font-semibold'
 									>
 										Role
 									</th>
 									<th
 										scope='col'
-										className='px-3 py-3.5 text-center text-sm font-semibold text-gray-900 dark:text-gray-100'
+										className='text-text px-3 py-3.5 text-center text-sm font-semibold'
 									>
 										Linked Client
 									</th>
 								</tr>
 							</thead>
-							<tbody className='bg-background dark:bg-background divide-y divide-gray-200 dark:divide-gray-700'>
+							<tbody className='bg-background divide-divider divide-y'>
 								{users.map((user) => (
 									<UserRow key={user.id} user={user} />
 								))}

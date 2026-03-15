@@ -34,7 +34,7 @@ const ThemeSettings = ({ initialTheme }: ThemeSettingsProps) => {
 	}
 
 	return (
-		<div className='dark:border-border border-border bg-background w-full max-w-md rounded-lg border p-6 shadow-sm dark:bg-gray-800'>
+		<div className='border-border bg-background w-full max-w-md rounded-lg border p-6 shadow-sm'>
 			<RadioGroup
 				title='Theme'
 				name='theme'

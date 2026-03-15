@@ -26,7 +26,6 @@ export type Fill = {
 	cylinder?: Cylinder
 }
 
-
 export type FillDto = {
 	date: dayjs.Dayjs
 	cylinderId?: number

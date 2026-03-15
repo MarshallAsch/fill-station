@@ -35,7 +35,7 @@ const MaintenanceHistory = () => {
 			case 'general':
 				return 'bg-red-500'
 			case 'filter-change':
-				return 'bg-gray-400'
+				return 'bg-disabled'
 			default:
 				return 'error'
 		}
@@ -113,14 +113,14 @@ const MaintenanceHistory = () => {
 						.map(([key, item]) => (
 							<div
 								key={key}
-								className='dark:bg-background flex flex-col items-center bg-gray-400/5 p-8'
+								className='bg-card-hover flex flex-col items-center p-8'
 							>
-								<dt className='text-3xl font-semibold text-black dark:text-gray-100'>
+								<dt className='text-text text-3xl font-semibold'>
 									<Tooltip message={item.date.format('DD/MM/YYYY')}>
 										{item.date.from(dayjs(), true)} ago
 									</Tooltip>
 								</dt>
-								<dd className='order-first text-xl font-semibold tracking-tight text-gray-500 dark:text-gray-400'>
+								<dd className='text-light-text order-first text-xl font-semibold tracking-tight'>
 									{getSummaryTitle(item.type)}
 								</dd>
 							</div>
@@ -146,7 +146,7 @@ const MaintenanceHistory = () => {
 								{eventIdx !== maintenance.length - 1 ? (
 									<span
 										aria-hidden='true'
-										className='absolute top-4 left-4 -ml-px h-full w-0.5 bg-gray-200 dark:bg-gray-700'
+										className='bg-divider-strong absolute top-4 left-4 -ml-px h-full w-0.5'
 									/>
 								) : null}
 								<div className='relative flex items-center space-x-3'>
@@ -162,18 +162,18 @@ const MaintenanceHistory = () => {
 									</div>
 									<div className='flex min-w-0 flex-1 justify-between space-x-4 pt-1.5'>
 										<div>
-											<p className='font-medium text-gray-900 dark:text-gray-100'>
+											<p className='text-text font-medium'>
 												{getTitle(event.type)}
 											</p>
-											<p className='text-sm text-gray-500 dark:text-gray-400'>
+											<p className='text-light-text text-sm'>
 												{event.description}
 											</p>
 										</div>
-										<div className='text-right text-sm whitespace-nowrap text-gray-500 dark:text-gray-400'>
+										<div className='text-light-text text-right text-sm whitespace-nowrap'>
 											<time dateTime={event.date.format('DD/MM/YYYY')}>
 												{event.date.format('DD/MM/YYYY')}
 											</time>
-											<p className='text-sm text-gray-500 dark:text-gray-400'>
+											<p className='text-light-text text-sm'>
 												{event.hours} hours
 											</p>
 										</div>

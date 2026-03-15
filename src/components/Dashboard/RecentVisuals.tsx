@@ -3,9 +3,7 @@ import { VisualHistory } from '@/types/visuals'
 const RecentVisuals = ({ visuals }: { visuals: VisualHistory[] }) => {
 	if (visuals.length === 0) {
 		return (
-			<p className='text-sm text-gray-500 dark:text-gray-400'>
-				No visual inspections found.
-			</p>
+			<p className='text-light-text text-sm'>No visual inspections found.</p>
 		)
 	}
 
@@ -14,33 +12,30 @@ const RecentVisuals = ({ visuals }: { visuals: VisualHistory[] }) => {
 			<div className='overflow-x-auto'>
 				<div className='inline-block min-w-full py-2 align-middle'>
 					<div className='shadow-sm outline-1 outline-black/5 sm:rounded-lg dark:outline-white/10'>
-						<table className='min-w-full divide-y divide-gray-300 dark:divide-gray-700'>
-							<thead className='bg-gray-50 dark:bg-gray-800'>
+						<table className='divide-divider-strong min-w-full divide-y'>
+							<thead className='bg-surface'>
 								<tr>
-									<th className='py-3.5 pr-3 pl-4 text-center text-sm font-semibold text-gray-900 sm:pl-6 dark:text-gray-100'>
+									<th className='text-text py-3.5 pr-3 pl-4 text-center text-sm font-semibold sm:pl-6'>
 										Date
 									</th>
-									<th className='px-3 py-3.5 text-center text-sm font-semibold text-gray-900 dark:text-gray-100'>
+									<th className='text-text px-3 py-3.5 text-center text-sm font-semibold'>
 										Cylinder
 									</th>
-									<th className='px-3 py-3.5 text-center text-sm font-semibold text-gray-900 dark:text-gray-100'>
+									<th className='text-text px-3 py-3.5 text-center text-sm font-semibold'>
 										Status
 									</th>
 								</tr>
 							</thead>
-							<tbody className='bg-background dark:bg-background divide-y divide-gray-200 dark:divide-gray-700'>
+							<tbody className='bg-background divide-divider divide-y'>
 								{visuals.map((visual) => (
-									<tr
-										key={visual.id}
-										className='hover:bg-gray-100 dark:hover:bg-gray-800'
-									>
-										<td className='py-4 pr-3 pl-4 text-center text-sm font-medium text-gray-900 sm:pl-6 dark:text-gray-100'>
+									<tr key={visual.id} className='hover:bg-hover'>
+										<td className='text-text py-4 pr-3 pl-4 text-center text-sm font-medium sm:pl-6'>
 											{visual.date}
 										</td>
-										<td className='px-3 py-4 text-center text-sm text-gray-500 dark:text-gray-400'>
+										<td className='text-light-text px-3 py-4 text-center text-sm'>
 											{visual.Cylinder?.serialNumber}
 										</td>
-										<td className='px-3 py-4 text-center text-sm text-gray-500 dark:text-gray-400'>
+										<td className='text-light-text px-3 py-4 text-center text-sm'>
 											{visual.status}
 										</td>
 									</tr>

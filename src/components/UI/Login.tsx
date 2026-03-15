@@ -16,7 +16,7 @@ const Login = ({}: LoginProps) => {
 				<Button
 					type='button'
 					onClick={() => signIn('authelia')}
-					className='text-sm/6 font-semibold text-gray-900 dark:text-gray-100'
+					className='text-text text-sm/6 font-semibold'
 				>
 					Log in <span aria-hidden='true'>&rarr;</span>
 				</Button>
