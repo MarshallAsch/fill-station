@@ -1,35 +1,82 @@
 import { auth } from '@/auth'
-import { NextRequest, NextResponse } from 'next/server'
+import { NextResponse } from 'next/server'
+import { PERMISSIONS, matchApiRoute, Role } from '@/lib/permissions'
 
 // Pages that don't require authentication
 const publicPages = ['/', '/api/auth', '/about', '/contact']
 
-export async function proxy(request: NextRequest) {
-	const { pathname } = request.nextUrl
+function isPublicApiRoute(pathname: string, method: string): boolean {
+	if (pathname.startsWith('/api/auth')) return true
+	if (pathname === '/api/contact' && method === 'POST') return true
+	if (pathname === '/api/seed' && process.env.NODE_ENV === 'development')
+		return true
+	return false
+}
 
-	// Check if the page is public
-	const isPublicPage =
-		publicPages.some(
-			(page) => pathname === page || pathname.startsWith(page + '/'),
-		) || pathname.startsWith('/api/auth')
+export default auth((req) => {
+	const { pathname } = req.nextUrl
+	const method = req.method
 
-	// If it's a public page, allow access
-	if (isPublicPage) {
+	// Public pages — no auth required
+	if (publicPages.some((p) => pathname === p)) {
 		return NextResponse.next()
 	}
 
-	// For protected pages, use auth to check session
-	const session = await auth()
+	// Public API routes — no auth required
+	if (isPublicApiRoute(pathname, method)) {
+		return NextResponse.next()
+	}
 
-	// If no session, redirect to homepage with redirect flag
-	if (!session) {
-		const redirectUrl = new URL('/', request.url)
-		redirectUrl.searchParams.set('redirected', 'true')
-		return NextResponse.redirect(redirectUrl)
+	// Require authentication for everything else
+	if (!req.auth?.user) {
+		if (pathname.startsWith('/api/')) {
+			return NextResponse.json(
+				{ error: 'auth', message: 'Must be logged in' },
+				{ status: 401 },
+			)
+		}
+		const url = req.nextUrl.clone()
+		url.pathname = '/'
+		url.searchParams.set('redirected', 'true')
+		return NextResponse.redirect(url)
+	}
+
+	const role = (req.auth.user.role ?? 'user') as Role
+
+	// Page route role check
+	if (!pathname.startsWith('/api/')) {
+		const basePath = '/' + pathname.split('/')[1]
+		const allowedRoles =
+			PERMISSIONS.pages[basePath as keyof typeof PERMISSIONS.pages]
+
+		if (allowedRoles && !allowedRoles.includes(role)) {
+			const url = req.nextUrl.clone()
+			url.pathname = '/'
+			return NextResponse.redirect(url)
+		}
+
+		return NextResponse.next()
+	}
+
+	// API route role + method check
+	const allowedRoles = matchApiRoute(pathname, method)
+	if (allowedRoles === null) {
+		// Unmatched API route — deny by default
+		return NextResponse.json(
+			{ error: 'forbidden', message: 'Insufficient permissions' },
+			{ status: 403 },
+		)
+	}
+
+	if (!allowedRoles.includes(role)) {
+		return NextResponse.json(
+			{ error: 'forbidden', message: 'Insufficient permissions' },
+			{ status: 403 },
+		)
 	}
 
 	return NextResponse.next()
-}
+})
 
 export const config = {
 	matcher: ['/((?!_next/static|_next/image|favicon.ico).*)'],

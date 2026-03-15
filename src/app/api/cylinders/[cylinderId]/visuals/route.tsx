@@ -2,21 +2,19 @@ import { Client } from '@/lib/models/client'
 import { Cylinder } from '@/lib/models/cylinder'
 import { Visual } from '@/lib/models/visual'
 import dayjs from 'dayjs'
-import { auth } from '@/auth'
+import { requireRole, isErrorResponse } from '@/lib/permissions-server'
 import customParseFormat from 'dayjs/plugin/customParseFormat'
 import { NewVisualDTO } from '@/types/visuals'
+import { auditLog } from '@/lib/audit'
 dayjs.extend(customParseFormat)
 
 export async function GET(
 	request: Request,
 	{ params }: { params: Promise<{ cylinderId: string }> },
 ) {
-	const session = await auth()
-	if (!session)
-		return Response.json(
-			{ error: 'auth', message: 'Must be logged in' },
-			{ status: 401 },
-		)
+	const result = await requireRole(['filler', 'inspector', 'admin'])
+	if (isErrorResponse(result)) return result
+
 	const { cylinderId } = await params
 
 	const cylinders = await Visual.findAll({
@@ -32,12 +30,9 @@ export async function POST(
 	request: Request,
 	{ params }: { params: Promise<{ cylinderId: string }> },
 ) {
-	const session = await auth()
-	if (!session)
-		return Response.json(
-			{ error: 'auth', message: 'Must be logged in' },
-			{ status: 401 },
-		)
+	const session = await requireRole(['inspector', 'admin'])
+	if (isErrorResponse(session)) return session
+
 	const { cylinderId } = await params
 
 	const cylinder = await Cylinder.findByPk(cylinderId)
@@ -133,6 +128,9 @@ export async function POST(
 		})
 
 		result = await result.save()
+		await auditLog(session.user!.id!, 'create', 'visual', result.id, {
+			cylinderId,
+		})
 
 		return Response.json(result)
 	} catch (err: any) {
@@ -142,4 +140,17 @@ export async function POST(
 			{ status: 400 },
 		)
 	}
+}
+
+export async function DELETE(
+	_request: Request,
+	{ params }: { params: Promise<{ cylinderId: string }> },
+) {
+	const result = await requireRole(['admin'])
+	if (isErrorResponse(result)) return result
+
+	const { cylinderId } = await params
+	// Delete all visuals for this cylinder
+	await Visual.destroy({ where: { CylinderId: cylinderId } })
+	return Response.json({ message: 'Visuals deleted' })
 }

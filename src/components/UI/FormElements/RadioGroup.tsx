@@ -10,6 +10,7 @@ type RadioGroupProps = {
 	name: string
 	description?: string
 	required?: boolean
+	onChange?: (value: string) => void
 }
 
 const RadioGroup = ({
@@ -20,18 +21,19 @@ const RadioGroup = ({
 	value,
 	defaultValue,
 	readOnly,
+	onChange,
 }: RadioGroupProps) => {
 	return (
 		<fieldset className='w-full'>
 			<div className='flex items-center justify-between'>
-				<div className='text-sm/6 font-medium text-gray-900'>{title}</div>
+				<div className='text-text text-sm/6 font-medium'>{title}</div>
 			</div>
 			<div className='mt-2 grid grid-cols-3 gap-3 sm:grid-cols-4'>
 				{options.map((option) => (
 					<label
 						key={option.value}
 						aria-label={option.label}
-						className='group relative flex items-center justify-center rounded-md border border-gray-300 bg-white p-3 has-checked:border-indigo-600 has-checked:bg-indigo-600 has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-indigo-600 has-disabled:border-gray-400 has-disabled:bg-gray-200 has-disabled:opacity-25'
+						className='group bg-background border-border has-checked:border-accent has-checked:bg-accent has-focus-visible:outline-accent has-disabled:border-disabled has-disabled:bg-disabled relative flex items-center justify-center rounded-md border p-3 has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-disabled:opacity-25'
 					>
 						<input
 							name={name}
@@ -39,6 +41,7 @@ const RadioGroup = ({
 							value={option.value}
 							checked={value === undefined ? undefined : value == option.value}
 							readOnly={readOnly}
+							onChange={() => onChange?.(String(option.value))}
 							defaultChecked={
 								value
 									? undefined
@@ -46,13 +49,13 @@ const RadioGroup = ({
 							}
 							className='absolute inset-0 cursor-pointer appearance-none focus:outline-none disabled:cursor-not-allowed'
 						/>
-						<span className='text-sm font-medium text-gray-900 group-has-checked:text-white'>
+						<span className='text-text text-sm font-medium group-has-checked:text-white'>
 							{option.label}
 						</span>
 					</label>
 				))}
 			</div>
-			{description && <p className='text-xs text-gray-600'>{description}</p>}
+			{description && <p className='text-light-text text-xs'>{description}</p>}
 		</fieldset>
 	)
 }

@@ -6,10 +6,11 @@ import { useQuery } from '@tanstack/react-query'
 import dayjs from 'dayjs'
 import { useEffect, useMemo } from 'react'
 
-const useLoadVisuals = () => {
+const useLoadVisuals = ({ enabled = true }: { enabled?: boolean } = {}) => {
 	const { status, data, error } = useQuery({
 		queryKey: ['visuals'],
 		queryFn: getAllVisuals,
+		enabled,
 		select: (data) =>
 			[...data].sort(
 				(a, b) => dayjs(b.date).valueOf() - dayjs(a.date).valueOf(),

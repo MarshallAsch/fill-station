@@ -6,6 +6,9 @@ import { ReactNode } from 'react'
 
 import { Metadata } from 'next'
 import { Slide, ToastContainer } from 'react-toastify'
+import { auth } from '@/auth'
+import { User } from '@/lib/models/user'
+import { Theme } from '@/types/profile'
 
 export const metadata: Metadata = {
 	title: {
@@ -24,11 +27,20 @@ export const metadata: Metadata = {
 	description: 'Fill station and Service tracker for small dive shops',
 }
 
-export default function Layout({ children }: { children: ReactNode }) {
+export default async function Layout({ children }: { children: ReactNode }) {
+	let theme: Theme = 'system'
+	const session = await auth()
+	if (session?.user?.id) {
+		const dbUser = await User.findByPk(session.user.id)
+		if (dbUser) {
+			theme = dbUser.theme
+		}
+	}
+
 	return (
-		<Providers>
+		<Providers initialTheme={theme}>
 			<html lang='en'>
-				<body>
+				<body className='bg-background text-text'>
 					<Navbar />
 					<main className='font-montserrat-regular flex min-h-screen justify-center'>
 						{children}

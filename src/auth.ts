@@ -1,6 +1,7 @@
 import NextAuth from 'next-auth'
 import SequelizeAdapter from '@auth/sequelize-adapter'
 import { sequelize } from './lib/models/config'
+import { User } from './lib/models/user'
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
 	providers: [
@@ -21,8 +22,28 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 			},
 		},
 	],
-	adapter: SequelizeAdapter(sequelize),
+	adapter: SequelizeAdapter(sequelize, {
+		models: { User: User as any },
+	}),
+	callbacks: {
+		async session({ session, user }) {
+			const dbUser = await User.findByPk(user.id)
+			if (session.user && dbUser) {
+				session.user.role = dbUser.role
+			}
+			return session
+		},
+	},
+	events: {
+		async signIn({ user }) {
+			if (user.id) {
+				await User.update({ lastLogin: new Date() }, { where: { id: user.id } })
+			}
+		},
+	},
 	pages: {
 		signIn: '/',
 	},
 })
+
+sequelize.sync({ alter: true })

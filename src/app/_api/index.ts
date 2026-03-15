@@ -8,10 +8,11 @@ import {
 	NewMaintenanceDTO,
 } from '@/types/maintenance'
 import { NewVisualDTO, VisualHistory } from '@/types/visuals'
+import { Profile, Theme, UpdateProfileDTO } from '@/types/profile'
 import axios from 'axios'
 import dayjs from 'dayjs'
 
-const axiosInstance = axios.create({validateStatus: (code) => code < 500 })
+const axiosInstance = axios.create({ validateStatus: (code) => code < 500 })
 
 // Regex to identify ISO 8601 date strings
 const dateRegExp = /\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z?/
@@ -105,7 +106,10 @@ export async function updateCylinder(
 	cylinderId: number | undefined,
 	cylinder: NewCylinderDTO,
 ): Promise<Client | string> {
-	const result = await axiosInstance.put(`/api/cylinders/${cylinderId}`, cylinder)
+	const result = await axiosInstance.put(
+		`/api/cylinders/${cylinderId}`,
+		cylinder,
+	)
 
 	return result.status == 200 ? result.data : result.data.message
 }
@@ -128,15 +132,50 @@ export async function newVisual(
 	cylinderId: number,
 	visual: NewVisualDTO,
 ): Promise<Client | string> {
-	const result = await axiosInstance.post(`/api/cylinders/${cylinderId}/visuals`, visual)
+	const result = await axiosInstance.post(
+		`/api/cylinders/${cylinderId}/visuals`,
+		visual,
+	)
 
 	return result.status == 200 ? result.data : result.data.message
 }
 
 export async function newContact(
 	contact: NewContactDTO,
-): Promise<ContactDTO| string> {
+): Promise<ContactDTO | string> {
 	const result = await axiosInstance.post('/api/contact', contact)
+
+	return result.status == 200 ? result.data : result.data.message
+}
+
+export async function updateProfile(
+	profile: UpdateProfileDTO,
+): Promise<Profile | string> {
+	const result = await axiosInstance.put('/api/profile', profile)
+
+	return result.status == 200 ? result.data : result.data.message
+}
+
+export async function updateTheme(theme: Theme): Promise<Profile | string> {
+	const result = await axiosInstance.put('/api/profile', { theme })
+
+	return result.status == 200 ? result.data : result.data.message
+}
+
+export async function updateUserRole(
+	userId: string,
+	role: string,
+): Promise<Profile | string> {
+	const result = await axiosInstance.put(`/api/users/${userId}`, { role })
+
+	return result.status == 200 ? result.data : result.data.message
+}
+
+export async function updateUserClient(
+	userId: string,
+	clientId: number | null,
+): Promise<Profile | string> {
+	const result = await axiosInstance.put(`/api/users/${userId}`, { clientId })
 
 	return result.status == 200 ? result.data : result.data.message
 }

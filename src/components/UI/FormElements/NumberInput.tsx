@@ -22,7 +22,7 @@ const NumberInput = ({
 			{label && (
 				<label
 					htmlFor={id}
-					className='mb-1 block text-sm font-medium text-gray-700'
+					className='text-text mb-1 block text-sm font-medium'
 				>
 					{label}
 				</label>
@@ -38,7 +38,7 @@ const NumberInput = ({
 				onChange={(e) =>
 					onChange(e.target.value === '' ? 0 : Number(e.target.value))
 				}
-				className='block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 shadow-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 disabled:cursor-not-allowed disabled:bg-gray-100 disabled:opacity-60'
+				className='bg-background border-border text-text disabled:bg-disabled focus:border-accent focus:ring-accent block w-full rounded-md border px-3 py-2 text-sm shadow-sm focus:ring-1 disabled:cursor-not-allowed disabled:opacity-60'
 			/>
 		</div>
 	)

@@ -1,15 +1,12 @@
 import { Cylinder } from '@/lib/models/cylinder'
 import { Fill } from '@/lib/models/fill'
-import dayjs from 'dayjs'
-import { auth } from '@/auth'
+import { requireRole, isErrorResponse } from '@/lib/permissions-server'
 import { FillDto } from '@/types/fills'
+import { auditLog } from '@/lib/audit'
 export async function GET() {
-	const session = await auth()
-	if (!session)
-		return Response.json(
-			{ error: 'auth', message: 'Must be logged in' },
-			{ status: 401 },
-		)
+	const result = await requireRole(['filler', 'inspector', 'admin'])
+	if (isErrorResponse(result)) return result
+
 	const fills = await Fill.findAll({
 		include: Cylinder,
 	})
@@ -17,12 +14,9 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
-	const session = await auth()
-	if (!session)
-		return Response.json(
-			{ error: 'auth', message: 'Must be logged in' },
-			{ status: 401 },
-		)
+	const result = await requireRole(['filler', 'inspector', 'admin'])
+	if (isErrorResponse(result)) return result
+
 	const fills: FillDto[] = await request.json()
 	let cylinders: Cylinder[] = []
 
@@ -50,6 +44,14 @@ export async function POST(request: Request) {
 			),
 		)
 
+		await Promise.all(
+			created.map((fill, index) =>
+				auditLog(result.user!.id!, 'create', 'fill', fill.id, {
+					cylinderId: fills[index].cylinderId,
+				}),
+			),
+		)
+
 		return await Response.json(created)
 	} catch (err: any) {
 		console.error('error:', err)
@@ -58,4 +60,23 @@ export async function POST(request: Request) {
 			{ status: 400 },
 		)
 	}
+}
+
+export async function DELETE(request: Request) {
+	const result = await requireRole(['admin'])
+	if (isErrorResponse(result)) return result
+
+	const { id } = await request.json()
+	const fill = await Fill.findByPk(id)
+
+	if (!fill) {
+		return Response.json(
+			{ error: 'not_found', message: 'Fill not found' },
+			{ status: 404 },
+		)
+	}
+
+	await fill.destroy()
+	await auditLog(result.user!.id!, 'delete', 'fill', id)
+	return Response.json({ message: 'Fill deleted' })
 }

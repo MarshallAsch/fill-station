@@ -49,13 +49,13 @@ const InspectorPicker = ({ disableAdd }: InspectorPickerProps) => {
 			}}
 			className='w-full'
 		>
-			<Label className='block text-sm/6 font-medium text-gray-900'>
+			<Label className='text-text block text-sm/6 font-medium'>
 				Select an Inspector
 			</Label>
 
 			<div className='relative mt-2'>
 				<ComboboxInput
-					className='block w-full rounded-md bg-white py-1.5 pr-12 pl-3 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6'
+					className='bg-background text-text outline-ring placeholder:text-muted-text focus:outline-accent block w-full rounded-md py-1.5 pr-12 pl-3 text-base outline-1 -outline-offset-1 focus:outline-2 focus:-outline-offset-2 sm:text-sm/6'
 					name='client'
 					onChange={(e) => setQuery(e.target.value)}
 					displayValue={(client: Client) => client && client.name}
@@ -63,14 +63,14 @@ const InspectorPicker = ({ disableAdd }: InspectorPickerProps) => {
 
 				<ComboboxButton className='absolute inset-y-0 right-0 flex cursor-pointer items-center rounded-r-md px-2 focus:outline-hidden'>
 					<ChevronDownIcon
-						className='h-5 w-5 text-gray-400'
+						className='text-muted-text h-5 w-5'
 						aria-hidden='true'
 					/>
 				</ComboboxButton>
 
 				<ComboboxOptions
 					transition
-					className='absolute z-10 mt-1 max-h-60 w-75 overflow-auto rounded-md bg-white py-1 text-base shadow-lg outline outline-black/5 data-leave:transition data-leave:duration-100 data-leave:ease-in data-closed:data-leave:opacity-0 sm:text-sm'
+					className='bg-background absolute z-10 mt-1 max-h-60 w-75 overflow-auto rounded-md py-1 text-base shadow-lg outline outline-black/5 data-leave:transition data-leave:duration-100 data-leave:ease-in data-closed:data-leave:opacity-0 sm:text-sm'
 				>
 					<div className='m-2 w-40'>
 						<Button
@@ -85,7 +85,7 @@ const InspectorPicker = ({ disableAdd }: InspectorPickerProps) => {
 							value={{ id: null, name: query }}
 							hidden={disableAdd}
 							disabled={true}
-							className='cursor-pointer px-3 py-2 text-gray-900 select-none data-focus:bg-indigo-600 data-focus:text-white data-focus:outline-hidden'
+							className='text-text data-focus:bg-accent data-focus:text-white-text cursor-pointer px-3 py-2 select-none data-focus:outline-hidden'
 						>
 							{query}
 						</ComboboxOption>
@@ -94,7 +94,7 @@ const InspectorPicker = ({ disableAdd }: InspectorPickerProps) => {
 						<ComboboxOption
 							key={client.id}
 							value={client}
-							className='cursor-pointer px-3 py-2 text-gray-900 select-none data-focus:bg-indigo-600 data-focus:text-white data-focus:outline-hidden'
+							className='text-text data-focus:bg-accent data-focus:text-white-text cursor-pointer px-3 py-2 select-none data-focus:outline-hidden'
 						>
 							{client.name}
 						</ComboboxOption>

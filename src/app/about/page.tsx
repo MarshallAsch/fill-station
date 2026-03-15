@@ -8,7 +8,7 @@ export default function About() {
 					Material UI - Next.js example in TypeScript
 				</h1>
 				<div className='max-w-xs'>
-					<Link href='/' className='text-blue-500 underline'>
+					<Link href='/' className='text-blue-500 underline dark:text-blue-400'>
 						Go to the home page
 					</Link>
 				</div>

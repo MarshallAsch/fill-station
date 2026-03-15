@@ -10,7 +10,6 @@ import dayjs from 'dayjs'
 import Tooltip from '../UI/Tooltip'
 import relativeTime from 'dayjs/plugin/relativeTime'
 
-import { Cylinder as CylinderModel } from '@/lib/models/cylinder'
 import Link from 'next/link'
 import Button from '../UI/Button'
 import { useAppDispatch } from '@/redux/hooks'
@@ -21,9 +20,13 @@ dayjs.extend(relativeTime)
 const CylinderListRow = ({
 	cylinder,
 	showOwner = false,
+	hideInspection = false,
+	disableEdit = false,
 }: {
-	cylinder: Cylinder | CylinderModel
+	cylinder: Cylinder
 	showOwner?: boolean
+	hideInspection?: boolean
+	disableEdit?: boolean
 }) => {
 	const dispatch = useAppDispatch()
 
@@ -31,25 +34,25 @@ const CylinderListRow = ({
 	const nextVis = dayjs(cylinder.lastVis).add(1, 'year')
 
 	return (
-		<tr key={cylinder.id} className='hover:bg-gray-100'>
-			<td className='py-4 pr-3 pl-4 text-center text-sm font-medium whitespace-nowrap text-gray-900 sm:pl-6'>
+		<tr key={cylinder.id} className='hover:bg-hover'>
+			<td className='text-text py-4 pr-3 pl-4 text-center text-sm font-medium whitespace-nowrap sm:pl-6'>
 				{cylinder.serialNumber}
 			</td>
 			{showOwner && (
 				<th
 					scope='col'
-					className='py-3.5 pr-3 pl-4 text-center text-sm font-semibold text-gray-900 sm:pl-6'
+					className='text-text py-3.5 pr-3 pl-4 text-center text-sm font-semibold sm:pl-6'
 				>
 					<Link
 						href={`/clients/${cylinder.ownerId}`}
-						className='flex cursor-pointer flex-col items-center justify-between gap-2 bg-gray-400/5 p-6 transition hover:bg-gray-400/10 sm:p-10'
+						className='bg-card-hover hover:bg-hover flex cursor-pointer flex-col items-center justify-between gap-2 p-6 transition sm:p-10'
 					>
 						{cylinder.ownerId}
 						<InformationCircleIcon />
 					</Link>
 				</th>
 			)}
-			<td className='py-4 pr-3 pl-4 text-center text-sm font-medium whitespace-nowrap text-gray-900 sm:pl-6'>
+			<td className='text-text py-4 pr-3 pl-4 text-center text-sm font-medium whitespace-nowrap sm:pl-6'>
 				<span className='flex w-full justify-center'>
 					{cylinder.oxygenClean ? (
 						<CheckCircleIcon className='h-10' />
@@ -58,43 +61,53 @@ const CylinderListRow = ({
 					)}
 				</span>
 			</td>
-			<td className='px-3 py-4 text-center text-sm whitespace-nowrap text-gray-500'>
+			<td className='text-light-text px-3 py-4 text-center text-sm whitespace-nowrap'>
 				{dayjs(cylinder.lastHydro).format('MM/YYYY')}
 			</td>
-			<td className='px-3 py-4 text-center text-sm whitespace-nowrap text-gray-500'>
+			<td className='text-light-text px-3 py-4 text-center text-sm whitespace-nowrap'>
 				{dayjs(cylinder.lastVis).format('MM/YYYY')}
 			</td>
-			<td className='px-3 py-4 text-center text-sm whitespace-nowrap text-gray-500'>
+			<td className='text-light-text px-3 py-4 text-center text-sm whitespace-nowrap'>
 				<Tooltip message={nextHydro.format('MM/YYYY')}>
 					{nextHydro.isBefore(dayjs()) ? 'now' : nextHydro.fromNow()}
 				</Tooltip>
 			</td>
-			<td className='px-3 py-4 text-center text-sm whitespace-nowrap text-gray-500'>
+			<td className='text-light-text px-3 py-4 text-center text-sm whitespace-nowrap'>
 				<Tooltip message={nextVis.format('MM/YYYY')}>
 					{nextVis.isBefore(dayjs()) ? 'now' : nextVis.fromNow()}
 				</Tooltip>
 			</td>
 
-			<td className='px-3 py-4 text-center text-sm whitespace-nowrap text-gray-500'>
-				{nextHydro.isBefore(dayjs()) ? (
-					'Needs Hydro First'
+			{!hideInspection && (
+				<td className='text-light-text px-3 py-4 text-center text-sm whitespace-nowrap'>
+					{nextHydro.isBefore(dayjs()) ? (
+						'Needs Hydro First'
+					) : (
+						<Link
+							href={`/visual?client=${cylinder.ownerId}&cylinder=${cylinder.id}`}
+							className='bg-card-hover hover:bg-hover flex cursor-pointer flex-col items-center justify-between gap-2 p-6 transition sm:p-10'
+						>
+							Inspect now
+						</Link>
+					)}
+				</td>
+			)}
+			<td className='text-light-text px-3 py-4 text-center text-sm whitespace-nowrap'>
+				{disableEdit ? (
+					<Tooltip message='Please contact the shop to update the details'>
+						<Button disabled>
+							<Cog6ToothIcon className='h-5' />
+						</Button>
+					</Tooltip>
 				) : (
-					<Link
-						href={`/visual?client=${cylinder.ownerId}&cylinder=${cylinder.id}`}
-						className='flex cursor-pointer flex-col items-center justify-between gap-2 bg-gray-400/5 p-6 transition hover:bg-gray-400/10 sm:p-10'
+					<Button
+						onClick={() =>
+							dispatch(updateEditCylinderModal(cylinder as Cylinder))
+						}
 					>
-						Inspect now
-					</Link>
+						<Cog6ToothIcon className='h-5' />
+					</Button>
 				)}
-			</td>
-			<td className='px-3 py-4 text-center text-sm whitespace-nowrap text-gray-500'>
-				<Button
-					onClick={() =>
-						dispatch(updateEditCylinderModal(cylinder as Cylinder))
-					}
-				>
-					<Cog6ToothIcon className='h-5' />
-				</Button>
 			</td>
 		</tr>
 	)

@@ -1,7 +1,7 @@
 import { Client } from '@/lib/models/client'
 import { Fill } from '@/lib/models/fill'
 import dayjs from 'dayjs'
-import { auth } from '@/auth'
+import { requireRole, isErrorResponse } from '@/lib/permissions-server'
 import customParseFormat from 'dayjs/plugin/customParseFormat'
 dayjs.extend(customParseFormat)
 
@@ -9,12 +9,9 @@ export async function GET(
 	request: Request,
 	{ params }: { params: Promise<{ cylinderId: string }> },
 ) {
-	const session = await auth()
-	if (!session)
-		return Response.json(
-			{ error: 'auth', message: 'Must be logged in' },
-			{ status: 401 },
-		)
+	const result = await requireRole(['filler', 'inspector', 'admin'])
+	if (isErrorResponse(result)) return result
+
 	const { cylinderId } = await params
 
 	const cylinders = await Fill.findAll({
@@ -30,12 +27,9 @@ export async function POST(
 	request: Request,
 	{ params }: { params: Promise<{ cylinderId: string }> },
 ) {
-	const session = await auth()
-	if (!session)
-		return Response.json(
-			{ error: 'auth', message: 'Must be logged in' },
-			{ status: 401 },
-		)
+	const result = await requireRole(['filler', 'inspector', 'admin'])
+	if (isErrorResponse(result)) return result
+
 	const { cylinderId } = await params
 
 	const client = await Client.findByPk(cylinderId)

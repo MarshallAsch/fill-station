@@ -1,5 +1,6 @@
 import dayjs from 'dayjs'
-import { auth } from '@/auth'
+import { requireRole, isErrorResponse } from '@/lib/permissions-server'
+import { auditLog } from '@/lib/audit'
 import customParseFormat from 'dayjs/plugin/customParseFormat'
 import { Cylinder } from '@/lib/models/cylinder'
 dayjs.extend(customParseFormat)
@@ -8,13 +9,9 @@ export async function PUT(
 	request: Request,
 	{ params }: { params: Promise<{ cylinderId: string }> },
 ) {
-	const session = await auth()
-	if (!session) {
-		return Response.json(
-			{ error: 'auth', message: 'Must be logged in' },
-			{ status: 401 },
-		)
-	}
+	const result = await requireRole(['filler', 'inspector', 'admin'])
+	if (isErrorResponse(result)) return result
+
 	const { cylinderId } = await params
 
 	const cylinder = await Cylinder.findByPk(cylinderId)
@@ -52,4 +49,28 @@ export async function PUT(
 			{ status: 400 },
 		)
 	}
+}
+
+export async function DELETE(
+	_request: Request,
+	{ params }: { params: Promise<{ cylinderId: string }> },
+) {
+	const result = await requireRole(['admin'])
+	if (isErrorResponse(result)) return result
+
+	const { cylinderId } = await params
+	const cylinder = await Cylinder.findByPk(cylinderId)
+
+	if (!cylinder) {
+		return Response.json(
+			{ error: 'not_found', message: 'Cylinder not found' },
+			{ status: 404 },
+		)
+	}
+
+	await cylinder.destroy()
+	await auditLog(result.user!.id!, 'delete', 'cylinder', cylinderId, {
+		serialNumber: cylinder.serialNumber,
+	})
+	return Response.json({ message: 'Cylinder deleted' })
 }

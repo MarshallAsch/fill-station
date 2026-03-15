@@ -1,12 +1,20 @@
-import HistoryRow from './HistoryRow'
+'use client'
+
+import FillHistoryRow from './FillHistoryRow'
 import { useEffect, useState, useTransition } from 'react'
 import Button from '@/components/UI/Button'
 import useLoadFills from '@/hooks/useLoadFills'
+import { FillHistory } from '@/types/fills'
 
 const ROWS_PER_PAGE = 20
 
-const HistoryTable = () => {
-	const { fills, status, error } = useLoadFills()
+type FillHistoryTableProps = {
+	fills?: FillHistory[]
+}
+
+const FillHistoryTable = ({ fills: propFills }: FillHistoryTableProps = {}) => {
+	const { fills: hookFills } = useLoadFills({ enabled: !propFills })
+	const fills = propFills ?? hookFills
 
 	const [page, setPage] = useState(1)
 	const [, startTransition] = useTransition()
@@ -28,30 +36,30 @@ const HistoryTable = () => {
 				<div className='-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8'>
 					<div className='inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8'>
 						<div className='shadow-sm outline-1 outline-black/5 sm:rounded-lg'>
-							<table className='relative min-w-full divide-y divide-gray-300'>
-								<thead className='bg-gray-50'>
+							<table className='divide-divider-strong relative min-w-full divide-y'>
+								<thead className='bg-surface'>
 									<tr>
 										<th
 											scope='col'
-											className='py-3.5 pr-3 pl-4 text-center text-sm font-semibold text-gray-900 sm:pl-6'
+											className='text-text py-3.5 pr-3 pl-4 text-center text-sm font-semibold sm:pl-6'
 										>
 											Date
 										</th>
 										<th
 											scope='col'
-											className='px-3 py-3.5 text-center text-sm font-semibold text-gray-900'
+											className='text-text px-3 py-3.5 text-center text-sm font-semibold'
 										>
 											Mix
 										</th>
 										<th
 											scope='col'
-											className='px-3 py-3.5 text-center text-sm font-semibold text-gray-900'
+											className='text-text px-3 py-3.5 text-center text-sm font-semibold'
 										>
 											Start Pressure
 										</th>
 										<th
 											scope='col'
-											className='px-3 py-3.5 text-center text-sm font-semibold text-gray-900'
+											className='text-text px-3 py-3.5 text-center text-sm font-semibold'
 										>
 											End Pressure
 										</th>
@@ -63,14 +71,14 @@ const HistoryTable = () => {
 										</th>
 									</tr>
 								</thead>
-								<tbody className='divide-y divide-gray-200 bg-white'>
+								<tbody className='bg-background divide-divider divide-y'>
 									{paginatedFills.map((fill) => (
-										<HistoryRow key={fill.id} fill={fill} />
+										<FillHistoryRow key={fill.id} fill={fill} />
 									))}
 								</tbody>
 							</table>
 							<div className='flex items-center justify-between px-4 py-4'>
-								<p className='text-sm text-gray-600'>
+								<p className='text-light-text text-sm'>
 									Page {page} of {totalPages}
 								</p>
 
@@ -100,4 +108,4 @@ const HistoryTable = () => {
 	)
 }
 
-export default HistoryTable
+export default FillHistoryTable

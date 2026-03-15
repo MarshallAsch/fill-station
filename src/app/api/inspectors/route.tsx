@@ -1,13 +1,10 @@
 import { Client } from '@/lib/models/client'
 import { Op } from 'sequelize'
-import { auth } from '@/auth'
+import { requireRole, isErrorResponse } from '@/lib/permissions-server'
 export async function GET(request: Request) {
-	const session = await auth()
-	if (!session)
-		return Response.json(
-			{ error: 'auth', message: 'Must be logged in' },
-			{ status: 401 },
-		)
+	const result = await requireRole(['filler', 'inspector', 'admin'])
+	if (isErrorResponse(result)) return result
+
 	const clients = await Client.findAll({
 		where: {
 			inspectionCert: {

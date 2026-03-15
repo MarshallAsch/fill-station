@@ -6,10 +6,11 @@ import { useQuery } from '@tanstack/react-query'
 import dayjs from 'dayjs'
 import { useEffect, useMemo } from 'react'
 
-const useLoadFills = () => {
+const useLoadFills = ({ enabled = true }: { enabled?: boolean } = {}) => {
 	const { status, data, error } = useQuery({
 		queryKey: ['fills'],
 		queryFn: getAllFills,
+		enabled,
 	})
 
 	const dispatch = useAppDispatch()

@@ -8,9 +8,5 @@ export type ContactDTO = {
 	name: string
 	email: string
 	message: string
-	status:
-			| 'submited'
-			| 'responded'
-			| 'closed'
-			| 'spam'
+	status: 'submited' | 'responded' | 'closed' | 'spam'
 }

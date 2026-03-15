@@ -1,7 +1,5 @@
 import { defineConfig, globalIgnores } from 'eslint/config'
-import js from '@eslint/js'
 import nextVitals from 'eslint-config-next/core-web-vitals'
-import tseslint from 'typescript-eslint'
 import unusedImports from 'eslint-plugin-unused-imports'
 
 const eslintConfig = defineConfig([
@@ -16,7 +14,7 @@ const eslintConfig = defineConfig([
 			'no-unused-vars': 'off', // or "@typescript-eslint/no-unused-vars": "off",
 			'unused-imports/no-unused-imports': 'error',
 			'prefer-const': 'error',
-			'@typescript-eslint/no-explicit-any': 'warn',
+			// '@typescript-eslint/no-explicit-any': 'warn',
 			'unused-imports/no-unused-vars': [
 				'warn',
 				{

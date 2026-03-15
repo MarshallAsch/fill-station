@@ -47,30 +47,30 @@ const FillsTable = ({ client }: FillsTableProps) => {
 				<div className='sm:-mx-6 lg:-mx-8'>
 					<div className='inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8'>
 						<div className='shadow-sm outline-1 outline-black/5 sm:rounded-lg'>
-							<table className='relative min-w-full divide-y divide-gray-300'>
-								<thead className='bg-gray-50'>
+							<table className='divide-divider-strong relative min-w-full divide-y'>
+								<thead className='bg-surface'>
 									<tr>
 										<th
 											scope='col'
-											className='py-3.5 pr-3 pl-4 text-left text-sm font-semibold text-gray-900 sm:pl-6'
+											className='text-text py-3.5 pr-3 pl-4 text-left text-sm font-semibold sm:pl-6'
 										>
 											Cylinder
 										</th>
 										<th
 											scope='col'
-											className='px-3 py-3.5 text-left text-sm font-semibold text-gray-900'
+											className='text-text px-3 py-3.5 text-left text-sm font-semibold'
 										>
 											Fill Type
 										</th>
 										<th
 											scope='col'
-											className='px-3 py-3.5 text-left text-sm font-semibold text-gray-900'
+											className='text-text px-3 py-3.5 text-left text-sm font-semibold'
 										>
 											Contents
 										</th>
 										<th
 											scope='col'
-											className='px-3 py-3.5 text-left text-sm font-semibold text-gray-900'
+											className='text-text px-3 py-3.5 text-left text-sm font-semibold'
 										>
 											Start Pressure
 										</th>
@@ -80,7 +80,7 @@ const FillsTable = ({ client }: FillsTableProps) => {
 										<th scope='col' className='py-3.5 pr-4 pl-3 sm:pr-6'></th>
 									</tr>
 								</thead>
-								<tbody className='h-full divide-y divide-gray-200 bg-white'>
+								<tbody className='bg-background divide-divider h-full divide-y'>
 									{paginatedFills.map((fill) => (
 										<FillsRow
 											disableDelete={fills.length === 1}
@@ -92,7 +92,7 @@ const FillsTable = ({ client }: FillsTableProps) => {
 									<tr>
 										<td
 											colSpan={6}
-											className='h-full bg-gray-50 py-3.5 pr-3 pl-4 text-center text-sm font-semibold text-gray-900 sm:pl-6'
+											className='bg-surface text-text h-full py-3.5 pr-3 pl-4 text-center text-sm font-semibold sm:pl-6'
 										>
 											<div>
 												<Button
@@ -107,7 +107,7 @@ const FillsTable = ({ client }: FillsTableProps) => {
 								</tbody>
 							</table>
 							<div className='flex items-center justify-between px-4 py-4'>
-								<p className='text-sm text-gray-600'>
+								<p className='text-light-text text-sm'>
 									Page {page} of {totalPages}
 								</p>
 
