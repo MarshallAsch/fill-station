@@ -21,10 +21,12 @@ const CylinderListRow = ({
 	cylinder,
 	showOwner = false,
 	hideInspection = false,
+	disableEdit = false,
 }: {
 	cylinder: Cylinder
 	showOwner?: boolean
 	hideInspection?: boolean
+	disableEdit?: boolean
 }) => {
 	const dispatch = useAppDispatch()
 
@@ -91,13 +93,21 @@ const CylinderListRow = ({
 				</td>
 			)}
 			<td className='text-light-text px-3 py-4 text-center text-sm whitespace-nowrap'>
-				<Button
-					onClick={() =>
-						dispatch(updateEditCylinderModal(cylinder as Cylinder))
-					}
-				>
-					<Cog6ToothIcon className='h-5' />
-				</Button>
+				{disableEdit ? (
+					<Tooltip message='Please contact the shop to update the details'>
+						<Button disabled>
+							<Cog6ToothIcon className='h-5' />
+						</Button>
+					</Tooltip>
+				) : (
+					<Button
+						onClick={() =>
+							dispatch(updateEditCylinderModal(cylinder as Cylinder))
+						}
+					>
+						<Cog6ToothIcon className='h-5' />
+					</Button>
+				)}
 			</td>
 		</tr>
 	)

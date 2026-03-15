@@ -13,6 +13,7 @@ type DashboardTabsProps = {
 	fills: FillHistory[]
 	visuals: VisualHistory[]
 	hideVisDetails?: boolean
+	disableCylinderEdit?: boolean
 }
 
 const tabs = [
@@ -26,6 +27,7 @@ const DashboardTabs = async ({
 	fills,
 	visuals,
 	hideVisDetails = false,
+	disableCylinderEdit = false,
 }: DashboardTabsProps) => {
 	return (
 		<TabGroup className='w-full'>
@@ -41,7 +43,11 @@ const DashboardTabs = async ({
 			</TabList>
 			<TabPanels className='mt-4'>
 				<TabPanel>
-					<CylinderListTable cylinders={cylinders} hideInspection />
+					<CylinderListTable
+						cylinders={cylinders}
+						hideInspection
+						disableEdit={disableCylinderEdit}
+					/>
 				</TabPanel>
 				<TabPanel>
 					<FillHistoryTable fills={fills} />

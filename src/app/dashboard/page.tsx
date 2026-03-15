@@ -66,6 +66,7 @@ export default async function Dashboard() {
 					fills={JSON.parse(JSON.stringify(fills))}
 					visuals={JSON.parse(JSON.stringify(visuals))}
 					hideVisDetails={dbUser.role === 'user'}
+					disableCylinderEdit={dbUser.role === 'user'}
 				/>
 			</div>
 		</div>

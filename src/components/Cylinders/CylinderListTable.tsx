@@ -5,12 +5,14 @@ type CylinderListProps = {
 	cylinders: Cylinder[]
 	showOwner?: boolean
 	hideInspection?: boolean
+	disableEdit?: boolean
 }
 
 const CylinderListTable = ({
 	cylinders,
 	showOwner = false,
 	hideInspection = false,
+	disableEdit = false,
 }: CylinderListProps) => {
 	return (
 		<div className='mt-8 flow-root'>
@@ -87,6 +89,7 @@ const CylinderListTable = ({
 										cylinder={JSON.parse(JSON.stringify(cylinder))}
 										showOwner={showOwner}
 										hideInspection={hideInspection}
+										disableEdit={disableEdit}
 									/>
 								))}
 							</tbody>
