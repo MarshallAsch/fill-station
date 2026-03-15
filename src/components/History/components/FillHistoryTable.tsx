@@ -13,7 +13,7 @@ type FillHistoryTableProps = {
 }
 
 const FillHistoryTable = ({ fills: propFills }: FillHistoryTableProps = {}) => {
-	const { fills: hookFills } = useLoadFills()
+	const { fills: hookFills } = useLoadFills({ enabled: !propFills })
 	const fills = propFills ?? hookFills
 
 	const [page, setPage] = useState(1)

@@ -41,7 +41,7 @@ const DashboardTabs = async ({
 			</TabList>
 			<TabPanels className='mt-4'>
 				<TabPanel>
-					<CylinderListTable cylinders={cylinders} />
+					<CylinderListTable cylinders={cylinders} hideInspection />
 				</TabPanel>
 				<TabPanel>
 					<FillHistoryTable fills={fills} />

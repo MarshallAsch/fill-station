@@ -17,7 +17,7 @@ const VisHistoryTable = ({
 	visuals: propVisuals,
 	hideDetails = false,
 }: VisHistoryTableProps = {}) => {
-	const { visuals: hookVisuals } = useLoadVisuals()
+	const { visuals: hookVisuals } = useLoadVisuals({ enabled: !propVisuals })
 	const visuals = propVisuals ?? hookVisuals
 	const [page, setPage] = useState(1)
 	const [, startTransition] = useTransition()

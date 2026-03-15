@@ -4,11 +4,13 @@ import CylinderListRow from './CylinderListRow'
 type CylinderListProps = {
 	cylinders: Cylinder[]
 	showOwner?: boolean
+	hideInspection?: boolean
 }
 
 const CylinderListTable = ({
 	cylinders,
 	showOwner = false,
+	hideInspection = false,
 }: CylinderListProps) => {
 	return (
 		<div className='mt-8 flow-root'>
@@ -62,12 +64,14 @@ const CylinderListTable = ({
 									>
 										Next Vis
 									</th>
-									<th
-										scope='col'
-										className='text-text px-3 py-3.5 text-center text-sm font-semibold'
-									>
-										Do Inspection
-									</th>
+									{!hideInspection && (
+										<th
+											scope='col'
+											className='text-text px-3 py-3.5 text-center text-sm font-semibold'
+										>
+											Do Inspection
+										</th>
+									)}
 									<th
 										scope='col'
 										className='text-text px-3 py-3.5 text-center text-sm font-semibold'
@@ -82,6 +86,7 @@ const CylinderListTable = ({
 										key={cylinder.id}
 										cylinder={JSON.parse(JSON.stringify(cylinder))}
 										showOwner={showOwner}
+										hideInspection={hideInspection}
 									/>
 								))}
 							</tbody>

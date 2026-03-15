@@ -20,9 +20,11 @@ dayjs.extend(relativeTime)
 const CylinderListRow = ({
 	cylinder,
 	showOwner = false,
+	hideInspection = false,
 }: {
 	cylinder: Cylinder
 	showOwner?: boolean
+	hideInspection?: boolean
 }) => {
 	const dispatch = useAppDispatch()
 
@@ -74,18 +76,20 @@ const CylinderListRow = ({
 				</Tooltip>
 			</td>
 
-			<td className='text-light-text px-3 py-4 text-center text-sm whitespace-nowrap'>
-				{nextHydro.isBefore(dayjs()) ? (
-					'Needs Hydro First'
-				) : (
-					<Link
-						href={`/visual?client=${cylinder.ownerId}&cylinder=${cylinder.id}`}
-						className='bg-card-hover hover:bg-hover flex cursor-pointer flex-col items-center justify-between gap-2 p-6 transition sm:p-10'
-					>
-						Inspect now
-					</Link>
-				)}
-			</td>
+			{!hideInspection && (
+				<td className='text-light-text px-3 py-4 text-center text-sm whitespace-nowrap'>
+					{nextHydro.isBefore(dayjs()) ? (
+						'Needs Hydro First'
+					) : (
+						<Link
+							href={`/visual?client=${cylinder.ownerId}&cylinder=${cylinder.id}`}
+							className='bg-card-hover hover:bg-hover flex cursor-pointer flex-col items-center justify-between gap-2 p-6 transition sm:p-10'
+						>
+							Inspect now
+						</Link>
+					)}
+				</td>
+			)}
 			<td className='text-light-text px-3 py-4 text-center text-sm whitespace-nowrap'>
 				<Button
 					onClick={() =>
