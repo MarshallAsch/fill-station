@@ -16,9 +16,9 @@ type DashboardTabsProps = {
 }
 
 const tabs = [
-	{ name: 'Cylinders' },
-	{ name: 'Recent Fills' },
-	{ name: 'Visual Inspections' },
+	{ name: 'My Cylinders' },
+	{ name: 'My Fills' },
+	{ name: 'Past Visual Inspections' },
 ]
 
 const DashboardTabs = async ({
