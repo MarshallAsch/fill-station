@@ -1,5 +1,11 @@
+'use client'
+
 import { Cylinder } from '@/types/cylinder'
 import CylinderListRow from './CylinderListRow'
+import { useEffect, useState, useTransition } from 'react'
+import Button from '@/components/UI/Button'
+
+const ROWS_PER_PAGE = 20
 
 type CylinderListProps = {
 	cylinders: Cylinder[]
@@ -14,6 +20,20 @@ const CylinderListTable = ({
 	hideInspection = false,
 	disableEdit = false,
 }: CylinderListProps) => {
+	const [page, setPage] = useState(1)
+	const [, startTransition] = useTransition()
+
+	const start = (page - 1) * ROWS_PER_PAGE
+	const end = start + ROWS_PER_PAGE
+	const paginatedCylinders = cylinders.slice(start, end)
+	const totalPages = Math.ceil(cylinders.length / ROWS_PER_PAGE)
+
+	useEffect(() => {
+		startTransition(() => {
+			setPage(1)
+		})
+	}, [cylinders.length])
+
 	return (
 		<div className='mt-8 flow-root'>
 			<div className='overflow-x-auto'>
@@ -83,7 +103,7 @@ const CylinderListTable = ({
 								</tr>
 							</thead>
 							<tbody className='bg-background divide-divider divide-y'>
-								{cylinders.map((cylinder) => (
+								{paginatedCylinders.map((cylinder) => (
 									<CylinderListRow
 										key={cylinder.id}
 										cylinder={JSON.parse(JSON.stringify(cylinder))}
@@ -94,6 +114,31 @@ const CylinderListTable = ({
 								))}
 							</tbody>
 						</table>
+						{totalPages > 1 && (
+							<div className='flex items-center justify-between px-4 py-4'>
+								<p className='text-light-text text-sm'>
+									Page {page} of {totalPages}
+								</p>
+
+								<div className='flex gap-2'>
+									<Button
+										variant='ghost'
+										onClick={() => setPage((p) => Math.max(p - 1, 1))}
+										disabled={page === 1}
+									>
+										Previous
+									</Button>
+
+									<Button
+										variant='ghost'
+										onClick={() => setPage((p) => Math.min(p + 1, totalPages))}
+										disabled={page >= totalPages}
+									>
+										Next
+									</Button>
+								</div>
+							</div>
+						)}
 					</div>
 				</div>
 			</div>
