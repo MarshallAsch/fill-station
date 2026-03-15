@@ -1,12 +1,20 @@
+'use client'
+
 import FillHistoryRow from './FillHistoryRow'
 import { useEffect, useState, useTransition } from 'react'
 import Button from '@/components/UI/Button'
 import useLoadFills from '@/hooks/useLoadFills'
+import { FillHistory } from '@/types/fills'
 
 const ROWS_PER_PAGE = 20
 
-const FillHistoryTable = () => {
-	const { fills, status, error } = useLoadFills()
+type FillHistoryTableProps = {
+	fills?: FillHistory[]
+}
+
+const FillHistoryTable = ({ fills: propFills }: FillHistoryTableProps = {}) => {
+	const { fills: hookFills } = useLoadFills()
+	const fills = propFills ?? hookFills
 
 	const [page, setPage] = useState(1)
 	const [, startTransition] = useTransition()

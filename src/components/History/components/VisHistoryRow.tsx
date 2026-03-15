@@ -7,7 +7,13 @@ import {
 import dayjs from 'dayjs'
 import Link from 'next/link'
 
-const VisHistoryRow = ({ visual }: { visual: VisualHistory }) => {
+const VisHistoryRow = ({
+	visual,
+	hideDetails = false,
+}: {
+	visual: VisualHistory
+	hideDetails?: boolean
+}) => {
 	return (
 		<tr key={visual.id} className='hover:bg-hover'>
 			<td className='text-text py-4 pr-3 pl-4 text-center text-sm font-medium whitespace-nowrap sm:pl-6'>
@@ -34,11 +40,13 @@ const VisHistoryRow = ({ visual }: { visual: VisualHistory }) => {
 					)}
 				</span>
 			</td>
-			<td className='text-light-text px-3 py-4 text-center text-sm whitespace-nowrap'>
-				<Link href={`/visual/${visual.id}`}>
-					<LinkIcon className='h-5' />
-				</Link>
-			</td>
+			{!hideDetails && (
+				<td className='text-light-text px-3 py-4 text-center text-sm whitespace-nowrap'>
+					<Link href={`/visual/${visual.id}`}>
+						<LinkIcon className='h-5' />
+					</Link>
+				</td>
+			)}
 		</tr>
 	)
 }

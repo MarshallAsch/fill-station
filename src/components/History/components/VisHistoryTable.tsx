@@ -1,12 +1,24 @@
+'use client'
+
 import VisHistoryRow from './VisHistoryRow'
 import { useEffect, useState, useTransition } from 'react'
 import Button from '@/components/UI/Button'
 import useLoadVisuals from '@/hooks/useLoadVisuals'
+import { VisualHistory } from '@/types/visuals'
 
 const ROWS_PER_PAGE = 20
 
-const VisHistoryTable = () => {
-	const { visuals, status, error } = useLoadVisuals()
+type VisHistoryTableProps = {
+	visuals?: VisualHistory[]
+	hideDetails?: boolean
+}
+
+const VisHistoryTable = ({
+	visuals: propVisuals,
+	hideDetails = false,
+}: VisHistoryTableProps = {}) => {
+	const { visuals: hookVisuals } = useLoadVisuals()
+	const visuals = propVisuals ?? hookVisuals
 	const [page, setPage] = useState(1)
 	const [, startTransition] = useTransition()
 
@@ -54,17 +66,23 @@ const VisHistoryTable = () => {
 										>
 											Oxygen Clean
 										</th>
-										<th
-											scope='col'
-											className='text-text px-3 py-3.5 text-center text-sm font-semibold'
-										>
-											Details
-										</th>
+										{!hideDetails && (
+											<th
+												scope='col'
+												className='text-text px-3 py-3.5 text-center text-sm font-semibold'
+											>
+												Details
+											</th>
+										)}
 									</tr>
 								</thead>
 								<tbody className='bg-background divide-divider divide-y'>
 									{paginatedVisuals.map((vis) => (
-										<VisHistoryRow key={vis.id} visual={vis} />
+										<VisHistoryRow
+											key={vis.id}
+											visual={vis}
+											hideDetails={hideDetails}
+										/>
 									))}
 								</tbody>
 							</table>

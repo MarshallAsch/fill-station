@@ -1,13 +1,18 @@
-'use client'
+'use server'
 
 import { Tab, TabGroup, TabList, TabPanel, TabPanels } from '@headlessui/react'
 import { Cylinder } from '@/types/cylinder'
+import { FillHistory } from '@/types/fills'
+import { VisualHistory } from '@/types/visuals'
 import CylinderListTable from '@/components/Cylinders/CylinderListTable'
 import FillHistoryTable from '@/components/History/components/FillHistoryTable'
 import VisHistoryTable from '@/components/History/components/VisHistoryTable'
 
 type DashboardTabsProps = {
 	cylinders: Cylinder[]
+	fills: FillHistory[]
+	visuals: VisualHistory[]
+	hideVisDetails?: boolean
 }
 
 const tabs = [
@@ -16,7 +21,12 @@ const tabs = [
 	{ name: 'Visual Inspections' },
 ]
 
-const DashboardTabs = ({ cylinders }: DashboardTabsProps) => {
+const DashboardTabs = async ({
+	cylinders,
+	fills,
+	visuals,
+	hideVisDetails = false,
+}: DashboardTabsProps) => {
 	return (
 		<TabGroup className='w-full'>
 			<TabList className='border-border grid grid-cols-3 border-b'>
@@ -34,10 +44,10 @@ const DashboardTabs = ({ cylinders }: DashboardTabsProps) => {
 					<CylinderListTable cylinders={cylinders} />
 				</TabPanel>
 				<TabPanel>
-					<FillHistoryTable />
+					<FillHistoryTable fills={fills} />
 				</TabPanel>
 				<TabPanel>
-					<VisHistoryTable />
+					<VisHistoryTable visuals={visuals} hideDetails={hideVisDetails} />
 				</TabPanel>
 			</TabPanels>
 		</TabGroup>
