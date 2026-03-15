@@ -32,6 +32,12 @@ const UserListTable = ({ users }: { users: Profile[] }) => {
 										scope='col'
 										className='text-text px-3 py-3.5 text-center text-sm font-semibold'
 									>
+										Last Login
+									</th>
+									<th
+										scope='col'
+										className='text-text px-3 py-3.5 text-center text-sm font-semibold'
+									>
 										Linked Client
 									</th>
 								</tr>

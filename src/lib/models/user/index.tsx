@@ -23,6 +23,7 @@ export class User extends Model<
 	declare theme: CreationOptional<'light' | 'dark' | 'system'>
 	declare role: CreationOptional<'user' | 'admin' | 'filler' | 'inspector'>
 	declare clientId: ForeignKey<CreationOptional<number | null>>
+	declare lastLogin: CreationOptional<Date | null>
 }
 
 User.init(
@@ -63,6 +64,11 @@ User.init(
 				model: Client,
 				key: 'id',
 			},
+		},
+		lastLogin: {
+			type: DataTypes.DATE,
+			allowNull: true,
+			defaultValue: null,
 		},
 	},
 	{

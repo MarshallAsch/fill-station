@@ -9,6 +9,7 @@ export type Profile = {
 	role: string
 	clientId: number | null
 	clientName: string | null
+	lastLogin: string | null
 }
 
 export type UpdateProfileDTO = {

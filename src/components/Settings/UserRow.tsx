@@ -8,6 +8,11 @@ import ClientPicker from '@/components/UI/FormElements/ClientPicker'
 import { updateUserRole, updateUserClient } from '@/app/_api'
 import { toast } from 'react-toastify'
 import { useState } from 'react'
+import Tooltip from '@/components/UI/Tooltip'
+import dayjs from 'dayjs'
+import relativeTime from 'dayjs/plugin/relativeTime'
+
+dayjs.extend(relativeTime)
 
 const UserRow = ({ user }: { user: Profile }) => {
 	const [selectedClient, setSelectedClient] = useState<Client | null>(
@@ -55,6 +60,15 @@ const UserRow = ({ user }: { user: Profile }) => {
 					defaultValue={defaultRole}
 					onChange={handleRoleChange}
 				/>
+			</td>
+			<td className='text-light-text px-3 py-4 text-center text-sm whitespace-nowrap'>
+				{user.lastLogin ? (
+					<Tooltip message={dayjs(user.lastLogin).format('MMM D, YYYY h:mm A')}>
+						{dayjs(user.lastLogin).fromNow()}
+					</Tooltip>
+				) : (
+					'Never'
+				)}
 			</td>
 			<td className='px-3 py-4 text-center text-sm whitespace-nowrap'>
 				<ClientPicker

@@ -1,3 +1,5 @@
+'use server'
+
 import { auth } from '@/auth'
 import { redirect } from 'next/navigation'
 import { User } from '@/lib/models/user'
@@ -27,6 +29,7 @@ export default async function Settings() {
 		role: u.role,
 		clientId: u.clientId ?? null,
 		clientName: (u as any).client?.name ?? null,
+		lastLogin: u.lastLogin ? u.lastLogin.toISOString() : null,
 	}))
 
 	const auditEntries = await AuditLog.findAll({

@@ -34,6 +34,13 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 			return session
 		},
 	},
+	events: {
+		async signIn({ user }) {
+			if (user.id) {
+				await User.update({ lastLogin: new Date() }, { where: { id: user.id } })
+			}
+		},
+	},
 	pages: {
 		signIn: '/',
 	},
