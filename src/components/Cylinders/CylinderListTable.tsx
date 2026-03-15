@@ -1,9 +1,8 @@
 import { Cylinder } from '@/types/cylinder'
 import CylinderListRow from './CylinderListRow'
-import { Cylinder as CylinderDB } from '@/lib/models/cylinder'
 
 type CylinderListProps = {
-	cylinders: Cylinder[] | CylinderDB[]
+	cylinders: Cylinder[]
 	showOwner?: boolean
 }
 

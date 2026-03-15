@@ -2,7 +2,7 @@
 
 import { Suspense } from 'react'
 import MaintenanceHistory from '@/components/History/MaintenanceHistory/MaintenanceHistory'
-import HistoryTable from '@/components/History/components/HistoryTable'
+import FillHistoryTable from '@/components/History/components/FillHistoryTable'
 import VisHistory from '@/components/History/VisHistory'
 import ClientList from '@/components/History/ClientList'
 import CylinderListTable from '@/components/Cylinders/CylinderListTable'
@@ -18,7 +18,7 @@ const HistoryContent = () => {
 	const getTabComponent = () => {
 		switch (params.get('tab')) {
 			case TAB.FILLS:
-				return <HistoryTable />
+				return <FillHistoryTable />
 			case TAB.VIS_INSPECTION:
 				return <VisHistory />
 			case TAB.COMP_MAINTENANCE:
@@ -28,7 +28,7 @@ const HistoryContent = () => {
 			case TAB.CYLINDERS:
 				return <CylinderListTable cylinders={cylinders} showOwner />
 			default:
-				return <HistoryTable />
+				return <FillHistoryTable />
 		}
 	}
 

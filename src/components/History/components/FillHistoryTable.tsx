@@ -1,11 +1,11 @@
-import HistoryRow from './HistoryRow'
+import FillHistoryRow from './FillHistoryRow'
 import { useEffect, useState, useTransition } from 'react'
 import Button from '@/components/UI/Button'
 import useLoadFills from '@/hooks/useLoadFills'
 
 const ROWS_PER_PAGE = 20
 
-const HistoryTable = () => {
+const FillHistoryTable = () => {
 	const { fills, status, error } = useLoadFills()
 
 	const [page, setPage] = useState(1)
@@ -65,7 +65,7 @@ const HistoryTable = () => {
 								</thead>
 								<tbody className='bg-background divide-divider divide-y'>
 									{paginatedFills.map((fill) => (
-										<HistoryRow key={fill.id} fill={fill} />
+										<FillHistoryRow key={fill.id} fill={fill} />
 									))}
 								</tbody>
 							</table>
@@ -100,4 +100,4 @@ const HistoryTable = () => {
 	)
 }
 
-export default HistoryTable
+export default FillHistoryTable

@@ -10,7 +10,7 @@ function getFillMix(fill: FillHistory): string {
 		return `EAN ${fill.oxygen}`
 	}
 }
-const HistoryRow = ({ fill }: { fill: FillHistory }) => {
+const FillHistoryRow = ({ fill }: { fill: FillHistory }) => {
 	return (
 		<tr key={fill.id} className='hover:bg-hover'>
 			<td className='text-text py-4 pr-3 pl-4 text-center text-sm font-medium whitespace-nowrap sm:pl-6'>
@@ -33,4 +33,4 @@ const HistoryRow = ({ fill }: { fill: FillHistory }) => {
 	)
 }
 
-export default HistoryRow
+export default FillHistoryRow

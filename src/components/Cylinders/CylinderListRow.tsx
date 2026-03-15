@@ -10,7 +10,6 @@ import dayjs from 'dayjs'
 import Tooltip from '../UI/Tooltip'
 import relativeTime from 'dayjs/plugin/relativeTime'
 
-import { Cylinder as CylinderModel } from '@/lib/models/cylinder'
 import Link from 'next/link'
 import Button from '../UI/Button'
 import { useAppDispatch } from '@/redux/hooks'
@@ -22,7 +21,7 @@ const CylinderListRow = ({
 	cylinder,
 	showOwner = false,
 }: {
-	cylinder: Cylinder | CylinderModel
+	cylinder: Cylinder
 	showOwner?: boolean
 }) => {
 	const dispatch = useAppDispatch()
