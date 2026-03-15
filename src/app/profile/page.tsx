@@ -43,6 +43,7 @@ export default async function Profile() {
 		email: result.email ?? null,
 		image: result.image ?? null,
 		theme: result.theme,
+		lastLogin: result.lastLogin?.toISOString() ?? null,
 		role: result.role,
 		clientId: result.clientId ?? null,
 		clientName: client?.name ?? null,

@@ -1,6 +1,8 @@
 'use client'
 
 import { Cylinder } from '@/types/cylinder'
+import { Cylinder as CylinderDB } from '@/lib/models/cylinder'
+
 import CylinderListRow from './CylinderListRow'
 import { useEffect, useState, useTransition } from 'react'
 import Button from '@/components/UI/Button'
@@ -8,7 +10,7 @@ import Button from '@/components/UI/Button'
 const ROWS_PER_PAGE = 20
 
 type CylinderListProps = {
-	cylinders: Cylinder[]
+	cylinders: Cylinder[] | CylinderDB[]
 	showOwner?: boolean
 	hideInspection?: boolean
 	disableEdit?: boolean
