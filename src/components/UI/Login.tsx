@@ -1,26 +1,42 @@
 'use client'
-import { signIn, useSession } from 'next-auth/react'
+
+import { useSession } from 'next-auth/react'
+import { useCallback, useEffect, useState } from 'react'
 import ProfileButton from './ProfileButton'
 import Button from './Button'
+import LoginModal from '../Modals/LoginModal'
 
-type LoginProps = {}
-
-const Login = ({}: LoginProps) => {
+const Login = () => {
 	const session = useSession()
+	const [isOpen, setIsOpen] = useState(false)
+
+	const openModal = useCallback(() => {
+		if (session.status !== 'authenticated') {
+			setIsOpen(true)
+		}
+	}, [session.status])
+
+	useEffect(() => {
+		window.addEventListener('open-login-modal', openModal)
+		return () => {
+			window.removeEventListener('open-login-modal', openModal)
+		}
+	}, [openModal])
 
 	return (
 		<>
-			{session.status == 'authenticated' ? (
+			{session.status === 'authenticated' ? (
 				<ProfileButton />
 			) : (
 				<Button
 					type='button'
-					onClick={() => signIn('authelia')}
+					onClick={() => setIsOpen(true)}
 					className='text-text text-sm/6 font-semibold'
 				>
 					Log in <span aria-hidden='true'>&rarr;</span>
 				</Button>
 			)}
+			<LoginModal open={isOpen} onClose={() => setIsOpen(false)} />
 		</>
 	)
 }
