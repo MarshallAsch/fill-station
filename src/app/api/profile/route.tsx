@@ -11,7 +11,8 @@ export async function PUT(request: Request) {
 			{ status: 401 },
 		)
 
-	const { name, email, theme, role } = await request.json()
+	const body = await request.json()
+	const { name, email, theme, role } = body
 
 	if (role !== undefined) {
 		return Response.json(
@@ -20,7 +21,21 @@ export async function PUT(request: Request) {
 		)
 	}
 
-	if (!name && !email && !theme) {
+	const notificationFields = [
+		'notifyContact',
+		'notifyHydro',
+		'notifyVisual',
+		'hydroReminderDays1',
+		'hydroReminderDays2',
+		'visualReminderDays1',
+		'visualReminderDays2',
+	] as const
+
+	const hasNotificationField = notificationFields.some(
+		(f) => body[f] !== undefined,
+	)
+
+	if (!name && !email && !theme && !hasNotificationField) {
 		return Response.json(
 			{ error: 'missing', message: 'Nothing to update' },
 			{ status: 400 },
@@ -46,6 +61,19 @@ export async function PUT(request: Request) {
 		if (name !== undefined) user.name = name
 		if (email !== undefined) user.email = email
 		if (theme !== undefined) user.theme = theme
+
+		for (const field of notificationFields) {
+			if (body[field] !== undefined) {
+				const val = body[field]
+				if (field.startsWith('notify') && typeof val !== 'boolean') continue
+				if (
+					field.includes('Days') &&
+					(typeof val !== 'number' || val < 1 || val > 365)
+				)
+					continue
+				;(user as any)[field] = val
+			}
+		}
 
 		await user.save()
 
