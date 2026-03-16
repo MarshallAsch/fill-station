@@ -2,6 +2,8 @@ import NextAuth from 'next-auth'
 import SequelizeAdapter from '@auth/sequelize-adapter'
 import { sequelize } from './lib/models/config'
 import { User } from './lib/models/user'
+import { sendEmail } from './lib/email/transport'
+import { welcomeEmail } from './lib/email/templates'
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
 	providers: [
@@ -38,6 +40,15 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 		async signIn({ user }) {
 			if (user.id) {
 				await User.update({ lastLogin: new Date() }, { where: { id: user.id } })
+			}
+		},
+		async createUser({ user }) {
+			if (user.email && user.name) {
+				sendEmail(
+					user.email,
+					'Welcome to Fill Station',
+					welcomeEmail(user.name),
+				).catch((err) => console.error('Failed to send welcome email:', err))
 			}
 		},
 	},
