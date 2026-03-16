@@ -4,7 +4,6 @@ import { Suspense, useEffect } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { EyeIcon, TableCellsIcon } from '@heroicons/react/24/outline'
 import Link from 'next/link'
-import { toast } from 'react-toastify'
 import AirTank from '@/icons/AirTank'
 import Services from '@/components/Home/Services'
 
@@ -13,13 +12,10 @@ function Home() {
 
 	useEffect(() => {
 		if (searchParams.get('redirected') === 'true') {
-			toast.warning(
-				'You need to be logged in to access that page. Please sign in first.',
-				{
-					position: 'bottom-left',
-					autoClose: 5000,
-				},
-			)
+			setTimeout(() => {
+				window.dispatchEvent(new Event('open-login-modal'))
+			}, 0)
+			window.history.replaceState(null, '', '/')
 		}
 	}, [searchParams])
 	return (
