@@ -10,9 +10,23 @@ export type Profile = {
 	clientId: number | null
 	clientName: string | null
 	lastLogin: string | null
+	notifyContact: boolean
+	notifyHydro: boolean
+	notifyVisual: boolean
+	hydroReminderDays1: number
+	hydroReminderDays2: number
+	visualReminderDays1: number
+	visualReminderDays2: number
 }
 
 export type UpdateProfileDTO = {
-	name: string
-	email: string
+	name?: string
+	email?: string
+	notifyContact?: boolean
+	notifyHydro?: boolean
+	notifyVisual?: boolean
+	hydroReminderDays1?: number
+	hydroReminderDays2?: number
+	visualReminderDays1?: number
+	visualReminderDays2?: number
 }
