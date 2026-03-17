@@ -19,11 +19,17 @@ import useLoadClients from '@/hooks/useLoadClients'
 
 type ClientPickerProps = {
 	disableAdd?: boolean
+	disabled?: boolean
 	value?: Client | null
 	onChange?: (client: Client | null) => void
 }
 
-const ClientPicker = ({ disableAdd, value, onChange }: ClientPickerProps) => {
+const ClientPicker = ({
+	disableAdd,
+	disabled = false,
+	value,
+	onChange,
+}: ClientPickerProps) => {
 	const { clients } = useLoadClients()
 	const dispatch = useAppDispatch()
 	const [query, setQuery] = useState('')
@@ -43,6 +49,7 @@ const ClientPicker = ({ disableAdd, value, onChange }: ClientPickerProps) => {
 	return (
 		<Combobox
 			as='div'
+			disabled={disabled}
 			value={currentValue}
 			onChange={(client) => {
 				setQuery('')

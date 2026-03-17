@@ -33,6 +33,7 @@ type CylinderModalProps = {
 	cancelText?: string
 	submitText?: string
 	cylinder?: Cylinder
+	disableClientSelection?: boolean
 	onSubmit?: (
 		ownerId: number,
 		cylinderId: number | undefined,
@@ -47,6 +48,7 @@ const CylinderModal = ({
 	submitText = 'Add',
 	cancelText = 'Cancel',
 	cylinder,
+	disableClientSelection = false,
 	handleClose,
 	onSubmit = newCylinder,
 }: CylinderModalProps) => {
@@ -58,20 +60,23 @@ const CylinderModal = ({
 	)
 
 	useEffect(() => {
+		if (disableClientSelection) return
 		const cylinderOwner = clients.find(
 			(client) => client.id === cylinder?.ownerId,
 		)
 		dispatch(setSelectedClient(cylinderOwner || null))
-	}, [clients, cylinder, dispatch])
+	}, [clients, cylinder, disableClientSelection, dispatch])
+
+	const ownerId = selectedClient?.id
 
 	const handleSubmit = async (form: FormData) => {
 		const formData = Object.fromEntries(
 			form.entries(),
 		) as unknown as NewCylinderDTO
 
-		if (selectedClient) {
+		if (ownerId) {
 			const data = await onSubmit(
-				selectedClient?.id,
+				ownerId,
 				cylinder?.id,
 				formData as NewCylinderDTO,
 			)
@@ -114,7 +119,10 @@ const CylinderModal = ({
 								<form className='flex flex-col gap-4' action={handleSubmit}>
 									<DialogTitle>{description}</DialogTitle>
 
-									<ClientPicker disableAdd={true} />
+									<ClientPicker
+										disableAdd={true}
+										disabled={disableClientSelection}
+									/>
 
 									<TextInput
 										autoFocus

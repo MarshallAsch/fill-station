@@ -13,7 +13,10 @@ import { useEffect, useState } from 'react'
 import { ChevronDownIcon } from '@heroicons/react/24/outline'
 import { ExclamationTriangleIcon } from '@heroicons/react/24/solid'
 
-import { updateAddCylinderModalOpen } from '@/redux/modal/modalSlice'
+import {
+	updateAddCylinderModalOpen,
+	updateEditCylinderModal,
+} from '@/redux/modal/modalSlice'
 import { updateCylinder } from '@/redux/fills/fillsSlice'
 
 import dayjs from 'dayjs'
@@ -78,6 +81,9 @@ const CylinderPicker = ({
 				setQuery('')
 				setSelectedCylinder(cylinder)
 				if (cylinder) {
+					if (!cylinder.verified) {
+						dispatch(updateEditCylinderModal(cylinder))
+					}
 					onChange && onChange(cylinder)
 				}
 			}}
@@ -110,7 +116,9 @@ const CylinderPicker = ({
 				>
 					<div className='m-2 w-40'>
 						<Button
-							onClick={() => dispatch(updateAddCylinderModalOpen(true))}
+							onClick={() =>
+								dispatch(updateAddCylinderModalOpen({ open: true }))
+							}
 							disabled={disableAdd}
 						>
 							Add new Cylinder
@@ -141,7 +149,17 @@ const CylinderPicker = ({
 									disabled={needsHydro || needsVis}
 									className='text-text data-disabled:text-disabled data-focus:bg-accent data-focus:text-white-text flex cursor-pointer justify-between gap-2 px-3 py-2 select-none data-focus:outline-hidden'
 								>
-									{cylinder.serialNumber}
+									<span className='flex items-center gap-1'>
+										{!cylinder.verified && (
+											<Tooltip
+												position='right'
+												message='User entered details, requires verification'
+											>
+												<ExclamationTriangleIcon className='size-5 fill-yellow-500' />
+											</Tooltip>
+										)}
+										{cylinder.serialNumber}
+									</span>
 									{(needsHydro || needsVis) && (
 										<Tooltip
 											position='left'

@@ -105,7 +105,7 @@ export async function updateCylinder(
 	clientId: number,
 	cylinderId: number | undefined,
 	cylinder: NewCylinderDTO,
-): Promise<Client | string> {
+): Promise<Cylinder | string> {
 	const result = await axiosInstance.put(
 		`/api/cylinders/${cylinderId}`,
 		cylinder,

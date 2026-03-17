@@ -6,11 +6,6 @@ import { sequelize } from './lib/models/config'
 import { User } from './lib/models/user'
 import GoogleProvider from 'next-auth/providers/google'
 
-// Ensure all model tables exist before the adapter syncs its own tables.
-// Without this, User.sync() inside SequelizeAdapter fails because the
-// User model has a FK to Client which may not exist yet.
-sequelize.sync({ alter: true })
-
 // Override the default Account model to use TEXT for token columns.
 // Google returns tokens that exceed VARCHAR(255).
 const Account = sequelize.define(

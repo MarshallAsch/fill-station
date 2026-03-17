@@ -6,6 +6,7 @@ import {
 	InformationCircleIcon,
 	Cog6ToothIcon,
 } from '@heroicons/react/24/outline'
+import { ExclamationTriangleIcon } from '@heroicons/react/24/solid'
 import dayjs from 'dayjs'
 import Tooltip from '../UI/Tooltip'
 import relativeTime from 'dayjs/plugin/relativeTime'
@@ -35,6 +36,13 @@ const CylinderListRow = ({
 
 	return (
 		<tr key={cylinder.id} className='hover:bg-hover'>
+			<td className='px-2 py-4 text-center whitespace-nowrap'>
+				{!cylinder.verified && (
+					<Tooltip message='User entered details, requires verification'>
+						<ExclamationTriangleIcon className='h-5 w-5 fill-yellow-500' />
+					</Tooltip>
+				)}
+			</td>
 			<td className='text-text py-4 pr-3 pl-4 text-center text-sm font-medium whitespace-nowrap sm:pl-6'>
 				{cylinder.serialNumber}
 			</td>
