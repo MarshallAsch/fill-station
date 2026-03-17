@@ -3,7 +3,7 @@ import { ReactNode } from 'react'
 import CylinderModal from '../Modals/CylinderModal'
 import AddServiceModal from '../Modals/AddServiceModal'
 import ClientModal from '../Modals/ClientModal'
-import { updateClient } from '@/app/_api'
+import { updateClient, updateCylinder } from '@/app/_api'
 import {
 	updateAddClientModalOpen,
 	updateAddCylinderModalOpen,
@@ -14,6 +14,7 @@ import {
 const ModalProvider = ({ children }: { children: ReactNode }) => {
 	const {
 		addCylinderModalOpen,
+		addCylinderDisableClient,
 		addClientModalOpen,
 		addServiceModalOpen,
 		editClient,
@@ -25,7 +26,10 @@ const ModalProvider = ({ children }: { children: ReactNode }) => {
 		<>
 			{addCylinderModalOpen && (
 				<CylinderModal
-					handleClose={() => dispatch(updateAddCylinderModalOpen(false))}
+					disableClientSelection={addCylinderDisableClient}
+					handleClose={() =>
+						dispatch(updateAddCylinderModalOpen({ open: false }))
+					}
 				/>
 			)}
 			{addServiceModalOpen && <AddServiceModal />}
@@ -48,9 +52,9 @@ const ModalProvider = ({ children }: { children: ReactNode }) => {
 				<CylinderModal
 					cylinder={editCylinder}
 					title='Edit Cylinder'
-					submitText='Update'
+					submitText={editCylinder.verified ? 'Update' : 'Update and Verify'}
 					description={`Update ${editCylinder?.serialNumber}'s details.`}
-					onSubmit={async () => ''}
+					onSubmit={updateCylinder}
 					handleClose={() => dispatch(updateEditCylinderModal(undefined))}
 				/>
 			)}
