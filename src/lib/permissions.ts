@@ -31,7 +31,7 @@ export const PERMISSIONS = {
 		},
 		'/api/clients/:clientId/cylinders': {
 			GET: ['filler', 'inspector', 'admin'],
-			POST: ['filler', 'inspector', 'admin'],
+			POST: ['user', 'filler', 'inspector', 'admin'],
 		},
 		'/api/cylinders': {
 			GET: ['filler', 'inspector', 'admin'],

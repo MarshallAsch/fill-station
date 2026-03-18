@@ -6,6 +6,7 @@ type InitialState = {
 	editClient?: Client
 	editCylinder?: Cylinder
 	addCylinderModalOpen: boolean
+	addCylinderDisableClient: boolean
 	addServiceModalOpen: boolean
 	addClientModalOpen: boolean
 	serviceModalHours: number
@@ -15,6 +16,7 @@ const initialState: InitialState = {
 	editClient: undefined,
 	editCylinder: undefined,
 	addCylinderModalOpen: false,
+	addCylinderDisableClient: false,
 	addServiceModalOpen: false,
 	addClientModalOpen: false,
 	serviceModalHours: 0,
@@ -27,8 +29,15 @@ const modalSlice = createSlice({
 		updateServiceModalHours(state, action: PayloadAction<number>) {
 			state.serviceModalHours = action.payload
 		},
-		updateAddCylinderModalOpen(state, action: PayloadAction<boolean>) {
-			state.addCylinderModalOpen = action.payload
+		updateAddCylinderModalOpen(
+			state,
+			action: PayloadAction<{
+				open: boolean
+				disableClient?: boolean
+			}>,
+		) {
+			state.addCylinderModalOpen = action.payload.open
+			state.addCylinderDisableClient = action.payload.disableClient ?? false
 		},
 		updateAddServiceModalOpen(state, action: PayloadAction<boolean>) {
 			state.addServiceModalOpen = action.payload

@@ -44,6 +44,9 @@ const CylinderListTable = ({
 						<table className='divide-divider-strong relative min-w-full divide-y'>
 							<thead className='bg-surface'>
 								<tr>
+									<th scope='col' className='w-10 px-2 py-3.5'>
+										<span className='sr-only'>Status</span>
+									</th>
 									<th
 										scope='col'
 										className='text-text py-3.5 pr-3 pl-4 text-center text-sm font-semibold sm:pl-6'

@@ -38,6 +38,7 @@ export async function PUT(
 	cylinder.lastVis = dayjs(lastVis, 'YYYY-MM-DD')
 	cylinder.oxygenClean = oxygenClean
 	cylinder.servicePressure = servicePressure
+	cylinder.verified = true
 
 	try {
 		const result = await cylinder.save()

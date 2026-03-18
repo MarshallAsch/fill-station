@@ -7,6 +7,7 @@ export type Cylinder = {
 	ownerId?: number
 	servicePressure: number
 	oxygenClean: boolean
+	verified: boolean
 	material?: 'steel' | 'aluminum' | 'composite'
 	createdAt?: string
 	updatedAt?: string

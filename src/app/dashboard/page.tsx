@@ -1,11 +1,13 @@
 import { auth } from '@/auth'
 import { redirect } from 'next/navigation'
 import { User } from '@/lib/models/user'
+import { Client } from '@/lib/models/client'
 import { Cylinder } from '@/lib/models/cylinder'
 import { Fill } from '@/lib/models/fill'
 import { Visual } from '@/lib/models/visual'
 import DashboardTabs from '@/components/Dashboard/DashboardTabs'
 import NoClientMessage from '@/components/Dashboard/NoClientMessage'
+import AddCylinderButton from '@/components/Dashboard/AddCylinderButton'
 
 export default async function Dashboard() {
 	const session = await auth()
@@ -28,6 +30,7 @@ export default async function Dashboard() {
 	}
 
 	const clientId = dbUser.clientId
+	const client = await Client.findByPk(clientId)
 
 	const cylinders = await Cylinder.findAll({
 		where: { ownerId: clientId },
@@ -61,6 +64,11 @@ export default async function Dashboard() {
 		<div className='w-full max-w-7xl'>
 			<div className='my-4 flex flex-col items-center justify-center gap-6'>
 				<h1 className='text-text text-3xl font-semibold'>Dashboard</h1>
+				{client && (
+					<div className='flex w-full justify-end px-6'>
+						<AddCylinderButton client={JSON.parse(JSON.stringify(client))} />
+					</div>
+				)}
 				<DashboardTabs
 					cylinders={JSON.parse(JSON.stringify(cylinders))}
 					fills={JSON.parse(JSON.stringify(fills))}

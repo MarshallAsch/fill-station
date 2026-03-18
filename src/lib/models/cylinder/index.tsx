@@ -49,6 +49,7 @@ export class Cylinder extends Model<
 	declare servicePressure: number
 
 	declare oxygenClean: boolean
+	declare verified: CreationOptional<boolean>
 
 	// timestamps!
 	// createdAt can be undefined during creation
@@ -136,6 +137,11 @@ Cylinder.init(
 			type: DataTypes.BOOLEAN,
 			allowNull: false,
 			defaultValue: false,
+		},
+		verified: {
+			type: DataTypes.BOOLEAN,
+			allowNull: false,
+			defaultValue: true,
 		},
 		material: {
 			type: DataTypes.ENUM,
