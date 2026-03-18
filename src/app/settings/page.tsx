@@ -30,6 +30,13 @@ export default async function Settings() {
 		clientId: u.clientId ?? null,
 		clientName: (u as any).client?.name ?? null,
 		lastLogin: u.lastLogin ? u.lastLogin.toISOString() : null,
+		notifyContact: u.notifyContact ?? true,
+		notifyHydro: u.notifyHydro ?? true,
+		notifyVisual: u.notifyVisual ?? true,
+		hydroReminderDays1: u.hydroReminderDays1 ?? 180,
+		hydroReminderDays2: u.hydroReminderDays2 ?? 30,
+		visualReminderDays1: u.visualReminderDays1 ?? 60,
+		visualReminderDays2: u.visualReminderDays2 ?? 30,
 	}))
 
 	const auditEntries = await AuditLog.findAll({

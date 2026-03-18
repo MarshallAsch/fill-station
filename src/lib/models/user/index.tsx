@@ -24,6 +24,13 @@ export class User extends Model<
 	declare role: CreationOptional<'user' | 'admin' | 'filler' | 'inspector'>
 	declare clientId: ForeignKey<CreationOptional<number | null>>
 	declare lastLogin: CreationOptional<Date | null>
+	declare notifyContact: CreationOptional<boolean>
+	declare notifyHydro: CreationOptional<boolean>
+	declare notifyVisual: CreationOptional<boolean>
+	declare hydroReminderDays1: CreationOptional<number>
+	declare hydroReminderDays2: CreationOptional<number>
+	declare visualReminderDays1: CreationOptional<number>
+	declare visualReminderDays2: CreationOptional<number>
 }
 
 User.init(
@@ -69,6 +76,41 @@ User.init(
 			type: DataTypes.DATE,
 			allowNull: true,
 			defaultValue: null,
+		},
+		notifyContact: {
+			type: DataTypes.BOOLEAN,
+			allowNull: false,
+			defaultValue: true,
+		},
+		notifyHydro: {
+			type: DataTypes.BOOLEAN,
+			allowNull: false,
+			defaultValue: true,
+		},
+		notifyVisual: {
+			type: DataTypes.BOOLEAN,
+			allowNull: false,
+			defaultValue: true,
+		},
+		hydroReminderDays1: {
+			type: DataTypes.INTEGER,
+			allowNull: false,
+			defaultValue: 180,
+		},
+		hydroReminderDays2: {
+			type: DataTypes.INTEGER,
+			allowNull: false,
+			defaultValue: 30,
+		},
+		visualReminderDays1: {
+			type: DataTypes.INTEGER,
+			allowNull: false,
+			defaultValue: 60,
+		},
+		visualReminderDays2: {
+			type: DataTypes.INTEGER,
+			allowNull: false,
+			defaultValue: 30,
 		},
 	},
 	{

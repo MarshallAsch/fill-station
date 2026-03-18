@@ -47,6 +47,13 @@ export default async function Profile() {
 		role: result.role,
 		clientId: result.clientId ?? null,
 		clientName: client?.name ?? null,
+		notifyContact: result.notifyContact ?? true,
+		notifyHydro: result.notifyHydro ?? true,
+		notifyVisual: result.notifyVisual ?? true,
+		hydroReminderDays1: result.hydroReminderDays1 ?? 180,
+		hydroReminderDays2: result.hydroReminderDays2 ?? 30,
+		visualReminderDays1: result.visualReminderDays1 ?? 60,
+		visualReminderDays2: result.visualReminderDays2 ?? 30,
 	}
 
 	return (
