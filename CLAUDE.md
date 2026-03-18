@@ -55,7 +55,7 @@ Sequelize with sequelize-typescript. Config loaded via nconf (env vars override 
 
 **Migrations**: CJS format in `migrations/` directory. Config in `migrations/config/config.cjs`. Configured via `.sequelizerc`. New migrations should follow existing naming: `YYYYMMDDNNNNNN-description.cjs`.
 
-Environment variables use double-underscore nesting: `DATABASE__HOST`, `DATABASE__DATABASE`, `DATABASE__USERNAME`, `DATABASE__PASSWORD`.
+Environment variables use double-underscore nesting: `DATABASE__HOST`, `DATABASE__DATABASE`, `DATABASE__USERNAME`, `DATABASE__PASSWORD`. All nconf variables are documented in `.env.example` — update that file when adding new nconf config keys.
 
 ## Code Conventions
 

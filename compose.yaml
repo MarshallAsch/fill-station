@@ -14,6 +14,19 @@ services:
       - MYSQL_USER=fills
       - MYSQL_PASSWORD=fills
 
+  mail:
+    image: axllent/mailpit
+    networks:
+      - internal
+      - default
+    ports:
+      - 8025:8025
+      - 1025:1025
+    environment:
+      MP_MAX_MESSAGES: 5000
+      MP_SMTP_AUTH_ACCEPT_ANY: 1
+      MP_SMTP_AUTH_ALLOW_INSECURE: 1
+
   fill-station:
     build:
       context: .
@@ -30,6 +43,11 @@ services:
       - AUTH_SECRET=DP/Tz71RW+uIvp62zQQhD/5qEImvwemOFHatwC+ahDjmnyM7UrMUKxYhlmmM9N3z
       - AUTH_CLIENT_ID=abcd
       - AUTH_CLIENT_SECRET=abcd
+      - SMTP__HOST=image
+      - SMTP__PORT=1025
+      - SMTP__USER=any
+      - SMTP__PASSWORD=any
+      - SMTP__FROM=noreply@fillstation.local
 
 networks:
   default:
