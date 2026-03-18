@@ -30,9 +30,7 @@ export default async function Dashboard() {
 	}
 
 	const clientId = dbUser.clientId
-	const client = await Client.findByPk(clientId, {
-		attributes: ['id', 'name'],
-	})
+	const client = await Client.findByPk(clientId)
 
 	const cylinders = await Cylinder.findAll({
 		where: { ownerId: clientId },
@@ -68,7 +66,7 @@ export default async function Dashboard() {
 				<h1 className='text-text text-3xl font-semibold'>Dashboard</h1>
 				{client && (
 					<div className='flex w-full justify-end px-6'>
-						<AddCylinderButton client={{ id: client.id, name: client.name }} />
+						<AddCylinderButton client={JSON.parse(JSON.stringify(client))} />
 					</div>
 				)}
 				<DashboardTabs
