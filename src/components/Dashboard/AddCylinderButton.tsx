@@ -5,9 +5,10 @@ import { setSelectedClient } from '@/redux/client/clientSlice'
 import { updateAddCylinderModalOpen } from '@/redux/modal/modalSlice'
 import Button from '@/components/UI/Button'
 import { PlusIcon } from '@heroicons/react/24/outline'
+import { Client } from '@/types/client'
 
 type AddCylinderButtonProps = {
-	client: { id: number; name: string }
+	client: Client
 }
 
 const AddCylinderButton = ({ client }: AddCylinderButtonProps) => {
