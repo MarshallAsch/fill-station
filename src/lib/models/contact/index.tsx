@@ -54,7 +54,7 @@ Contact.init(
 		updatedAt: DataTypes.DATE,
 	},
 	{
-		tableName: 'Contact',
+		tableName: 'Contacts',
 		modelName: 'Contact',
 		sequelize,
 	},
