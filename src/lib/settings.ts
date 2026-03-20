@@ -30,12 +30,12 @@ export async function updateSettings(
 	userId: string,
 	partial: Partial<AppSettings>,
 ): Promise<AppSettings> {
-	const errors = validateSettings(partial)
+	const current = await getSettings()
+
+	const errors = validateSettings(partial, current)
 	if (errors.length > 0) {
 		throw new Error(errors.join('; '))
 	}
-
-	const current = await getSettings()
 
 	for (const [key, value] of Object.entries(partial)) {
 		const typedKey = key as keyof AppSettings
@@ -56,7 +56,10 @@ export async function updateSettings(
 	return getSettings()
 }
 
-function validateSettings(partial: Partial<AppSettings>): string[] {
+function validateSettings(
+	partial: Partial<AppSettings>,
+	current: AppSettings,
+): string[] {
 	const errors: string[] = []
 
 	if ('cronHour' in partial) {
@@ -94,8 +97,7 @@ function validateSettings(partial: Partial<AppSettings>): string[] {
 
 	if ('defaultServicePressure' in partial) {
 		const allowed =
-			partial.allowedServicePressures ??
-			SETTINGS_DEFAULTS.allowedServicePressures
+			partial.allowedServicePressures ?? current.allowedServicePressures
 		if (!allowed.includes(partial.defaultServicePressure!))
 			errors.push('defaultServicePressure must be in allowedServicePressures')
 	}

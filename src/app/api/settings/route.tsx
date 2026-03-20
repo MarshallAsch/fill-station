@@ -30,8 +30,16 @@ export async function PATCH(request: Request) {
 		}
 	}
 
+	const userId = result.user?.id
+	if (!userId) {
+		return Response.json(
+			{ error: 'auth', message: 'No user ID in session' },
+			{ status: 401 },
+		)
+	}
+
 	try {
-		const updated = await updateSettings(result.user!.id!, body)
+		const updated = await updateSettings(userId, body)
 		return Response.json(updated)
 	} catch (err: any) {
 		return Response.json(
