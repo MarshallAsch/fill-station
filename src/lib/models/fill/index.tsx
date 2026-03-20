@@ -106,5 +106,3 @@ Fill.init(
 
 Fill.belongsTo(Cylinder)
 Cylinder.hasMany(Fill)
-
-// Fill.sync({ alter: true })

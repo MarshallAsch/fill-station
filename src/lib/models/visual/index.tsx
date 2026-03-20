@@ -240,5 +240,3 @@ Visual.belongsTo(Client, {
 Client.hasMany(Visual, {
 	foreignKey: 'inspectorId',
 })
-
-// Visual.sync({ alter: true })

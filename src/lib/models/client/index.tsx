@@ -96,5 +96,3 @@ Client.init(
 		sequelize,
 	},
 )
-
-// Client.sync({ alter: true })

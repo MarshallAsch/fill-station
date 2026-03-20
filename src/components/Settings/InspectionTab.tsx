@@ -67,7 +67,6 @@ const InspectionTab = ({ settings, inspectors }: InspectionTabProps) => {
 		const diff: Partial<AppSettings> = {}
 		for (const key of Object.keys(current) as (keyof typeof current)[]) {
 			if (current[key] !== settings[key]) {
-				 
 				;(diff as any)[key] = current[key]
 			}
 		}
