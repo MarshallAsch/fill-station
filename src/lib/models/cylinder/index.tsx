@@ -107,10 +107,6 @@ Cylinder.init(
 		servicePressure: {
 			type: DataTypes.INTEGER.UNSIGNED,
 			allowNull: false,
-			defaultValue: 3000,
-			validate: {
-				isIn: [[2640, 3000, 3442]],
-			},
 		},
 		birth: {
 			type: DataTypes.DATE,

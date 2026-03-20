@@ -16,6 +16,7 @@ import {
 	BOOL_OPTIONS,
 	CYLINDER_MATERIAL_OPTIONS,
 	SERVICE_PRESSURE,
+	servicePressureOptions,
 } from '@/app/constants/FormConstants'
 import ClientPicker from '../UI/FormElements/ClientPicker'
 import DatePicker from '../UI/FormElements/DatePicker'
@@ -34,6 +35,7 @@ type CylinderModalProps = {
 	submitText?: string
 	cylinder?: Cylinder
 	disableClientSelection?: boolean
+	allowedServicePressures?: number[]
 	onSubmit?: (
 		ownerId: number,
 		cylinderId: number | undefined,
@@ -49,9 +51,13 @@ const CylinderModal = ({
 	cancelText = 'Cancel',
 	cylinder,
 	disableClientSelection = false,
+	allowedServicePressures,
 	handleClose,
 	onSubmit = newCylinder,
 }: CylinderModalProps) => {
+	const pressureItems = allowedServicePressures
+		? servicePressureOptions(allowedServicePressures)
+		: SERVICE_PRESSURE
 	const queryClient = useQueryClient()
 	const dispatch = useAppDispatch()
 
@@ -165,11 +171,11 @@ const CylinderModal = ({
 									/>
 
 									<ListBox
-										items={SERVICE_PRESSURE}
+										items={pressureItems}
 										title='Rated service Pressure'
 										name='servicePressure'
 										id='fill_pressure'
-										defaultValue={SERVICE_PRESSURE.find(
+										defaultValue={pressureItems.find(
 											(i) => i.value == cylinder?.servicePressure.toString(),
 										)}
 									/>
