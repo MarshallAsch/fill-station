@@ -64,6 +64,7 @@ export const PERMISSIONS = {
 		'/api/contact': { GET: ['admin'] },
 		'/api/settings': { GET: ['admin'], PATCH: ['admin'] },
 		'/api/settings/test-email': { POST: ['admin'] },
+		'/api/settings/email-preview': { GET: ['admin'] },
 	} as Record<string, Partial<Record<string, Role[]>>>,
 }
 

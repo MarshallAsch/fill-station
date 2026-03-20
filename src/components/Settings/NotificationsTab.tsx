@@ -52,6 +52,44 @@ const NotificationsTab = ({ smtp }: { smtp: SmtpConfig }) => {
 			<div className='mt-6'>
 				<SendTestEmailButton disabled={!isConfigured} />
 			</div>
+
+			<div className='mt-10'>
+				<h3 className='text-text text-lg font-semibold'>Email Templates</h3>
+				<p className='text-muted-text mt-1 text-sm'>
+					Preview the email notifications sent by the system
+				</p>
+				<ul className='mt-4 space-y-2'>
+					{[
+						{
+							name: 'Welcome Email',
+							template: 'welcome',
+						},
+						{
+							name: 'Contact Form Notification',
+							template: 'contact',
+						},
+						{
+							name: 'Hydro Test Reminder',
+							template: 'hydro',
+						},
+						{
+							name: 'Visual Inspection Reminder',
+							template: 'visual',
+						},
+					].map((item) => (
+						<li key={item.template}>
+							<a
+								href={`/api/settings/email-preview?template=${item.template}`}
+								target='_blank'
+								rel='noopener noreferrer'
+								className='text-accent hover:text-accent/80 text-sm underline'
+							>
+								{item.name}
+							</a>
+						</li>
+					))}
+				</ul>
+			</div>
 		</div>
 	)
 }
