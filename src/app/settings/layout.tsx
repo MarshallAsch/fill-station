@@ -10,14 +10,7 @@ import {
 } from '@heroicons/react/24/outline'
 import AirTank from '@/icons/AirTank'
 import { useRouter, useSearchParams } from 'next/navigation'
-
-export enum SETTINGS_TAB {
-	INSPECTION = 'INSPECTION',
-	CYLINDERS = 'CYLINDERS',
-	NOTIFICATIONS = 'NOTIFICATIONS',
-	USERS = 'USERS',
-	AUDIT_LOG = 'AUDIT_LOG',
-}
+import { SETTINGS_TAB } from './tabs'
 
 const navigation = [
 	{

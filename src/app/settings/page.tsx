@@ -1,8 +1,6 @@
-'use server'
-
 import { auth } from '@/auth'
 import { redirect } from 'next/navigation'
-import { SETTINGS_TAB } from './layout'
+import { SETTINGS_TAB } from './tabs'
 import { getSettings } from '@/lib/settings'
 import { User } from '@/lib/models/user'
 import { Client } from '@/lib/models/client'
