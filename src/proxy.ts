@@ -32,8 +32,6 @@ export default auth((req) => {
 	const { pathname } = req.nextUrl
 	const method = req.method
 
-	console.log({ pathname, method })
-
 	// Public static files — serve directly without auth
 	if (isPublicFile(pathname)) {
 		return NextResponse.next()
