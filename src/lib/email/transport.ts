@@ -15,13 +15,13 @@ function getTransporter(): Transporter | null {
 		return null
 	}
 
+	const user = nconf.get('smtp:user')
+	const pass = nconf.get('smtp:password')
+
 	transporter = nodemailer.createTransport({
 		host,
 		port: nconf.get('smtp:port') ?? 587,
-		auth: {
-			user: nconf.get('smtp:user'),
-			pass: nconf.get('smtp:password'),
-		},
+		...(user && pass ? { auth: { user, pass } } : {}),
 	})
 
 	return transporter
