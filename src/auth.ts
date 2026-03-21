@@ -19,8 +19,6 @@ const Account = sequelize.define(
 	},
 	{ underscored: true, timestamps: false },
 )
-import { sendEmail } from './lib/email/transport'
-import { welcomeEmail } from './lib/email/templates'
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
 	providers: [
