@@ -4,6 +4,8 @@ import { models as adapterModels } from '@auth/sequelize-adapter'
 import { DataTypes } from 'sequelize'
 import { sequelize } from './lib/models/config'
 import { User } from './lib/models/user'
+import { sendEmail } from './lib/email/transport'
+import { welcomeEmail } from './lib/email/templates'
 import GoogleProvider from 'next-auth/providers/google'
 
 // Override the default Account model to use TEXT for token columns.
