@@ -7,8 +7,8 @@ import {
 	ForeignKey,
 	DataTypes,
 	Association,
-	HasOneGetAssociationMixin,
-	HasOneSetAssociationMixin,
+	BelongsToGetAssociationMixin,
+	BelongsToSetAssociationMixin,
 	HasManyGetAssociationsMixin,
 	HasManyAddAssociationMixin,
 	HasManyAddAssociationsMixin,
@@ -57,8 +57,8 @@ export class Cylinder extends Model<
 	// updatedAt can be undefined during creation
 	declare updatedAt: CreationOptional<Date>
 
-	declare getOwner: HasOneGetAssociationMixin<Client> // Note the null assertions!
-	declare setOwner: HasOneSetAssociationMixin<Client, Client['id']>
+	declare getOwner: BelongsToGetAssociationMixin<Client>
+	declare setOwner: BelongsToSetAssociationMixin<Client, Client['id']>
 
 	declare getFills: HasManyGetAssociationsMixin<Fill> // Note the null assertions!
 	declare addFill: HasManyAddAssociationMixin<Fill, number>

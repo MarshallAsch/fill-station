@@ -19,6 +19,7 @@ import {
 } from 'sequelize'
 import { sequelize } from '../config'
 import { Cylinder } from '../cylinder'
+import { Visual } from '../visual'
 
 export class Client extends Model<
 	InferAttributes<Client>,
@@ -50,10 +51,23 @@ export class Client extends Model<
 	declare countCylinders: HasManyCountAssociationsMixin
 	declare createCylinder: HasManyCreateAssociationMixin<Cylinder, 'ownerId'>
 
+	declare getVisuals: HasManyGetAssociationsMixin<Visual>
+	declare addVisual: HasManyAddAssociationMixin<Visual, number>
+	declare addVisuals: HasManyAddAssociationsMixin<Visual, number>
+	declare setVisuals: HasManySetAssociationsMixin<Visual, number>
+	declare removeVisual: HasManyRemoveAssociationMixin<Visual, number>
+	declare removeVisuals: HasManyRemoveAssociationsMixin<Visual, number>
+	declare hasVisual: HasManyHasAssociationMixin<Visual, number>
+	declare hasVisuals: HasManyHasAssociationsMixin<Visual, number>
+	declare countVisuals: HasManyCountAssociationsMixin
+	declare createVisual: HasManyCreateAssociationMixin<Visual, 'inspectorId'>
+
 	declare Cylinders?: NonAttribute<Cylinder[]>
+	declare Visuals?: NonAttribute<Visual[]>
 
 	declare static associations: {
 		Cylinders: Association<Client, Cylinder>
+		Visuals: Association<Client, Visual>
 	}
 }
 

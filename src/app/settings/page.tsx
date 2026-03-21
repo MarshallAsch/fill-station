@@ -72,7 +72,7 @@ export default async function Settings({
 				theme: u.theme,
 				role: u.role,
 				clientId: u.clientId ?? null,
-				clientName: (u as any).client?.name ?? null,
+				clientName: u.client?.name ?? null,
 				lastLogin: u.lastLogin ? u.lastLogin.toISOString() : null,
 				notifyContact: u.notifyContact ?? true,
 				notifyHydro: u.notifyHydro ?? true,

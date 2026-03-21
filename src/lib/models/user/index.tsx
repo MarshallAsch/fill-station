@@ -5,6 +5,11 @@ import {
 	CreationOptional,
 	DataTypes,
 	ForeignKey,
+	NonAttribute,
+	Association,
+	BelongsToGetAssociationMixin,
+	BelongsToSetAssociationMixin,
+	BelongsToCreateAssociationMixin,
 } from 'sequelize'
 import { sequelize } from '../config'
 import { Client } from '../client'
@@ -12,8 +17,8 @@ import { Client } from '../client'
 export const VALID_ROLES = ['user', 'admin', 'filler', 'inspector']
 
 export class User extends Model<
-	InferAttributes<User>,
-	InferCreationAttributes<User>
+	InferAttributes<User, { omit: 'client' }>,
+	InferCreationAttributes<User, { omit: 'client' }>
 > {
 	declare id: CreationOptional<string>
 	declare name: CreationOptional<string | null>
@@ -23,6 +28,15 @@ export class User extends Model<
 	declare theme: CreationOptional<'light' | 'dark' | 'system'>
 	declare role: CreationOptional<'user' | 'admin' | 'filler' | 'inspector'>
 	declare clientId: ForeignKey<CreationOptional<number | null>>
+	declare client?: NonAttribute<Client>
+
+	declare getClient: BelongsToGetAssociationMixin<Client>
+	declare setClient: BelongsToSetAssociationMixin<Client, Client['id']>
+	declare createClient: BelongsToCreateAssociationMixin<Client>
+
+	declare static associations: {
+		client: Association<User, Client>
+	}
 	declare lastLogin: CreationOptional<Date | null>
 	declare notifyContact: CreationOptional<boolean>
 	declare notifyHydro: CreationOptional<boolean>

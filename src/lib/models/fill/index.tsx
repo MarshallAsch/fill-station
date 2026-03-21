@@ -7,8 +7,8 @@ import {
 	ForeignKey,
 	DataTypes,
 	Association,
-	HasOneGetAssociationMixin,
-	HasOneSetAssociationMixin,
+	BelongsToGetAssociationMixin,
+	BelongsToSetAssociationMixin,
 	Sequelize,
 } from 'sequelize'
 import { Cylinder } from '../cylinder'
@@ -39,8 +39,8 @@ export class Fill extends Model<
 	// updatedAt can be undefined during creation
 	declare updatedAt: CreationOptional<Date>
 
-	declare getCylinder: HasOneGetAssociationMixin<Cylinder> // Note the null assertions!
-	declare setCylinder: HasOneSetAssociationMixin<Cylinder, Cylinder['id']>
+	declare getCylinder: BelongsToGetAssociationMixin<Cylinder>
+	declare setCylinder: BelongsToSetAssociationMixin<Cylinder, Cylinder['id']>
 
 	declare static associations: {
 		cylinder: Association<Cylinder, Fill>
