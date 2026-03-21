@@ -5,6 +5,21 @@ import { PERMISSIONS, matchApiRoute, Role } from '@/lib/permissions'
 // Pages that don't require authentication
 const publicPages = ['/', '/api/auth', '/about', '/contact']
 
+function isPublicFile(pathname: string): boolean {
+	// Static files in public folder
+	const staticFileExtensions =
+		/\.(png|jpg|jpeg|svg|ico|webp|webmanifest|json)$/i
+	if (staticFileExtensions.test(pathname)) return true
+
+	// Specific known public files
+	if (pathname === '/favicon.ico') return true
+	if (pathname.startsWith('/apple-icon')) return true
+	if (pathname.startsWith('/web-app-manifest-')) return true
+	if (pathname.startsWith('/icon')) return true
+
+	return false
+}
+
 function isPublicApiRoute(pathname: string, method: string): boolean {
 	if (pathname.startsWith('/api/auth')) return true
 	if (pathname === '/api/contact' && method === 'POST') return true
@@ -16,6 +31,11 @@ function isPublicApiRoute(pathname: string, method: string): boolean {
 export default auth((req) => {
 	const { pathname } = req.nextUrl
 	const method = req.method
+
+	// Public static files — serve directly without auth
+	if (isPublicFile(pathname)) {
+		return NextResponse.next()
+	}
 
 	// Public pages — no auth required
 	if (publicPages.some((p) => pathname === p)) {

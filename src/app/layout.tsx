@@ -25,6 +25,17 @@ export const metadata: Metadata = {
 		'compressor',
 	],
 	description: 'Fill station and Service tracker for small dive shops',
+	manifest: '/manifest.webmanifest',
+	icons: [
+		{
+			rel: 'apple-touch-icon',
+			url: 'icon-192x192.png',
+		},
+		{
+			rel: 'icon',
+			url: 'icon-192x192.png',
+		},
+	],
 }
 
 export default async function Layout({ children }: { children: ReactNode }) {
