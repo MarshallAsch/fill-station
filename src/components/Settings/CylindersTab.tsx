@@ -6,6 +6,7 @@ import { toast } from 'react-toastify'
 
 import Button from '@/components/UI/Button'
 import ListBox from '@/components/UI/FormElements/ListBox'
+import NumberInput from '@/components/UI/FormElements/NumberInput'
 import { AppSettings } from '@/types/settings'
 
 type CylindersTabProps = {
@@ -20,7 +21,7 @@ const CylindersTab = ({ settings }: CylindersTabProps) => {
 		[...settings.allowedServicePressures].sort((a, b) => a - b),
 	)
 	const [showAddInput, setShowAddInput] = useState(false)
-	const [newPressure, setNewPressure] = useState('')
+	const [newPressure, setNewPressure] = useState(0)
 	const [saving, setSaving] = useState(false)
 
 	const pressureItems = allowedServicePressures.map((p) => ({
@@ -45,22 +46,18 @@ const CylindersTab = ({ settings }: CylindersTabProps) => {
 	}
 
 	const handleAddPressure = () => {
-		const value = parseInt(newPressure, 10)
-		if (
-			!newPressure ||
-			isNaN(value) ||
-			value <= 0 ||
-			!Number.isInteger(value)
-		) {
+		if (!newPressure || newPressure <= 0 || !Number.isInteger(newPressure)) {
 			toast.error('Pressure must be a positive integer')
 			return
 		}
-		if (allowedServicePressures.includes(value)) {
+		if (allowedServicePressures.includes(newPressure)) {
 			toast.error('That pressure is already in the list')
 			return
 		}
-		setAllowedServicePressures((prev) => [...prev, value].sort((a, b) => a - b))
-		setNewPressure('')
+		setAllowedServicePressures((prev) =>
+			[...prev, newPressure].sort((a, b) => a - b),
+		)
+		setNewPressure(0)
 		setShowAddInput(false)
 	}
 
@@ -153,29 +150,21 @@ const CylindersTab = ({ settings }: CylindersTabProps) => {
 
 				{showAddInput && (
 					<div className='flex items-center gap-2'>
-						<input
-							type='number'
-							min={1}
-							step={1}
-							value={newPressure}
-							onChange={(e) => setNewPressure(e.target.value)}
-							placeholder='e.g. 3442'
-							className='border-border bg-background text-text w-32 rounded-md border px-3 py-1 text-sm outline-none focus:outline-none'
-							onKeyDown={(e) => {
-								if (e.key === 'Enter') handleAddPressure()
-								if (e.key === 'Escape') {
-									setShowAddInput(false)
-									setNewPressure('')
-								}
-							}}
-							autoFocus
-						/>
+						<div className='w-50'>
+							<NumberInput
+								id='newPressure'
+								name='newPressure'
+								value={newPressure}
+								onChange={setNewPressure}
+								placeholder='e.g. 3442'
+							/>
+						</div>
 						<Button onClick={handleAddPressure}>Add</Button>
 						<Button
 							variant='ghost'
 							onClick={() => {
 								setShowAddInput(false)
-								setNewPressure('')
+								setNewPressure(0)
 							}}
 						>
 							Cancel
