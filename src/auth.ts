@@ -45,6 +45,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 		}),
 	],
 	adapter: SequelizeAdapter(sequelize, {
+		synchronize: false,
 		models: { User: User as any, Account: Account as any },
 	}),
 	callbacks: {

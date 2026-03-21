@@ -62,6 +62,9 @@ export const PERMISSIONS = {
 		'/api/users/:userId': { PUT: ['admin'] },
 		'/api/profile': { PUT: ['user', 'filler', 'inspector', 'admin'] },
 		'/api/contact': { GET: ['admin'] },
+		'/api/settings': { GET: ['admin'], PATCH: ['admin'] },
+		'/api/settings/test-email': { POST: ['admin'] },
+		'/api/settings/email-preview': { GET: ['admin'] },
 	} as Record<string, Partial<Record<string, Role[]>>>,
 }
 

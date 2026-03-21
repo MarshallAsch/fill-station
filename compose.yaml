@@ -30,11 +30,16 @@ services:
   fill-station:
     build:
       context: .
+      dockerfile: Dockerfile.dev
     ports:
       - 3000:3000
     networks:
       - internal
       - default
+    volumes:
+      - ./src:/app/src
+      - ./public:/app/public
+      - ./next.config.mjs:/app/next.config.mjs
     environment:
       - DATABASE__HOST=fills_db
       - DATABASE__DATABASE=fills

@@ -1,4 +1,7 @@
-export function welcomeEmail(userName: string): string {
+export function welcomeEmail(
+	userName: string,
+	baseUrl?: string,
+): string {
 	return `
 <!DOCTYPE html>
 <html>
@@ -10,9 +13,7 @@ export function welcomeEmail(userName: string): string {
 	<p style="color: #333; font-size: 16px;">
 		Your account has been created. You can now track your cylinder fills, visual inspections, and hydro tests.
 	</p>
-	<p style="color: #666; font-size: 14px;">
-		— Fill Station
-	</p>
+${emailFooter(baseUrl)}
 </body>
 </html>`
 }
@@ -42,6 +43,7 @@ export function hydroReminderEmail(
 	userName: string,
 	cylinderSerial: string,
 	dueDate: string,
+	baseUrl?: string,
 ): string {
 	return `
 <!DOCTYPE html>
@@ -57,9 +59,7 @@ export function hydroReminderEmail(
 	<p style="color: #333; font-size: 16px;">
 		Please contact the shop to schedule your hydrostatic test.
 	</p>
-	<p style="color: #666; font-size: 14px;">
-		— Fill Station
-	</p>
+${emailFooter(baseUrl)}
 </body>
 </html>`
 }
@@ -68,6 +68,7 @@ export function visualReminderEmail(
 	userName: string,
 	cylinderSerial: string,
 	dueDate: string,
+	baseUrl?: string,
 ): string {
 	return `
 <!DOCTYPE html>
@@ -83,11 +84,20 @@ export function visualReminderEmail(
 	<p style="color: #333; font-size: 16px;">
 		Please contact the shop to schedule your visual inspection.
 	</p>
+${emailFooter(baseUrl)}
+</body>
+</html>`
+}
+
+function emailFooter(baseUrl?: string): string {
+	const profileUrl = baseUrl ? `${baseUrl}/profile` : '/profile'
+	return `	<hr style="border: none; border-top: 1px solid #e5e5e5; margin: 24px 0 16px;" />
 	<p style="color: #666; font-size: 14px;">
 		— Fill Station
 	</p>
-</body>
-</html>`
+	<p style="color: #999; font-size: 12px;">
+		<a href="${profileUrl}" style="color: #0070f3;">Manage notification preferences</a>
+	</p>`
 }
 
 function escapeHtml(str: string): string {

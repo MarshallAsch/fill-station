@@ -80,3 +80,12 @@ export const SERVICE_PRESSURE = [
 		value: '3442',
 	},
 ]
+
+export function servicePressureOptions(
+	pressures: number[],
+): { name: string; value: string }[] {
+	return pressures.map((p) => ({
+		name: `${p} psi`,
+		value: String(p),
+	}))
+}

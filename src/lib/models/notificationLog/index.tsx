@@ -5,14 +5,18 @@ import {
 	CreationOptional,
 	ForeignKey,
 	DataTypes,
+	NonAttribute,
+	Association,
+	BelongsToGetAssociationMixin,
+	BelongsToSetAssociationMixin,
 } from 'sequelize'
 import { sequelize } from '../config'
 import { User } from '../user'
 import { Cylinder } from '../cylinder'
 
 export class NotificationLog extends Model<
-	InferAttributes<NotificationLog>,
-	InferCreationAttributes<NotificationLog>
+	InferAttributes<NotificationLog, { omit: 'user' | 'cylinder' }>,
+	InferCreationAttributes<NotificationLog, { omit: 'user' | 'cylinder' }>
 > {
 	declare id: CreationOptional<number>
 	declare userId: ForeignKey<string>
@@ -20,6 +24,20 @@ export class NotificationLog extends Model<
 	declare cylinderId: ForeignKey<number>
 	declare reminderDays: number
 	declare sentAt: string
+
+	declare user?: NonAttribute<User>
+	declare cylinder?: NonAttribute<Cylinder>
+
+	declare getUser: BelongsToGetAssociationMixin<User>
+	declare setUser: BelongsToSetAssociationMixin<User, User['id']>
+
+	declare getCylinder: BelongsToGetAssociationMixin<Cylinder>
+	declare setCylinder: BelongsToSetAssociationMixin<Cylinder, Cylinder['id']>
+
+	declare static associations: {
+		user: Association<NotificationLog, User>
+		cylinder: Association<NotificationLog, Cylinder>
+	}
 }
 
 NotificationLog.init(
@@ -66,3 +84,9 @@ NotificationLog.init(
 		],
 	},
 )
+
+NotificationLog.belongsTo(User, { foreignKey: 'userId', as: 'user' })
+NotificationLog.belongsTo(Cylinder, {
+	foreignKey: 'cylinderId',
+	as: 'cylinder',
+})

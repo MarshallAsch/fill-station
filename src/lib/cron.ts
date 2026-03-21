@@ -10,6 +10,7 @@ import {
 	hydroReminderEmail,
 	visualReminderEmail,
 } from './email/templates'
+import { getSettings } from './settings'
 
 let scheduled = false
 
@@ -17,10 +18,19 @@ export function startCronJobs() {
 	if (scheduled) return
 	scheduled = true
 
-	// Daily at 8:00 AM UTC
-	cron.schedule('0 8 * * *', async () => {
-		console.log('Running daily notification check...')
+	// Run every minute, check if current time matches configured schedule
+	cron.schedule('* * * * *', async () => {
 		try {
+			const settings = await getSettings()
+			const now = new Date()
+			if (
+				now.getUTCHours() !== settings.cronHour ||
+				now.getUTCMinutes() !== settings.cronMinute
+			) {
+				return
+			}
+
+			console.log('Running daily notification check...')
 			await checkDueReminders()
 		} catch (err) {
 			console.error('Cron notification check failed:', err)
