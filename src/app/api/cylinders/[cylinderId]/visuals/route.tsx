@@ -78,6 +78,8 @@ export async function POST(
 		oxygenCleaned,
 		markedOxygenClean,
 		inspectorId,
+
+		lastHydro,
 	} = (await request.json()) as NewVisualDTO
 
 	const inspector = await Client.findByPk(inspectorId)
@@ -128,6 +130,15 @@ export async function POST(
 		})
 
 		result = await result.save()
+
+		// Update the cylinder's inspection fields
+		cylinder.lastVis = dayjs(date)
+		cylinder.oxygenClean = markedOxygenClean
+		if (lastHydro) {
+			cylinder.lastHydro = dayjs(lastHydro)
+		}
+		await cylinder.save()
+
 		await auditLog(session.user!.id!, 'create', 'visual', result.id, {
 			cylinderId,
 		})

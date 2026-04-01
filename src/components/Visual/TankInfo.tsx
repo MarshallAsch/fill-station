@@ -26,7 +26,6 @@ const TankInfo = ({ cylinder }: { cylinder?: Cylinder }) => {
 					title='Last Hydro'
 					name='lastHydro'
 					id='last_hydro'
-					readOnly={true}
 					value={dayjs(cylinder?.lastHydro)}
 					description='The most recent hydro stamp on the cylinder'
 				/>

@@ -79,4 +79,6 @@ export type NewVisualDTO = {
 	markedOxygenClean: boolean
 
 	inspectorId: string
+
+	lastHydro?: dayjs.Dayjs
 }

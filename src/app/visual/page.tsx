@@ -56,6 +56,7 @@ export default function Visual() {
 			if (typeof data !== 'string') {
 				toast.success('Saved new Visual Inspection')
 				queryClient.invalidateQueries({ queryKey: ['visuals'] })
+				queryClient.invalidateQueries({ queryKey: ['cylinders'] })
 			} else {
 				toast.error(`Failed to create Inspection: ${data}`)
 			}

@@ -23,6 +23,7 @@ const CylindersTab = ({ settings }: CylindersTabProps) => {
 	const [showAddInput, setShowAddInput] = useState(false)
 	const [newPressure, setNewPressure] = useState(0)
 	const [saving, setSaving] = useState(false)
+	const [syncing, setSyncing] = useState(false)
 
 	const pressureItems = allowedServicePressures.map((p) => ({
 		name: `${p} psi`,
@@ -92,6 +93,18 @@ const CylindersTab = ({ settings }: CylindersTabProps) => {
 			toast.error('Failed to save settings')
 		} finally {
 			setSaving(false)
+		}
+	}
+
+	const handleSync = async () => {
+		setSyncing(true)
+		try {
+			const { data } = await axios.post('/api/cylinders/sync-visuals')
+			toast.success(`Synced ${data.updated} cylinder(s) from visuals`)
+		} catch {
+			toast.error('Failed to sync cylinders')
+		} finally {
+			setSyncing(false)
 		}
 	}
 
@@ -178,6 +191,24 @@ const CylindersTab = ({ settings }: CylindersTabProps) => {
 				<Button onClick={handleSave} disabled={saving}>
 					{saving ? 'Saving…' : 'Save Changes'}
 				</Button>
+			</div>
+
+			{/* Sync from Visuals */}
+			<div className='border-border space-y-2 border-t pt-8'>
+				<h3 className='text-text text-base font-medium'>
+					Sync Cylinders from Visuals
+				</h3>
+				<p className='text-muted-text text-sm'>
+					Update each cylinder&apos;s last visual date and O2 clean status from
+					its most recent visual inspection record. Only cylinders whose most
+					recent visual is newer than the stored last visual date will be
+					updated.
+				</p>
+				<div className='max-w-xs'>
+					<Button onClick={handleSync} disabled={syncing}>
+						{syncing ? 'Syncing…' : 'Sync from Visuals'}
+					</Button>
+				</div>
 			</div>
 		</div>
 	)
