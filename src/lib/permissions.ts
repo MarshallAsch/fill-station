@@ -62,6 +62,7 @@ export const PERMISSIONS = {
 		'/api/users/:userId': { PUT: ['admin'] },
 		'/api/profile': { PUT: ['user', 'filler', 'inspector', 'admin'] },
 		'/api/contact': { GET: ['admin'] },
+		'/api/cylinders/sync-visuals': { POST: ['admin'] },
 		'/api/settings': { GET: ['admin'], PATCH: ['admin'] },
 		'/api/settings/test-email': { POST: ['admin'] },
 		'/api/settings/email-preview': { GET: ['admin'] },
@@ -84,10 +85,16 @@ export function getNavItems(role: Role) {
 	})
 }
 
-// Sorted patterns by specificity (longest first) for matching
-const apiPatterns = Object.keys(PERMISSIONS.api).sort(
-	(a, b) => b.split('/').length - a.split('/').length,
-)
+// Sorted patterns by specificity: longest first, then fewer wildcards first
+const apiPatterns = Object.keys(PERMISSIONS.api).sort((a, b) => {
+	const aLen = a.split('/').length
+	const bLen = b.split('/').length
+	if (aLen !== bLen) return bLen - aLen
+	// Fewer wildcard segments = more specific = sort first
+	const aWild = a.split('/').filter((p) => p.startsWith(':')).length
+	const bWild = b.split('/').filter((p) => p.startsWith(':')).length
+	return aWild - bWild
+})
 
 export function matchApiRoute(pathname: string, method: string): Role[] | null {
 	for (const pattern of apiPatterns) {

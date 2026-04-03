@@ -1,9 +1,12 @@
-import { Setting } from '@/lib/models/setting'
 import { AppSettings, SETTINGS_DEFAULTS } from '@/types/settings'
-import { auditLog } from '@/lib/audit'
-import { User } from '@/lib/models/user'
+
+async function getSetting() {
+	const { Setting } = await import('@/lib/models/setting')
+	return Setting
+}
 
 export async function getSettings(): Promise<AppSettings> {
+	const Setting = await getSetting()
 	const rows = await Setting.findAll()
 	const map = new Map(rows.map((r) => [r.key, r.value]))
 
@@ -42,12 +45,14 @@ export async function updateSettings(
 		const oldValue = current[typedKey]
 		if (JSON.stringify(oldValue) === JSON.stringify(value)) continue
 
+		const Setting = await getSetting()
 		await Setting.upsert({
 			key,
 			value: JSON.stringify(value),
 		})
 
-		await auditLog(userId, 'update', 'setting', key, {
+		const { auditLog: log } = await import('@/lib/audit')
+		await log(userId, 'update', 'setting', key, {
 			old: oldValue,
 			new: value,
 		})
@@ -110,6 +115,7 @@ export async function validateInspectorId(
 	id: string | null,
 ): Promise<string | null> {
 	if (id === null) return null
+	const { User } = await import('@/lib/models/user')
 	const user = await User.findByPk(id)
 	if (!user || user.role !== 'inspector') {
 		return 'defaultInspectorId must reference a user with inspector role'

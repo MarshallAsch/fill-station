@@ -1,6 +1,6 @@
-import { auth } from '@/auth'
+import { auth } from './auth'
 import { NextResponse } from 'next/server'
-import { PERMISSIONS, matchApiRoute, Role } from '@/lib/permissions'
+import { PERMISSIONS, matchApiRoute, Role } from './lib/permissions'
 
 // Pages that don't require authentication
 const publicPages = ['/', '/api/auth', '/about', '/contact']

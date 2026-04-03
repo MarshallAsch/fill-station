@@ -1,16 +1,5 @@
 import cron from 'node-cron'
 import dayjs from 'dayjs'
-import { Op } from 'sequelize'
-import { Client } from './models/client'
-import { Cylinder } from './models/cylinder'
-import { User } from './models/user'
-import { NotificationLog } from './models/notificationLog'
-import { sendEmail } from './email/transport'
-import {
-	hydroReminderEmail,
-	visualReminderEmail,
-} from './email/templates'
-import { getSettings } from './settings'
 
 let scheduled = false
 
@@ -21,6 +10,7 @@ export function startCronJobs() {
 	// Run every minute, check if current time matches configured schedule
 	cron.schedule('* * * * *', async () => {
 		try {
+			const { getSettings } = await import('./settings')
 			const settings = await getSettings()
 			const now = new Date()
 			if (
@@ -41,6 +31,16 @@ export function startCronJobs() {
 }
 
 async function checkDueReminders() {
+	const { Op } = await import('sequelize')
+	const { Client } = await import('./models/client')
+	const { Cylinder } = await import('./models/cylinder')
+	const { User } = await import('./models/user')
+	const { NotificationLog } = await import('./models/notificationLog')
+	const { sendEmail } = await import('./email/transport')
+	const { hydroReminderEmail, visualReminderEmail } = await import(
+		'./email/templates'
+	)
+
 	const today = dayjs().format('YYYY-MM-DD')
 
 	// Find all clients that have cylinders
@@ -84,6 +84,8 @@ async function checkDueReminders() {
 						)
 						if (reminderDate.format('YYYY-MM-DD') === today) {
 							await sendReminderIfNotSent({
+								NotificationLog,
+								sendEmail,
 								userId: user.id,
 								type: 'hydro_reminder',
 								cylinderId: cylinder.id,
@@ -113,6 +115,8 @@ async function checkDueReminders() {
 						)
 						if (reminderDate.format('YYYY-MM-DD') === today) {
 							await sendReminderIfNotSent({
+								NotificationLog,
+								sendEmail,
 								userId: user.id,
 								type: 'visual_reminder',
 								cylinderId: cylinder.id,
@@ -135,6 +139,8 @@ async function checkDueReminders() {
 }
 
 async function sendReminderIfNotSent(params: {
+	NotificationLog: any
+	sendEmail: (to: string, subject: string, html: string) => Promise<boolean>
 	userId: string
 	type: 'hydro_reminder' | 'visual_reminder'
 	cylinderId: number
@@ -145,7 +151,7 @@ async function sendReminderIfNotSent(params: {
 	subject: string
 }) {
 	// Check deduplication
-	const existing = await NotificationLog.findOne({
+	const existing = await params.NotificationLog.findOne({
 		where: {
 			userId: params.userId,
 			type: params.type,
@@ -158,10 +164,14 @@ async function sendReminderIfNotSent(params: {
 	if (existing) return
 
 	// Send email — only log on success
-	const sent = await sendEmail(params.email, params.subject, params.html)
+	const sent = await params.sendEmail(
+		params.email,
+		params.subject,
+		params.html,
+	)
 
 	if (sent) {
-		await NotificationLog.create({
+		await params.NotificationLog.create({
 			userId: params.userId,
 			type: params.type,
 			cylinderId: params.cylinderId,
