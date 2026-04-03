@@ -84,6 +84,7 @@ export class Cylinder extends Model<
 
 	declare fills?: NonAttribute<Fill[]>
 	declare visuals?: NonAttribute<Visual[]>
+	declare Visuals?: NonAttribute<Visual[]>
 
 	declare static associations: {
 		owner: Association<Cylinder, Client>

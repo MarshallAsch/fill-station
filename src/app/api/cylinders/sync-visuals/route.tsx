@@ -19,7 +19,7 @@ export async function POST() {
 	let updated = 0
 
 	for (const cylinder of cylinders) {
-		const visuals = cylinder.visuals
+		const visuals = cylinder.Visuals
 		if (!visuals || visuals.length === 0) continue
 
 		// Find the most recent visual by date
@@ -29,13 +29,23 @@ export async function POST() {
 
 		const visualDate = dayjs(latest.date)
 
-		// Only update if the visual date is newer than the cylinder's lastVis
-		if (!visualDate.isAfter(dayjs(cylinder.lastVis))) continue
+		// Only update if the visual date is at least as new as the cylinder's lastVis
+		if (visualDate.isBefore(dayjs(cylinder.lastVis))) continue
 
-		cylinder.lastVis = visualDate
-		cylinder.oxygenClean = latest.markedOxygenClean
-		await cylinder.save()
-		updated++
+		let changed = false
+		if (!visualDate.isSame(dayjs(cylinder.lastVis))) {
+			cylinder.lastVis = visualDate
+			changed = true
+		}
+		if (cylinder.oxygenClean !== latest.markedOxygenClean) {
+			cylinder.oxygenClean = latest.markedOxygenClean
+			changed = true
+		}
+
+		if (changed) {
+			await cylinder.save()
+			updated++
+		}
 	}
 
 	return Response.json({ updated })
