@@ -36,10 +36,16 @@ services:
     networks:
       - internal
       - default
+    depends_on:
+      - fills_db
     volumes:
       - ./src:/app/src
       - ./public:/app/public
+      - ./migrations:/app/migrations
+      - ./seeders:/app/seeders
       - ./next.config.mjs:/app/next.config.mjs
+      - ./postcss.config.mjs:/app/postcss.config.mjs
+      - ./tsconfig.json:/app/tsconfig.json
     environment:
       - DATABASE__HOST=fills_db
       - DATABASE__DATABASE=fills
