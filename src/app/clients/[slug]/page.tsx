@@ -5,6 +5,7 @@ import FormGroup from '@/components/UI/FormGroup'
 import PropertyRow from '@/components/VisHistory/PropertyRow'
 import { Client } from '@/lib/models/client'
 import { Cylinder } from '@/lib/models/cylinder'
+import { Fill } from '@/lib/models/fill'
 
 export default async function ClientDetails({
 	params,
@@ -18,6 +19,11 @@ export default async function ClientDetails({
 	})
 
 	const cylinders: Cylinder[] = client?.Cylinders || []
+	const cylinderIds = cylinders.map((c) => c.id)
+	const totalFills =
+		cylinderIds.length > 0
+			? await Fill.count({ where: { CylinderId: cylinderIds } })
+			: 0
 
 	return (
 		<div className='max-w-7xl'>
@@ -40,7 +46,7 @@ export default async function ClientDetails({
 							title='Inspection'
 							text={client?.inspectionCert || 'None'}
 						/>
-						<PropertyRow title='Total Fills' text='0' />
+						<PropertyRow title='Total Fills' text={String(totalFills)} />
 					</div>
 				</FormGroup>
 				<div className='flex flex-col items-center justify-center gap-3 py-6'>
