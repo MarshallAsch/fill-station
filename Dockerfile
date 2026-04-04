@@ -24,6 +24,12 @@ ENV NEXT_TELEMETRY_DISABLED=1
 
 RUN npm run build
 
+# Minimal image with only production deps for running migrations
+FROM base AS migrator
+WORKDIR /migrate
+COPY package.json package-lock.json ./
+RUN npm ci --omit=dev --ignore-scripts
+
 # Production image, copy all the files and run next
 FROM base AS runner
 WORKDIR /app
@@ -39,6 +45,11 @@ RUN adduser --system --uid 1001 nextjs
 # https://nextjs.org/docs/advanced-features/output-file-tracing
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+
+# Copy migration tooling into a separate directory to avoid conflicts with standalone node_modules
+COPY --from=migrator --chown=nextjs:nodejs /migrate /migrate
+COPY --from=builder --chown=nextjs:nodejs /app/.sequelizerc /migrate/
+COPY --from=builder --chown=nextjs:nodejs /app/migrations /migrate/migrations
 
 USER nextjs
 
