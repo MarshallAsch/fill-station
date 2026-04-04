@@ -9,6 +9,9 @@ export type Cylinder = {
 	oxygenClean: boolean
 	verified: boolean
 	material?: 'steel' | 'aluminum' | 'composite'
+	nickname?: string | null
+	manufacturer?: string | null
+	size?: number | null
 	createdAt?: string
 	updatedAt?: string
 }
@@ -21,4 +24,7 @@ export type NewCylinderDTO = {
 	servicePressure: number
 	oxygenClean: boolean
 	material?: 'steel' | 'aluminum' | 'composite'
+	nickname?: string
+	manufacturer?: string
+	size?: number
 }

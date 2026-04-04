@@ -6,7 +6,7 @@ import {
 	Transition,
 	TransitionChild,
 } from '@headlessui/react'
-import { Fragment, useEffect } from 'react'
+import { Fragment, useEffect, useState } from 'react'
 import TextInput from '../UI/FormElements/TextInput'
 import { useQueryClient } from '@tanstack/react-query'
 import RadioGroup from '../UI/FormElements/RadioGroup'
@@ -14,6 +14,7 @@ import {
 	BOOL_OPTION_NO,
 	BOOL_OPTION_YES,
 	BOOL_OPTIONS,
+	CYLINDER_MANUFACTURER_OPTIONS,
 	CYLINDER_MATERIAL_OPTIONS,
 	SERVICE_PRESSURE,
 	servicePressureOptions,
@@ -61,6 +62,19 @@ const CylinderModal = ({
 	const queryClient = useQueryClient()
 	const dispatch = useAppDispatch()
 
+	const knownManufacturers = CYLINDER_MANUFACTURER_OPTIONS.map(
+		(o) => o.value,
+	).filter((v) => v !== 'other')
+	const initialManufacturer = cylinder?.manufacturer ?? ''
+	const isKnown =
+		!initialManufacturer || knownManufacturers.includes(initialManufacturer)
+	const [manufacturerSelection, setManufacturerSelection] = useState(
+		isKnown ? initialManufacturer : 'other',
+	)
+	const [customManufacturer, setCustomManufacturer] = useState(
+		isKnown ? '' : initialManufacturer,
+	)
+
 	const { selectedClient, allClients: clients } = useAppSelector(
 		(state) => state.clients,
 	)
@@ -79,6 +93,19 @@ const CylinderModal = ({
 		const formData = Object.fromEntries(
 			form.entries(),
 		) as unknown as NewCylinderDTO
+
+		// Resolve manufacturer: use custom text if "other" was selected
+		if (manufacturerSelection === 'other') {
+			formData.manufacturer = customManufacturer || undefined
+		} else {
+			formData.manufacturer = manufacturerSelection || undefined
+		}
+
+		// Parse size as number or clear it
+		if (formData.size !== undefined && formData.size !== null) {
+			const parsed = Number(formData.size)
+			formData.size = isNaN(parsed) || parsed <= 0 ? undefined : parsed
+		}
 
 		if (ownerId) {
 			const data = await onSubmit(
@@ -140,6 +167,15 @@ const CylinderModal = ({
 										placeholder='Serial Number'
 									/>
 
+									<TextInput
+										type='text'
+										id='nickname'
+										name='nickname'
+										ariaLabel='Nickname'
+										defaultValue={cylinder?.nickname ?? ''}
+										placeholder='Nickname (optional)'
+									/>
+
 									<div className='flex flex-row space-x-2'>
 										<DatePicker
 											name='birth'
@@ -168,6 +204,43 @@ const CylinderModal = ({
 										name='material'
 										options={CYLINDER_MATERIAL_OPTIONS}
 										defaultValue={cylinder?.material}
+									/>
+
+									<div className='space-y-2'>
+										<ListBox
+											items={CYLINDER_MANUFACTURER_OPTIONS}
+											title='Manufacturer'
+											name='_manufacturerSelect'
+											id='manufacturer'
+											defaultValue={CYLINDER_MANUFACTURER_OPTIONS.find(
+												(o) => o.value === manufacturerSelection,
+											)}
+											onChange={(item) => setManufacturerSelection(item.value)}
+										/>
+										{manufacturerSelection === 'other' && (
+											<TextInput
+												type='text'
+												id='custom-manufacturer'
+												name='_customManufacturer'
+												ariaLabel='Custom Manufacturer'
+												value={customManufacturer}
+												onChange={(e) =>
+													setCustomManufacturer(
+														(e.target as HTMLInputElement).value,
+													)
+												}
+												placeholder='Enter manufacturer name'
+											/>
+										)}
+									</div>
+
+									<TextInput
+										type='number'
+										id='size'
+										name='size'
+										ariaLabel='Size (cu ft)'
+										defaultValue={cylinder?.size ? String(cylinder.size) : ''}
+										placeholder='Size in cubic feet (optional)'
 									/>
 
 									<ListBox

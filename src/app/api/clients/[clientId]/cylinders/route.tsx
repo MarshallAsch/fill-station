@@ -67,6 +67,9 @@ export async function POST(
 		oxygenClean,
 		servicePressure,
 		material,
+		nickname,
+		manufacturer,
+		size,
 	} = await request.json()
 
 	if (
@@ -93,6 +96,9 @@ export async function POST(
 			oxygenClean: oxygenClean,
 			servicePressure: servicePressure,
 			material: material,
+			nickname: nickname || null,
+			manufacturer: manufacturer || null,
+			size: size ? Number(size) : null,
 			verified: (session?.user?.role ?? 'user') != 'user',
 		})
 

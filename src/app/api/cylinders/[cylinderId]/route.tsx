@@ -30,6 +30,9 @@ export async function PUT(
 		lastVis,
 		oxygenClean,
 		servicePressure,
+		nickname,
+		manufacturer,
+		size,
 	} = await request.json()
 
 	cylinder.serialNumber = serialNumber
@@ -38,6 +41,9 @@ export async function PUT(
 	cylinder.lastVis = dayjs(lastVis, 'YYYY-MM-DD')
 	cylinder.oxygenClean = oxygenClean
 	cylinder.servicePressure = servicePressure
+	cylinder.nickname = nickname || null
+	cylinder.manufacturer = manufacturer || null
+	cylinder.size = size ? Number(size) : null
 	cylinder.verified = true
 
 	try {

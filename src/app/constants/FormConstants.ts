@@ -31,6 +31,14 @@ export const CYLINDER_MATERIAL_OPTIONS = [
 	},
 ]
 
+export const CYLINDER_MANUFACTURER_OPTIONS = [
+	{ name: 'Faber', value: 'faber' },
+	{ name: 'Worthington', value: 'worthington' },
+	{ name: 'Catalina', value: 'catalina' },
+	{ name: 'Luxfer', value: 'luxfer' },
+	{ name: 'Other', value: 'other' },
+]
+
 export const PSI_INSPECTION_OPTION_ACCEPTABLE = 'acceptable'
 export const PSI_INSPECTION_OPTIONS = [
 	{

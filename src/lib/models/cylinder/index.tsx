@@ -51,6 +51,10 @@ export class Cylinder extends Model<
 	declare oxygenClean: boolean
 	declare verified: CreationOptional<boolean>
 
+	declare nickname: CreationOptional<string | null>
+	declare manufacturer: CreationOptional<string | null>
+	declare size: CreationOptional<number | null>
+
 	// timestamps!
 	// createdAt can be undefined during creation
 	declare createdAt: CreationOptional<Date>
@@ -145,6 +149,21 @@ Cylinder.init(
 			values: ['undefined', 'steel', 'aluminum', 'composite'],
 			defaultValue: 'undefined',
 			allowNull: false,
+		},
+		nickname: {
+			type: DataTypes.STRING,
+			allowNull: true,
+			defaultValue: null,
+		},
+		manufacturer: {
+			type: DataTypes.STRING,
+			allowNull: true,
+			defaultValue: null,
+		},
+		size: {
+			type: DataTypes.FLOAT,
+			allowNull: true,
+			defaultValue: null,
 		},
 		createdAt: DataTypes.DATE,
 		updatedAt: DataTypes.DATE,
