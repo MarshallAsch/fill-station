@@ -20,7 +20,16 @@ const VisHistoryRow = ({
 				{dayjs(visual.date).format('MMM D, YYYY')}
 			</td>
 			<td className='text-text py-4 pr-3 pl-4 text-center text-sm font-medium whitespace-nowrap sm:pl-6'>
-				{visual.Cylinder?.serialNumber}
+				{visual.Cylinder?.nickname ? (
+					<div className='flex flex-col items-center'>
+						<span>{visual.Cylinder.nickname}</span>
+						<span className='text-light-text text-xs'>
+							{visual.Cylinder.serialNumber}
+						</span>
+					</div>
+				) : (
+					visual.Cylinder?.serialNumber
+				)}
 			</td>
 			<td className='text-light-text items-center px-3 py-4 text-sm whitespace-nowrap'>
 				<span className='flex w-full justify-center'>

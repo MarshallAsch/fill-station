@@ -44,7 +44,13 @@ export default async function TankVisual({
 					<h1 className='text-text text-4xl font-semibold tracking-tight text-balance sm:text-5xl'>
 						<span className='flex items-center justify-center gap-2'>
 							{getBadge()}
-							<span>{`Vis Results - ${vis.Cylinder?.serialNumber}`}</span>
+							<span>
+								{`Vis Results - ${
+									vis.Cylinder?.nickname
+										? `${vis.Cylinder.nickname} (${vis.Cylinder.serialNumber})`
+										: vis.Cylinder?.serialNumber
+								}`}
+							</span>
 						</span>
 					</h1>
 					<div className='flex flex-col items-center justify-center gap-1'>

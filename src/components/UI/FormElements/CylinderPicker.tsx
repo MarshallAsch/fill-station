@@ -61,10 +61,17 @@ const CylinderPicker = ({
 		query === ''
 			? cylinders
 			: cylinders.filter((cylinder) => {
-					return cylinder.serialNumber
-						.toLowerCase()
-						.includes(query.toLowerCase())
+					const q = query.toLowerCase()
+					return (
+						cylinder.serialNumber.toLowerCase().includes(q) ||
+						(cylinder.nickname?.toLowerCase().includes(q) ?? false)
+					)
 				})
+
+	const formatCylinderLabel = (cylinder: Cylinder) =>
+		cylinder.nickname
+			? `${cylinder.nickname} (${cylinder.serialNumber})`
+			: cylinder.serialNumber
 
 	useEffect(() => {
 		if (isFill && index !== undefined && selectedCylinder) {
@@ -99,7 +106,7 @@ const CylinderPicker = ({
 					name='cylinder'
 					onChange={(e) => setQuery(e.target.value)}
 					displayValue={(cylinder: Cylinder) =>
-						cylinder && cylinder.serialNumber
+						cylinder ? formatCylinderLabel(cylinder) : ''
 					}
 				/>
 
@@ -158,7 +165,7 @@ const CylinderPicker = ({
 												<ExclamationTriangleIcon className='size-5 fill-yellow-500' />
 											</Tooltip>
 										)}
-										{cylinder.serialNumber}
+										{formatCylinderLabel(cylinder)}
 									</span>
 									{(needsHydro || needsVis) && (
 										<Tooltip

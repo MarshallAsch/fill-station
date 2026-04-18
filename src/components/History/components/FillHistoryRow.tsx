@@ -27,7 +27,16 @@ const FillHistoryRow = ({ fill }: { fill: FillHistory }) => {
 				{fill.endPressure}
 			</td>
 			<td className='py-4 pr-4 pl-3 text-center text-sm font-medium whitespace-nowrap sm:pr-6'>
-				{fill.Cylinder.serialNumber}
+				{fill.Cylinder.nickname ? (
+					<div className='flex flex-col items-center'>
+						<span>{fill.Cylinder.nickname}</span>
+						<span className='text-light-text text-xs'>
+							{fill.Cylinder.serialNumber}
+						</span>
+					</div>
+				) : (
+					fill.Cylinder.serialNumber
+				)}
 			</td>
 		</tr>
 	)

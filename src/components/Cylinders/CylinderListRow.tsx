@@ -44,7 +44,16 @@ const CylinderListRow = ({
 				)}
 			</td>
 			<td className='text-text py-4 pr-3 pl-4 text-center text-sm font-medium whitespace-nowrap sm:pl-6'>
-				{cylinder.serialNumber}
+				{cylinder.nickname ? (
+					<div className='flex flex-col items-center'>
+						<span>{cylinder.nickname}</span>
+						<span className='text-light-text text-xs'>
+							{cylinder.serialNumber}
+						</span>
+					</div>
+				) : (
+					cylinder.serialNumber
+				)}
 			</td>
 			{showOwner && (
 				<th

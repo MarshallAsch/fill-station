@@ -51,7 +51,7 @@ const CylinderListTable = ({
 										scope='col'
 										className='text-text py-3.5 pr-3 pl-4 text-center text-sm font-semibold sm:pl-6'
 									>
-										Serial number
+										Cylinder
 									</th>
 									{showOwner && (
 										<th
