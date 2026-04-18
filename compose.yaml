@@ -52,9 +52,11 @@ services:
       - DATABASE__USERNAME=fills
       - DATABASE__PASSWORD=fills
       - AUTH_SECRET=DP/Tz71RW+uIvp62zQQhD/5qEImvwemOFHatwC+ahDjmnyM7UrMUKxYhlmmM9N3z
-      - AUTH_CLIENT_ID=abcd
-      - AUTH_CLIENT_SECRET=abcd
-      - SMTP__HOST=image
+      - AUTH_AUTHELIA_CLIENT_ID=abcd
+      - AUTH_AUTHELIA_CLIENT_SECRET=abcd
+      - AUTH_GOOGLE_CLIENT_ID=abcd
+      - AUTH_GOOGLE_CLIENT_SECRET=abcd
+      - SMTP__HOST=mail
       - SMTP__PORT=1025
       - SMTP__USER=any
       - SMTP__PASSWORD=any
