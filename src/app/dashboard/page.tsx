@@ -42,7 +42,7 @@ export default async function Dashboard() {
 		include: [
 			{
 				model: Cylinder,
-				attributes: ['serialNumber'],
+				attributes: ['serialNumber', 'nickname'],
 				where: { ownerId: clientId },
 			},
 		],
@@ -54,7 +54,7 @@ export default async function Dashboard() {
 		include: [
 			{
 				model: Cylinder,
-				attributes: ['serialNumber'],
+				attributes: ['serialNumber', 'nickname'],
 				where: { ownerId: clientId },
 			},
 		],
