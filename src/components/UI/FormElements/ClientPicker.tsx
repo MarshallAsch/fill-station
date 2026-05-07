@@ -59,7 +59,7 @@ const ClientPicker = ({
 					dispatch(setSelectedClient(client))
 				}
 			}}
-			className='w-1/2'
+			className='w-full min-w-[12rem] sm:w-1/2'
 		>
 			<Label className='text-text block text-sm/6 font-medium'>
 				Select a Client
@@ -82,7 +82,7 @@ const ClientPicker = ({
 
 				<ComboboxOptions
 					transition
-					className='bg-background absolute z-10 mt-1 max-h-60 w-75 overflow-auto rounded-md py-1 text-base shadow-lg outline outline-black/5 data-leave:transition data-leave:duration-100 data-leave:ease-in data-closed:data-leave:opacity-0 sm:text-sm'
+					className='bg-background absolute z-10 mt-1 max-h-60 w-full min-w-full overflow-auto rounded-md py-1 text-base shadow-lg outline outline-black/5 data-leave:transition data-leave:duration-100 data-leave:ease-in data-closed:data-leave:opacity-0 sm:w-75 sm:text-sm'
 				>
 					<div className='m-2 w-40'>
 						<Button

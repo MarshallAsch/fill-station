@@ -69,7 +69,7 @@ export default function DatePicker({
 
 	const isDisabled = (date: Dayjs | null): boolean => {
 		if (mode === 'month') {
-			return date?.endOf('month').isAfter(today, 'day') || false
+			return date?.startOf('month').isAfter(today, 'month') || false
 		}
 		return date?.isAfter(today, 'day') || false
 	}
@@ -137,16 +137,19 @@ export default function DatePicker({
 					{mode === 'month' && (
 						<div className='grid grid-cols-3 gap-2'>
 							{months.map((m, idx) => {
-								const date = currentMonth.month(idx)
+								const date = currentMonth.month(idx).date(1)
 								return (
 									<button
 										key={m.toISOString()}
 										type='button'
 										onClick={() => selectDate(date)}
+										disabled={isDisabled(date)}
 										className={`\ rounded-lg px-2 py-2 text-sm transition ${
 											isSelected(date)
 												? 'bg-blue-600 text-white'
 												: 'hover:bg-hover'
+										} ${
+											isDisabled(date) ? 'cursor-not-allowed opacity-40' : ''
 										}`}
 									>
 										{date.format('MMM')}

@@ -77,10 +77,14 @@ const Navbar = () => {
 				<div className='fixed inset-0 z-50' />
 				<DialogPanel className='bg-background sm:ring-border fixed inset-y-0 right-0 z-50 w-full overflow-y-auto p-6 sm:max-w-sm sm:ring-1'>
 					<div className='flex items-center justify-between'>
-						<a href='#' className='-m-1.5 p-1.5'>
+						<Link
+							href='/'
+							onClick={() => setMobileMenuOpen(false)}
+							className='-m-1.5 p-1.5'
+						>
 							<span className='sr-only'>Marshalls Dive Station</span>
 							<LogoIcon />
-						</a>
+						</Link>
 						<button
 							type='button'
 							onClick={() => setMobileMenuOpen(false)}
@@ -97,6 +101,7 @@ const Navbar = () => {
 									<Link
 										key={item.name}
 										href={item.href}
+										onClick={() => setMobileMenuOpen(false)}
 										className='text-text hover:bg-hover -mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold'
 									>
 										{item.name}
@@ -104,13 +109,15 @@ const Navbar = () => {
 								))}
 								<Link
 									href='/about'
-									className='text-text text-sm/6 font-semibold'
+									onClick={() => setMobileMenuOpen(false)}
+									className='text-text hover:bg-hover -mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold'
 								>
 									About
 								</Link>
 								<Link
 									href='/contact'
-									className='text-text text-sm/6 font-semibold'
+									onClick={() => setMobileMenuOpen(false)}
+									className='text-text hover:bg-hover -mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold'
 								>
 									Contact
 								</Link>

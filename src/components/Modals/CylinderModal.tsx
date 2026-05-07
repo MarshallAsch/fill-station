@@ -178,25 +178,28 @@ const CylinderModal = ({
 
 									<div className='flex flex-row space-x-2'>
 										<DatePicker
+											mode='month'
 											name='birth'
 											title='First Hydro'
 											id='birth'
-											defaultValue={dayjs(cylinder?.birth)}
+											defaultValue={dayjs(cylinder?.birth).date(1)}
 										/>
 
 										<DatePicker
+											mode='month'
 											name='lastHydro'
 											title='Last Hydro'
 											id='last-hydro'
-											defaultValue={dayjs(cylinder?.lastHydro)}
+											defaultValue={dayjs(cylinder?.lastHydro).date(1)}
 										/>
 									</div>
 
 									<DatePicker
+										mode='month'
 										name='lastVis'
 										title='Last Vis'
 										id='last-vis'
-										defaultValue={dayjs(cylinder?.lastVis)}
+										defaultValue={dayjs(cylinder?.lastVis).date(1)}
 									/>
 
 									<RadioGroup

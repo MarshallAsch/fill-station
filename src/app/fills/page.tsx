@@ -46,14 +46,14 @@ export default function Fills() {
 	}
 
 	return (
-		<div className='max-w-7xl'>
+		<div className='w-full max-w-7xl'>
 			<form
 				action={handleSubmit}
 				className='my-4 flex flex-col items-center justify-center gap-3'
 			>
 				<h1 className='text-3xl'>Record a Tank Fill</h1>
 
-				<div className='flex gap-2'>
+				<div className='flex w-full flex-col gap-2 px-4 sm:flex-row sm:px-0'>
 					<DatePicker title='Fill Date' name='fillDate' id='fill-date' />
 					<ClientPicker />
 				</div>

@@ -32,7 +32,7 @@ const FillsTable = ({ client }: FillsTableProps) => {
 	}, [fills.length])
 
 	return (
-		<div className='px-4 sm:px-6 lg:px-8'>
+		<div className='w-full px-4 sm:px-6 lg:px-8'>
 			<div className='flex justify-end'>
 				<div className='sm:mt-0 sm:ml-16 sm:flex-none'>
 					<Button onClick={() => dispatch(addNewFill())} variant='ghost'>
@@ -44,7 +44,7 @@ const FillsTable = ({ client }: FillsTableProps) => {
 				</div>
 			</div>
 			<div className='mt-8 flow-root'>
-				<div className='sm:-mx-6 lg:-mx-8'>
+				<div className='-mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8'>
 					<div className='inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8'>
 						<div className='shadow-sm outline-1 outline-black/5 sm:rounded-lg'>
 							<table className='divide-divider-strong relative min-w-full divide-y'>
