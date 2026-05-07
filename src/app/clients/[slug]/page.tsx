@@ -1,5 +1,6 @@
 'use server'
 
+import AddCylinderButton from '@/components/Dashboard/AddCylinderButton'
 import CylinderListTable from '@/components/Cylinders/CylinderListTable'
 import FormGroup from '@/components/UI/FormGroup'
 import PropertyRow from '@/components/VisHistory/PropertyRow'
@@ -52,6 +53,12 @@ export default async function ClientDetails({
 				<div className='flex flex-col items-center justify-center gap-3 py-6'>
 					<h1 className='text-text text-2xl font-semibold'>Cylinders</h1>
 				</div>
+
+				{client && (
+					<div className='flex w-full justify-end px-6'>
+						<AddCylinderButton client={JSON.parse(JSON.stringify(client))} />
+					</div>
+				)}
 
 				<CylinderListTable cylinders={cylinders} />
 			</div>
