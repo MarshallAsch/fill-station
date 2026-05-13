@@ -11,6 +11,7 @@ import dayjs from 'dayjs'
 import { resetFills } from '@/redux/fills/fillsSlice'
 import { toast } from 'react-toastify'
 import { FillDto } from '@/types/fills'
+import FillsCardHolder from '@/components/Fills/FillsCardHolder'
 
 export default function Fills() {
 	const dispatch = useAppDispatch()
@@ -49,7 +50,7 @@ export default function Fills() {
 		<div className='w-full max-w-7xl'>
 			<form
 				action={handleSubmit}
-				className='my-4 flex flex-col items-center justify-center gap-3'
+				className='my-4 flex flex-col items-center justify-center gap-3 px-10'
 			>
 				<h1 className='text-3xl'>Record a Tank Fill</h1>
 
@@ -58,7 +59,13 @@ export default function Fills() {
 					<ClientPicker />
 				</div>
 
-				<FillsTable client={client} />
+				<div className='hidden md:block'>
+					<FillsTable client={client} />
+				</div>
+
+				<div className='block md:hidden'>
+					<FillsCardHolder client={client} />
+				</div>
 			</form>
 		</div>
 	)

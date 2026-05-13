@@ -65,7 +65,7 @@ const FillType = ({ index, item, client, cylinder }: FillTypeProps) => {
 	const [selectedFill, setSelectedFill] = useState<FillOption>(options[0])
 
 	return (
-		<div className='px-3 py-2'>
+		<div className=''>
 			<Listbox value={selectedFill} onChange={handleTypeChange} by='value'>
 				<Label className='text-text block text-sm/6 font-medium'>
 					Assigned to
