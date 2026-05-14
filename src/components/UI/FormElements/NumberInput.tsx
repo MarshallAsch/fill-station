@@ -17,6 +17,7 @@ const NumberInput = ({
 	placeholder,
 	disabled = false,
 }: NumberInputProps) => {
+	console.log(value)
 	return (
 		<div className='w-full'>
 			{label && (
@@ -32,7 +33,7 @@ const NumberInput = ({
 				id={id}
 				name={name}
 				type='number'
-				value={value}
+				value={value === 0 ? '' : value}
 				disabled={disabled}
 				placeholder={placeholder}
 				onChange={(e) =>
