@@ -18,7 +18,7 @@ const Navbar = () => {
 	const navigation = getNavItems(role)
 
 	return (
-		<header className='bg-background sticky top-0 z-9999'>
+		<header className='bg-background sticky top-0 z-49'>
 			<nav
 				aria-label='Global'
 				className='bg-background mx-auto flex max-w-7xl items-center justify-between p-6 lg:px-8'
@@ -36,8 +36,8 @@ const Navbar = () => {
 						<div className='flex lg:hidden'>
 							<button
 								type='button'
-								onClick={() => setMobileMenuOpen(true)}
-								className='text-text -m-2.5 inline-flex items-center justify-center rounded-md p-2.5'
+								onClick={() => setMobileMenuOpen((p) => !p)}
+								className='text-text z-999 -m-2.5 inline-flex cursor-pointer items-center justify-center rounded-md p-2.5'
 							>
 								<span className='sr-only'>Open main menu</span>
 								<Bars3Icon aria-hidden='true' className='size-6' />
