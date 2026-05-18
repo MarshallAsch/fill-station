@@ -33,7 +33,7 @@ const NumberInput = ({
 				id={id}
 				name={name}
 				type='number'
-				value={value === 0 ? '' : value}
+				value={String(Number(value))}
 				disabled={disabled}
 				placeholder={placeholder}
 				onChange={(e) =>

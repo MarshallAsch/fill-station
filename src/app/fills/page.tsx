@@ -50,7 +50,7 @@ export default function Fills() {
 		<div className='w-full max-w-7xl'>
 			<form
 				action={handleSubmit}
-				className='my-4 flex flex-col items-center justify-center gap-3 px-10'
+				className='my-4 flex flex-col items-center justify-center gap-3 px-4 md:px-10'
 			>
 				<h1 className='text-3xl'>Record a Tank Fill</h1>
 

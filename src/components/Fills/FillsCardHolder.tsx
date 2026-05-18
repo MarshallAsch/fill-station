@@ -53,7 +53,7 @@ const FillsCardHolder = ({ client }: FillsCardHolderProps) => {
 	}, [paginatedFills.length, currentIndex])
 
 	return (
-		<div className='group relative flex max-w-screen flex-col gap-2 px-4 py-16'>
+		<div className='group relative flex max-w-screen flex-col gap-2'>
 			{/* Slide Container */}
 			<div className='h-full overflow-hidden rounded-2xl'>
 				<div
@@ -88,6 +88,9 @@ const FillsCardHolder = ({ client }: FillsCardHolderProps) => {
 						<Button onClick={nextFill}>Next</Button>
 					)}
 				</div>
+			</div>
+			<div className='mt-8'>
+				<Button type='submit'>Submit</Button>
 			</div>
 		</div>
 	)
