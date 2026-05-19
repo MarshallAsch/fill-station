@@ -97,3 +97,30 @@ export function servicePressureOptions(
 		value: String(p),
 	}))
 }
+
+export const YES_NO_ANY_OPTIONS = [
+	{ name: 'Any', value: 'any' },
+	{ name: 'Yes', value: 'yes' },
+	{ name: 'No', value: 'no' },
+]
+
+export const MIX_TYPE_OPTIONS = [
+	{ name: 'Any mix', value: 'any' },
+	{ name: 'Air', value: 'air' },
+	{ name: 'Nitrox', value: 'nitrox' },
+	{ name: 'Trimix', value: 'trimix' },
+]
+
+export const CYLINDER_SORT_OPTIONS = [
+	{ name: 'Serial (A→Z)', value: 'serial-asc' },
+	{ name: 'Last vis (oldest first)', value: 'lastVis-asc' },
+	{ name: 'Last vis (newest first)', value: 'lastVis-desc' },
+	{ name: 'Last hydro (oldest first)', value: 'lastHydro-asc' },
+	{ name: 'Last hydro (newest first)', value: 'lastHydro-desc' },
+]
+
+export const FILL_SORT_OPTIONS = [
+	{ name: 'Date (newest first)', value: 'date-desc' },
+	{ name: 'Date (oldest first)', value: 'date-asc' },
+	{ name: 'Mix type (A→Z)', value: 'mix-asc' },
+]
