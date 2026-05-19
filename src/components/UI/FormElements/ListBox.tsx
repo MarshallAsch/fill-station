@@ -21,6 +21,7 @@ type ListBoxProps = {
 	id: string
 	name: string
 	defaultValue?: Item
+	value?: Item
 	onChange?: (item: Item) => void
 }
 
@@ -30,14 +31,17 @@ const ListBox = ({
 	id,
 	name,
 	defaultValue,
+	value,
 	onChange,
 }: ListBoxProps) => {
-	const [selected, setSelected] = useState<Item | undefined>(
+	const [internal, setInternal] = useState<Item | undefined>(
 		defaultValue || items[0],
 	)
+	const isControlled = value !== undefined
+	const selected = isControlled ? value : internal
 
 	const handleChange = (item: Item) => {
-		setSelected(item)
+		if (!isControlled) setInternal(item)
 		onChange?.(item)
 	}
 

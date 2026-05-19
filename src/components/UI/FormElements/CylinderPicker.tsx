@@ -34,6 +34,7 @@ type CylinderPickerProps = {
 	disableAdd?: boolean
 	showExpired?: boolean
 	initialValue?: Cylinder
+	value?: Cylinder | null
 	filter?: (c: Cylinder) => boolean
 	onChange?: (c?: Cylinder) => void
 	visPage?: boolean
@@ -46,6 +47,7 @@ const CylinderPicker = ({
 	showExpired = false,
 	filter,
 	initialValue,
+	value,
 	onChange,
 	visPage,
 }: CylinderPickerProps) => {
@@ -56,6 +58,9 @@ const CylinderPicker = ({
 	const [selectedCylinder, setSelectedCylinder] = useState<
 		Cylinder | null | undefined
 	>(initialValue)
+
+	const isControlled = value !== undefined
+	const currentValue = isControlled ? value : selectedCylinder
 
 	const filteredCylinders =
 		query === ''
@@ -83,15 +88,15 @@ const CylinderPicker = ({
 	return (
 		<Combobox
 			as='div'
-			value={selectedCylinder}
+			value={currentValue}
 			onChange={(cylinder) => {
 				setQuery('')
-				setSelectedCylinder(cylinder)
+				if (!isControlled) setSelectedCylinder(cylinder)
 				if (cylinder) {
 					if (!cylinder.verified) {
 						dispatch(updateEditCylinderModal(cylinder))
 					}
-					onChange && onChange(cylinder)
+					onChange?.(cylinder)
 				}
 			}}
 			className='w-full min-w-[12rem] sm:w-1/2'
