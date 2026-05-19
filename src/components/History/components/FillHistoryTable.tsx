@@ -1,12 +1,10 @@
 'use client'
 
 import FillHistoryRow from './FillHistoryRow'
-import { useEffect, useState, useTransition } from 'react'
-import Button from '@/components/UI/Button'
+import Pagination from '@/components/UI/Pagination'
+import usePagination from '@/hooks/usePagination'
 import useLoadFills from '@/hooks/useLoadFills'
 import { FillHistory } from '@/types/fills'
-
-const ROWS_PER_PAGE = 20
 
 type FillHistoryTableProps = {
 	fills?: FillHistory[]
@@ -16,19 +14,12 @@ const FillHistoryTable = ({ fills: propFills }: FillHistoryTableProps = {}) => {
 	const { fills: hookFills } = useLoadFills({ enabled: !propFills })
 	const fills = propFills ?? hookFills
 
-	const [page, setPage] = useState(1)
-	const [, startTransition] = useTransition()
-
-	const start = (page - 1) * ROWS_PER_PAGE
-	const end = start + ROWS_PER_PAGE
-	const paginatedFills = fills.slice(start, end)
-	const totalPages = Math.ceil(fills.length / ROWS_PER_PAGE)
-
-	useEffect(() => {
-		startTransition(() => {
-			setPage(1)
-		})
-	}, [fills.length])
+	const {
+		page,
+		setPage,
+		totalPages,
+		paginatedItems: paginatedFills,
+	} = usePagination(fills)
 
 	return (
 		<div className='min-w-full'>
@@ -77,29 +68,11 @@ const FillHistoryTable = ({ fills: propFills }: FillHistoryTableProps = {}) => {
 									))}
 								</tbody>
 							</table>
-							<div className='flex items-center justify-between px-4 py-4'>
-								<p className='text-light-text text-sm'>
-									Page {page} of {totalPages}
-								</p>
-
-								<div className='flex gap-2'>
-									<Button
-										variant='ghost'
-										onClick={() => setPage((p) => Math.max(p - 1, 1))}
-										disabled={page === 1}
-									>
-										Previous
-									</Button>
-
-									<Button
-										variant='ghost'
-										onClick={() => setPage((p) => Math.min(p + 1, totalPages))}
-										disabled={page >= totalPages}
-									>
-										Next
-									</Button>
-								</div>
-							</div>
+							<Pagination
+								page={page}
+								totalPages={totalPages}
+								onPageChange={setPage}
+							/>
 						</div>
 					</div>
 				</div>

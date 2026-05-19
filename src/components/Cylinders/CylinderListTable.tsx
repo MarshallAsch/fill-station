@@ -4,13 +4,11 @@ import { Cylinder } from '@/types/cylinder'
 import { Cylinder as CylinderDB } from '@/lib/models/cylinder'
 
 import CylinderListRow from './CylinderListRow'
-import { useEffect, useState, useTransition } from 'react'
-import Button from '@/components/UI/Button'
-
-const ROWS_PER_PAGE = 20
+import Pagination from '@/components/UI/Pagination'
+import usePagination from '@/hooks/usePagination'
 
 type CylinderListProps = {
-	cylinders: Cylinder[] | CylinderDB[]
+	cylinders: Array<Cylinder | CylinderDB>
 	showOwner?: boolean
 	hideInspection?: boolean
 	disableEdit?: boolean
@@ -22,19 +20,12 @@ const CylinderListTable = ({
 	hideInspection = false,
 	disableEdit = false,
 }: CylinderListProps) => {
-	const [page, setPage] = useState(1)
-	const [, startTransition] = useTransition()
-
-	const start = (page - 1) * ROWS_PER_PAGE
-	const end = start + ROWS_PER_PAGE
-	const paginatedCylinders = cylinders.slice(start, end)
-	const totalPages = Math.ceil(cylinders.length / ROWS_PER_PAGE)
-
-	useEffect(() => {
-		startTransition(() => {
-			setPage(1)
-		})
-	}, [cylinders.length])
+	const {
+		page,
+		setPage,
+		totalPages,
+		paginatedItems: paginatedCylinders,
+	} = usePagination(cylinders)
 
 	return (
 		<div className='mt-8 flow-root'>
@@ -119,31 +110,11 @@ const CylinderListTable = ({
 								))}
 							</tbody>
 						</table>
-						{totalPages > 1 && (
-							<div className='flex items-center justify-between px-4 py-4'>
-								<p className='text-light-text text-sm'>
-									Page {page} of {totalPages}
-								</p>
-
-								<div className='flex gap-2'>
-									<Button
-										variant='ghost'
-										onClick={() => setPage((p) => Math.max(p - 1, 1))}
-										disabled={page === 1}
-									>
-										Previous
-									</Button>
-
-									<Button
-										variant='ghost'
-										onClick={() => setPage((p) => Math.min(p + 1, totalPages))}
-										disabled={page >= totalPages}
-									>
-										Next
-									</Button>
-								</div>
-							</div>
-						)}
+						<Pagination
+							page={page}
+							totalPages={totalPages}
+							onPageChange={setPage}
+						/>
 					</div>
 				</div>
 			</div>
