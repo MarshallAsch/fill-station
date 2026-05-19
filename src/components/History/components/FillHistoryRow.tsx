@@ -1,16 +1,8 @@
 import { FillHistory } from '@/types/fills'
+import { getFillMix } from '@/lib/fills'
 import dayjs from 'dayjs'
 import Tooltip from '@/components/UI/Tooltip'
 
-function getFillMix(fill: FillHistory): string {
-	if (fill.helium != 0) {
-		return `${fill.oxygen}/${fill.helium}`
-	} else if (fill.oxygen == 20.9) {
-		return 'air'
-	} else {
-		return `EAN ${fill.oxygen}`
-	}
-}
 const FillHistoryRow = ({ fill }: { fill: FillHistory }) => {
 	const ownerName = fill.Cylinder.Client?.name
 	const cylinderCell = fill.Cylinder.nickname ? (
