@@ -1,12 +1,13 @@
 'use client'
 
+import { useState } from 'react'
+import { useSession } from 'next-auth/react'
 import FillHistoryRow from './FillHistoryRow'
-import { useEffect, useState, useTransition } from 'react'
-import Button from '@/components/UI/Button'
+import EditFillModal from '@/components/Modals/EditFillModal'
+import Pagination from '@/components/UI/Pagination'
+import usePagination from '@/hooks/usePagination'
 import useLoadFills from '@/hooks/useLoadFills'
 import { FillHistory } from '@/types/fills'
-
-const ROWS_PER_PAGE = 20
 
 type FillHistoryTableProps = {
 	fills?: FillHistory[]
@@ -15,20 +16,16 @@ type FillHistoryTableProps = {
 const FillHistoryTable = ({ fills: propFills }: FillHistoryTableProps = {}) => {
 	const { fills: hookFills } = useLoadFills({ enabled: !propFills })
 	const fills = propFills ?? hookFills
+	const { data: session } = useSession()
+	const isAdmin = session?.user?.role === 'admin'
+	const [editing, setEditing] = useState<FillHistory | null>(null)
 
-	const [page, setPage] = useState(1)
-	const [, startTransition] = useTransition()
-
-	const start = (page - 1) * ROWS_PER_PAGE
-	const end = start + ROWS_PER_PAGE
-	const paginatedFills = fills.slice(start, end)
-	const totalPages = Math.ceil(fills.length / ROWS_PER_PAGE)
-
-	useEffect(() => {
-		startTransition(() => {
-			setPage(1)
-		})
-	}, [fills.length])
+	const {
+		page,
+		setPage,
+		totalPages,
+		paginatedItems: paginatedFills,
+	} = usePagination(fills)
 
 	return (
 		<div className='min-w-full'>
@@ -53,13 +50,13 @@ const FillHistoryTable = ({ fills: propFills }: FillHistoryTableProps = {}) => {
 										</th>
 										<th
 											scope='col'
-											className='text-text px-3 py-3.5 text-center text-sm font-semibold'
+											className='text-text hidden px-3 py-3.5 text-center text-sm font-semibold sm:table-cell'
 										>
 											Start Pressure
 										</th>
 										<th
 											scope='col'
-											className='text-text px-3 py-3.5 text-center text-sm font-semibold'
+											className='text-text hidden px-3 py-3.5 text-center text-sm font-semibold sm:table-cell'
 										>
 											End Pressure
 										</th>
@@ -69,41 +66,38 @@ const FillHistoryTable = ({ fills: propFills }: FillHistoryTableProps = {}) => {
 										>
 											Cylinder
 										</th>
+										{isAdmin && (
+											<th
+												scope='col'
+												className='text-text px-3 py-3.5 text-center text-sm font-semibold'
+											>
+												<span className='sr-only'>Edit</span>
+											</th>
+										)}
 									</tr>
 								</thead>
 								<tbody className='bg-background divide-divider divide-y'>
 									{paginatedFills.map((fill) => (
-										<FillHistoryRow key={fill.id} fill={fill} />
+										<FillHistoryRow
+											key={fill.id}
+											fill={fill}
+											onEdit={isAdmin ? () => setEditing(fill) : undefined}
+										/>
 									))}
 								</tbody>
 							</table>
-							<div className='flex items-center justify-between px-4 py-4'>
-								<p className='text-light-text text-sm'>
-									Page {page} of {totalPages}
-								</p>
-
-								<div className='flex gap-2'>
-									<Button
-										variant='ghost'
-										onClick={() => setPage((p) => Math.max(p - 1, 1))}
-										disabled={page === 1}
-									>
-										Previous
-									</Button>
-
-									<Button
-										variant='ghost'
-										onClick={() => setPage((p) => Math.min(p + 1, totalPages))}
-										disabled={page >= totalPages}
-									>
-										Next
-									</Button>
-								</div>
-							</div>
+							<Pagination
+								page={page}
+								totalPages={totalPages}
+								onPageChange={setPage}
+							/>
 						</div>
 					</div>
 				</div>
 			</div>
+			{isAdmin && (
+				<EditFillModal fill={editing} onClose={() => setEditing(null)} />
+			)}
 		</div>
 	)
 }

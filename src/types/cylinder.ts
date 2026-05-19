@@ -5,6 +5,7 @@ export type Cylinder = {
 	lastHydro: string | undefined
 	lastVis: string | undefined
 	ownerId?: number
+	Client?: { id: number; name: string } | null
 	servicePressure: number
 	oxygenClean: boolean
 	verified: boolean

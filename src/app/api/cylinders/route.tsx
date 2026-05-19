@@ -1,4 +1,5 @@
 import { Cylinder } from '@/lib/models/cylinder'
+import { Client } from '@/lib/models/client'
 import dayjs from 'dayjs'
 import { requireRole, isErrorResponse } from '@/lib/permissions-server'
 import customParseFormat from 'dayjs/plugin/customParseFormat'
@@ -8,7 +9,9 @@ export async function GET(request: Request) {
 	const result = await requireRole(['filler', 'inspector', 'admin'])
 	if (isErrorResponse(result)) return result
 
-	const cylinders = await Cylinder.findAll()
+	const cylinders = await Cylinder.findAll({
+		include: [{ model: Client, attributes: ['id', 'name'] }],
+	})
 
 	return Response.json(cylinders)
 }

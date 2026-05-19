@@ -1,17 +1,25 @@
 import {
+	Dialog,
+	DialogPanel,
+	DialogTitle,
 	Label,
 	Listbox,
 	ListboxButton,
 	ListboxOption,
 	ListboxOptions,
 } from '@headlessui/react'
-import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/24/outline'
+import {
+	CheckIcon,
+	ChevronUpDownIcon,
+	ExclamationTriangleIcon,
+} from '@heroicons/react/24/outline'
 import { updateFill } from '@/redux/fills/fillsSlice'
 import { useAppDispatch } from '@/redux/hooks'
 import { useState } from 'react'
 import { Fill, FillType as IFillType } from '@/types/fills'
 import { Client } from '@/types/client'
 import { Cylinder } from '@/types/cylinder'
+import Button from '../UI/Button'
 
 type FillTypeProps = {
 	index: number
@@ -23,8 +31,8 @@ type FillTypeProps = {
 type FillOption = {
 	value: IFillType
 	label: string
-	enabled: boolean
-	disabledReason?: string
+	certified: boolean
+	warning?: string
 }
 
 const FillType = ({ index, item, client, cylinder }: FillTypeProps) => {
@@ -37,22 +45,27 @@ const FillType = ({ index, item, client, cylinder }: FillTypeProps) => {
 		cylinder?.oxygenClean == true && !!(client && client.trimixCert)
 
 	const options: FillOption[] = [
-		{ value: 'air', label: 'Air', enabled: true },
+		{ value: 'air', label: 'Air', certified: true },
 		{
 			value: 'nitrox',
 			label: 'Nitrox',
-			enabled: nitroxUse,
-			disabledReason: 'Not certified for nitrox',
+			certified: nitroxUse,
+			warning: 'Client is not certified for nitrox',
 		},
 		{
 			value: 'trimix',
 			label: 'Trimix',
-			enabled: trimixUse,
-			disabledReason: 'Not certified for trimix',
+			certified: trimixUse,
+			warning: 'Client is not certified for trimix',
 		},
 	]
 
-	const handleTypeChange = (option: FillOption) => {
+	const [selectedFill, setSelectedFill] = useState<FillOption>(options[0])
+	const [pendingOverride, setPendingOverride] = useState<FillOption | null>(
+		null,
+	)
+
+	const applyChange = (option: FillOption) => {
 		setSelectedFill(option)
 		dispatch(
 			updateFill({
@@ -62,7 +75,18 @@ const FillType = ({ index, item, client, cylinder }: FillTypeProps) => {
 		)
 	}
 
-	const [selectedFill, setSelectedFill] = useState<FillOption>(options[0])
+	const handleTypeChange = (option: FillOption) => {
+		if (!option.certified) {
+			setPendingOverride(option)
+			return
+		}
+		applyChange(option)
+	}
+
+	const confirmOverride = () => {
+		if (pendingOverride) applyChange(pendingOverride)
+		setPendingOverride(null)
+	}
 
 	return (
 		<div className=''>
@@ -89,11 +113,16 @@ const FillType = ({ index, item, client, cylinder }: FillTypeProps) => {
 							<ListboxOption
 								key={option.value}
 								value={option}
-								disabled={!option.enabled}
-								title={option.enabled ? undefined : option.disabledReason}
-								className='group data-focus:bg-accent data-focus:text-white-text relative cursor-default py-2 pr-9 pl-3 data-disabled:cursor-not-allowed data-disabled:opacity-50'
+								title={option.certified ? undefined : option.warning}
+								className='group data-focus:bg-accent data-focus:text-white-text relative cursor-default py-2 pr-9 pl-3'
 							>
-								<span className='block truncate font-normal group-data-selected:font-semibold'>
+								<span className='flex items-center gap-2 truncate font-normal group-data-selected:font-semibold'>
+									{!option.certified && (
+										<ExclamationTriangleIcon
+											aria-hidden='true'
+											className='size-4 text-yellow-500'
+										/>
+									)}
 									{option.label}
 								</span>
 
@@ -105,6 +134,39 @@ const FillType = ({ index, item, client, cylinder }: FillTypeProps) => {
 					</ListboxOptions>
 				</div>
 			</Listbox>
+
+			<Dialog
+				open={pendingOverride !== null}
+				onClose={() => setPendingOverride(null)}
+				className='relative z-50'
+			>
+				<div className='fixed inset-0 bg-black/30' aria-hidden='true' />
+				<div className='fixed inset-0 flex items-center justify-center p-4'>
+					<DialogPanel className='bg-background border-border w-full max-w-md rounded-lg border p-6 shadow-xl'>
+						<div className='flex items-start gap-3'>
+							<ExclamationTriangleIcon
+								aria-hidden='true'
+								className='size-6 shrink-0 text-yellow-500'
+							/>
+							<div className='flex-1'>
+								<DialogTitle className='text-text text-base font-semibold'>
+									Override cert requirement?
+								</DialogTitle>
+								<p className='text-light-text mt-2 text-sm'>
+									{pendingOverride?.warning}. Only continue if this cylinder is
+									being borrowed by a certified diver.
+								</p>
+							</div>
+						</div>
+						<div className='mt-6 flex justify-end gap-2'>
+							<Button variant='ghost' onClick={() => setPendingOverride(null)}>
+								Cancel
+							</Button>
+							<Button onClick={confirmOverride}>Override</Button>
+						</div>
+					</DialogPanel>
+				</div>
+			</Dialog>
 		</div>
 	)
 }

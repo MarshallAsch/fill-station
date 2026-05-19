@@ -29,10 +29,10 @@ const ClientsRow = ({ client }: { client: Client }) => {
 			<td className='text-text py-4 pr-3 pl-4 text-center text-sm font-medium whitespace-nowrap sm:pl-6'>
 				{client.name}
 			</td>
-			<td className='text-text py-4 pr-3 pl-4 text-center text-sm font-medium whitespace-nowrap sm:pl-6'>
+			<td className='text-text hidden py-4 pr-3 pl-4 text-center text-sm font-medium whitespace-nowrap sm:table-cell sm:pl-6'>
 				{clientCert(client)}
 			</td>
-			<td className='text-light-text px-3 py-4 text-center text-sm whitespace-nowrap'>
+			<td className='text-light-text hidden px-3 py-4 text-center text-sm whitespace-nowrap sm:table-cell'>
 				<Link href={`/clients/${client.id}`}>
 					<LinkIcon className='h-5' />
 				</Link>

@@ -2,11 +2,10 @@ import { useAppDispatch, useAppSelector } from '@/redux/hooks'
 import FillsRow from './FillsRow'
 import { addNewFill } from '@/redux/fills/fillsSlice'
 import Button from '../UI/Button'
+import Pagination from '../UI/Pagination'
+import usePagination from '@/hooks/usePagination'
 import { Client } from '@/types/client'
 import { PlusCircleIcon } from '@heroicons/react/24/outline'
-import { useEffect, useState, useTransition } from 'react'
-
-const ROWS_PER_PAGE = 20
 
 type FillsTableProps = {
 	client: Client | null
@@ -14,22 +13,14 @@ type FillsTableProps = {
 
 const FillsTable = ({ client }: FillsTableProps) => {
 	const fills = useAppSelector((state) => state.fills.fills)
-
-	const [page, setPage] = useState(1)
-	const [, startTransition] = useTransition()
-
 	const dispatch = useAppDispatch()
 
-	const start = (page - 1) * ROWS_PER_PAGE
-	const end = start + ROWS_PER_PAGE
-	const paginatedFills = fills.slice(start, end)
-	const totalPages = Math.ceil(fills.length / ROWS_PER_PAGE)
-
-	useEffect(() => {
-		startTransition(() => {
-			setPage(1)
-		})
-	}, [fills.length])
+	const {
+		page,
+		setPage,
+		totalPages,
+		paginatedItems: paginatedFills,
+	} = usePagination(fills)
 
 	return (
 		<div className='w-full px-4 sm:px-6 lg:px-8'>
@@ -106,29 +97,11 @@ const FillsTable = ({ client }: FillsTableProps) => {
 									</tr>
 								</tbody>
 							</table>
-							<div className='flex items-center justify-between px-4 py-4'>
-								<p className='text-light-text text-sm'>
-									Page {page} of {totalPages}
-								</p>
-
-								<div className='flex gap-2'>
-									<Button
-										variant='ghost'
-										onClick={() => setPage((p) => Math.max(p - 1, 1))}
-										disabled={page === 1}
-									>
-										Previous
-									</Button>
-
-									<Button
-										variant='ghost'
-										onClick={() => setPage((p) => Math.min(p + 1, totalPages))}
-										disabled={page >= totalPages}
-									>
-										Next
-									</Button>
-								</div>
-							</div>
+							<Pagination
+								page={page}
+								totalPages={totalPages}
+								onPageChange={setPage}
+							/>
 						</div>
 					</div>
 				</div>

@@ -48,7 +48,7 @@ const UserRow = ({ user }: { user: Profile }) => {
 			<td className='text-text py-4 pr-3 pl-4 text-center text-sm font-medium whitespace-nowrap sm:pl-6'>
 				{user.name ?? '—'}
 			</td>
-			<td className='text-light-text px-3 py-4 text-center text-sm whitespace-nowrap'>
+			<td className='text-light-text hidden px-3 py-4 text-center text-sm whitespace-nowrap sm:table-cell'>
 				{user.email ?? '—'}
 			</td>
 			<td className='px-3 py-4 text-center text-sm whitespace-nowrap'>
@@ -61,7 +61,7 @@ const UserRow = ({ user }: { user: Profile }) => {
 					onChange={handleRoleChange}
 				/>
 			</td>
-			<td className='text-light-text px-3 py-4 text-center text-sm whitespace-nowrap'>
+			<td className='text-light-text hidden px-3 py-4 text-center text-sm whitespace-nowrap lg:table-cell'>
 				{user.lastLogin ? (
 					<Tooltip message={dayjs(user.lastLogin).format('MMM D, YYYY h:mm A')}>
 						{dayjs(user.lastLogin).fromNow()}
@@ -70,7 +70,7 @@ const UserRow = ({ user }: { user: Profile }) => {
 					'Never'
 				)}
 			</td>
-			<td className='px-3 py-4 text-center text-sm whitespace-nowrap'>
+			<td className='hidden px-3 py-4 text-center text-sm whitespace-nowrap md:table-cell'>
 				<ClientPicker
 					disableAdd
 					value={selectedClient}

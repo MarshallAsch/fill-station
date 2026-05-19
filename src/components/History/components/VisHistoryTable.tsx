@@ -1,12 +1,10 @@
 'use client'
 
 import VisHistoryRow from './VisHistoryRow'
-import { useEffect, useState, useTransition } from 'react'
-import Button from '@/components/UI/Button'
+import Pagination from '@/components/UI/Pagination'
+import usePagination from '@/hooks/usePagination'
 import useLoadVisuals from '@/hooks/useLoadVisuals'
 import { VisualHistory } from '@/types/visuals'
-
-const ROWS_PER_PAGE = 20
 
 type VisHistoryTableProps = {
 	visuals?: VisualHistory[]
@@ -19,19 +17,12 @@ const VisHistoryTable = ({
 }: VisHistoryTableProps = {}) => {
 	const { visuals: hookVisuals } = useLoadVisuals({ enabled: !propVisuals })
 	const visuals = propVisuals ?? hookVisuals
-	const [page, setPage] = useState(1)
-	const [, startTransition] = useTransition()
-
-	const start = (page - 1) * ROWS_PER_PAGE
-	const end = start + ROWS_PER_PAGE
-	const paginatedVisuals = visuals.slice(start, end)
-	const totalPages = Math.ceil(visuals.length / ROWS_PER_PAGE)
-
-	useEffect(() => {
-		startTransition(() => {
-			setPage(1)
-		})
-	}, [visuals.length])
+	const {
+		page,
+		setPage,
+		totalPages,
+		paginatedItems: paginatedVisuals,
+	} = usePagination(visuals)
 
 	return (
 		<div className='min-w-full'>
@@ -62,7 +53,7 @@ const VisHistoryTable = ({
 										</th>
 										<th
 											scope='col'
-											className='text-text px-3 py-3.5 text-center text-sm font-semibold'
+											className='text-text hidden px-3 py-3.5 text-center text-sm font-semibold sm:table-cell'
 										>
 											Oxygen Clean
 										</th>
@@ -86,29 +77,11 @@ const VisHistoryTable = ({
 									))}
 								</tbody>
 							</table>
-							<div className='flex items-center justify-between px-4 py-4'>
-								<p className='text-light-text text-sm'>
-									Page {page} of {totalPages}
-								</p>
-
-								<div className='flex gap-2'>
-									<Button
-										variant='ghost'
-										onClick={() => setPage((p) => Math.max(p - 1, 1))}
-										disabled={page === 1}
-									>
-										Previous
-									</Button>
-
-									<Button
-										variant='ghost'
-										onClick={() => setPage((p) => Math.min(p + 1, totalPages))}
-										disabled={page >= totalPages}
-									>
-										Next
-									</Button>
-								</div>
-							</div>
+							<Pagination
+								page={page}
+								totalPages={totalPages}
+								onPageChange={setPage}
+							/>
 						</div>
 					</div>
 				</div>

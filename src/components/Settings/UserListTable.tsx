@@ -18,7 +18,7 @@ const UserListTable = ({ users }: { users: Profile[] }) => {
 									</th>
 									<th
 										scope='col'
-										className='text-text px-3 py-3.5 text-center text-sm font-semibold'
+										className='text-text hidden px-3 py-3.5 text-center text-sm font-semibold sm:table-cell'
 									>
 										Email
 									</th>
@@ -30,13 +30,13 @@ const UserListTable = ({ users }: { users: Profile[] }) => {
 									</th>
 									<th
 										scope='col'
-										className='text-text px-3 py-3.5 text-center text-sm font-semibold'
+										className='text-text hidden px-3 py-3.5 text-center text-sm font-semibold lg:table-cell'
 									>
 										Last Login
 									</th>
 									<th
 										scope='col'
-										className='text-text px-3 py-3.5 text-center text-sm font-semibold'
+										className='text-text hidden px-3 py-3.5 text-center text-sm font-semibold md:table-cell'
 									>
 										Linked Client
 									</th>

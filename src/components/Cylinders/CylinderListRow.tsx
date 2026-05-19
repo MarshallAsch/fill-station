@@ -56,18 +56,19 @@ const CylinderListRow = ({
 				)}
 			</td>
 			{showOwner && (
-				<th
-					scope='col'
-					className='text-text py-3.5 pr-3 pl-4 text-center text-sm font-semibold sm:pl-6'
-				>
-					<Link
-						href={`/clients/${cylinder.ownerId}`}
-						className='bg-card-hover hover:bg-hover flex cursor-pointer flex-col items-center justify-between gap-2 p-6 transition sm:p-10'
-					>
-						{cylinder.ownerId}
-						<InformationCircleIcon />
-					</Link>
-				</th>
+				<td className='text-text py-4 pr-3 pl-4 text-center text-sm font-medium whitespace-nowrap sm:pl-6'>
+					{cylinder.ownerId ? (
+						<Link
+							href={`/clients/${cylinder.ownerId}`}
+							className='hover:text-accent inline-flex items-center gap-1 underline-offset-2 hover:underline'
+						>
+							<span>{cylinder.Client?.name ?? `#${cylinder.ownerId}`}</span>
+							<InformationCircleIcon className='h-4 w-4' />
+						</Link>
+					) : (
+						<span className='text-light-text'>—</span>
+					)}
+				</td>
 			)}
 			<td className='text-text py-4 pr-3 pl-4 text-center text-sm font-medium whitespace-nowrap sm:pl-6'>
 				<span className='flex w-full justify-center'>
@@ -84,19 +85,19 @@ const CylinderListRow = ({
 			<td className='text-light-text px-3 py-4 text-center text-sm whitespace-nowrap'>
 				{dayjs(cylinder.lastVis).format('MM/YYYY')}
 			</td>
-			<td className='text-light-text px-3 py-4 text-center text-sm whitespace-nowrap'>
+			<td className='text-light-text hidden px-3 py-4 text-center text-sm whitespace-nowrap md:table-cell'>
 				<Tooltip message={nextHydro.format('MM/YYYY')}>
 					{nextHydro.isBefore(dayjs()) ? 'now' : nextHydro.fromNow()}
 				</Tooltip>
 			</td>
-			<td className='text-light-text px-3 py-4 text-center text-sm whitespace-nowrap'>
+			<td className='text-light-text hidden px-3 py-4 text-center text-sm whitespace-nowrap md:table-cell'>
 				<Tooltip message={nextVis.format('MM/YYYY')}>
 					{nextVis.isBefore(dayjs()) ? 'now' : nextVis.fromNow()}
 				</Tooltip>
 			</td>
 
 			{!hideInspection && (
-				<td className='text-light-text px-3 py-4 text-center text-sm whitespace-nowrap'>
+				<td className='text-light-text hidden px-3 py-4 text-center text-sm whitespace-nowrap md:table-cell'>
 					{nextHydro.isBefore(dayjs()) ? (
 						'Needs Hydro First'
 					) : (

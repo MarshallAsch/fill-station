@@ -122,6 +122,28 @@ export async function newMaintenance(
 	return result.status == 201 ? result.data : result.data.message
 }
 
+export async function updateMaintenance(
+	id: number,
+	record: { date: string; hours: number; description: string },
+): Promise<CompressorMaintenance | string> {
+	const result = await axiosInstance.put(`/api/maintenance/${id}`, record)
+	return result.status == 200 ? result.data : result.data.message
+}
+
+export async function updateFill(
+	id: number,
+	fill: {
+		date: string
+		startPressure: number
+		endPressure: number
+		oxygen: number
+		helium: number
+	},
+): Promise<FillHistory | string> {
+	const result = await axiosInstance.put(`/api/fills/${id}`, fill)
+	return result.status == 200 ? result.data : result.data.message
+}
+
 export async function addNewFill(fills: FillDto[]): Promise<Fill[] | string> {
 	const result = await axiosInstance.post('/api/fills', fills)
 
