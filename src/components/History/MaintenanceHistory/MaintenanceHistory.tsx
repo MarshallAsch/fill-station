@@ -1,5 +1,7 @@
 import dayjs from 'dayjs'
 import clsx from 'clsx'
+import { useState } from 'react'
+import { useSession } from 'next-auth/react'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import { useAppDispatch } from '@/redux/hooks'
 import { updateAddServiceModalOpen } from '@/redux/modal/modalSlice'
@@ -11,9 +13,11 @@ import {
 	PlayIcon,
 	WrenchIcon,
 } from '@heroicons/react/20/solid'
-import { MAINTENANCE_TYPE } from '@/types/maintenance'
+import { PencilSquareIcon } from '@heroicons/react/24/outline'
+import { CompressorMaintenance, MAINTENANCE_TYPE } from '@/types/maintenance'
 import Button from '@/components/UI/Button'
 import Tooltip from '@/components/UI/Tooltip'
+import EditMaintenanceModal from '@/components/Modals/EditMaintenanceModal'
 import {
 	useLoadMaintenance,
 	useLoadMaintenanceSummary,
@@ -23,6 +27,9 @@ dayjs.extend(relativeTime)
 const MaintenanceHistory = () => {
 	const { maintenance } = useLoadMaintenance()
 	const { summary } = useLoadMaintenanceSummary()
+	const { data: session } = useSession()
+	const isAdmin = session?.user?.role === 'admin'
+	const [editing, setEditing] = useState<CompressorMaintenance | null>(null)
 
 	const dispatch = useAppDispatch()
 	const getColor = (type: MAINTENANCE_TYPE) => {
@@ -169,13 +176,23 @@ const MaintenanceHistory = () => {
 												{event.description}
 											</p>
 										</div>
-										<div className='text-light-text text-right text-sm whitespace-nowrap'>
-											<time dateTime={event.date.format('DD/MM/YYYY')}>
-												{event.date.format('DD/MM/YYYY')}
-											</time>
-											<p className='text-light-text text-sm'>
-												{event.hours} hours
-											</p>
+										<div className='text-light-text flex items-center gap-2 text-right text-sm whitespace-nowrap'>
+											<div>
+												<time dateTime={event.date.format('DD/MM/YYYY')}>
+													{event.date.format('DD/MM/YYYY')}
+												</time>
+												<p className='text-light-text text-sm'>
+													{event.hours} hours
+												</p>
+											</div>
+											{isAdmin && (
+												<Button
+													variant='ghost'
+													onClick={() => setEditing(event)}
+												>
+													<PencilSquareIcon className='h-5 w-5' />
+												</Button>
+											)}
 										</div>
 									</div>
 								</div>
@@ -183,6 +200,12 @@ const MaintenanceHistory = () => {
 						</li>
 					))}
 			</ul>
+			{isAdmin && (
+				<EditMaintenanceModal
+					record={editing}
+					onClose={() => setEditing(null)}
+				/>
+			)}
 		</div>
 	)
 }

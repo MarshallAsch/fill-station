@@ -1,6 +1,9 @@
 'use client'
 
+import { useState } from 'react'
+import { useSession } from 'next-auth/react'
 import FillHistoryRow from './FillHistoryRow'
+import EditFillModal from '@/components/Modals/EditFillModal'
 import Pagination from '@/components/UI/Pagination'
 import usePagination from '@/hooks/usePagination'
 import useLoadFills from '@/hooks/useLoadFills'
@@ -13,6 +16,9 @@ type FillHistoryTableProps = {
 const FillHistoryTable = ({ fills: propFills }: FillHistoryTableProps = {}) => {
 	const { fills: hookFills } = useLoadFills({ enabled: !propFills })
 	const fills = propFills ?? hookFills
+	const { data: session } = useSession()
+	const isAdmin = session?.user?.role === 'admin'
+	const [editing, setEditing] = useState<FillHistory | null>(null)
 
 	const {
 		page,
@@ -60,11 +66,23 @@ const FillHistoryTable = ({ fills: propFills }: FillHistoryTableProps = {}) => {
 										>
 											Cylinder
 										</th>
+										{isAdmin && (
+											<th
+												scope='col'
+												className='text-text px-3 py-3.5 text-center text-sm font-semibold'
+											>
+												<span className='sr-only'>Edit</span>
+											</th>
+										)}
 									</tr>
 								</thead>
 								<tbody className='bg-background divide-divider divide-y'>
 									{paginatedFills.map((fill) => (
-										<FillHistoryRow key={fill.id} fill={fill} />
+										<FillHistoryRow
+											key={fill.id}
+											fill={fill}
+											onEdit={isAdmin ? () => setEditing(fill) : undefined}
+										/>
 									))}
 								</tbody>
 							</table>
@@ -77,6 +95,9 @@ const FillHistoryTable = ({ fills: propFills }: FillHistoryTableProps = {}) => {
 					</div>
 				</div>
 			</div>
+			{isAdmin && (
+				<EditFillModal fill={editing} onClose={() => setEditing(null)} />
+			)}
 		</div>
 	)
 }
