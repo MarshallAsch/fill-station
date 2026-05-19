@@ -1,4 +1,5 @@
 import { Cylinder } from '@/lib/models/cylinder'
+import { Client } from '@/lib/models/client'
 import { Fill } from '@/lib/models/fill'
 import { requireRole, isErrorResponse } from '@/lib/permissions-server'
 import { FillDto } from '@/types/fills'
@@ -8,7 +9,12 @@ export async function GET() {
 	if (isErrorResponse(result)) return result
 
 	const fills = await Fill.findAll({
-		include: Cylinder,
+		include: [
+			{
+				model: Cylinder,
+				include: [{ model: Client, attributes: ['id', 'name'] }],
+			},
+		],
 	})
 	return Response.json(fills)
 }

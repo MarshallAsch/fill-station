@@ -1,5 +1,6 @@
 import { FillHistory } from '@/types/fills'
 import dayjs from 'dayjs'
+import Tooltip from '@/components/UI/Tooltip'
 
 function getFillMix(fill: FillHistory): string {
 	if (fill.helium != 0) {
@@ -11,6 +12,18 @@ function getFillMix(fill: FillHistory): string {
 	}
 }
 const FillHistoryRow = ({ fill }: { fill: FillHistory }) => {
+	const ownerName = fill.Cylinder.Client?.name
+	const cylinderCell = fill.Cylinder.nickname ? (
+		<div className='flex flex-col items-center'>
+			<span>{fill.Cylinder.nickname}</span>
+			<span className='text-light-text text-xs'>
+				{fill.Cylinder.serialNumber}
+			</span>
+		</div>
+	) : (
+		<span>{fill.Cylinder.serialNumber}</span>
+	)
+
 	return (
 		<tr key={fill.id} className='hover:bg-hover'>
 			<td className='text-text py-4 pr-3 pl-4 text-center text-sm font-medium whitespace-nowrap sm:pl-6'>
@@ -27,15 +40,10 @@ const FillHistoryRow = ({ fill }: { fill: FillHistory }) => {
 				{fill.endPressure}
 			</td>
 			<td className='py-4 pr-4 pl-3 text-center text-sm font-medium whitespace-nowrap sm:pr-6'>
-				{fill.Cylinder.nickname ? (
-					<div className='flex flex-col items-center'>
-						<span>{fill.Cylinder.nickname}</span>
-						<span className='text-light-text text-xs'>
-							{fill.Cylinder.serialNumber}
-						</span>
-					</div>
+				{ownerName ? (
+					<Tooltip message={`Owner: ${ownerName}`}>{cylinderCell}</Tooltip>
 				) : (
-					fill.Cylinder.serialNumber
+					cylinderCell
 				)}
 			</td>
 		</tr>
