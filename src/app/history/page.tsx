@@ -2,10 +2,10 @@
 
 import { Suspense } from 'react'
 import MaintenanceHistory from '@/components/History/MaintenanceHistory/MaintenanceHistory'
-import FillHistoryTable from '@/components/History/components/FillHistoryTable'
 import VisHistory from '@/components/History/VisHistory'
 import ClientList from '@/components/History/ClientList'
-import CylinderListTable from '@/components/Cylinders/CylinderListTable'
+import CylindersTab from '@/components/History/CylindersTab'
+import FillsTab from '@/components/History/FillsTab'
 import useLoadCylinder from '@/hooks/useLoadCylinders'
 import { useSearchParams } from 'next/navigation'
 import { TAB } from './layout'
@@ -18,7 +18,7 @@ const HistoryContent = () => {
 	const getTabComponent = () => {
 		switch (params.get('tab')) {
 			case TAB.FILLS:
-				return <FillHistoryTable />
+				return <FillsTab />
 			case TAB.VIS_INSPECTION:
 				return <VisHistory />
 			case TAB.COMP_MAINTENANCE:
@@ -26,9 +26,9 @@ const HistoryContent = () => {
 			case TAB.CLIENTS:
 				return <ClientList />
 			case TAB.CYLINDERS:
-				return <CylinderListTable cylinders={cylinders} showOwner />
+				return <CylindersTab cylinders={cylinders} />
 			default:
-				return <FillHistoryTable />
+				return <FillsTab />
 		}
 	}
 
