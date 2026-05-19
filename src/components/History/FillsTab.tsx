@@ -94,6 +94,8 @@ const FillsTab = () => {
 						</div>
 						<div className='w-60'>
 							<CylinderPicker
+								disableAdd
+								filter={() => true}
 								value={cylinder}
 								onChange={(c) => setCylinder(c ?? null)}
 							/>
