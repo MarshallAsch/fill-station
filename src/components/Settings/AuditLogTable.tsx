@@ -20,7 +20,7 @@ const AuditLogTable = ({ entries }: { entries: AuditEntry[] }) => {
 									<th className='text-text py-3.5 pr-3 pl-4 text-center text-sm font-semibold sm:pl-6'>
 										Date
 									</th>
-									<th className='text-text px-3 py-3.5 text-center text-sm font-semibold'>
+									<th className='text-text hidden px-3 py-3.5 text-center text-sm font-semibold sm:table-cell'>
 										User
 									</th>
 									<th className='text-text px-3 py-3.5 text-center text-sm font-semibold'>
@@ -29,7 +29,7 @@ const AuditLogTable = ({ entries }: { entries: AuditEntry[] }) => {
 									<th className='text-text px-3 py-3.5 text-center text-sm font-semibold'>
 										Entity
 									</th>
-									<th className='text-text px-3 py-3.5 text-center text-sm font-semibold'>
+									<th className='text-text hidden px-3 py-3.5 text-center text-sm font-semibold md:table-cell'>
 										Entity ID
 									</th>
 								</tr>
@@ -40,7 +40,7 @@ const AuditLogTable = ({ entries }: { entries: AuditEntry[] }) => {
 										<td className='text-light-text py-4 pr-3 pl-4 text-center text-sm sm:pl-6'>
 											{new Date(entry.createdAt).toLocaleString()}
 										</td>
-										<td className='text-light-text px-3 py-4 text-center text-sm'>
+										<td className='text-light-text hidden px-3 py-4 text-center text-sm sm:table-cell'>
 											{entry.user?.name ?? entry.user?.email ?? '—'}
 										</td>
 										<td className='text-text px-3 py-4 text-center text-sm font-medium'>
@@ -49,7 +49,7 @@ const AuditLogTable = ({ entries }: { entries: AuditEntry[] }) => {
 										<td className='text-light-text px-3 py-4 text-center text-sm'>
 											{entry.entity}
 										</td>
-										<td className='text-light-text px-3 py-4 text-center text-sm'>
+										<td className='text-light-text hidden px-3 py-4 text-center text-sm md:table-cell'>
 											{entry.entityId}
 										</td>
 									</tr>

@@ -84,19 +84,19 @@ const CylinderListRow = ({
 			<td className='text-light-text px-3 py-4 text-center text-sm whitespace-nowrap'>
 				{dayjs(cylinder.lastVis).format('MM/YYYY')}
 			</td>
-			<td className='text-light-text px-3 py-4 text-center text-sm whitespace-nowrap'>
+			<td className='text-light-text hidden px-3 py-4 text-center text-sm whitespace-nowrap md:table-cell'>
 				<Tooltip message={nextHydro.format('MM/YYYY')}>
 					{nextHydro.isBefore(dayjs()) ? 'now' : nextHydro.fromNow()}
 				</Tooltip>
 			</td>
-			<td className='text-light-text px-3 py-4 text-center text-sm whitespace-nowrap'>
+			<td className='text-light-text hidden px-3 py-4 text-center text-sm whitespace-nowrap md:table-cell'>
 				<Tooltip message={nextVis.format('MM/YYYY')}>
 					{nextVis.isBefore(dayjs()) ? 'now' : nextVis.fromNow()}
 				</Tooltip>
 			</td>
 
 			{!hideInspection && (
-				<td className='text-light-text px-3 py-4 text-center text-sm whitespace-nowrap'>
+				<td className='text-light-text hidden px-3 py-4 text-center text-sm whitespace-nowrap md:table-cell'>
 					{nextHydro.isBefore(dayjs()) ? (
 						'Needs Hydro First'
 					) : (

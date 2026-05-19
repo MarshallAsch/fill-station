@@ -40,7 +40,7 @@ const VisHistoryRow = ({
 					)}
 				</span>
 			</td>
-			<td className='text-light-text px-3 py-4 text-sm whitespace-nowrap'>
+			<td className='text-light-text hidden px-3 py-4 text-sm whitespace-nowrap sm:table-cell'>
 				<span className='flex w-full justify-center'>
 					{visual.markedOxygenClean ? (
 						<CheckCircleIcon className='h-10' />

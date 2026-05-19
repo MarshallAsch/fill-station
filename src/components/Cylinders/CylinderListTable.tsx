@@ -81,20 +81,20 @@ const CylinderListTable = ({
 									</th>
 									<th
 										scope='col'
-										className='text-text px-3 py-3.5 text-center text-sm font-semibold'
+										className='text-text hidden px-3 py-3.5 text-center text-sm font-semibold md:table-cell'
 									>
 										Next Hydro
 									</th>
 									<th
 										scope='col'
-										className='text-text px-3 py-3.5 text-center text-sm font-semibold'
+										className='text-text hidden px-3 py-3.5 text-center text-sm font-semibold md:table-cell'
 									>
 										Next Vis
 									</th>
 									{!hideInspection && (
 										<th
 											scope='col'
-											className='text-text px-3 py-3.5 text-center text-sm font-semibold'
+											className='text-text hidden px-3 py-3.5 text-center text-sm font-semibold md:table-cell'
 										>
 											Do Inspection
 										</th>

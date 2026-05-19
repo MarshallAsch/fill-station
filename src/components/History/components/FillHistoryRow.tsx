@@ -20,10 +20,10 @@ const FillHistoryRow = ({ fill }: { fill: FillHistory }) => {
 			<td className='text-light-text px-3 py-4 text-center text-sm whitespace-nowrap'>
 				{getFillMix(fill)}
 			</td>
-			<td className='text-light-text px-3 py-4 text-center text-sm whitespace-nowrap'>
+			<td className='text-light-text hidden px-3 py-4 text-center text-sm whitespace-nowrap sm:table-cell'>
 				{fill.startPressure}
 			</td>
-			<td className='text-light-text px-3 py-4 text-center text-sm whitespace-nowrap'>
+			<td className='text-light-text hidden px-3 py-4 text-center text-sm whitespace-nowrap sm:table-cell'>
 				{fill.endPressure}
 			</td>
 			<td className='py-4 pr-4 pl-3 text-center text-sm font-medium whitespace-nowrap sm:pr-6'>

@@ -53,13 +53,13 @@ const FillHistoryTable = ({ fills: propFills }: FillHistoryTableProps = {}) => {
 										</th>
 										<th
 											scope='col'
-											className='text-text px-3 py-3.5 text-center text-sm font-semibold'
+											className='text-text hidden px-3 py-3.5 text-center text-sm font-semibold sm:table-cell'
 										>
 											Start Pressure
 										</th>
 										<th
 											scope='col'
-											className='text-text px-3 py-3.5 text-center text-sm font-semibold'
+											className='text-text hidden px-3 py-3.5 text-center text-sm font-semibold sm:table-cell'
 										>
 											End Pressure
 										</th>
