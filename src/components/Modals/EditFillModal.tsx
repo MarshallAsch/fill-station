@@ -24,12 +24,22 @@ type EditFillModalProps = {
 
 const EditFillModal = ({ fill, onClose }: EditFillModalProps) => {
 	const queryClient = useQueryClient()
+	const [trackedId, setTrackedId] = useState<number | null>(fill?.id ?? null)
 	const [date, setDate] = useState<Dayjs>(fill ? dayjs(fill.date) : dayjs())
 	const [start, setStart] = useState(fill?.startPressure ?? 0)
 	const [end, setEnd] = useState(fill?.endPressure ?? 0)
 	const [oxygen, setOxygen] = useState(fill?.oxygen ?? 20.9)
 	const [helium, setHelium] = useState(fill?.helium ?? 0)
 	const [saving, setSaving] = useState(false)
+
+	if (fill && fill.id !== trackedId) {
+		setTrackedId(fill.id)
+		setDate(dayjs(fill.date))
+		setStart(fill.startPressure)
+		setEnd(fill.endPressure)
+		setOxygen(fill.oxygen)
+		setHelium(fill.helium)
+	}
 
 	const handleSave = async () => {
 		if (!fill) return

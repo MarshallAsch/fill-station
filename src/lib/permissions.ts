@@ -20,6 +20,9 @@ export const PERMISSIONS = {
 			POST: ['filler', 'inspector', 'admin'],
 			DELETE: ['admin'],
 		},
+		'/api/fills/:fillId': {
+			PUT: ['admin'],
+		},
 		'/api/clients': {
 			GET: ['filler', 'inspector', 'admin'],
 			POST: ['filler', 'inspector', 'admin'],
@@ -58,6 +61,9 @@ export const PERMISSIONS = {
 			DELETE: ['admin'],
 		},
 		'/api/maintenance/last': { GET: ['filler', 'inspector', 'admin'] },
+		'/api/maintenance/:maintenanceId': {
+			PUT: ['admin'],
+		},
 		'/api/users': { GET: ['admin'] },
 		'/api/users/:userId': { PUT: ['admin'] },
 		'/api/profile': { PUT: ['user', 'filler', 'inspector', 'admin'] },

@@ -28,10 +28,18 @@ const EditMaintenanceModal = ({
 	onClose,
 }: EditMaintenanceModalProps) => {
 	const queryClient = useQueryClient()
+	const [trackedId, setTrackedId] = useState<number | null>(record?.id ?? null)
 	const [date, setDate] = useState<Dayjs>(record ? dayjs(record.date) : dayjs())
 	const [hours, setHours] = useState(record?.hours ?? 0)
 	const [description, setDescription] = useState(record?.description ?? '')
 	const [saving, setSaving] = useState(false)
+
+	if (record && record.id !== trackedId) {
+		setTrackedId(record.id)
+		setDate(dayjs(record.date))
+		setHours(record.hours)
+		setDescription(record.description ?? '')
+	}
 
 	const handleSave = async () => {
 		if (!record) return
