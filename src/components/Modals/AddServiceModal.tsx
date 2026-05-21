@@ -7,7 +7,8 @@ import {
 	Transition,
 	TransitionChild,
 } from '@headlessui/react'
-import { Fragment } from 'react'
+import { Fragment, useMemo, useState } from 'react'
+import dayjs, { Dayjs } from 'dayjs'
 import TextInput from '../UI/FormElements/TextInput'
 import DatePicker from '../UI/FormElements/DatePicker'
 import ListBox from '../UI/FormElements/ListBox'
@@ -17,6 +18,7 @@ import { newMaintenance } from '@/app/_api'
 import { useQueryClient } from '@tanstack/react-query'
 import NumberField from '../UI/FormElements/NumberField'
 import { toast } from 'react-toastify'
+import { useLoadMaintenance } from '@/hooks/useLoadMaintenance'
 
 const SERVICE_ITEMS = [
 	{
@@ -47,11 +49,37 @@ const SERVICE_ITEMS = [
 ]
 
 const AddServiceModal = () => {
-	const { addServiceModalOpen, serviceModalHours } = useAppSelector(
-		(state) => state.modal,
-	)
+	const { addServiceModalOpen } = useAppSelector((state) => state.modal)
 	const dispatch = useAppDispatch()
 	const queryClient = useQueryClient()
+	const { maintenance } = useLoadMaintenance()
+	const [serviceDate, setServiceDate] = useState<Dayjs>(dayjs())
+
+	const { minHours, maxHours, defaultHours } = useMemo(() => {
+		const records = maintenance ?? []
+		let previous: { hours: number; date: Dayjs } | null = null
+		let next: { hours: number; date: Dayjs } | null = null
+		for (const record of records) {
+			const recordDate = dayjs(record.date)
+			if (
+				recordDate.isSame(serviceDate, 'day') ||
+				recordDate.isBefore(serviceDate, 'day')
+			) {
+				if (!previous || recordDate.isAfter(previous.date)) {
+					previous = { hours: record.hours, date: recordDate }
+				}
+			} else if (recordDate.isAfter(serviceDate, 'day')) {
+				if (!next || recordDate.isBefore(next.date)) {
+					next = { hours: record.hours, date: recordDate }
+				}
+			}
+		}
+		return {
+			minHours: previous?.hours ?? 0,
+			maxHours: next?.hours,
+			defaultHours: previous?.hours ?? 0,
+		}
+	}, [maintenance, serviceDate])
 
 	const handleClose = () => {
 		dispatch(updateAddServiceModalOpen(false))
@@ -112,14 +140,17 @@ const AddServiceModal = () => {
 											name='date'
 											id='date'
 											description=''
+											value={serviceDate}
+											onChange={setServiceDate}
 										/>
 									</div>
 
 									<NumberField
 										id='hours'
 										name='hours'
-										min={serviceModalHours}
-										defaultValue={serviceModalHours}
+										min={minHours}
+										max={maxHours}
+										defaultValue={defaultHours}
 										helperText='Number of hours on the compressor'
 									/>
 

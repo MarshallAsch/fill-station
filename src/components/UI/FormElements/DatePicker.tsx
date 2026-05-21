@@ -28,9 +28,15 @@ export default function DatePicker({
 }: DatePickerProps) {
 	const today = dayjs()
 	const [selectedDate, setSelectedDate] = useState<Dayjs>(defaultValue || today)
-	const [currentMonth, setCurrentMonth] = useState(selectedDate)
+	const [currentMonth, setCurrentMonth] = useState(value || selectedDate)
 	const [open, setOpen] = useState(false)
 	const ref = useRef<HTMLDivElement | null>(null)
+
+	const toggleOpen = () => {
+		if (readOnly) return
+		if (!open) setCurrentMonth(value || selectedDate)
+		setOpen(!open)
+	}
 
 	useEffect(() => {
 		const handler = (e: MouseEvent) => {
@@ -79,7 +85,7 @@ export default function DatePicker({
 			<label>{title}</label>
 			<button
 				type='button'
-				onClick={() => !readOnly && setOpen((o) => !o)}
+				onClick={toggleOpen}
 				className='bg-background border-border hover:border-border flex w-full items-center justify-between rounded-lg border px-3 py-2 text-left text-sm shadow-sm'
 			>
 				{mode === 'month'
