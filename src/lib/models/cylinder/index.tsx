@@ -27,8 +27,8 @@ import { Fill } from '../fill'
 import { Visual } from '../visual'
 
 export class Cylinder extends Model<
-	InferAttributes<Cylinder, { omit: 'Client' }>,
-	InferCreationAttributes<Cylinder, { omit: 'Client' }>
+	InferAttributes<Cylinder, { omit: 'Client' | 'pairedCylinder' }>,
+	InferCreationAttributes<Cylinder, { omit: 'Client' | 'pairedCylinder' }>
 > {
 	// 'CreationOptional' is a special type that marks the field as optional
 	// when creating an instance of the model (such as using Model.create()).
@@ -55,6 +55,9 @@ export class Cylinder extends Model<
 	declare manufacturer: CreationOptional<string | null>
 	declare size: CreationOptional<number | null>
 
+	declare pairedCylinderId: CreationOptional<ForeignKey<Cylinder['id']> | null>
+	declare pairedCylinder?: NonAttribute<Cylinder>
+
 	// timestamps!
 	// createdAt can be undefined during creation
 	declare createdAt: CreationOptional<Date>
@@ -63,6 +66,12 @@ export class Cylinder extends Model<
 
 	declare getOwner: BelongsToGetAssociationMixin<Client>
 	declare setOwner: BelongsToSetAssociationMixin<Client, Client['id']>
+
+	declare getPairedCylinder: BelongsToGetAssociationMixin<Cylinder>
+	declare setPairedCylinder: BelongsToSetAssociationMixin<
+		Cylinder,
+		Cylinder['id']
+	>
 
 	declare getFills: HasManyGetAssociationsMixin<Fill> // Note the null assertions!
 	declare addFill: HasManyAddAssociationMixin<Fill, number>
@@ -94,6 +103,7 @@ export class Cylinder extends Model<
 		owner: Association<Cylinder, Client>
 		fills: Association<Fill, Cylinder>
 		visuals: Association<Visual, Cylinder>
+		pairedCylinder: Association<Cylinder, Cylinder>
 	}
 }
 
@@ -165,6 +175,11 @@ Cylinder.init(
 			allowNull: true,
 			defaultValue: null,
 		},
+		pairedCylinderId: {
+			type: DataTypes.INTEGER.UNSIGNED,
+			allowNull: true,
+			defaultValue: null,
+		},
 		createdAt: DataTypes.DATE,
 		updatedAt: DataTypes.DATE,
 	},
@@ -176,3 +191,8 @@ Cylinder.init(
 
 Cylinder.belongsTo(Client, { foreignKey: 'ownerId' })
 Client.hasMany(Cylinder, { foreignKey: 'ownerId' })
+
+Cylinder.belongsTo(Cylinder, {
+	as: 'pairedCylinder',
+	foreignKey: 'pairedCylinderId',
+})
