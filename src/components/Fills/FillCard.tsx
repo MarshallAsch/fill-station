@@ -2,6 +2,7 @@ import { removeFill, updateFill } from '@/redux/fills/fillsSlice'
 import { useAppDispatch, useAppSelector } from '@/redux/hooks'
 import { Client } from '@/types/client'
 import { Fill } from '@/types/fills'
+import { Cylinder } from '@/types/cylinder'
 import { XCircleIcon } from '@heroicons/react/24/outline'
 import CylinderPicker from '../UI/FormElements/CylinderPicker'
 import FillType from './FillType'
@@ -22,7 +23,7 @@ const FillCard = ({
 }: FillsRowProps) => {
 	const dispatch = useAppDispatch()
 	const usedCylinders = useAppSelector((state) => state.fills)
-		.fills.map((f) => f.cylinder?.id)
+		.fills.flatMap((f) => [f.cylinder?.id, f.pairedCylinder?.id])
 		.filter((id) => id !== undefined)
 	return (
 		<div className='bg-surface flex min-w-full flex-col gap-2 rounded p-4'>
@@ -48,12 +49,39 @@ const FillCard = ({
 							data: {
 								...fill,
 								cylinder: val || undefined,
+								pairedCylinder: val?.pairedCylinder
+									? (val.pairedCylinder as Cylinder)
+									: undefined,
 								end: fill.end === 0 && val ? val.servicePressure : fill.end,
 							},
 						}),
 					)
 				}
 			/>
+			{fill.pairedCylinder && (
+				<div className='text-light-text flex items-center gap-2 text-sm'>
+					<span>
+						+{' '}
+						{fill.pairedCylinder.nickname
+							? `${fill.pairedCylinder.nickname} (${fill.pairedCylinder.serialNumber})`
+							: fill.pairedCylinder.serialNumber}
+					</span>
+					<button
+						type='button'
+						className='underline'
+						onClick={() =>
+							dispatch(
+								updateFill({
+									id: fill.id,
+									data: { ...fill, pairedCylinder: undefined },
+								}),
+							)
+						}
+					>
+						unlink
+					</button>
+				</div>
+			)}
 			<FillType
 				index={fill.id}
 				item={fill}
