@@ -87,6 +87,7 @@ const FillCard = ({
 				item={fill}
 				client={client || undefined}
 				cylinder={fill.cylinder}
+				pairedCylinder={fill.pairedCylinder}
 			/>
 			<div className='flex flex-row gap-2'>
 				<NumberInput

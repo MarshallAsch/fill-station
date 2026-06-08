@@ -26,6 +26,7 @@ type FillTypeProps = {
 	item: Fill
 	client?: Client
 	cylinder?: Cylinder
+	pairedCylinder?: Cylinder
 }
 
 type FillOption = {
@@ -35,14 +36,23 @@ type FillOption = {
 	warning?: string
 }
 
-const FillType = ({ index, item, client, cylinder }: FillTypeProps) => {
+const FillType = ({
+	index,
+	item,
+	client,
+	cylinder,
+	pairedCylinder,
+}: FillTypeProps) => {
 	const dispatch = useAppDispatch()
 
-	const nitroxUse =
+	const bothOxygenClean =
 		cylinder?.oxygenClean == true &&
+		(!pairedCylinder || pairedCylinder.oxygenClean == true)
+
+	const nitroxUse =
+		bothOxygenClean &&
 		!!(client && (client.nitroxCert || client.advancedNitroxCert))
-	const trimixUse =
-		cylinder?.oxygenClean == true && !!(client && client.trimixCert)
+	const trimixUse = bothOxygenClean && !!(client && client.trimixCert)
 
 	const options: FillOption[] = [
 		{ value: 'air', label: 'Air', certified: true },

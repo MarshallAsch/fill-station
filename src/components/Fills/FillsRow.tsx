@@ -75,6 +75,7 @@ const FillsRow = ({ disableDelete = false, fill, client }: FillsRowProps) => {
 					item={fill}
 					client={client || undefined}
 					cylinder={fill.cylinder}
+					pairedCylinder={fill.pairedCylinder}
 				/>
 			</td>
 			<td className='text-light-text px-3 py-4 text-sm whitespace-nowrap'>
