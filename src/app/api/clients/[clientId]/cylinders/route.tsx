@@ -20,6 +20,20 @@ export async function GET(
 		where: {
 			ownerId: clientId,
 		},
+		include: [
+			{
+				model: Cylinder,
+				as: 'pairedCylinder',
+				attributes: [
+					'id',
+					'serialNumber',
+					'nickname',
+					'servicePressure',
+					'oxygenClean',
+					'ownerId',
+				],
+			},
+		],
 	})
 
 	return Response.json(cylinders)

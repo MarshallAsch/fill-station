@@ -10,7 +10,21 @@ export async function GET(request: Request) {
 	if (isErrorResponse(result)) return result
 
 	const cylinders = await Cylinder.findAll({
-		include: [{ model: Client, attributes: ['id', 'name'] }],
+		include: [
+			{ model: Client, attributes: ['id', 'name'] },
+			{
+				model: Cylinder,
+				as: 'pairedCylinder',
+				attributes: [
+					'id',
+					'serialNumber',
+					'nickname',
+					'servicePressure',
+					'oxygenClean',
+					'ownerId',
+				],
+			},
+		],
 	})
 
 	return Response.json(cylinders)
