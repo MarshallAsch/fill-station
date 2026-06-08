@@ -24,6 +24,7 @@ export type Fill = {
 	o2: number
 	he: number
 	cylinder?: Cylinder
+	pairedCylinder?: Cylinder
 }
 
 export type FillDto = {
