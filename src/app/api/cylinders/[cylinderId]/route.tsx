@@ -3,6 +3,7 @@ import { requireRole, isErrorResponse } from '@/lib/permissions-server'
 import { auditLog } from '@/lib/audit'
 import customParseFormat from 'dayjs/plugin/customParseFormat'
 import { Cylinder } from '@/lib/models/cylinder'
+import { sequelize } from '@/lib/models/config'
 dayjs.extend(customParseFormat)
 
 export async function PUT(
@@ -33,7 +34,36 @@ export async function PUT(
 		nickname,
 		manufacturer,
 		size,
+		pairedCylinderId,
 	} = await request.json()
+
+	if (pairedCylinderId !== undefined && pairedCylinderId !== null) {
+		if (Number(pairedCylinderId) === cylinder.id) {
+			return Response.json(
+				{
+					error: 'invalid',
+					message: 'A cylinder cannot be paired with itself',
+				},
+				{ status: 400 },
+			)
+		}
+		const partner = await Cylinder.findByPk(pairedCylinderId)
+		if (!partner) {
+			return Response.json(
+				{ error: 'not_found', message: 'Paired cylinder not found' },
+				{ status: 400 },
+			)
+		}
+		if (partner.ownerId !== cylinder.ownerId) {
+			return Response.json(
+				{
+					error: 'invalid',
+					message: 'Paired cylinders must have the same owner',
+				},
+				{ status: 400 },
+			)
+		}
+	}
 
 	cylinder.serialNumber = serialNumber
 	cylinder.birth = dayjs(birth, 'YYYY-MM-DD')
@@ -46,13 +76,63 @@ export async function PUT(
 	cylinder.size = size ? Number(size) : null
 	cylinder.verified = true
 
+	const transaction = await sequelize.transaction()
 	try {
-		const result = await cylinder.save()
+		if (pairedCylinderId !== undefined) {
+			const previousPartnerId = cylinder.pairedCylinderId
+
+			if (pairedCylinderId === null) {
+				// Clearing: detach this cylinder and its old partner.
+				if (previousPartnerId) {
+					await Cylinder.update(
+						{ pairedCylinderId: null },
+						{ where: { id: previousPartnerId }, transaction },
+					)
+				}
+				cylinder.pairedCylinderId = null
+			} else {
+				// Pairing to a new partner.
+				// Detach this cylinder's old partner, if different.
+				if (previousPartnerId && previousPartnerId !== pairedCylinderId) {
+					await Cylinder.update(
+						{ pairedCylinderId: null },
+						{ where: { id: previousPartnerId }, transaction },
+					)
+				}
+				// Detach the new partner's existing partner, if any.
+				const partner = await Cylinder.findByPk(pairedCylinderId, {
+					transaction,
+				})
+				if (!partner) {
+					await transaction.rollback()
+					return Response.json(
+						{ error: 'not_found', message: 'Paired cylinder not found' },
+						{ status: 400 },
+					)
+				}
+				if (
+					partner.pairedCylinderId &&
+					partner.pairedCylinderId !== cylinder.id
+				) {
+					await Cylinder.update(
+						{ pairedCylinderId: null },
+						{ where: { id: partner.pairedCylinderId }, transaction },
+					)
+				}
+				partner.pairedCylinderId = cylinder.id
+				await partner.save({ transaction })
+				cylinder.pairedCylinderId = pairedCylinderId
+			}
+		}
+
+		const result = await cylinder.save({ transaction })
+		await transaction.commit()
 		return Response.json(result)
 	} catch (err: any) {
+		await transaction.rollback()
 		console.error('error:', err)
 		return Response.json(
-			{ error: err.name, message: err.errors[0].message },
+			{ error: err.name, message: err.errors?.[0]?.message ?? err.message },
 			{ status: 400 },
 		)
 	}
