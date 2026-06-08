@@ -13,6 +13,15 @@ export type Cylinder = {
 	nickname?: string | null
 	manufacturer?: string | null
 	size?: number | null
+	pairedCylinderId?: number | null
+	pairedCylinder?: {
+		id: number
+		serialNumber: string
+		nickname?: string | null
+		servicePressure: number
+		oxygenClean: boolean
+		ownerId?: number
+	} | null
 	createdAt?: string
 	updatedAt?: string
 }
@@ -28,4 +37,5 @@ export type NewCylinderDTO = {
 	nickname?: string
 	manufacturer?: string
 	size?: number
+	pairedCylinderId?: number | null
 }
