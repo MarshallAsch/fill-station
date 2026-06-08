@@ -5,6 +5,7 @@ import {
 	XCircleIcon,
 	InformationCircleIcon,
 	Cog6ToothIcon,
+	LinkIcon,
 } from '@heroicons/react/24/outline'
 import { ExclamationTriangleIcon } from '@heroicons/react/24/solid'
 import dayjs from 'dayjs'
@@ -55,10 +56,12 @@ const CylinderListRow = ({
 					cylinder.serialNumber
 				)}
 				{cylinder.pairedCylinder && (
-					<div className='text-light-text mt-1 text-xs'>
-						🔗{' '}
-						{cylinder.pairedCylinder.nickname ??
-							cylinder.pairedCylinder.serialNumber}
+					<div className='text-light-text mt-1 flex items-center justify-center gap-1 text-xs'>
+						<LinkIcon className='h-3 w-3' />
+						<span>
+							{cylinder.pairedCylinder.nickname ??
+								cylinder.pairedCylinder.serialNumber}
+						</span>
 					</div>
 				)}
 			</td>
