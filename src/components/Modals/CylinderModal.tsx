@@ -23,6 +23,7 @@ import ClientPicker from '../UI/FormElements/ClientPicker'
 import DatePicker from '../UI/FormElements/DatePicker'
 import Button from '../UI/Button'
 import ListBox from '../UI/FormElements/ListBox'
+import CylinderPicker from '../UI/FormElements/CylinderPicker'
 import { newCylinder } from '@/app/_api'
 import { Cylinder, NewCylinderDTO } from '@/types/cylinder'
 import { toast } from 'react-toastify'
@@ -74,6 +75,9 @@ const CylinderModal = ({
 	const [customManufacturer, setCustomManufacturer] = useState(
 		isKnown ? '' : initialManufacturer,
 	)
+	const [pairedCylinder, setPairedCylinder] = useState<Cylinder | null>(
+		(cylinder?.pairedCylinder as Cylinder) ?? null,
+	)
 
 	const { selectedClient, allClients: clients } = useAppSelector(
 		(state) => state.clients,
@@ -106,6 +110,9 @@ const CylinderModal = ({
 			const parsed = Number(formData.size)
 			formData.size = isNaN(parsed) || parsed <= 0 ? undefined : parsed
 		}
+
+		// Pairing is edit-only; for new cylinders this is null and ignored by the API.
+		formData.pairedCylinderId = pairedCylinder ? pairedCylinder.id : null
 
 		if (ownerId) {
 			const data = await onSubmit(
@@ -267,6 +274,32 @@ const CylinderModal = ({
 										}
 									/>
 
+									{cylinder && (
+										<div className='space-y-2'>
+											<p className='text-text text-sm/6 font-medium'>
+												Paired cylinder (doubles)
+											</p>
+											<div className='flex items-end gap-2'>
+												<CylinderPicker
+													disableAdd={true}
+													value={pairedCylinder}
+													filter={(c) =>
+														c.id !== cylinder.id &&
+														c.ownerId === cylinder.ownerId
+													}
+													onChange={(c) => setPairedCylinder(c ?? null)}
+												/>
+												{pairedCylinder && (
+													<Button
+														variant='ghost'
+														onClick={() => setPairedCylinder(null)}
+													>
+														Clear
+													</Button>
+												)}
+											</div>
+										</div>
+									)}
 									<div className='flex w-full justify-end gap-2'>
 										<Button onClick={handleClose} variant='ghost'>
 											{cancelText}
