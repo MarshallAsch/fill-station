@@ -24,15 +24,22 @@ export default function Fills() {
 
 		const { fillDate } = formData
 
-		const fillData: FillDto[] = fills.map((fill) => {
-			return {
+		const fillData: FillDto[] = fills.flatMap((fill) => {
+			const base = {
 				date: dayjs(fillDate as string),
-				cylinderId: fill.cylinder?.id,
 				startPressure: fill.start,
 				endPressure: fill.end,
 				oxygen: fill.o2,
 				helium: fill.he,
 			}
+
+			const records: FillDto[] = [{ ...base, cylinderId: fill.cylinder?.id }]
+
+			if (fill.pairedCylinder) {
+				records.push({ ...base, cylinderId: fill.pairedCylinder.id })
+			}
+
+			return records
 		})
 
 		const data = await addNewFill(fillData)
