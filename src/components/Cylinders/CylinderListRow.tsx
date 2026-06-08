@@ -54,6 +54,13 @@ const CylinderListRow = ({
 				) : (
 					cylinder.serialNumber
 				)}
+				{cylinder.pairedCylinder && (
+					<div className='text-light-text mt-1 text-xs'>
+						🔗{' '}
+						{cylinder.pairedCylinder.nickname ??
+							cylinder.pairedCylinder.serialNumber}
+					</div>
+				)}
 			</td>
 			{showOwner && (
 				<td className='text-text py-4 pr-3 pl-4 text-center text-sm font-medium whitespace-nowrap sm:pl-6'>
