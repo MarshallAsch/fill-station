@@ -28,6 +28,7 @@ const useLoadCylinder = () => {
 				lastVis: data.lastVis ? dayjs(data.lastVis).toISOString() : '',
 				createdAt: data.createdAt ? dayjs(data.createdAt).toISOString() : '',
 				updatedAt: data.updatedAt ? dayjs(data.updatedAt).toISOString() : '',
+				pairedCylinder: data.pairedCylinder ?? null,
 			}
 		})
 	}, [data])
