@@ -14,6 +14,7 @@ export type Cylinder = {
 	manufacturer?: string | null
 	size?: number | null
 	pairedCylinderId?: number | null
+	pairNickname?: string | null
 	pairedCylinder?: {
 		id: number
 		serialNumber: string
@@ -38,4 +39,5 @@ export type NewCylinderDTO = {
 	manufacturer?: string
 	size?: number
 	pairedCylinderId?: number | null
+	pairNickname?: string | null
 }

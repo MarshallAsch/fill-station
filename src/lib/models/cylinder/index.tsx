@@ -58,6 +58,8 @@ export class Cylinder extends Model<
 	declare pairedCylinderId: CreationOptional<ForeignKey<Cylinder['id']> | null>
 	declare pairedCylinder?: NonAttribute<Cylinder>
 
+	declare pairNickname: CreationOptional<string | null>
+
 	// timestamps!
 	// createdAt can be undefined during creation
 	declare createdAt: CreationOptional<Date>
@@ -177,6 +179,11 @@ Cylinder.init(
 		},
 		pairedCylinderId: {
 			type: DataTypes.INTEGER.UNSIGNED,
+			allowNull: true,
+			defaultValue: null,
+		},
+		pairNickname: {
+			type: DataTypes.STRING,
 			allowNull: true,
 			defaultValue: null,
 		},
