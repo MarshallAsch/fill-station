@@ -35,7 +35,13 @@ export async function PUT(
 		manufacturer,
 		size,
 		pairedCylinderId,
+		pairNickname,
 	} = await request.json()
+
+	const normalizedPairNickname =
+		typeof pairNickname === 'string' && pairNickname.trim() !== ''
+			? pairNickname.trim()
+			: null
 
 	if (pairedCylinderId !== undefined && pairedCylinderId !== null) {
 		if (Number(pairedCylinderId) === cylinder.id) {
@@ -85,17 +91,18 @@ export async function PUT(
 				// Clearing: detach this cylinder and its old partner.
 				if (previousPartnerId) {
 					await Cylinder.update(
-						{ pairedCylinderId: null },
+						{ pairedCylinderId: null, pairNickname: null },
 						{ where: { id: previousPartnerId }, transaction },
 					)
 				}
 				cylinder.pairedCylinderId = null
+				cylinder.pairNickname = null
 			} else {
 				// Pairing to a new partner.
 				// Detach this cylinder's old partner, if different.
 				if (previousPartnerId && previousPartnerId !== pairedCylinderId) {
 					await Cylinder.update(
-						{ pairedCylinderId: null },
+						{ pairedCylinderId: null, pairNickname: null },
 						{ where: { id: previousPartnerId }, transaction },
 					)
 				}
@@ -115,13 +122,15 @@ export async function PUT(
 					partner.pairedCylinderId !== cylinder.id
 				) {
 					await Cylinder.update(
-						{ pairedCylinderId: null },
+						{ pairedCylinderId: null, pairNickname: null },
 						{ where: { id: partner.pairedCylinderId }, transaction },
 					)
 				}
 				partner.pairedCylinderId = cylinder.id
+				partner.pairNickname = normalizedPairNickname
 				await partner.save({ transaction })
 				cylinder.pairedCylinderId = pairedCylinderId
+				cylinder.pairNickname = normalizedPairNickname
 			}
 		}
 
