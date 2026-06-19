@@ -78,6 +78,9 @@ const CylinderModal = ({
 	const [pairedCylinder, setPairedCylinder] = useState<Cylinder | null>(
 		(cylinder?.pairedCylinder as Cylinder) ?? null,
 	)
+	const [pairNickname, setPairNickname] = useState<string>(
+		cylinder?.pairNickname ?? '',
+	)
 
 	const { selectedClient, allClients: clients } = useAppSelector(
 		(state) => state.clients,
@@ -113,6 +116,8 @@ const CylinderModal = ({
 
 		// Pairing is edit-only; for new cylinders this is null and ignored by the API.
 		formData.pairedCylinderId = pairedCylinder ? pairedCylinder.id : null
+		formData.pairNickname =
+			pairedCylinder && pairNickname.trim() !== '' ? pairNickname.trim() : null
 
 		if (ownerId) {
 			const data = await onSubmit(
@@ -285,19 +290,39 @@ const CylinderModal = ({
 													value={pairedCylinder}
 													filter={(c) =>
 														c.id !== cylinder.id &&
-														c.ownerId === cylinder.ownerId
+														c.ownerId === cylinder.ownerId &&
+														(c.pairedCylinderId == null ||
+															c.id === cylinder.pairedCylinderId)
 													}
 													onChange={(c) => setPairedCylinder(c ?? null)}
 												/>
 												{pairedCylinder && (
 													<Button
 														variant='ghost'
-														onClick={() => setPairedCylinder(null)}
+														onClick={() => {
+															setPairedCylinder(null)
+															setPairNickname('')
+														}}
 													>
 														Clear
 													</Button>
 												)}
 											</div>
+											{pairedCylinder && (
+												<TextInput
+													type='text'
+													id='pair-nickname'
+													name='pairNickname'
+													ariaLabel='Doubles set name'
+													value={pairNickname}
+													onChange={(e) =>
+														setPairNickname(
+															(e.target as HTMLInputElement).value,
+														)
+													}
+													placeholder='Doubles set name (optional)'
+												/>
+											)}
 										</div>
 									)}
 									<div className='flex w-full justify-end gap-2'>
