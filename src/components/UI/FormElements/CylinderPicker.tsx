@@ -10,7 +10,7 @@ import {
 	Label,
 } from '@headlessui/react'
 import { useEffect, useState } from 'react'
-import { ChevronDownIcon } from '@heroicons/react/24/outline'
+import { ChevronDownIcon, LinkIcon } from '@heroicons/react/24/outline'
 import { ExclamationTriangleIcon } from '@heroicons/react/24/solid'
 
 import {
@@ -62,6 +62,12 @@ const CylinderPicker = ({
 	const isControlled = value !== undefined
 	const currentValue = isControlled ? value : selectedCylinder
 
+	const isRepresentative = (cylinder: Cylinder) =>
+		cylinder.pairedCylinderId == null || cylinder.id < cylinder.pairedCylinderId
+
+	const isPair = (cylinder: Cylinder) =>
+		isFill && cylinder.pairedCylinderId != null
+
 	const filteredCylinders =
 		query === ''
 			? cylinders
@@ -69,7 +75,13 @@ const CylinderPicker = ({
 					const q = query.toLowerCase()
 					return (
 						cylinder.serialNumber.toLowerCase().includes(q) ||
-						(cylinder.nickname?.toLowerCase().includes(q) ?? false)
+						(cylinder.nickname?.toLowerCase().includes(q) ?? false) ||
+						(isPair(cylinder) &&
+							((cylinder.pairedCylinder?.serialNumber
+								?.toLowerCase()
+								.includes(q) ??
+								false) ||
+								(cylinder.pairNickname?.toLowerCase().includes(q) ?? false)))
 					)
 				})
 
@@ -77,6 +89,15 @@ const CylinderPicker = ({
 		cylinder.nickname
 			? `${cylinder.nickname} (${cylinder.serialNumber})`
 			: cylinder.serialNumber
+
+	const formatPickerLabel = (cylinder: Cylinder) => {
+		if (isPair(cylinder)) {
+			if (cylinder.pairNickname) return cylinder.pairNickname
+			const partnerSerial = cylinder.pairedCylinder?.serialNumber
+			if (partnerSerial) return `${cylinder.serialNumber} + ${partnerSerial}`
+		}
+		return formatCylinderLabel(cylinder)
+	}
 
 	useEffect(() => {
 		if (isFill && index !== undefined && selectedCylinder) {
@@ -111,7 +132,7 @@ const CylinderPicker = ({
 					name='cylinder'
 					onChange={(e) => setQuery(e.target.value)}
 					displayValue={(cylinder: Cylinder) =>
-						cylinder ? formatCylinderLabel(cylinder) : ''
+						cylinder ? formatPickerLabel(cylinder) : ''
 					}
 				/>
 
@@ -147,44 +168,49 @@ const CylinderPicker = ({
 						</ComboboxOption>
 					)}
 					{filter &&
-						filteredCylinders.filter(filter).map((cylinder) => {
-							const needsHydro =
-								dayjs.duration(dayjs().diff(cylinder.lastHydro)).asYears() > 5
-							const needsVis = visPage
-								? false
-								: dayjs.duration(dayjs().diff(cylinder.lastVis)).asMonths() > 12
+						filteredCylinders
+							.filter(filter)
+							.filter((c) => !isFill || isRepresentative(c))
+							.map((cylinder) => {
+								const needsHydro =
+									dayjs.duration(dayjs().diff(cylinder.lastHydro)).asYears() > 5
+								const needsVis = visPage
+									? false
+									: dayjs.duration(dayjs().diff(cylinder.lastVis)).asMonths() >
+										12
 
-							return (
-								<ComboboxOption
-									key={cylinder.serialNumber}
-									value={cylinder}
-									disabled={needsHydro || needsVis}
-									className='text-text data-disabled:text-disabled data-focus:bg-accent data-focus:text-white-text flex cursor-pointer justify-between gap-2 px-3 py-2 select-none data-focus:outline-hidden'
-								>
-									<span className='flex items-center gap-1'>
-										{!cylinder.verified && (
+								return (
+									<ComboboxOption
+										key={cylinder.serialNumber}
+										value={cylinder}
+										disabled={needsHydro || needsVis}
+										className='text-text data-disabled:text-disabled data-focus:bg-accent data-focus:text-white-text flex cursor-pointer justify-between gap-2 px-3 py-2 select-none data-focus:outline-hidden'
+									>
+										<span className='flex items-center gap-1'>
+											{!cylinder.verified && (
+												<Tooltip
+													position='right'
+													message='User entered details, requires verification'
+												>
+													<ExclamationTriangleIcon className='size-5 fill-yellow-500' />
+												</Tooltip>
+											)}
+											{isPair(cylinder) && <LinkIcon className='h-4 w-4' />}
+											{formatPickerLabel(cylinder)}
+										</span>
+										{(needsHydro || needsVis) && (
 											<Tooltip
-												position='right'
-												message='User entered details, requires verification'
+												position='left'
+												message={`Needs ${needsHydro ? 'Hydro' : 'Visual'}`}
 											>
-												<ExclamationTriangleIcon className='size-5 fill-yellow-500' />
+												<ExclamationTriangleIcon
+													className={`size-5 ${needsHydro ? 'fill-red-600' : !showExpired ? 'fill-yellow-500' : 'fill-amber-500'} `}
+												/>
 											</Tooltip>
 										)}
-										{formatCylinderLabel(cylinder)}
-									</span>
-									{(needsHydro || needsVis) && (
-										<Tooltip
-											position='left'
-											message={`Needs ${needsHydro ? 'Hydro' : 'Visual'}`}
-										>
-											<ExclamationTriangleIcon
-												className={`size-5 ${needsHydro ? 'fill-red-600' : !showExpired ? 'fill-yellow-500' : 'fill-amber-500'} `}
-											/>
-										</Tooltip>
-									)}
-								</ComboboxOption>
-							)
-						})}
+									</ComboboxOption>
+								)
+							})}
 				</ComboboxOptions>
 			</div>
 		</Combobox>
