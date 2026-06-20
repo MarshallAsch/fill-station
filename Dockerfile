@@ -51,6 +51,10 @@ COPY --from=migrator --chown=nextjs:nodejs /migrate /migrate
 COPY --from=builder --chown=nextjs:nodejs /app/.sequelizerc /migrate/
 COPY --from=builder --chown=nextjs:nodejs /app/migrations /migrate/migrations
 
+# Entrypoint optionally runs migrations before starting the app (see script).
+COPY --chown=nextjs:nodejs docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+
 USER nextjs
 
 EXPOSE 3000
@@ -58,7 +62,11 @@ EXPOSE 3000
 ENV PORT=3000
 VOLUME [ "/config" ]
 
+# Run pending DB migrations on startup when set to "true" (opt-in).
+ENV RUN_MIGRATIONS=false
+
 # server.js is created by next build from the standalone output
 # https://nextjs.org/docs/pages/api-reference/config/next-config-js/output
 ENV HOSTNAME="0.0.0.0"
+ENTRYPOINT ["docker-entrypoint.sh"]
 CMD ["node", "server.js"]

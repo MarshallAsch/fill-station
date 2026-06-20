@@ -159,10 +159,18 @@ docker run -p 3000:3000 \
   fill-station
 ```
 
-The production container reads config from `/config/config.yaml` if mounted. Run migrations separately before starting the app:
+The production container reads config from `/config/config.yaml` if mounted.
+
+Database migrations do **not** run automatically by default. Set `RUN_MIGRATIONS=true` to have the container run pending migrations on startup (a failed migration aborts startup):
 
 ```bash
-npx sequelize-cli db:migrate
+docker run ... -e RUN_MIGRATIONS=true fill-station
+```
+
+Leave it unset (or `false`) — e.g. for multi-replica deploys — and run migrations as a separate step from the bundled tooling instead:
+
+```bash
+docker exec -it <container> sh -c "cd /migrate && npx sequelize-cli db:migrate"
 ```
 
 ### CI/CD
