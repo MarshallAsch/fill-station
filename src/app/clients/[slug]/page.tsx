@@ -9,7 +9,7 @@ import ClientDetailsTabs, {
 	ClientDetailsTab,
 } from '@/components/Clients/ClientDetailsTabs'
 import { Client } from '@/lib/models/client'
-import { Cylinder } from '@/lib/models/cylinder'
+import { Cylinder, PAIRED_CYLINDER_INCLUDE } from '@/lib/models/cylinder'
 import { Fill } from '@/lib/models/fill'
 
 const isTab = (value: unknown): value is ClientDetailsTab =>
@@ -27,7 +27,7 @@ export default async function ClientDetails({
 	const activeTab: ClientDetailsTab = isTab(tab) ? tab : 'cylinders'
 
 	const client = await Client.findByPk(clientId, {
-		include: Cylinder,
+		include: [{ model: Cylinder, include: [PAIRED_CYLINDER_INCLUDE] }],
 	})
 
 	const cylinders: Cylinder[] = client?.Cylinders || []

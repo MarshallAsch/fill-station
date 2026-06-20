@@ -6,6 +6,7 @@ import {
 	NonAttribute,
 	ForeignKey,
 	DataTypes,
+	IncludeOptions,
 	Association,
 	BelongsToGetAssociationMixin,
 	BelongsToSetAssociationMixin,
@@ -203,3 +204,19 @@ Cylinder.belongsTo(Cylinder, {
 	as: 'pairedCylinder',
 	foreignKey: 'pairedCylinderId',
 })
+
+// Shared include for loading a cylinder's paired (doubles) partner. Use this
+// in every query that feeds a pairing-aware UI surface (lists, edit modal,
+// fill picker) so the `pairedCylinder` association is always populated.
+export const PAIRED_CYLINDER_INCLUDE: IncludeOptions = {
+	model: Cylinder,
+	as: 'pairedCylinder',
+	attributes: [
+		'id',
+		'serialNumber',
+		'nickname',
+		'servicePressure',
+		'oxygenClean',
+		'ownerId',
+	],
+}

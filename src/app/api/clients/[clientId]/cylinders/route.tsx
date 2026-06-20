@@ -1,6 +1,6 @@
 import { auth } from '@/auth'
 import { Client } from '@/lib/models/client'
-import { Cylinder } from '@/lib/models/cylinder'
+import { Cylinder, PAIRED_CYLINDER_INCLUDE } from '@/lib/models/cylinder'
 import { User } from '@/lib/models/user'
 import dayjs from 'dayjs'
 import { requireRole, isErrorResponse } from '@/lib/permissions-server'
@@ -20,20 +20,7 @@ export async function GET(
 		where: {
 			ownerId: clientId,
 		},
-		include: [
-			{
-				model: Cylinder,
-				as: 'pairedCylinder',
-				attributes: [
-					'id',
-					'serialNumber',
-					'nickname',
-					'servicePressure',
-					'oxygenClean',
-					'ownerId',
-				],
-			},
-		],
+		include: [PAIRED_CYLINDER_INCLUDE],
 	})
 
 	return Response.json(cylinders)

@@ -1,4 +1,4 @@
-import { Cylinder } from '@/lib/models/cylinder'
+import { Cylinder, PAIRED_CYLINDER_INCLUDE } from '@/lib/models/cylinder'
 import { Client } from '@/lib/models/client'
 import dayjs from 'dayjs'
 import { requireRole, isErrorResponse } from '@/lib/permissions-server'
@@ -12,18 +12,7 @@ export async function GET(request: Request) {
 	const cylinders = await Cylinder.findAll({
 		include: [
 			{ model: Client, attributes: ['id', 'name'] },
-			{
-				model: Cylinder,
-				as: 'pairedCylinder',
-				attributes: [
-					'id',
-					'serialNumber',
-					'nickname',
-					'servicePressure',
-					'oxygenClean',
-					'ownerId',
-				],
-			},
+			PAIRED_CYLINDER_INCLUDE,
 		],
 	})
 

@@ -2,7 +2,7 @@ import { auth } from '@/auth'
 import { redirect } from 'next/navigation'
 import { User } from '@/lib/models/user'
 import { Client } from '@/lib/models/client'
-import { Cylinder } from '@/lib/models/cylinder'
+import { Cylinder, PAIRED_CYLINDER_INCLUDE } from '@/lib/models/cylinder'
 import { Fill } from '@/lib/models/fill'
 import { Visual } from '@/lib/models/visual'
 import DashboardTabs from '@/components/Dashboard/DashboardTabs'
@@ -34,20 +34,7 @@ export default async function Dashboard() {
 
 	const cylinders = await Cylinder.findAll({
 		where: { ownerId: clientId },
-		include: [
-			{
-				model: Cylinder,
-				as: 'pairedCylinder',
-				attributes: [
-					'id',
-					'serialNumber',
-					'nickname',
-					'servicePressure',
-					'oxygenClean',
-					'ownerId',
-				],
-			},
-		],
+		include: [PAIRED_CYLINDER_INCLUDE],
 	})
 
 	const fills = await Fill.findAll({
