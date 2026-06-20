@@ -34,6 +34,20 @@ export default async function Dashboard() {
 
 	const cylinders = await Cylinder.findAll({
 		where: { ownerId: clientId },
+		include: [
+			{
+				model: Cylinder,
+				as: 'pairedCylinder',
+				attributes: [
+					'id',
+					'serialNumber',
+					'nickname',
+					'servicePressure',
+					'oxygenClean',
+					'ownerId',
+				],
+			},
+		],
 	})
 
 	const fills = await Fill.findAll({
