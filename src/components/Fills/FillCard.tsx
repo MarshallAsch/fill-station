@@ -38,6 +38,7 @@ const FillCard = ({
 				</button>
 			</div>
 			<CylinderPicker
+				isFill
 				filter={(c) =>
 					(!client || client.id == c.ownerId) && !usedCylinders.includes(c.id)
 				}

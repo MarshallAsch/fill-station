@@ -24,6 +24,7 @@ const FillsRow = ({ disableDelete = false, fill, client }: FillsRowProps) => {
 		<tr key={fill.id}>
 			<td className='text-text py-4 pr-3 pl-4 text-sm font-medium whitespace-nowrap sm:pl-6'>
 				<CylinderPicker
+					isFill
 					filter={(c) =>
 						(!client || client.id == c.ownerId) && !usedCylinders.includes(c.id)
 					}
