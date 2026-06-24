@@ -1,6 +1,7 @@
 'use client'
 
 import { useRouter, useSearchParams } from 'next/navigation'
+import BlendCalculator from './BlendCalculator'
 import CascadeCalculator from './CascadeCalculator'
 import NitroxStickCalculator from './NitroxStickCalculator'
 import UnitsProvider from './UnitsProvider'
@@ -32,7 +33,7 @@ const ToolsPage = () => {
 				<div className='mt-6'>
 					{active === 'cascade' && <CascadeCalculator />}
 					{active === 'nitrox-stick' && <NitroxStickCalculator />}
-					{active === 'blend' && <p className='text-text'>Blend (PP)</p>}
+					{active === 'blend' && <BlendCalculator />}
 					{active === 'mod-end' && <p className='text-text'>MOD / END</p>}
 				</div>
 			</div>
