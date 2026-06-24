@@ -2,6 +2,7 @@
 
 import { useRouter, useSearchParams } from 'next/navigation'
 import CascadeCalculator from './CascadeCalculator'
+import NitroxStickCalculator from './NitroxStickCalculator'
 import UnitsProvider from './UnitsProvider'
 import ToolsTabs, { TABS, TabId } from './ToolsTabs'
 
@@ -30,9 +31,7 @@ const ToolsPage = () => {
 				<ToolsTabs active={active} onChange={onChange} />
 				<div className='mt-6'>
 					{active === 'cascade' && <CascadeCalculator />}
-					{active === 'nitrox-stick' && (
-						<p className='text-text'>Nitrox Stick</p>
-					)}
+					{active === 'nitrox-stick' && <NitroxStickCalculator />}
 					{active === 'blend' && <p className='text-text'>Blend (PP)</p>}
 					{active === 'mod-end' && <p className='text-text'>MOD / END</p>}
 				</div>
