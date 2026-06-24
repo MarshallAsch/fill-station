@@ -17,7 +17,6 @@ const NumberInput = ({
 	placeholder,
 	disabled = false,
 }: NumberInputProps) => {
-	console.log(value)
 	return (
 		<div className='w-full'>
 			{label && (

@@ -1,6 +1,7 @@
 'use client'
 
 import { useRouter, useSearchParams } from 'next/navigation'
+import CascadeCalculator from './CascadeCalculator'
 import UnitsProvider from './UnitsProvider'
 import ToolsTabs, { TABS, TabId } from './ToolsTabs'
 
@@ -28,7 +29,7 @@ const ToolsPage = () => {
 				</p>
 				<ToolsTabs active={active} onChange={onChange} />
 				<div className='mt-6'>
-					{active === 'cascade' && <p className='text-text'>Cascade Fill</p>}
+					{active === 'cascade' && <CascadeCalculator />}
 					{active === 'nitrox-stick' && (
 						<p className='text-text'>Nitrox Stick</p>
 					)}
