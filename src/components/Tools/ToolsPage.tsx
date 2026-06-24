@@ -3,6 +3,7 @@
 import { useRouter, useSearchParams } from 'next/navigation'
 import BlendCalculator from './BlendCalculator'
 import CascadeCalculator from './CascadeCalculator'
+import ModEndCalculator from './ModEndCalculator'
 import NitroxStickCalculator from './NitroxStickCalculator'
 import UnitsProvider from './UnitsProvider'
 import ToolsTabs, { TABS, TabId } from './ToolsTabs'
@@ -34,7 +35,7 @@ const ToolsPage = () => {
 					{active === 'cascade' && <CascadeCalculator />}
 					{active === 'nitrox-stick' && <NitroxStickCalculator />}
 					{active === 'blend' && <BlendCalculator />}
-					{active === 'mod-end' && <p className='text-text'>MOD / END</p>}
+					{active === 'mod-end' && <ModEndCalculator />}
 				</div>
 			</div>
 		</UnitsProvider>
