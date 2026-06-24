@@ -7,7 +7,6 @@ import {
 	toMeters,
 	fromMeters,
 	toLiters,
-	fromLiters,
 } from './units'
 
 describe('units', () => {
@@ -32,6 +31,5 @@ describe('units', () => {
 	it('converts volume cf <-> l', () => {
 		expect(toLiters(1, 'cf')).toBeCloseTo(28.3168, 3)
 		expect(toLiters(5, 'l')).toBe(5)
-		expect(fromLiters(28.3168466, 'cf')).toBeCloseTo(1, 4)
 	})
 })

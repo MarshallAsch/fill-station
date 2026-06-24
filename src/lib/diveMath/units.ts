@@ -30,6 +30,3 @@ export function toLiters(value: number, unit: VolumeUnit): number {
 	return unit === 'cf' ? value * L_PER_CF : value
 }
 
-export function fromLiters(l: number, unit: VolumeUnit): number {
-	return unit === 'cf' ? l / L_PER_CF : l
-}

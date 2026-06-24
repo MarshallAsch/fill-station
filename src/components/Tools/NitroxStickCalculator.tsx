@@ -103,13 +103,19 @@ const NitroxStickCalculator = () => {
 						onChange={setSupplyVolume}
 					/>
 				</div>
-				<p className='text-text'>
-					O₂ supply pressure drop:{' '}
-					<span className='font-semibold'>
-						{Math.round(fromBar(draw.supplyPressureDrop, units.pressure))}{' '}
-						{units.pressure}
-					</span>
-				</p>
+				{!Number.isFinite(draw.supplyPressureDrop) || supplyVolume <= 0 ? (
+					<p className='text-light-text text-sm'>
+						Enter the supply bottle volume to estimate O₂ drawdown.
+					</p>
+				) : (
+					<p className='text-text'>
+						O₂ supply pressure drop:{' '}
+						<span className='font-semibold'>
+							{Math.round(fromBar(draw.supplyPressureDrop, units.pressure))}{' '}
+							{units.pressure}
+						</span>
+					</p>
+				)}
 			</section>
 		</div>
 	)

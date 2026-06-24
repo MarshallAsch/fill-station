@@ -25,29 +25,23 @@ const DEFAULT_UNITS: UnitPrefs = {
 interface UnitsContextValue {
 	units: UnitPrefs
 	setUnit: <K extends keyof UnitPrefs>(key: K, value: UnitPrefs[K]) => void
-	hydrated: boolean
 }
 
 const UnitsContext = createContext<UnitsContextValue | null>(null)
 
-const loadUnits = (): UnitPrefs => {
-	if (typeof window === 'undefined') return DEFAULT_UNITS
-	try {
-		const raw = localStorage.getItem(STORAGE_KEY)
-		if (raw) return { ...DEFAULT_UNITS, ...JSON.parse(raw) }
-	} catch {
-		// ignore malformed storage
-	}
-	return DEFAULT_UNITS
-}
-
 const UnitsProvider = ({ children }: { children: ReactNode }) => {
-	const [units, setUnits] = useState<UnitPrefs>(loadUnits)
-	const [hydrated, setHydrated] = useState(false)
+	const [units, setUnits] = useState<UnitPrefs>(DEFAULT_UNITS)
 
 	useEffect(() => {
-		// eslint-disable-next-line react-hooks/set-state-in-effect
-		setHydrated(true)
+		try {
+			const raw = localStorage.getItem(STORAGE_KEY)
+			if (raw) {
+				// eslint-disable-next-line react-hooks/set-state-in-effect
+				setUnits({ ...DEFAULT_UNITS, ...JSON.parse(raw) })
+			}
+		} catch {
+			// ignore malformed storage
+		}
 	}, [])
 
 	const setUnit = <K extends keyof UnitPrefs>(key: K, value: UnitPrefs[K]) => {
@@ -63,7 +57,7 @@ const UnitsProvider = ({ children }: { children: ReactNode }) => {
 	}
 
 	return (
-		<UnitsContext.Provider value={{ units, setUnit, hydrated }}>
+		<UnitsContext.Provider value={{ units, setUnit }}>
 			{children}
 		</UnitsContext.Provider>
 	)
