@@ -6,6 +6,7 @@ import NumberInput from '@/components/UI/FormElements/NumberInput'
 import { calculateBlend } from '@/lib/diveMath/blending'
 import { fromBar, toBar } from '@/lib/diveMath/units'
 import MixPicker from './MixPicker'
+import SafetyNote from './SafetyNote'
 import UnitToggle from './UnitToggle'
 import { useUnits } from './UnitsProvider'
 import { usePressureState } from './useUnitState'
@@ -33,6 +34,8 @@ const BlendCalculator = () => {
 	)
 
 	const p = (bar: number) => Math.round(fromBar(bar, units.pressure))
+	const startMixInvalid = startO2 + startHe > 100
+	const targetMixInvalid = targetO2 + targetHe > 100
 
 	return (
 		<div className='space-y-6'>
@@ -61,6 +64,7 @@ const BlendCalculator = () => {
 						label={`Pressure (${units.pressure})`}
 						value={startPressure}
 						onChange={setStartPressure}
+						min={0}
 					/>
 					<NumberInput
 						id='bl-start-o2'
@@ -68,6 +72,8 @@ const BlendCalculator = () => {
 						label='O₂ (%)'
 						value={startO2}
 						onChange={setStartO2}
+						min={0}
+						max={100}
 					/>
 					<NumberInput
 						id='bl-start-he'
@@ -75,8 +81,15 @@ const BlendCalculator = () => {
 						label='He (%)'
 						value={startHe}
 						onChange={setStartHe}
+						min={0}
+						max={100}
 					/>
 				</div>
+				{startMixInvalid && (
+					<SafetyNote level='danger'>
+						O₂ + He exceeds 100% — not a valid mix.
+					</SafetyNote>
+				)}
 			</section>
 
 			<section className='space-y-4'>
@@ -95,6 +108,7 @@ const BlendCalculator = () => {
 						label={`Pressure (${units.pressure})`}
 						value={finalPressure}
 						onChange={setFinalPressure}
+						min={0}
 					/>
 					<NumberInput
 						id='bl-target-o2'
@@ -102,6 +116,8 @@ const BlendCalculator = () => {
 						label='O₂ (%)'
 						value={targetO2}
 						onChange={setTargetO2}
+						min={0}
+						max={100}
 					/>
 					<NumberInput
 						id='bl-target-he'
@@ -109,8 +125,15 @@ const BlendCalculator = () => {
 						label='He (%)'
 						value={targetHe}
 						onChange={setTargetHe}
+						min={0}
+						max={100}
 					/>
 				</div>
+				{targetMixInvalid && (
+					<SafetyNote level='danger'>
+						O₂ + He exceeds 100% — not a valid mix.
+					</SafetyNote>
+				)}
 			</section>
 
 			<section className='border-border space-y-2 rounded-md border p-4'>

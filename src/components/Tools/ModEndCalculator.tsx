@@ -11,6 +11,7 @@ import {
 } from '@/lib/diveMath/modEnd'
 import { fromMeters, toMeters } from '@/lib/diveMath/units'
 import MixPicker from './MixPicker'
+import SafetyNote from './SafetyNote'
 import UnitToggle from './UnitToggle'
 import { useDepthState } from './useUnitState'
 import { useUnits } from './UnitsProvider'
@@ -40,6 +41,8 @@ const ModEndCalculator = () => {
 
 	const d = (m: number) => Math.round(fromMeters(m, units.depth))
 
+	const mixInvalid = fo2 + fhe > 100
+
 	return (
 		<div className='space-y-6'>
 			<UnitToggle show={['depth']} />
@@ -58,6 +61,8 @@ const ModEndCalculator = () => {
 					label='O₂ (%)'
 					value={fo2}
 					onChange={setFo2}
+					min={0}
+					max={100}
 				/>
 				<NumberInput
 					id='me-fhe'
@@ -65,6 +70,8 @@ const ModEndCalculator = () => {
 					label='He (%)'
 					value={fhe}
 					onChange={setFhe}
+					min={0}
+					max={100}
 				/>
 				<NumberInput
 					id='me-ppo2'
@@ -72,8 +79,16 @@ const ModEndCalculator = () => {
 					label='Working ppO₂'
 					value={ppo2}
 					onChange={setPpo2}
+					min={0}
+					max={3}
+					step={0.1}
 				/>
 			</section>
+			{mixInvalid && (
+				<SafetyNote level='danger'>
+					O₂ + He exceeds 100% — not a valid mix.
+				</SafetyNote>
+			)}
 
 			<section className='flex flex-wrap gap-6'>
 				<RadioGroup
@@ -126,6 +141,7 @@ const ModEndCalculator = () => {
 					label={`Planned depth (${units.depth})`}
 					value={depth}
 					onChange={setDepth}
+					min={0}
 				/>
 				<p className='text-text'>
 					END at {depth} {units.depth}:{' '}

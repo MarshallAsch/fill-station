@@ -25,17 +25,17 @@ import { useDepthState, usePressureState, useVolumeState } from './useUnitState'
 const GasRequirementsCalculator = () => {
 	const { units } = useUnits()
 	const [water, setWater] = useState<Water>('salt')
-	const [tankVol, setTankVol] = useVolumeState(12)
+	const [tankVol, setTankVol] = useVolumeState(0.39)
 	// SAC inputs
 	const [startP, setStartP] = usePressureState(200)
 	const [endP, setEndP] = usePressureState(100)
 	const [logMinutes, setLogMinutes] = useState(20)
-	const [logDepth, setLogDepth] = useDepthState(20)
+	const [logDepth, setLogDepth] = useDepthState(100)
 	// Plan inputs
-	const [planDepth, setPlanDepth] = useDepthState(30)
+	const [planDepth, setPlanDepth] = useDepthState(100)
 	const [planMinutes, setPlanMinutes] = useState(20)
-	const [ascentRate, setAscentRate] = useDepthState(9)
-	const [stopDepth, setStopDepth] = useDepthState(5)
+	const [ascentRate, setAscentRate] = useDepthState(30)
+	const [stopDepth, setStopDepth] = useDepthState(15)
 	const [stopMinutes, setStopMinutes] = useState(3)
 	const [stress, setStress] = useState(2)
 	const [team, setTeam] = useState(2)
@@ -96,6 +96,7 @@ const GasRequirementsCalculator = () => {
 						value={tankVol}
 						onChange={setTankVol}
 						tooltip='Water (internal) cylinder volume — not free-gas capacity'
+						min={0}
 					/>
 					<NumberInput
 						id='gr-start'
@@ -103,6 +104,7 @@ const GasRequirementsCalculator = () => {
 						label={`Start (${units.pressure})`}
 						value={startP}
 						onChange={setStartP}
+						min={0}
 					/>
 					<NumberInput
 						id='gr-end'
@@ -110,6 +112,7 @@ const GasRequirementsCalculator = () => {
 						label={`End (${units.pressure})`}
 						value={endP}
 						onChange={setEndP}
+						min={0}
 					/>
 					<NumberInput
 						id='gr-min'
@@ -117,6 +120,7 @@ const GasRequirementsCalculator = () => {
 						label='Time (min)'
 						value={logMinutes}
 						onChange={setLogMinutes}
+						min={0}
 					/>
 					<NumberInput
 						id='gr-ldepth'
@@ -124,6 +128,7 @@ const GasRequirementsCalculator = () => {
 						label={`Avg depth (${units.depth})`}
 						value={logDepth}
 						onChange={setLogDepth}
+						min={0}
 					/>
 				</div>
 				<p className='text-text'>
@@ -141,6 +146,7 @@ const GasRequirementsCalculator = () => {
 						label={`Avg depth (${units.depth})`}
 						value={planDepth}
 						onChange={setPlanDepth}
+						min={0}
 					/>
 					<NumberInput
 						id='gr-pmin'
@@ -148,6 +154,7 @@ const GasRequirementsCalculator = () => {
 						label='Bottom time (min)'
 						value={planMinutes}
 						onChange={setPlanMinutes}
+						min={0}
 					/>
 					<NumberInput
 						id='gr-arate'
@@ -155,6 +162,7 @@ const GasRequirementsCalculator = () => {
 						label={`Ascent rate (${units.depth}/min)`}
 						value={ascentRate}
 						onChange={setAscentRate}
+						min={0}
 					/>
 					<NumberInput
 						id='gr-sdepth'
@@ -162,6 +170,7 @@ const GasRequirementsCalculator = () => {
 						label={`Stop depth (${units.depth})`}
 						value={stopDepth}
 						onChange={setStopDepth}
+						min={0}
 					/>
 					<NumberInput
 						id='gr-smin'
@@ -169,6 +178,7 @@ const GasRequirementsCalculator = () => {
 						label='Stop time (min)'
 						value={stopMinutes}
 						onChange={setStopMinutes}
+						min={0}
 					/>
 					<NumberInput
 						id='gr-stress'
@@ -176,6 +186,7 @@ const GasRequirementsCalculator = () => {
 						label='Stress factor'
 						value={stress}
 						onChange={setStress}
+						min={1}
 					/>
 					<NumberInput
 						id='gr-team'
@@ -183,6 +194,7 @@ const GasRequirementsCalculator = () => {
 						label='Team size'
 						value={team}
 						onChange={setTeam}
+						min={1}
 					/>
 				</div>
 			</section>

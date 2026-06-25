@@ -6,6 +6,7 @@ import RadioGroup from '@/components/UI/FormElements/RadioGroup'
 import { computeDay, DayItem } from '@/lib/diveMath/oxygenExposure'
 import { ataAtDepth, Water } from '@/lib/diveMath/modEnd'
 import { fromMeters, toMeters } from '@/lib/diveMath/units'
+import SafetyNote from './SafetyNote'
 import UnitToggle from './UnitToggle'
 import { useUnits } from './UnitsProvider'
 
@@ -49,14 +50,19 @@ const OxygenExposureCalculator = () => {
 		setRows((prev) => prev.filter((_, idx) => idx !== i))
 
 	const items: DayItem[] = []
+	const ppo2Values: number[] = []
 	rows.forEach((r, i) => {
 		const ppo2 =
 			(r.fo2 / 100) * ataAtDepth(toMeters(r.depth, units.depth), water)
+		ppo2Values.push(ppo2)
 		items.push({ type: 'dive', ppo2, minutes: r.minutes })
 		if (i < rows.length - 1)
 			items.push({ type: 'surface', minutes: r.surfaceAfter })
 	})
 	const result = computeDay(items)
+	const maxPpo2 = Math.max(...ppo2Values)
+	const ppo2AggrDanger = maxPpo2 > 1.6
+	const ppo2AggrWarning = !ppo2AggrDanger && maxPpo2 > 1.4
 
 	return (
 		<div className='space-y-6'>
@@ -95,6 +101,7 @@ const OxygenExposureCalculator = () => {
 								label={`Depth (${units.depth})`}
 								value={r.depth}
 								onChange={(v) => update(i, 'depth', v)}
+								min={0}
 							/>
 							<NumberInput
 								id={`ox-o2-${i}`}
@@ -102,6 +109,8 @@ const OxygenExposureCalculator = () => {
 								label='O₂ (%)'
 								value={r.fo2}
 								onChange={(v) => update(i, 'fo2', v)}
+								min={0}
+								max={100}
 							/>
 							<NumberInput
 								id={`ox-t-${i}`}
@@ -109,6 +118,7 @@ const OxygenExposureCalculator = () => {
 								label='Time (min)'
 								value={r.minutes}
 								onChange={(v) => update(i, 'minutes', v)}
+								min={0}
 							/>
 							{i < rows.length - 1 && (
 								<NumberInput
@@ -117,6 +127,7 @@ const OxygenExposureCalculator = () => {
 									label='Surface interval (min)'
 									value={r.surfaceAfter}
 									onChange={(v) => update(i, 'surfaceAfter', v)}
+									min={0}
 								/>
 							)}
 						</div>
@@ -136,6 +147,16 @@ const OxygenExposureCalculator = () => {
 			</section>
 			<section className='border-border space-y-1 rounded-md border p-4'>
 				<h2 className='text-text text-lg font-semibold'>Day totals</h2>
+				{ppo2AggrDanger && (
+					<SafetyNote level='danger'>
+						One or more dives exceed ppO₂ 1.6 (danger).
+					</SafetyNote>
+				)}
+				{ppo2AggrWarning && (
+					<SafetyNote level='warning'>
+						One or more dives exceed ppO₂ 1.4 (warning).
+					</SafetyNote>
+				)}
 				<p className='text-text'>
 					Peak CNS:{' '}
 					<span className='font-semibold'>

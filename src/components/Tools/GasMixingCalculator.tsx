@@ -5,6 +5,7 @@ import NumberInput from '@/components/UI/FormElements/NumberInput'
 import { mixTwoGases } from '@/lib/diveMath/gasMixing'
 import { fromBar, toBar } from '@/lib/diveMath/units'
 import MixPicker from './MixPicker'
+import SafetyNote from './SafetyNote'
 import UnitToggle from './UnitToggle'
 import { useUnits } from './UnitsProvider'
 import { usePressureState } from './useUnitState'
@@ -22,6 +23,9 @@ const GasMixingCalculator = () => {
 		{ pressure: toBar(p1, units.pressure), fo2: o21 / 100, fhe: he1 / 100 },
 		{ pressure: toBar(p2, units.pressure), fo2: o22 / 100, fhe: he2 / 100 },
 	)
+
+	const mixAInvalid = o21 + he1 > 100
+	const mixBInvalid = o22 + he2 > 100
 
 	return (
 		<div className='space-y-6'>
@@ -42,6 +46,7 @@ const GasMixingCalculator = () => {
 						label={`Pressure (${units.pressure})`}
 						value={p1}
 						onChange={setP1}
+						min={0}
 					/>
 					<NumberInput
 						id='ga-o2'
@@ -49,6 +54,8 @@ const GasMixingCalculator = () => {
 						label='O₂ (%)'
 						value={o21}
 						onChange={setO21}
+						min={0}
+						max={100}
 					/>
 					<NumberInput
 						id='ga-he'
@@ -56,8 +63,15 @@ const GasMixingCalculator = () => {
 						label='He (%)'
 						value={he1}
 						onChange={setHe1}
+						min={0}
+						max={100}
 					/>
 				</div>
+				{mixAInvalid && (
+					<SafetyNote level='danger'>
+						O₂ + He exceeds 100% — not a valid mix.
+					</SafetyNote>
+				)}
 			</section>
 			<section className='space-y-3'>
 				<h2 className='text-text text-lg font-semibold'>Gas B</h2>
@@ -75,6 +89,7 @@ const GasMixingCalculator = () => {
 						label={`Pressure (${units.pressure})`}
 						value={p2}
 						onChange={setP2}
+						min={0}
 					/>
 					<NumberInput
 						id='gb-o2'
@@ -82,6 +97,8 @@ const GasMixingCalculator = () => {
 						label='O₂ (%)'
 						value={o22}
 						onChange={setO22}
+						min={0}
+						max={100}
 					/>
 					<NumberInput
 						id='gb-he'
@@ -89,8 +106,15 @@ const GasMixingCalculator = () => {
 						label='He (%)'
 						value={he2}
 						onChange={setHe2}
+						min={0}
+						max={100}
 					/>
 				</div>
+				{mixBInvalid && (
+					<SafetyNote level='danger'>
+						O₂ + He exceeds 100% — not a valid mix.
+					</SafetyNote>
+				)}
 			</section>
 			<section className='border-border space-y-1 rounded-md border p-4'>
 				<h2 className='text-text text-lg font-semibold'>Resulting mix</h2>

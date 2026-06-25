@@ -14,6 +14,7 @@ import {
 	toLiters,
 	toLpm,
 } from '@/lib/diveMath/units'
+import SafetyNote from './SafetyNote'
 import TankSizePicker from './TankSizePicker'
 import UnitToggle from './UnitToggle'
 import { useUnits } from './UnitsProvider'
@@ -27,10 +28,13 @@ const NitroxStickCalculator = () => {
 	const { units } = useUnits()
 	const [fo2, setFo2] = useState(32)
 	const [airFlow, setAirFlow] = useAirFlowState(100)
-	const [tankVolume, setTankVolume] = useVolumeState(80)
+	const [tankVolume, setTankVolume] = useVolumeState(0.39)
 	const [startPressure, setStartPressure] = usePressureState(0)
 	const [finalPressure, setFinalPressure] = usePressureState(3000)
-	const [supplyVolume, setSupplyVolume] = useVolumeState(80)
+	const [supplyVolume, setSupplyVolume] = useVolumeState(1.73)
+	const [workingPressureBar, setWorkingPressureBar] = useState<number | null>(
+		null,
+	)
 
 	const targetFo2 = fo2 / 100
 	const airFlowLpm = toLpm(airFlow, units.airFlow)
@@ -44,6 +48,10 @@ const NitroxStickCalculator = () => {
 	})
 
 	const leanWarning = targetFo2 <= 0.209
+	const highO2 = fo2 > 40
+	const overfill =
+		workingPressureBar != null &&
+		toBar(finalPressure, units.pressure) > workingPressureBar * 1.1
 
 	return (
 		<div className='space-y-6'>
@@ -58,6 +66,8 @@ const NitroxStickCalculator = () => {
 						label='Target O₂ (%)'
 						value={fo2}
 						onChange={setFo2}
+						min={0}
+						max={100}
 					/>
 					<NumberInput
 						id='ns-airflow'
@@ -65,8 +75,15 @@ const NitroxStickCalculator = () => {
 						label={`Compressor free-air (intake) flow (${units.airFlow})`}
 						value={airFlow}
 						onChange={setAirFlow}
+						min={0}
 					/>
 				</div>
+				{highO2 && (
+					<SafetyNote level='danger'>
+						O₂ above 40% requires oxygen-clean equipment and O₂-service gas —
+						special handling.
+					</SafetyNote>
+				)}
 				<p className='text-text'>
 					O₂ flow into the stick:{' '}
 					<span className='font-semibold'>
@@ -92,6 +109,7 @@ const NitroxStickCalculator = () => {
 						onSelect={(l, bar) => {
 							setTankVolume(fromLiters(l, units.volume))
 							setFinalPressure(fromBar(bar, units.pressure))
+							setWorkingPressureBar(bar)
 						}}
 					/>
 					<div className='grid grid-cols-1 gap-4 sm:grid-cols-2'>
@@ -102,6 +120,7 @@ const NitroxStickCalculator = () => {
 							value={tankVolume}
 							onChange={setTankVolume}
 							tooltip='Water (internal) cylinder volume — not free-gas capacity'
+							min={0}
 						/>
 						<NumberInput
 							id='ns-start'
@@ -109,6 +128,7 @@ const NitroxStickCalculator = () => {
 							label={`Start pressure (${units.pressure})`}
 							value={startPressure}
 							onChange={setStartPressure}
+							min={0}
 						/>
 						<NumberInput
 							id='ns-final'
@@ -116,8 +136,15 @@ const NitroxStickCalculator = () => {
 							label={`Final pressure (${units.pressure})`}
 							value={finalPressure}
 							onChange={setFinalPressure}
+							min={0}
 						/>
 					</div>
+					{overfill && (
+						<SafetyNote level='danger'>
+							Fill pressure is more than 10% over the cylinder&apos;s working
+							pressure.
+						</SafetyNote>
+					)}
 				</div>
 				<div className='space-y-3'>
 					<h3 className='text-text font-medium'>O₂ supply bottle</h3>
@@ -133,6 +160,7 @@ const NitroxStickCalculator = () => {
 							value={supplyVolume}
 							onChange={setSupplyVolume}
 							tooltip='Water (internal) cylinder volume — not free-gas capacity'
+							min={0}
 						/>
 					</div>
 				</div>

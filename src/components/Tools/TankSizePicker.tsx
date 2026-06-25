@@ -1,12 +1,15 @@
 'use client'
 
 import ListBox from '@/components/UI/FormElements/ListBox'
+import { fromBar, fromLiters } from '@/lib/diveMath/units'
 import {
 	DIVE_TANKS,
+	freeGasLiters,
 	INDUSTRIAL_TANKS,
 	STORAGE_TANKS,
 	TankPreset,
 } from './presets'
+import { useUnits } from './UnitsProvider'
 
 const LISTS: Record<'dive' | 'storage' | 'industrial', TankPreset[]> = {
 	dive: DIVE_TANKS,
@@ -25,10 +28,18 @@ const TankSizePicker = ({
 	idSuffix?: string
 	onSelect: (waterVolumeL: number, ratedBar: number) => void
 }) => {
+	const { units } = useUnits()
 	const presets = LISTS[category]
 	const items = [
 		{ value: CUSTOM, name: 'Custom…' },
-		...presets.map((p) => ({ value: p.name, name: p.name })),
+		...presets.map((p) => {
+			const freeDisplay = Math.round(fromLiters(freeGasLiters(p), units.volume))
+			const presDisplay = Math.round(fromBar(p.ratedBar, units.pressure))
+			return {
+				value: p.name,
+				name: `${p.name} — ≈${freeDisplay} ${units.volume} @ ${presDisplay} ${units.pressure}`,
+			}
+		}),
 	]
 	const id = `tank-${category}${idSuffix ? `-${idSuffix}` : ''}`
 

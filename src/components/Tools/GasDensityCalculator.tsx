@@ -12,6 +12,7 @@ import {
 import { Water } from '@/lib/diveMath/modEnd'
 import { fromMeters, toMeters } from '@/lib/diveMath/units'
 import MixPicker from './MixPicker'
+import SafetyNote from './SafetyNote'
 import UnitToggle from './UnitToggle'
 import { useDepthState } from './useUnitState'
 import { useUnits } from './UnitsProvider'
@@ -21,7 +22,7 @@ const GasDensityCalculator = () => {
 	const [fo2, setFo2] = useState(21)
 	const [fhe, setFhe] = useState(0)
 	const [water, setWater] = useState<Water>('salt')
-	const [depth, setDepth] = useDepthState(30)
+	const [depth, setDepth] = useDepthState(100)
 
 	const mix = { fo2: fo2 / 100, fhe: fhe / 100 }
 	const density = densityAtDepth({
@@ -51,6 +52,8 @@ const GasDensityCalculator = () => {
 				? { text: 'Above the 5.2 g/L recommended limit.', cls: 'text-text' }
 				: { text: 'Within recommended density.', cls: 'text-light-text' }
 
+	const mixInvalid = fo2 + fhe > 100
+
 	return (
 		<div className='space-y-6'>
 			<UnitToggle show={['depth']} />
@@ -68,6 +71,8 @@ const GasDensityCalculator = () => {
 					label='O₂ (%)'
 					value={fo2}
 					onChange={setFo2}
+					min={0}
+					max={100}
 				/>
 				<NumberInput
 					id='gd-fhe'
@@ -75,6 +80,8 @@ const GasDensityCalculator = () => {
 					label='He (%)'
 					value={fhe}
 					onChange={setFhe}
+					min={0}
+					max={100}
 				/>
 				<NumberInput
 					id='gd-depth'
@@ -82,8 +89,14 @@ const GasDensityCalculator = () => {
 					label={`Depth (${units.depth})`}
 					value={depth}
 					onChange={setDepth}
+					min={0}
 				/>
 			</section>
+			{mixInvalid && (
+				<SafetyNote level='danger'>
+					O₂ + He exceeds 100% — not a valid mix.
+				</SafetyNote>
+			)}
 			<RadioGroup
 				title='Water'
 				name='gd-water'

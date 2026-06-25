@@ -7,17 +7,18 @@ import RadioGroup from '@/components/UI/FormElements/RadioGroup'
 import { bestMix } from '@/lib/diveMath/bestMix'
 import { calculateMod, Water } from '@/lib/diveMath/modEnd'
 import { fromMeters, toMeters } from '@/lib/diveMath/units'
+import SafetyNote from './SafetyNote'
 import UnitToggle from './UnitToggle'
 import { useUnits } from './UnitsProvider'
 import { useDepthState } from './useUnitState'
 
 const BestMixCalculator = () => {
 	const { units } = useUnits()
-	const [depth, setDepth] = useDepthState(30)
+	const [depth, setDepth] = useDepthState(100)
 	const [ppo2, setPpo2] = useState(1.4)
 	const [water, setWater] = useState<Water>('salt')
 	const [useHe, setUseHe] = useState(false)
-	const [targetEnd, setTargetEnd] = useDepthState(30)
+	const [targetEnd, setTargetEnd] = useDepthState(100)
 
 	const depthM = toMeters(depth, units.depth)
 	const mix = bestMix({
@@ -30,6 +31,10 @@ const BestMixCalculator = () => {
 	const fhePct = Math.round(mix.fhe * 100)
 	const mod = calculateMod({ fo2: mix.fo2, ppo2, water })
 
+	const ppo2Danger = ppo2 > 1.6
+	const ppo2Warning = !ppo2Danger && ppo2 > 1.4
+	const mixInvalid = fo2Pct + fhePct > 100
+
 	return (
 		<div className='space-y-6'>
 			<UnitToggle show={['depth']} />
@@ -40,6 +45,7 @@ const BestMixCalculator = () => {
 					label={`Planned depth (${units.depth})`}
 					value={depth}
 					onChange={setDepth}
+					min={0}
 				/>
 				<NumberInput
 					id='bm-ppo2'
@@ -47,8 +53,21 @@ const BestMixCalculator = () => {
 					label='Target ppO₂'
 					value={ppo2}
 					onChange={setPpo2}
+					min={0}
+					max={3}
+					step={0.1}
 				/>
 			</section>
+			{ppo2Danger && (
+				<SafetyNote level='danger'>
+					ppO₂ above 1.6 — unsafe, high O₂-toxicity risk.
+				</SafetyNote>
+			)}
+			{ppo2Warning && (
+				<SafetyNote level='warning'>
+					ppO₂ above 1.4 exceeds the recommended working limit.
+				</SafetyNote>
+			)}
 			<RadioGroup
 				title='Water'
 				name='bm-water'
@@ -73,7 +92,13 @@ const BestMixCalculator = () => {
 					label={`Target END (${units.depth})`}
 					value={targetEnd}
 					onChange={setTargetEnd}
+					min={0}
 				/>
+			)}
+			{mixInvalid && (
+				<SafetyNote level='danger'>
+					O₂ + He exceeds 100% — not a valid mix.
+				</SafetyNote>
 			)}
 			<section className='border-border space-y-2 rounded-md border p-4'>
 				<h2 className='text-text text-lg font-semibold'>Recommended mix</h2>
