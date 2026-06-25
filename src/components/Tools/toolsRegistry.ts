@@ -1,6 +1,7 @@
 import { ComponentType } from 'react'
 import BestMixCalculator from './BestMixCalculator'
 import BlendCalculator from './BlendCalculator'
+import BlendingCostCalculator from './BlendingCostCalculator'
 import CascadeCalculator from './CascadeCalculator'
 import EadCalculator from './EadCalculator'
 import GasDensityCalculator from './GasDensityCalculator'
@@ -16,6 +17,7 @@ export type TabId =
 	| 'cascade'
 	| 'nitrox-stick'
 	| 'blend'
+	| 'blending-cost'
 	| 'mod-end'
 	| 'best-mix'
 	| 'ead'
@@ -41,6 +43,7 @@ export const TOOLS: ToolDef[] = [
 	{ id: 'nitrox-stick', name: 'Nitrox Stick', group: 'blending', Component: NitroxStickCalculator },
 	{ id: 'blend', name: 'Blend (PP)', group: 'blending', Component: BlendCalculator },
 	{ id: 'mix-two-gases', name: 'Mix Two Gases', group: 'blending', Component: GasMixingCalculator },
+	{ id: 'blending-cost', name: 'Blending Cost', group: 'blending', Component: BlendingCostCalculator },
 	{ id: 'mod-end', name: 'MOD / END', group: 'planning', Component: ModEndCalculator },
 	{ id: 'best-mix', name: 'Best Mix', group: 'blending', Component: BestMixCalculator },
 	{ id: 'ead', name: 'EAD', group: 'planning', Component: EadCalculator },
