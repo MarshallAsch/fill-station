@@ -5,13 +5,10 @@ import {
 	DepthUnit,
 	FlowUnit,
 	PressureUnit,
-	VolumeUnit,
 	fromBar,
-	fromLiters,
 	fromLpm,
 	fromMeters,
 	toBar,
-	toLiters,
 	toLpm,
 	toMeters,
 } from '@/lib/diveMath/units'
@@ -46,11 +43,6 @@ export function usePressureState(initial: number) {
 export function useDepthState(initial: number) {
 	const { units } = useUnits()
 	return useConverted<DepthUnit>(initial, units.depth, toMeters, fromMeters, 0)
-}
-
-export function useVolumeState(initial: number) {
-	const { units } = useUnits()
-	return useConverted<VolumeUnit>(initial, units.volume, toLiters, fromLiters, 2)
 }
 
 export function useAirFlowState(initial: number) {

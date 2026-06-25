@@ -21,7 +21,7 @@ const OPTIONS: Record<
 		],
 	},
 	volume: {
-		label: 'Volume',
+		label: 'Gas volume',
 		values: [
 			{ value: 'cf', label: 'cf' },
 			{ value: 'l', label: 'L' },

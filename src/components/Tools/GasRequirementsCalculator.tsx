@@ -10,22 +10,16 @@ import {
 	rockBottom,
 } from '@/lib/diveMath/gasPlanning'
 import { Water } from '@/lib/diveMath/modEnd'
-import {
-	fromBar,
-	fromLiters,
-	toBar,
-	toLiters,
-	toMeters,
-} from '@/lib/diveMath/units'
+import { fromBar, fromLiters, toBar, toMeters } from '@/lib/diveMath/units'
 import TankSizePicker from './TankSizePicker'
 import UnitToggle from './UnitToggle'
 import { useUnits } from './UnitsProvider'
-import { useDepthState, usePressureState, useVolumeState } from './useUnitState'
+import { useDepthState, usePressureState } from './useUnitState'
 
 const GasRequirementsCalculator = () => {
 	const { units } = useUnits()
 	const [water, setWater] = useState<Water>('salt')
-	const [tankVol, setTankVol] = useVolumeState(0.39)
+	const [tankVol, setTankVol] = useState(11.1)
 	// SAC inputs
 	const [startP, setStartP] = usePressureState(200)
 	const [endP, setEndP] = usePressureState(100)
@@ -40,7 +34,7 @@ const GasRequirementsCalculator = () => {
 	const [stress, setStress] = useState(2)
 	const [team, setTeam] = useState(2)
 
-	const tankVolumeL = toLiters(tankVol, units.volume)
+	const tankVolumeL = tankVol
 	const rmvLpm = rmv({
 		startP: toBar(startP, units.pressure),
 		endP: toBar(endP, units.pressure),
@@ -84,15 +78,12 @@ const GasRequirementsCalculator = () => {
 				<h2 className='text-text text-lg font-semibold'>
 					1 · SAC / RMV from a logged dive
 				</h2>
-				<TankSizePicker
-					category='dive'
-					onSelect={(l) => setTankVol(fromLiters(l, units.volume))}
-				/>
+				<TankSizePicker category='dive' onSelect={(l) => setTankVol(l)} />
 				<div className='grid grid-cols-1 gap-4 sm:grid-cols-2'>
 					<NumberInput
 						id='gr-tank'
 						name='gr-tank'
-						label={`Tank volume (${units.volume})`}
+						label='Tank volume (L)'
 						value={tankVol}
 						onChange={setTankVol}
 						tooltip='Water (internal) cylinder volume — not free-gas capacity'

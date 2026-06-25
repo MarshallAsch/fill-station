@@ -3,12 +3,12 @@
 import { useEffect, useState } from 'react'
 import NumberInput from '@/components/UI/FormElements/NumberInput'
 import { calculateBlend } from '@/lib/diveMath/blending'
-import { toBar, toLiters } from '@/lib/diveMath/units'
+import { toBar } from '@/lib/diveMath/units'
 import MixPicker from './MixPicker'
 import SafetyNote from './SafetyNote'
 import UnitToggle from './UnitToggle'
 import { useUnits } from './UnitsProvider'
-import { usePressureState, useVolumeState } from './useUnitState'
+import { usePressureState } from './useUnitState'
 
 const PRICE_KEY = 'fillstation.tools.gasPrices'
 interface Prices {
@@ -20,7 +20,7 @@ const DEFAULT_PRICES: Prices = { o2: 0.03, he: 0.5 }
 const BlendingCostCalculator = () => {
 	const { units } = useUnits()
 	const [prices, setPrices] = useState<Prices>(DEFAULT_PRICES)
-	const [tankVol, setTankVol] = useVolumeState(0.39)
+	const [tankVol, setTankVol] = useState(11.1)
 	const [startP, setStartP] = usePressureState(0)
 	const [startO2, setStartO2] = useState(21)
 	const [startHe, setStartHe] = useState(0)
@@ -57,7 +57,7 @@ const BlendingCostCalculator = () => {
 		targetFo2: targetO2 / 100,
 		targetFhe: targetHe / 100,
 	})
-	const tankL = toLiters(tankVol, units.volume)
+	const tankL = tankVol
 	const o2L = Math.max(0, blend.pO2) * tankL
 	const heL = Math.max(0, blend.pHe) * tankL
 	const o2Cost = o2L * prices.o2
@@ -82,7 +82,7 @@ const BlendingCostCalculator = () => {
 					<NumberInput
 						id='c-tank'
 						name='c-tank'
-						label={`Tank volume (${units.volume})`}
+						label='Tank volume (L)'
 						value={tankVol}
 						onChange={setTankVol}
 						min={0}

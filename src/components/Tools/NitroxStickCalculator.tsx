@@ -6,32 +6,21 @@ import {
 	nitroxStickFlowRate,
 	nitroxStickSupplyDraw,
 } from '@/lib/diveMath/nitroxStick'
-import {
-	fromBar,
-	fromLiters,
-	fromLpm,
-	toBar,
-	toLiters,
-	toLpm,
-} from '@/lib/diveMath/units'
+import { fromBar, fromLpm, toBar, toLpm } from '@/lib/diveMath/units'
 import SafetyNote from './SafetyNote'
 import TankSizePicker from './TankSizePicker'
 import UnitToggle from './UnitToggle'
 import { useUnits } from './UnitsProvider'
-import {
-	useAirFlowState,
-	usePressureState,
-	useVolumeState,
-} from './useUnitState'
+import { useAirFlowState, usePressureState } from './useUnitState'
 
 const NitroxStickCalculator = () => {
 	const { units } = useUnits()
 	const [fo2, setFo2] = useState(32)
 	const [airFlow, setAirFlow] = useAirFlowState(100)
-	const [tankVolume, setTankVolume] = useVolumeState(0.39)
+	const [tankVolume, setTankVolume] = useState(11.1)
 	const [startPressure, setStartPressure] = usePressureState(0)
 	const [finalPressure, setFinalPressure] = usePressureState(3000)
-	const [supplyVolume, setSupplyVolume] = useVolumeState(1.73)
+	const [supplyVolume, setSupplyVolume] = useState(49)
 	const [workingPressureBar, setWorkingPressureBar] = useState<number | null>(
 		null,
 	)
@@ -41,10 +30,10 @@ const NitroxStickCalculator = () => {
 	const flow = nitroxStickFlowRate({ targetFo2, airFlow: airFlowLpm })
 	const draw = nitroxStickSupplyDraw({
 		targetFo2,
-		tankVolume: toLiters(tankVolume, units.volume),
+		tankVolume,
 		startPressure: toBar(startPressure, units.pressure),
 		finalPressure: toBar(finalPressure, units.pressure),
-		supplyVolume: toLiters(supplyVolume, units.volume),
+		supplyVolume,
 	})
 
 	const leanWarning = targetFo2 <= 0.209
@@ -107,7 +96,7 @@ const NitroxStickCalculator = () => {
 					<TankSizePicker
 						category='dive'
 						onSelect={(l, bar) => {
-							setTankVolume(fromLiters(l, units.volume))
+							setTankVolume(l)
 							setFinalPressure(fromBar(bar, units.pressure))
 							setWorkingPressureBar(bar)
 						}}
@@ -116,7 +105,7 @@ const NitroxStickCalculator = () => {
 						<NumberInput
 							id='ns-tankvol'
 							name='ns-tankvol'
-							label={`Tank volume (${units.volume})`}
+							label='Tank volume (L)'
 							value={tankVolume}
 							onChange={setTankVolume}
 							tooltip='Water (internal) cylinder volume — not free-gas capacity'
@@ -150,13 +139,13 @@ const NitroxStickCalculator = () => {
 					<h3 className='text-text font-medium'>O₂ supply bottle</h3>
 					<TankSizePicker
 						category='industrial'
-						onSelect={(l) => setSupplyVolume(fromLiters(l, units.volume))}
+						onSelect={(l) => setSupplyVolume(l)}
 					/>
 					<div className='flex flex-wrap items-end gap-3'>
 						<NumberInput
 							id='ns-supplyvol'
 							name='ns-supplyvol'
-							label={`Supply bottle volume (${units.volume})`}
+							label='Supply bottle volume (L)'
 							value={supplyVolume}
 							onChange={setSupplyVolume}
 							tooltip='Water (internal) cylinder volume — not free-gas capacity'

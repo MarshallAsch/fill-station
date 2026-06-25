@@ -4,12 +4,12 @@ import { useState } from 'react'
 import Checkbox from '@/components/UI/FormElements/CheckBox'
 import NumberInput from '@/components/UI/FormElements/NumberInput'
 import { calculateCascade } from '@/lib/diveMath/cascade'
-import { fromBar, fromLiters, toBar, toLiters } from '@/lib/diveMath/units'
+import { fromBar, toBar } from '@/lib/diveMath/units'
 import SafetyNote from './SafetyNote'
 import TankSizePicker from './TankSizePicker'
 import UnitToggle from './UnitToggle'
 import { useUnits } from './UnitsProvider'
-import { usePressureState, useVolumeState } from './useUnitState'
+import { usePressureState } from './useUnitState'
 
 interface BankRow {
 	volume: number
@@ -19,9 +19,9 @@ interface BankRow {
 const CascadeCalculator = () => {
 	const { units } = useUnits()
 	const [banks, setBanks] = useState<BankRow[]>([
-		{ volume: 1.77, pressure: 3000 },
+		{ volume: 50, pressure: 3000 },
 	])
-	const [targetVolume, setTargetVolume] = useVolumeState(0.39)
+	const [targetVolume, setTargetVolume] = useState(11.1)
 	const [startPressure, setStartPressure] = usePressureState(500)
 	const [desiredPressure, setDesiredPressure] = usePressureState(3000)
 	const [useRealGas, setUseRealGas] = useState(false)
@@ -35,18 +35,18 @@ const CascadeCalculator = () => {
 		)
 	}
 	const addBank = () =>
-		setBanks((prev) => [...prev, { volume: 1.77, pressure: 3000 }])
+		setBanks((prev) => [...prev, { volume: 50, pressure: 3000 }])
 	const removeBank = (i: number) =>
 		setBanks((prev) => prev.filter((_, idx) => idx !== i))
 
 	const result = calculateCascade(
 		{
 			banks: banks.map((b) => ({
-				volume: toLiters(b.volume, units.volume),
+				volume: b.volume,
 				pressure: toBar(b.pressure, units.pressure),
 			})),
 			target: {
-				volume: toLiters(targetVolume, units.volume),
+				volume: targetVolume,
 				startPressure: toBar(startPressure, units.pressure),
 			},
 			desiredPressure: toBar(desiredPressure, units.pressure),
@@ -78,7 +78,7 @@ const CascadeCalculator = () => {
 							category='storage'
 							idSuffix={String(i)}
 							onSelect={(l, bar) => {
-								updateBank(i, 'volume', fromLiters(l, units.volume))
+								updateBank(i, 'volume', l)
 								updateBank(i, 'pressure', fromBar(bar, units.pressure))
 							}}
 						/>
@@ -86,7 +86,7 @@ const CascadeCalculator = () => {
 							<NumberInput
 								id={`bank-vol-${i}`}
 								name={`bank-vol-${i}`}
-								label={`Volume (${units.volume})`}
+								label='Volume (L)'
 								value={b.volume}
 								onChange={(v) => updateBank(i, 'volume', v)}
 								tooltip='Water (internal) cylinder volume — not free-gas capacity'
@@ -125,7 +125,7 @@ const CascadeCalculator = () => {
 				<TankSizePicker
 					category='dive'
 					onSelect={(l, bar) => {
-						setTargetVolume(fromLiters(l, units.volume))
+						setTargetVolume(l)
 						setDesiredPressure(fromBar(bar, units.pressure))
 						setWorkingPressureBar(bar)
 					}}
@@ -134,7 +134,7 @@ const CascadeCalculator = () => {
 					<NumberInput
 						id='target-vol'
 						name='target-vol'
-						label={`Volume (${units.volume})`}
+						label='Volume (L)'
 						value={targetVolume}
 						onChange={setTargetVolume}
 						tooltip='Water (internal) cylinder volume — not free-gas capacity'
