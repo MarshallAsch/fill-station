@@ -18,9 +18,11 @@ const CUSTOM = 'custom'
 
 const TankSizePicker = ({
 	category,
+	idSuffix,
 	onSelect,
 }: {
 	category: 'dive' | 'storage' | 'industrial'
+	idSuffix?: string
 	onSelect: (waterVolumeL: number, ratedBar: number) => void
 }) => {
 	const presets = LISTS[category]
@@ -28,11 +30,12 @@ const TankSizePicker = ({
 		{ value: CUSTOM, name: 'Custom…' },
 		...presets.map((p) => ({ value: p.name, name: p.name })),
 	]
+	const id = `tank-${category}${idSuffix ? `-${idSuffix}` : ''}`
 
 	return (
 		<ListBox
-			id={`tank-${category}`}
-			name={`tank-${category}`}
+			id={id}
+			name={id}
 			title='Standard size'
 			items={items}
 			defaultValue={items[0]}

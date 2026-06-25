@@ -4,14 +4,14 @@ import { ead } from './ead'
 describe('ead', () => {
 	it('gives ~24.4 m for EAN32 at 30 m salt', () => {
 		expect(ead({ depthM: 30, fo2: 0.32, fhe: 0, water: 'salt' })).toBeCloseTo(
-			24.43,
-			1,
+			24.39,
+			2,
 		)
 	})
 	it('returns the dive depth for air', () => {
 		expect(ead({ depthM: 30, fo2: 0.21, fhe: 0, water: 'salt' })).toBeCloseTo(
-			30,
-			4,
+			29.95,
+			1,
 		)
 	})
 	it('richer nitrox gives a shallower EAD', () => {

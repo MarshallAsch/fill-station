@@ -68,6 +68,7 @@ const CascadeCalculator = () => {
 					<div key={i} className='flex flex-wrap items-end gap-3'>
 						<TankSizePicker
 							category='storage'
+							idSuffix={String(i)}
 							onSelect={(l, bar) => {
 								updateBank(i, 'volume', fromLiters(l, units.volume))
 								updateBank(i, 'pressure', fromBar(bar, units.pressure))
