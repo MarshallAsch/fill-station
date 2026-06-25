@@ -6,7 +6,15 @@ import {
 	nitroxStickFlowRate,
 	nitroxStickSupplyDraw,
 } from '@/lib/diveMath/nitroxStick'
-import { fromBar, fromLpm, toBar, toLiters, toLpm } from '@/lib/diveMath/units'
+import {
+	fromBar,
+	fromLiters,
+	fromLpm,
+	toBar,
+	toLiters,
+	toLpm,
+} from '@/lib/diveMath/units'
+import TankSizePicker from './TankSizePicker'
 import UnitToggle from './UnitToggle'
 import { useUnits } from './UnitsProvider'
 
@@ -72,6 +80,10 @@ const NitroxStickCalculator = () => {
 				<h2 className='text-text text-lg font-semibold'>
 					O₂ drawn from supply bottle
 				</h2>
+				<TankSizePicker
+					category='dive'
+					onSelect={(l) => setTankVolume(fromLiters(l, units.volume))}
+				/>
 				<div className='flex flex-wrap items-end gap-3'>
 					<NumberInput
 						id='ns-tankvol'
@@ -94,6 +106,12 @@ const NitroxStickCalculator = () => {
 						value={finalPressure}
 						onChange={setFinalPressure}
 					/>
+				</div>
+				<TankSizePicker
+					category='industrial'
+					onSelect={(l) => setSupplyVolume(fromLiters(l, units.volume))}
+				/>
+				<div className='flex flex-wrap items-end gap-3'>
 					<NumberInput
 						id='ns-supplyvol'
 						name='ns-supplyvol'

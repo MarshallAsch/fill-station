@@ -10,6 +10,7 @@ import {
 	Water,
 } from '@/lib/diveMath/modEnd'
 import { fromMeters, toMeters } from '@/lib/diveMath/units'
+import MixPicker from './MixPicker'
 import UnitToggle from './UnitToggle'
 import { useUnits } from './UnitsProvider'
 
@@ -43,6 +44,13 @@ const ModEndCalculator = () => {
 			<UnitToggle show={['depth']} />
 
 			<section className='flex flex-wrap items-end gap-3'>
+				<MixPicker
+					id='me-mix'
+					onSelect={(o2, he) => {
+						setFo2(o2)
+						setFhe(he)
+					}}
+				/>
 				<NumberInput
 					id='me-fo2'
 					name='me-fo2'

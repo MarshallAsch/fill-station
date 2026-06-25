@@ -1,9 +1,11 @@
 'use client'
 
 import { useState } from 'react'
+import Checkbox from '@/components/UI/FormElements/CheckBox'
 import NumberInput from '@/components/UI/FormElements/NumberInput'
 import { calculateCascade } from '@/lib/diveMath/cascade'
-import { fromBar, toBar, toLiters } from '@/lib/diveMath/units'
+import { fromBar, fromLiters, toBar, toLiters } from '@/lib/diveMath/units'
+import TankSizePicker from './TankSizePicker'
 import UnitToggle from './UnitToggle'
 import { useUnits } from './UnitsProvider'
 
@@ -20,6 +22,7 @@ const CascadeCalculator = () => {
 	const [targetVolume, setTargetVolume] = useState(80)
 	const [startPressure, setStartPressure] = useState(500)
 	const [desiredPressure, setDesiredPressure] = useState(3000)
+	const [useRealGas, setUseRealGas] = useState(false)
 
 	const updateBank = (i: number, key: keyof BankRow, value: number) => {
 		setBanks((prev) =>
@@ -31,28 +34,45 @@ const CascadeCalculator = () => {
 	const removeBank = (i: number) =>
 		setBanks((prev) => prev.filter((_, idx) => idx !== i))
 
-	const result = calculateCascade({
-		banks: banks.map((b) => ({
-			volume: toLiters(b.volume, units.volume),
-			pressure: toBar(b.pressure, units.pressure),
-		})),
-		target: {
-			volume: toLiters(targetVolume, units.volume),
-			startPressure: toBar(startPressure, units.pressure),
+	const result = calculateCascade(
+		{
+			banks: banks.map((b) => ({
+				volume: toLiters(b.volume, units.volume),
+				pressure: toBar(b.pressure, units.pressure),
+			})),
+			target: {
+				volume: toLiters(targetVolume, units.volume),
+				startPressure: toBar(startPressure, units.pressure),
+			},
+			desiredPressure: toBar(desiredPressure, units.pressure),
 		},
-		desiredPressure: toBar(desiredPressure, units.pressure),
-	})
+		{ useRealGas },
+	)
 
 	const p = (bar: number) => Math.round(fromBar(bar, units.pressure))
 
 	return (
 		<div className='space-y-6'>
 			<UnitToggle show={['pressure', 'volume']} />
+			<Checkbox
+				id='cas-realgas'
+				name='cas-realgas'
+				title='Account for gas compressibility (real-gas, approximate)'
+				checked={useRealGas}
+				onChange={setUseRealGas}
+			/>
 
 			<section className='space-y-4'>
 				<h2 className='text-text text-lg font-semibold'>Storage bank</h2>
 				{banks.map((b, i) => (
-					<div key={i} className='flex items-end gap-3'>
+					<div key={i} className='flex flex-wrap items-end gap-3'>
+						<TankSizePicker
+							category='storage'
+							onSelect={(l, bar) => {
+								updateBank(i, 'volume', fromLiters(l, units.volume))
+								updateBank(i, 'pressure', fromBar(bar, units.pressure))
+							}}
+						/>
 						<NumberInput
 							id={`bank-vol-${i}`}
 							name={`bank-vol-${i}`}
@@ -88,6 +108,10 @@ const CascadeCalculator = () => {
 
 			<section className='space-y-4'>
 				<h2 className='text-text text-lg font-semibold'>Cylinder to fill</h2>
+				<TankSizePicker
+					category='dive'
+					onSelect={(l) => setTargetVolume(fromLiters(l, units.volume))}
+				/>
 				<div className='flex items-end gap-3'>
 					<NumberInput
 						id='target-vol'

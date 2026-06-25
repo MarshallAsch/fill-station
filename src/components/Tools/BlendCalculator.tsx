@@ -1,9 +1,11 @@
 'use client'
 
 import { useState } from 'react'
+import Checkbox from '@/components/UI/FormElements/CheckBox'
 import NumberInput from '@/components/UI/FormElements/NumberInput'
 import { calculateBlend } from '@/lib/diveMath/blending'
 import { fromBar, toBar } from '@/lib/diveMath/units'
+import MixPicker from './MixPicker'
 import UnitToggle from './UnitToggle'
 import { useUnits } from './UnitsProvider'
 
@@ -15,24 +17,42 @@ const BlendCalculator = () => {
 	const [finalPressure, setFinalPressure] = useState(3000)
 	const [targetO2, setTargetO2] = useState(32)
 	const [targetHe, setTargetHe] = useState(0)
+	const [useRealGas, setUseRealGas] = useState(false)
 
-	const result = calculateBlend({
-		startPressure: toBar(startPressure, units.pressure),
-		startFo2: startO2 / 100,
-		startFhe: startHe / 100,
-		finalPressure: toBar(finalPressure, units.pressure),
-		targetFo2: targetO2 / 100,
-		targetFhe: targetHe / 100,
-	})
+	const result = calculateBlend(
+		{
+			startPressure: toBar(startPressure, units.pressure),
+			startFo2: startO2 / 100,
+			startFhe: startHe / 100,
+			finalPressure: toBar(finalPressure, units.pressure),
+			targetFo2: targetO2 / 100,
+			targetFhe: targetHe / 100,
+		},
+		{ useRealGas },
+	)
 
 	const p = (bar: number) => Math.round(fromBar(bar, units.pressure))
 
 	return (
 		<div className='space-y-6'>
 			<UnitToggle show={['pressure']} />
+			<Checkbox
+				id='bl-realgas'
+				name='bl-realgas'
+				title='Account for gas compressibility (real-gas, approximate)'
+				checked={useRealGas}
+				onChange={setUseRealGas}
+			/>
 
 			<section className='space-y-4'>
 				<h2 className='text-text text-lg font-semibold'>Starting gas</h2>
+				<MixPicker
+					id='bl-start-mix'
+					onSelect={(o2, he) => {
+						setStartO2(o2)
+						setStartHe(he)
+					}}
+				/>
 				<div className='flex flex-wrap items-end gap-3'>
 					<NumberInput
 						id='bl-start-pr'
@@ -60,6 +80,13 @@ const BlendCalculator = () => {
 
 			<section className='space-y-4'>
 				<h2 className='text-text text-lg font-semibold'>Target gas</h2>
+				<MixPicker
+					id='bl-target-mix'
+					onSelect={(o2, he) => {
+						setTargetO2(o2)
+						setTargetHe(he)
+					}}
+				/>
 				<div className='flex flex-wrap items-end gap-3'>
 					<NumberInput
 						id='bl-final-pr'
