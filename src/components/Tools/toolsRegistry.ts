@@ -3,6 +3,7 @@ import BestMixCalculator from './BestMixCalculator'
 import BlendCalculator from './BlendCalculator'
 import CascadeCalculator from './CascadeCalculator'
 import EadCalculator from './EadCalculator'
+import GasDensityCalculator from './GasDensityCalculator'
 import ModEndCalculator from './ModEndCalculator'
 import NitroxStickCalculator from './NitroxStickCalculator'
 
@@ -15,6 +16,7 @@ export type TabId =
 	| 'mod-end'
 	| 'best-mix'
 	| 'ead'
+	| 'gas-density'
 
 export interface ToolDef {
 	id: TabId
@@ -35,4 +37,5 @@ export const TOOLS: ToolDef[] = [
 	{ id: 'mod-end', name: 'MOD / END', group: 'planning', Component: ModEndCalculator },
 	{ id: 'best-mix', name: 'Best Mix', group: 'blending', Component: BestMixCalculator },
 	{ id: 'ead', name: 'EAD', group: 'planning', Component: EadCalculator },
+	{ id: 'gas-density', name: 'Gas Density', group: 'planning', Component: GasDensityCalculator },
 ]
