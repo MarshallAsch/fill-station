@@ -7,6 +7,7 @@ import GasDensityCalculator from './GasDensityCalculator'
 import GasMixingCalculator from './GasMixingCalculator'
 import ModEndCalculator from './ModEndCalculator'
 import NitroxStickCalculator from './NitroxStickCalculator'
+import OxygenExposureCalculator from './OxygenExposureCalculator'
 
 export type ToolGroup = 'blending' | 'planning'
 
@@ -19,6 +20,7 @@ export type TabId =
 	| 'ead'
 	| 'gas-density'
 	| 'mix-two-gases'
+	| 'oxygen-exposure'
 
 export interface ToolDef {
 	id: TabId
@@ -41,4 +43,5 @@ export const TOOLS: ToolDef[] = [
 	{ id: 'best-mix', name: 'Best Mix', group: 'blending', Component: BestMixCalculator },
 	{ id: 'ead', name: 'EAD', group: 'planning', Component: EadCalculator },
 	{ id: 'gas-density', name: 'Gas Density', group: 'planning', Component: GasDensityCalculator },
+	{ id: 'oxygen-exposure', name: 'CNS / OTU', group: 'planning', Component: OxygenExposureCalculator },
 ]
