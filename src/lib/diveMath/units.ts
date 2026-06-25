@@ -26,10 +26,6 @@ export function fromMeters(m: number, unit: DepthUnit): number {
 	return unit === 'ft' ? m * FT_PER_M : m
 }
 
-export function toLiters(value: number, unit: VolumeUnit): number {
-	return unit === 'cf' ? value * L_PER_CF : value
-}
-
 export type FlowUnit = 'lpm' | 'cfm'
 
 export function fromLiters(l: number, unit: VolumeUnit): number {

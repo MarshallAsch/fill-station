@@ -6,7 +6,6 @@ import {
 	fromBar,
 	toMeters,
 	fromMeters,
-	toLiters,
 	fromLiters,
 	toLpm,
 	fromLpm,
@@ -29,11 +28,6 @@ describe('units', () => {
 		expect(toMeters(33, 'ft')).toBeCloseTo(10.0584, 3)
 		expect(toMeters(10, 'm')).toBe(10)
 		expect(fromMeters(10, 'ft')).toBeCloseTo(32.8084, 3)
-	})
-
-	it('converts volume cf <-> l', () => {
-		expect(toLiters(1, 'cf')).toBeCloseTo(28.3168, 3)
-		expect(toLiters(5, 'l')).toBe(5)
 	})
 })
 
