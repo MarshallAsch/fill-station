@@ -85,3 +85,21 @@ describe('calculateCascade', () => {
 		expect(r.reachedDesired).toBe(false)
 	})
 })
+
+describe('calculateCascade real-gas opt-in', () => {
+	const input = {
+		banks: [{ volume: 50, pressure: 200 }],
+		target: { volume: 10, startPressure: 0 },
+	}
+	it('is unchanged when useRealGas is false or omitted', () => {
+		const a = calculateCascade(input)
+		const b = calculateCascade(input, { useRealGas: false })
+		expect(b).toEqual(a)
+	})
+	it('returns a finite, close result with real-gas weighting', () => {
+		const ideal = calculateCascade(input)
+		const real = calculateCascade(input, { useRealGas: true })
+		expect(Number.isFinite(real.finalPressure)).toBe(true)
+		expect(Math.abs(real.finalPressure - ideal.finalPressure)).toBeLessThan(10)
+	})
+})

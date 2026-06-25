@@ -61,3 +61,37 @@ describe('calculateBlend', () => {
 		expect(r.reason).toBeTruthy()
 	})
 })
+
+describe('calculateBlend real-gas opt-in', () => {
+	const input = {
+		startPressure: 0,
+		startFo2: 0.209,
+		startFhe: 0,
+		finalPressure: 200,
+		targetFo2: 0.32,
+		targetFhe: 0,
+	}
+	it('is unchanged when useRealGas is false or omitted', () => {
+		const a = calculateBlend(input)
+		const b = calculateBlend(input, { useRealGas: false })
+		expect(b).toEqual(a)
+	})
+	it('needs less O2 pressure for a nitrox blend (O2 Z < 1)', () => {
+		const ideal = calculateBlend(input)
+		const real = calculateBlend(input, { useRealGas: true })
+		expect(real.pO2).toBeLessThan(ideal.pO2)
+	})
+	it('needs more helium pressure for a trimix blend (He Z > 1)', () => {
+		const tmx = {
+			startPressure: 0,
+			startFo2: 0.209,
+			startFhe: 0,
+			finalPressure: 200,
+			targetFo2: 0.18,
+			targetFhe: 0.45,
+		}
+		const ideal = calculateBlend(tmx)
+		const real = calculateBlend(tmx, { useRealGas: true })
+		expect(real.pHe).toBeGreaterThan(ideal.pHe)
+	})
+})

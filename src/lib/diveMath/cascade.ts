@@ -1,3 +1,4 @@
+import { mixZ } from './compressibility'
 import { ATMOSPHERIC_BAR } from './units'
 
 export interface BankCylinder {
@@ -17,7 +18,10 @@ export interface CascadeResult {
 	reachedDesired: boolean
 }
 
-export function calculateCascade(input: CascadeInput): CascadeResult {
+export function calculateCascade(
+	input: CascadeInput,
+	opts?: { useRealGas?: boolean },
+): CascadeResult {
 	const { banks, target, desiredPressure } = input
 	const vt = target.volume
 	let targetAbs = target.startPressure + ATMOSPHERIC_BAR
@@ -34,7 +38,12 @@ export function calculateCascade(input: CascadeInput): CascadeResult {
 		const bankAbs = banks[i].pressure + ATMOSPHERIC_BAR
 		if (bankAbs <= targetAbs) continue // cannot raise the target further
 		const vb = banks[i].volume
-		const eqAbs = (targetAbs * vt + bankAbs * vb) / (vt + vb)
+		const useReal = opts?.useRealGas === true
+		const zt = useReal ? mixZ({ fo2: 0.209, fhe: 0, pressureBar: targetAbs }) : 1
+		const zb = useReal ? mixZ({ fo2: 0.209, fhe: 0, pressureBar: bankAbs }) : 1
+		const wt = vt / zt
+		const wb = vb / zb
+		const eqAbs = (targetAbs * wt + bankAbs * wb) / (wt + wb)
 		targetAbs = eqAbs
 		residual[i] = eqAbs - ATMOSPHERIC_BAR
 	}

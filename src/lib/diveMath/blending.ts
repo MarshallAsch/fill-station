@@ -1,3 +1,4 @@
+import { gasZ } from './compressibility'
 import { AIR_FO2 } from './units'
 
 export interface BlendInput {
@@ -20,7 +21,10 @@ export interface BlendResult {
 	reason?: string
 }
 
-export function calculateBlend(input: BlendInput): BlendResult {
+export function calculateBlend(
+	input: BlendInput,
+	opts?: { useRealGas?: boolean },
+): BlendResult {
 	const {
 		startPressure: pi,
 		startFo2,
@@ -31,12 +35,18 @@ export function calculateBlend(input: BlendInput): BlendResult {
 	} = input
 
 	// He balance: startFhe*pi + pHe = targetFhe*pf
-	const pHe = targetFhe * pf - startFhe * pi
+	let pHe = targetFhe * pf - startFhe * pi
 	// O2 balance with air top (top FO2 = AIR_FO2, top FHe = 0):
 	// startFo2*pi + pO2 + AIR_FO2*pTop = targetFo2*pf, pTop = pf - pi - pHe - pO2
-	const pO2 =
+	let pO2 =
 		(targetFo2 * pf - startFo2 * pi - AIR_FO2 * (pf - pi - pHe)) /
 		(1 - AIR_FO2)
+	if (opts?.useRealGas) {
+		// Real moles ∝ P/Z, so the gauge pressure to add for a target quantity
+		// scales by that gas's Z at the final pressure.
+		pHe *= gasZ('he', pf)
+		pO2 *= gasZ('o2', pf)
+	}
 	const pTop = pf - pi - pHe - pO2
 
 	const eps = 1e-6
