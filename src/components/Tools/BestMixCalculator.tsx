@@ -33,7 +33,6 @@ const BestMixCalculator = () => {
 
 	const ppo2Danger = ppo2 > 1.6
 	const ppo2Warning = !ppo2Danger && ppo2 > 1.4
-	const mixInvalid = fo2Pct + fhePct > 100
 
 	return (
 		<div className='space-y-6'>
@@ -94,11 +93,6 @@ const BestMixCalculator = () => {
 					onChange={setTargetEnd}
 					min={0}
 				/>
-			)}
-			{mixInvalid && (
-				<SafetyNote level='danger'>
-					O₂ + He exceeds 100% — not a valid mix.
-				</SafetyNote>
 			)}
 			<section className='border-border space-y-2 rounded-md border p-4'>
 				<h2 className='text-text text-lg font-semibold'>Recommended mix</h2>

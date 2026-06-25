@@ -8,6 +8,7 @@ import MixPicker from './MixPicker'
 import SafetyNote from './SafetyNote'
 import UnitToggle from './UnitToggle'
 import { useUnits } from './UnitsProvider'
+import { usePressureState, useVolumeState } from './useUnitState'
 
 const PRICE_KEY = 'fillstation.tools.gasPrices'
 interface Prices {
@@ -19,11 +20,11 @@ const DEFAULT_PRICES: Prices = { o2: 0.03, he: 0.5 }
 const BlendingCostCalculator = () => {
 	const { units } = useUnits()
 	const [prices, setPrices] = useState<Prices>(DEFAULT_PRICES)
-	const [tankVol, setTankVol] = useState(0.39)
-	const [startP, setStartP] = useState(0)
+	const [tankVol, setTankVol] = useVolumeState(0.39)
+	const [startP, setStartP] = usePressureState(0)
 	const [startO2, setStartO2] = useState(21)
 	const [startHe, setStartHe] = useState(0)
-	const [finalP, setFinalP] = useState(200)
+	const [finalP, setFinalP] = usePressureState(200)
 	const [targetO2, setTargetO2] = useState(32)
 	const [targetHe, setTargetHe] = useState(0)
 

@@ -21,7 +21,7 @@ const OxygenExposureCalculator = () => {
 	const { units } = useUnits()
 	const [water, setWater] = useState<Water>('salt')
 	const [rows, setRows] = useState<DiveRow[]>([
-		{ depth: 30, fo2: 32, minutes: 40, surfaceAfter: 60 },
+		{ depth: 100, fo2: 32, minutes: 40, surfaceAfter: 60 },
 	])
 	const prevDepthUnit = useRef(units.depth)
 	useEffect(() => {
@@ -44,7 +44,7 @@ const OxygenExposureCalculator = () => {
 	const addRow = () =>
 		setRows((prev) => [
 			...prev,
-			{ depth: 30, fo2: 32, minutes: 40, surfaceAfter: 60 },
+			{ depth: 100, fo2: 32, minutes: 40, surfaceAfter: 60 },
 		])
 	const removeRow = (i: number) =>
 		setRows((prev) => prev.filter((_, idx) => idx !== i))
