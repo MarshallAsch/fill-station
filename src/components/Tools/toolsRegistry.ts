@@ -5,6 +5,7 @@ import CascadeCalculator from './CascadeCalculator'
 import EadCalculator from './EadCalculator'
 import GasDensityCalculator from './GasDensityCalculator'
 import GasMixingCalculator from './GasMixingCalculator'
+import GasRequirementsCalculator from './GasRequirementsCalculator'
 import ModEndCalculator from './ModEndCalculator'
 import NitroxStickCalculator from './NitroxStickCalculator'
 import OxygenExposureCalculator from './OxygenExposureCalculator'
@@ -21,6 +22,7 @@ export type TabId =
 	| 'gas-density'
 	| 'mix-two-gases'
 	| 'oxygen-exposure'
+	| 'gas-requirements'
 
 export interface ToolDef {
 	id: TabId
@@ -44,4 +46,5 @@ export const TOOLS: ToolDef[] = [
 	{ id: 'ead', name: 'EAD', group: 'planning', Component: EadCalculator },
 	{ id: 'gas-density', name: 'Gas Density', group: 'planning', Component: GasDensityCalculator },
 	{ id: 'oxygen-exposure', name: 'CNS / OTU', group: 'planning', Component: OxygenExposureCalculator },
+	{ id: 'gas-requirements', name: 'Gas Requirements', group: 'planning', Component: GasRequirementsCalculator },
 ]
