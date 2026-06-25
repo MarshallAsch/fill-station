@@ -18,7 +18,8 @@ export interface UnitPrefs {
 	pressure: PressureUnit
 	depth: DepthUnit
 	volume: VolumeUnit
-	flow: FlowUnit
+	airFlow: FlowUnit
+	o2Flow: FlowUnit
 }
 
 const STORAGE_KEY = 'fillstation.tools.units'
@@ -26,7 +27,8 @@ const DEFAULT_UNITS: UnitPrefs = {
 	pressure: 'psi',
 	depth: 'ft',
 	volume: 'cf',
-	flow: 'cfm',
+	airFlow: 'cfm',
+	o2Flow: 'lpm',
 }
 
 interface UnitsContextValue {

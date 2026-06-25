@@ -27,8 +27,15 @@ const OPTIONS: Record<
 			{ value: 'l', label: 'L' },
 		],
 	},
-	flow: {
-		label: 'Flow',
+	airFlow: {
+		label: 'Air flow',
+		values: [
+			{ value: 'lpm', label: 'LPM' },
+			{ value: 'cfm', label: 'CFM' },
+		],
+	},
+	o2Flow: {
+		label: 'O₂ flow',
 		values: [
 			{ value: 'lpm', label: 'LPM' },
 			{ value: 'cfm', label: 'CFM' },
