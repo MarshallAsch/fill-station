@@ -31,7 +31,7 @@ const TankSizePicker = ({
 	const { units } = useUnits()
 	const presets = LISTS[category]
 	const items = [
-		{ value: CUSTOM, name: 'Custom…' },
+		{ value: CUSTOM, name: 'Choose a standard size…' },
 		...presets.map((p) => {
 			const freeDisplay = Math.round(fromLiters(freeGasLiters(p), units.volume))
 			const presDisplay = Math.round(fromBar(p.ratedBar, units.pressure))
@@ -43,13 +43,16 @@ const TankSizePicker = ({
 	]
 	const id = `tank-${category}${idSuffix ? `-${idSuffix}` : ''}`
 
+	// Action-style picker: applies a preset then reverts to the prompt (value is
+	// pinned to the placeholder), so it never shows a stale selection after the
+	// user edits the fields by hand.
 	return (
 		<ListBox
 			id={id}
 			name={id}
 			title='Standard size'
 			items={items}
-			defaultValue={items[0]}
+			value={items[0]}
 			onChange={(item) => {
 				if (item.value === CUSTOM) return
 				const preset = presets.find((p) => p.name === item.value)

@@ -13,17 +13,20 @@ const MixPicker = ({
 	id?: string
 }) => {
 	const items = [
-		{ value: CUSTOM, name: 'Custom…' },
+		{ value: CUSTOM, name: 'Apply a standard mix…' },
 		...MIXES.map((m) => ({ value: m.name, name: m.name })),
 	]
 
+	// Action-style picker: applies a preset then reverts to the prompt (value is
+	// pinned to the placeholder), so it never shows a stale mix after the user
+	// edits O₂/He by hand.
 	return (
 		<ListBox
 			id={id}
 			name={id}
 			title='Standard mix'
 			items={items}
-			defaultValue={items[0]}
+			value={items[0]}
 			onChange={(item) => {
 				if (item.value === CUSTOM) return
 				const mix = MIXES.find((m) => m.name === item.value)
