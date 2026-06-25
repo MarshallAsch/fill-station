@@ -7,12 +7,18 @@ import {
 	useEffect,
 	useState,
 } from 'react'
-import { DepthUnit, PressureUnit, VolumeUnit } from '@/lib/diveMath/units'
+import {
+	DepthUnit,
+	FlowUnit,
+	PressureUnit,
+	VolumeUnit,
+} from '@/lib/diveMath/units'
 
 export interface UnitPrefs {
 	pressure: PressureUnit
 	depth: DepthUnit
 	volume: VolumeUnit
+	flow: FlowUnit
 }
 
 const STORAGE_KEY = 'fillstation.tools.units'
@@ -20,6 +26,7 @@ const DEFAULT_UNITS: UnitPrefs = {
 	pressure: 'psi',
 	depth: 'ft',
 	volume: 'cf',
+	flow: 'cfm',
 }
 
 interface UnitsContextValue {

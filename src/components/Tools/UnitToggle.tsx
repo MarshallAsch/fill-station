@@ -27,6 +27,13 @@ const OPTIONS: Record<
 			{ value: 'l', label: 'L' },
 		],
 	},
+	flow: {
+		label: 'Flow',
+		values: [
+			{ value: 'lpm', label: 'LPM' },
+			{ value: 'cfm', label: 'CFM' },
+		],
+	},
 }
 
 const UnitToggle = ({ show }: { show: Array<keyof UnitPrefs> }) => {
