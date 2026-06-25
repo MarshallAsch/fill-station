@@ -7,6 +7,10 @@ export function depthPerBar(water: Water): number {
 	return water === 'fresh' ? 10.3 : 10
 }
 
+export function ataAtDepth(depthM: number, water: Water): number {
+	return depthM / depthPerBar(water) + 1
+}
+
 export function calculateMod(input: {
 	fo2: number
 	ppo2: number

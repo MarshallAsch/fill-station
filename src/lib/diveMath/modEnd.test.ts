@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { calculateMod, calculateEnd, depthPerBar } from './modEnd'
+import { calculateMod, calculateEnd, depthPerBar, ataAtDepth } from './modEnd'
 
 describe('calculateMod', () => {
 	it('computes EAN32 MOD at ppO2 1.4 in salt water', () => {
@@ -73,5 +73,17 @@ describe('depthPerBar', () => {
 	it('uses 10 m for salt and 10.3 m for fresh', () => {
 		expect(depthPerBar('salt')).toBe(10)
 		expect(depthPerBar('fresh')).toBe(10.3)
+	})
+})
+
+describe('ataAtDepth', () => {
+	it('is 1 ata at the surface', () => {
+		expect(ataAtDepth(0, 'salt')).toBe(1)
+	})
+	it('adds 1 ata per 10 m in salt water', () => {
+		expect(ataAtDepth(30, 'salt')).toBeCloseTo(4, 6)
+	})
+	it('uses 10.3 m per bar in fresh water', () => {
+		expect(ataAtDepth(10.3, 'fresh')).toBeCloseTo(2, 6)
 	})
 })
