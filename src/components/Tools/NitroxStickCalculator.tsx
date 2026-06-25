@@ -6,7 +6,7 @@ import {
 	nitroxStickFlowRate,
 	nitroxStickSupplyDraw,
 } from '@/lib/diveMath/nitroxStick'
-import { fromBar, toBar, toLiters } from '@/lib/diveMath/units'
+import { fromBar, fromLpm, toBar, toLiters, toLpm } from '@/lib/diveMath/units'
 import UnitToggle from './UnitToggle'
 import { useUnits } from './UnitsProvider'
 
@@ -20,7 +20,8 @@ const NitroxStickCalculator = () => {
 	const [supplyVolume, setSupplyVolume] = useState(80)
 
 	const targetFo2 = fo2 / 100
-	const flow = nitroxStickFlowRate({ targetFo2, airFlow })
+	const airFlowLpm = toLpm(airFlow, units.flow)
+	const flow = nitroxStickFlowRate({ targetFo2, airFlow: airFlowLpm })
 	const draw = nitroxStickSupplyDraw({
 		targetFo2,
 		tankVolume: toLiters(tankVolume, units.volume),
@@ -33,7 +34,7 @@ const NitroxStickCalculator = () => {
 
 	return (
 		<div className='space-y-6'>
-			<UnitToggle show={['pressure', 'volume']} />
+			<UnitToggle show={['pressure', 'volume', 'flow']} />
 
 			<section className='space-y-4'>
 				<h2 className='text-text text-lg font-semibold'>O₂ flow rate</h2>
@@ -48,7 +49,7 @@ const NitroxStickCalculator = () => {
 					<NumberInput
 						id='ns-airflow'
 						name='ns-airflow'
-						label='Compressor air flow'
+						label={`Compressor free-air (intake) flow (${units.flow})`}
 						value={airFlow}
 						onChange={setAirFlow}
 					/>
@@ -56,11 +57,9 @@ const NitroxStickCalculator = () => {
 				<p className='text-text'>
 					O₂ flow into the stick:{' '}
 					<span className='font-semibold'>
-						{leanWarning ? '0' : flow.toFixed(2)}
+						{leanWarning ? '0.00' : fromLpm(flow, units.flow).toFixed(2)}
 					</span>{' '}
-					<span className='text-light-text text-sm'>
-						(same units as the air flow you entered)
-					</span>
+					<span className='text-light-text text-sm'>{units.flow}</span>
 				</p>
 				{leanWarning && (
 					<p className='text-light-text text-sm'>
