@@ -1,4 +1,5 @@
 import { ComponentType } from 'react'
+import BestMixCalculator from './BestMixCalculator'
 import BlendCalculator from './BlendCalculator'
 import CascadeCalculator from './CascadeCalculator'
 import ModEndCalculator from './ModEndCalculator'
@@ -11,6 +12,7 @@ export type TabId =
 	| 'nitrox-stick'
 	| 'blend'
 	| 'mod-end'
+	| 'best-mix'
 
 export interface ToolDef {
 	id: TabId
@@ -29,4 +31,5 @@ export const TOOLS: ToolDef[] = [
 	{ id: 'nitrox-stick', name: 'Nitrox Stick', group: 'blending', Component: NitroxStickCalculator },
 	{ id: 'blend', name: 'Blend (PP)', group: 'blending', Component: BlendCalculator },
 	{ id: 'mod-end', name: 'MOD / END', group: 'planning', Component: ModEndCalculator },
+	{ id: 'best-mix', name: 'Best Mix', group: 'blending', Component: BestMixCalculator },
 ]
