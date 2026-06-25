@@ -58,14 +58,13 @@ const BestMixCalculator = () => {
 					{ value: 'fresh', label: 'Fresh' },
 				]}
 			/>
-			<div onClick={() => setUseHe((p) => !p)}>
-				<Checkbox
-					id='bm-usehe'
-					name='bm-usehe'
-					title='Add helium to cap narcosis (END)'
-					defaultChecked={useHe}
-				/>
-			</div>
+			<Checkbox
+				id='bm-usehe'
+				name='bm-usehe'
+				title='Add helium to cap narcosis (END)'
+				checked={useHe}
+				onChange={setUseHe}
+			/>
 			{useHe && (
 				<NumberInput
 					id='bm-targetend'
