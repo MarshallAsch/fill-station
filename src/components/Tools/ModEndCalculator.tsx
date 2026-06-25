@@ -12,6 +12,7 @@ import {
 import { fromMeters, toMeters } from '@/lib/diveMath/units'
 import MixPicker from './MixPicker'
 import UnitToggle from './UnitToggle'
+import { useDepthState } from './useUnitState'
 import { useUnits } from './UnitsProvider'
 
 const ModEndCalculator = () => {
@@ -21,7 +22,7 @@ const ModEndCalculator = () => {
 	const [ppo2, setPpo2] = useState(1.4)
 	const [water, setWater] = useState<Water>('salt')
 	const [model, setModel] = useState<EndModel>('o2-narcotic')
-	const [depth, setDepth] = useState(100)
+	const [depth, setDepth] = useDepthState(100)
 
 	const fo2Frac = fo2 / 100
 	const fheFrac = fhe / 100
@@ -43,7 +44,7 @@ const ModEndCalculator = () => {
 		<div className='space-y-6'>
 			<UnitToggle show={['depth']} />
 
-			<section className='flex flex-wrap items-end gap-3'>
+			<section className='grid grid-cols-1 gap-4 sm:grid-cols-2'>
 				<MixPicker
 					id='me-mix'
 					onSelect={(o2, he) => {

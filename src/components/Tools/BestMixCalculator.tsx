@@ -9,14 +9,15 @@ import { calculateMod, Water } from '@/lib/diveMath/modEnd'
 import { fromMeters, toMeters } from '@/lib/diveMath/units'
 import UnitToggle from './UnitToggle'
 import { useUnits } from './UnitsProvider'
+import { useDepthState } from './useUnitState'
 
 const BestMixCalculator = () => {
 	const { units } = useUnits()
-	const [depth, setDepth] = useState(30)
+	const [depth, setDepth] = useDepthState(30)
 	const [ppo2, setPpo2] = useState(1.4)
 	const [water, setWater] = useState<Water>('salt')
 	const [useHe, setUseHe] = useState(false)
-	const [targetEnd, setTargetEnd] = useState(30)
+	const [targetEnd, setTargetEnd] = useDepthState(30)
 
 	const depthM = toMeters(depth, units.depth)
 	const mix = bestMix({
@@ -32,7 +33,7 @@ const BestMixCalculator = () => {
 	return (
 		<div className='space-y-6'>
 			<UnitToggle show={['depth']} />
-			<section className='flex flex-wrap items-end gap-3'>
+			<section className='grid grid-cols-1 gap-4 sm:grid-cols-2'>
 				<NumberInput
 					id='bm-depth'
 					name='bm-depth'

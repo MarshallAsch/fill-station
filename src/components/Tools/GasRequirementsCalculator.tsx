@@ -20,21 +20,22 @@ import {
 import TankSizePicker from './TankSizePicker'
 import UnitToggle from './UnitToggle'
 import { useUnits } from './UnitsProvider'
+import { useDepthState, usePressureState, useVolumeState } from './useUnitState'
 
 const GasRequirementsCalculator = () => {
 	const { units } = useUnits()
 	const [water, setWater] = useState<Water>('salt')
-	const [tankVol, setTankVol] = useState(12)
+	const [tankVol, setTankVol] = useVolumeState(12)
 	// SAC inputs
-	const [startP, setStartP] = useState(200)
-	const [endP, setEndP] = useState(100)
+	const [startP, setStartP] = usePressureState(200)
+	const [endP, setEndP] = usePressureState(100)
 	const [logMinutes, setLogMinutes] = useState(20)
-	const [logDepth, setLogDepth] = useState(20)
+	const [logDepth, setLogDepth] = useDepthState(20)
 	// Plan inputs
-	const [planDepth, setPlanDepth] = useState(30)
+	const [planDepth, setPlanDepth] = useDepthState(30)
 	const [planMinutes, setPlanMinutes] = useState(20)
-	const [ascentRate, setAscentRate] = useState(9)
-	const [stopDepth, setStopDepth] = useState(5)
+	const [ascentRate, setAscentRate] = useDepthState(9)
+	const [stopDepth, setStopDepth] = useDepthState(5)
 	const [stopMinutes, setStopMinutes] = useState(3)
 	const [stress, setStress] = useState(2)
 	const [team, setTeam] = useState(2)
@@ -58,8 +59,7 @@ const GasRequirementsCalculator = () => {
 	const minGasL = rockBottom({
 		rmvLpm,
 		depthM: planAvgM,
-		ascentRateMpm:
-			units.depth === 'ft' ? toMeters(ascentRate, 'ft') : ascentRate,
+		ascentRateMpm: toMeters(ascentRate, units.depth),
 		stops: [{ depthM: toMeters(stopDepth, units.depth), minutes: stopMinutes }],
 		stressFactor: stress,
 		water,
@@ -88,13 +88,14 @@ const GasRequirementsCalculator = () => {
 					category='dive'
 					onSelect={(l) => setTankVol(fromLiters(l, units.volume))}
 				/>
-				<div className='flex flex-wrap items-end gap-3'>
+				<div className='grid grid-cols-1 gap-4 sm:grid-cols-2'>
 					<NumberInput
 						id='gr-tank'
 						name='gr-tank'
 						label={`Tank volume (${units.volume})`}
 						value={tankVol}
 						onChange={setTankVol}
+						tooltip='Water (internal) cylinder volume — not free-gas capacity'
 					/>
 					<NumberInput
 						id='gr-start'
@@ -133,7 +134,7 @@ const GasRequirementsCalculator = () => {
 				<h2 className='text-text text-lg font-semibold'>
 					2 · Plan &amp; rock bottom
 				</h2>
-				<div className='flex flex-wrap items-end gap-3'>
+				<div className='grid grid-cols-1 gap-4 sm:grid-cols-2'>
 					<NumberInput
 						id='gr-pdepth'
 						name='gr-pdepth'

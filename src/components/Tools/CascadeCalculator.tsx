@@ -8,6 +8,7 @@ import { fromBar, fromLiters, toBar, toLiters } from '@/lib/diveMath/units'
 import TankSizePicker from './TankSizePicker'
 import UnitToggle from './UnitToggle'
 import { useUnits } from './UnitsProvider'
+import { usePressureState, useVolumeState } from './useUnitState'
 
 interface BankRow {
 	volume: number
@@ -19,9 +20,9 @@ const CascadeCalculator = () => {
 	const [banks, setBanks] = useState<BankRow[]>([
 		{ volume: 80, pressure: 3000 },
 	])
-	const [targetVolume, setTargetVolume] = useState(80)
-	const [startPressure, setStartPressure] = useState(500)
-	const [desiredPressure, setDesiredPressure] = useState(3000)
+	const [targetVolume, setTargetVolume] = useVolumeState(80)
+	const [startPressure, setStartPressure] = usePressureState(500)
+	const [desiredPressure, setDesiredPressure] = usePressureState(3000)
 	const [useRealGas, setUseRealGas] = useState(false)
 
 	const updateBank = (i: number, key: keyof BankRow, value: number) => {
@@ -74,20 +75,23 @@ const CascadeCalculator = () => {
 								updateBank(i, 'pressure', fromBar(bar, units.pressure))
 							}}
 						/>
-						<NumberInput
-							id={`bank-vol-${i}`}
-							name={`bank-vol-${i}`}
-							label={`Volume (${units.volume})`}
-							value={b.volume}
-							onChange={(v) => updateBank(i, 'volume', v)}
-						/>
-						<NumberInput
-							id={`bank-pr-${i}`}
-							name={`bank-pr-${i}`}
-							label={`Pressure (${units.pressure})`}
-							value={b.pressure}
-							onChange={(v) => updateBank(i, 'pressure', v)}
-						/>
+						<div className='grid grid-cols-2 gap-3'>
+							<NumberInput
+								id={`bank-vol-${i}`}
+								name={`bank-vol-${i}`}
+								label={`Volume (${units.volume})`}
+								value={b.volume}
+								onChange={(v) => updateBank(i, 'volume', v)}
+								tooltip='Water (internal) cylinder volume — not free-gas capacity'
+							/>
+							<NumberInput
+								id={`bank-pr-${i}`}
+								name={`bank-pr-${i}`}
+								label={`Pressure (${units.pressure})`}
+								value={b.pressure}
+								onChange={(v) => updateBank(i, 'pressure', v)}
+							/>
+						</div>
 						<button
 							type='button'
 							onClick={() => removeBank(i)}
@@ -111,15 +115,19 @@ const CascadeCalculator = () => {
 				<h2 className='text-text text-lg font-semibold'>Cylinder to fill</h2>
 				<TankSizePicker
 					category='dive'
-					onSelect={(l) => setTargetVolume(fromLiters(l, units.volume))}
+					onSelect={(l, bar) => {
+						setTargetVolume(fromLiters(l, units.volume))
+						setDesiredPressure(fromBar(bar, units.pressure))
+					}}
 				/>
-				<div className='flex items-end gap-3'>
+				<div className='grid grid-cols-1 gap-4 sm:grid-cols-2'>
 					<NumberInput
 						id='target-vol'
 						name='target-vol'
 						label={`Volume (${units.volume})`}
 						value={targetVolume}
 						onChange={setTargetVolume}
+						tooltip='Water (internal) cylinder volume — not free-gas capacity'
 					/>
 					<NumberInput
 						id='target-start'

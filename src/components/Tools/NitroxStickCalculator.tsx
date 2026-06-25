@@ -17,15 +17,20 @@ import {
 import TankSizePicker from './TankSizePicker'
 import UnitToggle from './UnitToggle'
 import { useUnits } from './UnitsProvider'
+import {
+	useAirFlowState,
+	usePressureState,
+	useVolumeState,
+} from './useUnitState'
 
 const NitroxStickCalculator = () => {
 	const { units } = useUnits()
 	const [fo2, setFo2] = useState(32)
-	const [airFlow, setAirFlow] = useState(100)
-	const [tankVolume, setTankVolume] = useState(80)
-	const [startPressure, setStartPressure] = useState(0)
-	const [finalPressure, setFinalPressure] = useState(3000)
-	const [supplyVolume, setSupplyVolume] = useState(80)
+	const [airFlow, setAirFlow] = useAirFlowState(100)
+	const [tankVolume, setTankVolume] = useVolumeState(80)
+	const [startPressure, setStartPressure] = usePressureState(0)
+	const [finalPressure, setFinalPressure] = usePressureState(3000)
+	const [supplyVolume, setSupplyVolume] = useVolumeState(80)
 
 	const targetFo2 = fo2 / 100
 	const airFlowLpm = toLpm(airFlow, units.airFlow)
@@ -46,7 +51,7 @@ const NitroxStickCalculator = () => {
 
 			<section className='space-y-4'>
 				<h2 className='text-text text-lg font-semibold'>O₂ flow rate</h2>
-				<div className='flex items-end gap-3'>
+				<div className='grid grid-cols-1 gap-4 sm:grid-cols-2'>
 					<NumberInput
 						id='ns-fo2'
 						name='ns-fo2'
@@ -84,15 +89,19 @@ const NitroxStickCalculator = () => {
 					<h3 className='text-text font-medium'>Cylinder being filled</h3>
 					<TankSizePicker
 						category='dive'
-						onSelect={(l) => setTankVolume(fromLiters(l, units.volume))}
+						onSelect={(l, bar) => {
+							setTankVolume(fromLiters(l, units.volume))
+							setFinalPressure(fromBar(bar, units.pressure))
+						}}
 					/>
-					<div className='flex flex-wrap items-end gap-3'>
+					<div className='grid grid-cols-1 gap-4 sm:grid-cols-2'>
 						<NumberInput
 							id='ns-tankvol'
 							name='ns-tankvol'
 							label={`Tank volume (${units.volume})`}
 							value={tankVolume}
 							onChange={setTankVolume}
+							tooltip='Water (internal) cylinder volume — not free-gas capacity'
 						/>
 						<NumberInput
 							id='ns-start'
@@ -123,6 +132,7 @@ const NitroxStickCalculator = () => {
 							label={`Supply bottle volume (${units.volume})`}
 							value={supplyVolume}
 							onChange={setSupplyVolume}
+							tooltip='Water (internal) cylinder volume — not free-gas capacity'
 						/>
 					</div>
 				</div>

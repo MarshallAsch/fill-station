@@ -8,6 +8,7 @@ import { Water } from '@/lib/diveMath/modEnd'
 import { fromMeters, toMeters } from '@/lib/diveMath/units'
 import MixPicker from './MixPicker'
 import UnitToggle from './UnitToggle'
+import { useDepthState } from './useUnitState'
 import { useUnits } from './UnitsProvider'
 
 const EadCalculator = () => {
@@ -15,7 +16,7 @@ const EadCalculator = () => {
 	const [fo2, setFo2] = useState(32)
 	const [fhe, setFhe] = useState(0)
 	const [water, setWater] = useState<Water>('salt')
-	const [depth, setDepth] = useState(30)
+	const [depth, setDepth] = useDepthState(30)
 
 	const result = ead({
 		depthM: toMeters(depth, units.depth),
@@ -34,7 +35,7 @@ const EadCalculator = () => {
 					setFhe(he)
 				}}
 			/>
-			<section className='flex flex-wrap items-end gap-3'>
+			<section className='grid grid-cols-1 gap-4 sm:grid-cols-2'>
 				<NumberInput
 					id='ead-fo2'
 					name='ead-fo2'

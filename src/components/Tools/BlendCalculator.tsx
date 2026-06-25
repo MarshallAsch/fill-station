@@ -8,13 +8,14 @@ import { fromBar, toBar } from '@/lib/diveMath/units'
 import MixPicker from './MixPicker'
 import UnitToggle from './UnitToggle'
 import { useUnits } from './UnitsProvider'
+import { usePressureState } from './useUnitState'
 
 const BlendCalculator = () => {
 	const { units } = useUnits()
-	const [startPressure, setStartPressure] = useState(0)
+	const [startPressure, setStartPressure] = usePressureState(0)
 	const [startO2, setStartO2] = useState(21)
 	const [startHe, setStartHe] = useState(0)
-	const [finalPressure, setFinalPressure] = useState(3000)
+	const [finalPressure, setFinalPressure] = usePressureState(3000)
 	const [targetO2, setTargetO2] = useState(32)
 	const [targetHe, setTargetHe] = useState(0)
 	const [useRealGas, setUseRealGas] = useState(false)
@@ -53,7 +54,7 @@ const BlendCalculator = () => {
 						setStartHe(he)
 					}}
 				/>
-				<div className='flex flex-wrap items-end gap-3'>
+				<div className='grid grid-cols-1 gap-4 sm:grid-cols-2'>
 					<NumberInput
 						id='bl-start-pr'
 						name='bl-start-pr'
@@ -87,7 +88,7 @@ const BlendCalculator = () => {
 						setTargetHe(he)
 					}}
 				/>
-				<div className='flex flex-wrap items-end gap-3'>
+				<div className='grid grid-cols-1 gap-4 sm:grid-cols-2'>
 					<NumberInput
 						id='bl-final-pr'
 						name='bl-final-pr'

@@ -13,6 +13,7 @@ import { Water } from '@/lib/diveMath/modEnd'
 import { fromMeters, toMeters } from '@/lib/diveMath/units'
 import MixPicker from './MixPicker'
 import UnitToggle from './UnitToggle'
+import { useDepthState } from './useUnitState'
 import { useUnits } from './UnitsProvider'
 
 const GasDensityCalculator = () => {
@@ -20,7 +21,7 @@ const GasDensityCalculator = () => {
 	const [fo2, setFo2] = useState(21)
 	const [fhe, setFhe] = useState(0)
 	const [water, setWater] = useState<Water>('salt')
-	const [depth, setDepth] = useState(30)
+	const [depth, setDepth] = useDepthState(30)
 
 	const mix = { fo2: fo2 / 100, fhe: fhe / 100 }
 	const density = densityAtDepth({
@@ -60,7 +61,7 @@ const GasDensityCalculator = () => {
 					setFhe(he)
 				}}
 			/>
-			<section className='flex flex-wrap items-end gap-3'>
+			<section className='grid grid-cols-1 gap-4 sm:grid-cols-2'>
 				<NumberInput
 					id='gd-fo2'
 					name='gd-fo2'

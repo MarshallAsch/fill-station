@@ -7,13 +7,14 @@ import { fromBar, toBar } from '@/lib/diveMath/units'
 import MixPicker from './MixPicker'
 import UnitToggle from './UnitToggle'
 import { useUnits } from './UnitsProvider'
+import { usePressureState } from './useUnitState'
 
 const GasMixingCalculator = () => {
 	const { units } = useUnits()
-	const [p1, setP1] = useState(100)
+	const [p1, setP1] = usePressureState(100)
 	const [o21, setO21] = useState(21)
 	const [he1, setHe1] = useState(0)
-	const [p2, setP2] = useState(100)
+	const [p2, setP2] = usePressureState(100)
 	const [o22, setO22] = useState(32)
 	const [he2, setHe2] = useState(0)
 
@@ -34,7 +35,7 @@ const GasMixingCalculator = () => {
 						setHe1(he)
 					}}
 				/>
-				<div className='flex flex-wrap items-end gap-3'>
+				<div className='grid grid-cols-1 gap-4 sm:grid-cols-2'>
 					<NumberInput
 						id='ga-p'
 						name='ga-p'
@@ -67,7 +68,7 @@ const GasMixingCalculator = () => {
 						setHe2(he)
 					}}
 				/>
-				<div className='flex flex-wrap items-end gap-3'>
+				<div className='grid grid-cols-1 gap-4 sm:grid-cols-2'>
 					<NumberInput
 						id='gb-p'
 						name='gb-p'
