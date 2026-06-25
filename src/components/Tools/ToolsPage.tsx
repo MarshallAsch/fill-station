@@ -1,15 +1,12 @@
 'use client'
 
 import { useRouter, useSearchParams } from 'next/navigation'
-import BlendCalculator from './BlendCalculator'
-import CascadeCalculator from './CascadeCalculator'
-import ModEndCalculator from './ModEndCalculator'
-import NitroxStickCalculator from './NitroxStickCalculator'
 import UnitsProvider from './UnitsProvider'
-import ToolsTabs, { TABS, TabId } from './ToolsTabs'
+import ToolsTabs from './ToolsTabs'
+import { TOOLS, TabId } from './toolsRegistry'
 
 function isTabId(value: string | null): value is TabId {
-	return TABS.some((t) => t.id === value)
+	return TOOLS.some((t) => t.id === value)
 }
 
 const ToolsPage = () => {
@@ -17,6 +14,8 @@ const ToolsPage = () => {
 	const searchParams = useSearchParams()
 	const param = searchParams.get('tab')
 	const active: TabId = isTabId(param) ? param : 'cascade'
+	const ActiveComponent = (TOOLS.find((t) => t.id === active) ?? TOOLS[0])
+		.Component
 
 	const onChange = (id: TabId) => {
 		router.replace(`/tools?tab=${id}`)
@@ -26,16 +25,14 @@ const ToolsPage = () => {
 		<UnitsProvider>
 			<div className='mx-auto max-w-3xl px-4 py-8'>
 				<h1 className='text-text mb-2 text-3xl font-bold'>Dive Tools</h1>
-				<p className='text-light-text mb-6 text-sm'>
-					Gas blending and dive-planning calculators. Estimates only — always
-					verify with an analyzer.
-				</p>
+				<div className='border-border bg-hover text-text mb-6 rounded-md border p-3 text-sm'>
+					<span className='font-semibold'>For reference only.</span> All results
+					are estimates — independently verify and analyze every gas mix and
+					dive plan before diving.
+				</div>
 				<ToolsTabs active={active} onChange={onChange} />
 				<div className='mt-6'>
-					{active === 'cascade' && <CascadeCalculator />}
-					{active === 'nitrox-stick' && <NitroxStickCalculator />}
-					{active === 'blend' && <BlendCalculator />}
-					{active === 'mod-end' && <ModEndCalculator />}
+					<ActiveComponent />
 				</div>
 			</div>
 		</UnitsProvider>
