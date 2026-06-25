@@ -1,11 +1,11 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import NumberInput from '@/components/UI/FormElements/NumberInput'
 import RadioGroup from '@/components/UI/FormElements/RadioGroup'
 import { computeDay, DayItem } from '@/lib/diveMath/oxygenExposure'
 import { ataAtDepth, Water } from '@/lib/diveMath/modEnd'
-import { toMeters } from '@/lib/diveMath/units'
+import { fromMeters, toMeters } from '@/lib/diveMath/units'
 import UnitToggle from './UnitToggle'
 import { useUnits } from './UnitsProvider'
 
@@ -22,6 +22,19 @@ const OxygenExposureCalculator = () => {
 	const [rows, setRows] = useState<DiveRow[]>([
 		{ depth: 30, fo2: 32, minutes: 40, surfaceAfter: 60 },
 	])
+	const prevDepthUnit = useRef(units.depth)
+	useEffect(() => {
+		const from = prevDepthUnit.current
+		if (from !== units.depth) {
+			prevDepthUnit.current = units.depth
+			setRows((prev) =>
+				prev.map((r) => ({
+					...r,
+					depth: Math.round(fromMeters(toMeters(r.depth, from), units.depth)),
+				})),
+			)
+		}
+	}, [units.depth])
 
 	const update = (i: number, key: keyof DiveRow, value: number) =>
 		setRows((prev) =>
@@ -75,7 +88,7 @@ const OxygenExposureCalculator = () => {
 								Remove
 							</button>
 						</div>
-						<div className='flex flex-wrap items-end gap-3'>
+						<div className='grid grid-cols-1 gap-4 sm:grid-cols-2'>
 							<NumberInput
 								id={`ox-d-${i}`}
 								name={`ox-d-${i}`}
