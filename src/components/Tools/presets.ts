@@ -4,7 +4,14 @@ export interface TankPreset {
 	ratedBar: number
 }
 
-// Common scuba cylinders — water (internal) volume in litres, rated pressure in bar.
+// Common scuba cylinders — water (internal) volume in litres, rated pressure in
+// bar. Aluminum (AL*) water volumes from the Luxfer aluminum cylinder spec sheet
+// (XS Scuba, rev 19A); steel HP* from the Faber steel cylinder spec sheet
+// (XS Scuba). Cylinder names are NOMINAL capacity — e.g. Luxfer lists the AL80's
+// true capacity as 77.4 cu ft — so a free-gas figure computed from water volume ×
+// working pressure is an ideal-gas estimate and won't exactly match the name.
+// LP85/LP95 are approximate (not on those sheets); the metric NL sizes are
+// water-volume by definition.
 export const DIVE_TANKS: TankPreset[] = [
 	{ name: 'AL80 (S80)', waterVolumeL: 11.1, ratedBar: 207 },
 	{ name: 'AL63', waterVolumeL: 9.0, ratedBar: 207 },
@@ -12,7 +19,8 @@ export const DIVE_TANKS: TankPreset[] = [
 	{ name: 'AL30 (pony)', waterVolumeL: 4.3, ratedBar: 207 },
 	{ name: 'HP100', waterVolumeL: 12.9, ratedBar: 237 },
 	{ name: 'HP117', waterVolumeL: 15.0, ratedBar: 237 },
-	{ name: 'HP130', waterVolumeL: 16.6, ratedBar: 237 },
+	{ name: 'HP120', waterVolumeL: 15.3, ratedBar: 237 },
+	{ name: 'HP133', waterVolumeL: 17.0, ratedBar: 237 },
 	{ name: 'LP85', waterVolumeL: 11.1, ratedBar: 182 },
 	{ name: 'LP95', waterVolumeL: 12.4, ratedBar: 182 },
 	{ name: 'Steel 12 L', waterVolumeL: 12.0, ratedBar: 232 },
@@ -21,7 +29,8 @@ export const DIVE_TANKS: TankPreset[] = [
 	{ name: 'Steel 3 L (pony)', waterVolumeL: 3.0, ratedBar: 232 },
 ]
 
-// Cascade/storage bank cylinders.
+// Cascade/storage bank cylinders. UN/EN sizes are water-volume by definition;
+// the rated pressures are the common service ratings for these bottles.
 export const STORAGE_TANKS: TankPreset[] = [
 	{ name: 'UN 45 L (310 bar)', waterVolumeL: 45, ratedBar: 310 },
 	{ name: 'UN 50 L (300 bar)', waterVolumeL: 50, ratedBar: 300 },
@@ -45,6 +54,13 @@ export interface MixPreset {
 	name: string
 	fo2: number
 	fhe: number
+}
+
+// Free-gas (air) capacity in surface litres, ideal-gas estimate at the
+// cylinder's working pressure: water volume × rated pressure (bar gauge ≈
+// atmospheres). The actual fill pressure may differ from the working pressure.
+export function freeGasLiters(tank: TankPreset): number {
+	return tank.waterVolumeL * tank.ratedBar
 }
 
 export const MIXES: MixPreset[] = [

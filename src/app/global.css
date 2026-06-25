@@ -20,6 +20,8 @@
 	--accent: #4f46e5;
 	--accent-text: #4f46e5;
 	--card-hover: rgba(156, 163, 175, 0.05);
+	--warning: #b45309;
+	--danger: #dc2626;
 }
 
 .dark {
@@ -40,6 +42,8 @@
 	--accent: #4f46e5;
 	--accent-text: #4f46e5;
 	--card-hover: rgba(75, 85, 99, 0.2);
+	--warning: #fbbf24;
+	--danger: #f87171;
 }
 
 @theme {
@@ -60,6 +64,8 @@
 	--color-accent: var(--accent);
 	--color-accent-text: var(--accent-text);
 	--color-card-hover: var(--card-hover);
+	--color-warning: var(--warning);
+	--color-danger: var(--danger);
 }
 
 @layer base {

@@ -9,6 +9,9 @@ type NumberInputProps = {
 	placeholder?: string
 	disabled?: boolean
 	tooltip?: string
+	min?: number
+	max?: number
+	step?: number
 }
 
 const NumberInput = ({
@@ -20,6 +23,9 @@ const NumberInput = ({
 	placeholder,
 	disabled = false,
 	tooltip,
+	min,
+	max,
+	step,
 }: NumberInputProps) => {
 	return (
 		<div className='w-full'>
@@ -44,6 +50,9 @@ const NumberInput = ({
 				value={String(Number(value))}
 				disabled={disabled}
 				placeholder={placeholder}
+				min={min}
+				max={max}
+				step={step}
 				onChange={(e) =>
 					onChange(e.target.value === '' ? 0 : Number(e.target.value))
 				}
