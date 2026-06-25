@@ -30,7 +30,7 @@ const ToolsTabs = ({
 							onClick={() => selectGroup(g.id)}
 							className={
 								isActive
-									? 'bg-accent text-accent-text px-4 py-1.5 text-sm font-semibold'
+									? 'bg-accent text-white-text px-4 py-1.5 text-sm font-semibold'
 									: 'text-text hover:bg-hover px-4 py-1.5 text-sm font-medium'
 							}
 						>

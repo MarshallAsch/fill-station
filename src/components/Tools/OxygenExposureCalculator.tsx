@@ -116,7 +116,7 @@ const OxygenExposureCalculator = () => {
 				<button
 					type='button'
 					onClick={addRow}
-					className='bg-accent text-accent-text rounded-md px-3 py-2 text-sm font-medium'
+					className='bg-accent text-white-text rounded-md px-3 py-2 text-sm font-medium'
 				>
 					Add dive
 				</button>

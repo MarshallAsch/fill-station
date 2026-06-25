@@ -67,7 +67,7 @@ const UnitToggle = ({ show }: { show: Array<keyof UnitPrefs> }) => {
 										}
 										className={
 											active
-												? 'bg-accent text-accent-text px-3 py-1 text-sm font-medium'
+												? 'bg-accent text-white-text px-3 py-1 text-sm font-medium'
 												: 'text-text hover:bg-hover px-3 py-1 text-sm'
 										}
 									>

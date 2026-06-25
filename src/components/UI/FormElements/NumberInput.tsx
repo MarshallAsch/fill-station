@@ -1,3 +1,5 @@
+import Tooltip from '@/components/UI/Tooltip'
+
 type NumberInputProps = {
 	id: string
 	name: string
@@ -6,6 +8,7 @@ type NumberInputProps = {
 	onChange: (value: number) => void
 	placeholder?: string
 	disabled?: boolean
+	tooltip?: string
 }
 
 const NumberInput = ({
@@ -16,15 +19,21 @@ const NumberInput = ({
 	onChange,
 	placeholder,
 	disabled = false,
+	tooltip,
 }: NumberInputProps) => {
 	return (
 		<div className='w-full'>
 			{label && (
 				<label
 					htmlFor={id}
-					className='text-text mb-1 block text-sm font-medium'
+					className='text-text mb-1 flex items-center text-sm font-medium'
 				>
 					{label}
+					{tooltip && (
+						<Tooltip message={tooltip}>
+							<span className='text-light-text ml-1 cursor-help'>ⓘ</span>
+						</Tooltip>
+					)}
 				</label>
 			)}
 

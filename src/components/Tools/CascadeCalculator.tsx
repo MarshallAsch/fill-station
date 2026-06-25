@@ -101,7 +101,7 @@ const CascadeCalculator = () => {
 				<button
 					type='button'
 					onClick={addBank}
-					className='bg-accent text-accent-text rounded-md px-3 py-2 text-sm font-medium'
+					className='bg-accent text-white-text rounded-md px-3 py-2 text-sm font-medium'
 				>
 					Add bank cylinder
 				</button>
