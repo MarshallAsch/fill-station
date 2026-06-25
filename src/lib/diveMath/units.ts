@@ -30,3 +30,17 @@ export function toLiters(value: number, unit: VolumeUnit): number {
 	return unit === 'cf' ? value * L_PER_CF : value
 }
 
+export type FlowUnit = 'lpm' | 'cfm'
+
+export function fromLiters(l: number, unit: VolumeUnit): number {
+	return unit === 'cf' ? l / L_PER_CF : l
+}
+
+export function toLpm(value: number, unit: FlowUnit): number {
+	return unit === 'cfm' ? value * L_PER_CF : value
+}
+
+export function fromLpm(lpm: number, unit: FlowUnit): number {
+	return unit === 'cfm' ? lpm / L_PER_CF : lpm
+}
+

@@ -7,6 +7,9 @@ import {
 	toMeters,
 	fromMeters,
 	toLiters,
+	fromLiters,
+	toLpm,
+	fromLpm,
 } from './units'
 
 describe('units', () => {
@@ -31,5 +34,23 @@ describe('units', () => {
 	it('converts volume cf <-> l', () => {
 		expect(toLiters(1, 'cf')).toBeCloseTo(28.3168, 3)
 		expect(toLiters(5, 'l')).toBe(5)
+	})
+})
+
+describe('volume (fromLiters)', () => {
+	it('converts litres back to the display unit', () => {
+		expect(fromLiters(28.3168466, 'cf')).toBeCloseTo(1, 4)
+		expect(fromLiters(5, 'l')).toBe(5)
+	})
+})
+
+describe('flow rate', () => {
+	it('converts flow to litres-per-minute', () => {
+		expect(toLpm(1, 'cfm')).toBeCloseTo(28.3168, 3)
+		expect(toLpm(10, 'lpm')).toBe(10)
+	})
+	it('converts litres-per-minute back to the display unit', () => {
+		expect(fromLpm(28.3168466, 'cfm')).toBeCloseTo(1, 4)
+		expect(fromLpm(10, 'lpm')).toBe(10)
 	})
 })
