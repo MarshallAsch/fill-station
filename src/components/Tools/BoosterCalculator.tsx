@@ -209,6 +209,12 @@ const BoosterCalculator = () => {
 					</span>
 				</p>
 				<p className='text-text'>
+					Process gas boosted:{' '}
+					<span className='font-semibold'>
+						{vol(result.processGasL)} {units.volume}
+					</span>
+				</p>
+				<p className='text-text'>
 					Final supply pressure:{' '}
 					<span className='font-semibold'>
 						{p(result.finalSupply)} {units.pressure}

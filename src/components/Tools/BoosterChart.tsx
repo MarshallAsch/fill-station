@@ -51,14 +51,17 @@ const BoosterChart = ({
 					)
 				})}
 			</svg>
-			<div className='text-light-text mt-1 flex justify-between text-xs'>
+			<div className='text-light-text mt-1 flex justify-between gap-2 text-xs'>
 				{xLabels.map((l, i) => (
 					<span key={i}>{l}</span>
 				))}
 			</div>
 			<dl className='mt-3 space-y-1'>
 				{series.map((s) => (
-					<div key={s.label} className='flex items-center gap-2 text-xs'>
+					<div
+						key={s.label}
+						className='flex flex-wrap items-center gap-x-2 text-xs'
+					>
 						<span className={`${s.colorClass} text-base leading-none`}>—</span>
 						<span className='text-text'>{s.label}</span>
 						<span className='text-light-text'>{s.rangeLabel}</span>

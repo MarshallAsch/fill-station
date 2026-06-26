@@ -74,4 +74,13 @@ describe('boosterFillProfile', () => {
 	it('returns an empty profile when no boost is needed', () => {
 		expect(boosterFillProfile({ ...base, target: 150 })).toEqual([])
 	})
+	it('supply-limited: non-empty profile, supply drawn to atmospheric, cumulative drive matches summary', () => {
+		const input = { ...base, supplyVol: 2, receiverStart: 0, target: 280 }
+		const profile = boosterFillProfile(input, 40)
+		const summary = calculateBooster(input)
+		expect(profile.length).toBeGreaterThan(0)
+		const last = profile[profile.length - 1]
+		expect(last.cumulativeDriveL).toBeCloseTo(summary.driveAirL, 2)
+		expect(last.supplyP).toBeCloseTo(0, 1)
+	})
 })
