@@ -1,20 +1,22 @@
 'use client'
 
 import ListBox from '@/components/UI/FormElements/ListBox'
-import { BOOSTERS } from './presets'
+import { BOOSTERS, BoosterPreset } from './presets'
 
 const CUSTOM = 'custom'
 
-const BoosterPicker = ({ onSelect }: { onSelect: (ratio: number) => void }) => {
+const BoosterPicker = ({
+	onSelect,
+}: {
+	onSelect: (preset: BoosterPreset) => void
+}) => {
 	const items = [
 		{ value: CUSTOM, name: 'Choose a booster model…' },
 		...BOOSTERS.map((b) => ({
 			value: b.name,
-			name: `${b.name} — ${b.ratio}:1`,
+			name: `${b.name} — ${b.ratio}:1${b.twoStage ? ' · 2-stage' : ''}`,
 		})),
 	]
-
-	// Action-style: applies the model's ratio then reverts to the prompt.
 	return (
 		<ListBox
 			id='booster-model'
@@ -25,7 +27,7 @@ const BoosterPicker = ({ onSelect }: { onSelect: (ratio: number) => void }) => {
 			onChange={(item) => {
 				if (item.value === CUSTOM) return
 				const preset = BOOSTERS.find((b) => b.name === item.value)
-				if (preset) onSelect(preset.ratio)
+				if (preset) onSelect(preset)
 			}}
 		/>
 	)

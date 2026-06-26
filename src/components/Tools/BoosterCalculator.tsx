@@ -2,9 +2,15 @@
 
 import { useState } from 'react'
 import NumberInput from '@/components/UI/FormElements/NumberInput'
-import { boosterFillProfile, calculateBooster } from '@/lib/diveMath/booster'
+import Checkbox from '@/components/UI/FormElements/CheckBox'
+import {
+	boosterFillProfile,
+	boosterTiming,
+	calculateBooster,
+} from '@/lib/diveMath/booster'
 import { fromBar, fromLiters, toBar, toLpm } from '@/lib/diveMath/units'
-import BoosterChart, { ChartSeries } from './BoosterChart'
+import CycleRateChart from './CycleRateChart'
+import DualAxisChart from './DualAxisChart'
 import BoosterPicker from './BoosterPicker'
 import SafetyNote from './SafetyNote'
 import TankSizePicker from './TankSizePicker'
@@ -12,16 +18,33 @@ import UnitToggle from './UnitToggle'
 import { usePressureState } from './useUnitState'
 import { useUnits } from './UnitsProvider'
 
+const GAL_TO_L = 3.785411784
+const HIGH_RATE = 1 // cycle/sec danger threshold
+const LOW_RATE = 1 / 30 // cycle/sec warning threshold
+
+function fmtDuration(sec: number): string {
+	const m = Math.floor(sec / 60)
+	const s = Math.round(sec % 60)
+	return m > 0 ? `${m}m ${s}s` : `${s}s`
+}
+
 const BoosterCalculator = () => {
 	const { units } = useUnits()
 	const [ratio, setRatio] = useState(30)
 	const [driveP, setDriveP] = usePressureState(150)
+	const [twoStage, setTwoStage] = useState(false)
+	const [regulatedInlet, setRegulatedInlet] = usePressureState(150)
+	const [vdPerCycle, setVdPerCycle] = useState(0)
+	const [driveMax, setDriveMax] = useState(0)
 	const [supplyVol, setSupplyVol] = useState(50)
 	const [supplyStart, setSupplyStart] = usePressureState(2900)
 	const [receiverVol, setReceiverVol] = useState(11.1)
 	const [receiverStart, setReceiverStart] = usePressureState(500)
 	const [target, setTarget] = usePressureState(3000)
-	const [driveRate, setDriveRate] = useState(0)
+	const [compressorRate, setCompressorRate] = useState(0)
+	const [storageGal, setStorageGal] = useState(0)
+	const [storageMax, setStorageMax] = usePressureState(175)
+	const [storageMin, setStorageMin] = usePressureState(125)
 
 	const input = {
 		ratio,
@@ -31,49 +54,35 @@ const BoosterCalculator = () => {
 		receiverVol,
 		receiverStart: toBar(receiverStart, units.pressure),
 		target: toBar(target, units.pressure),
+		regulatedInletBar: twoStage
+			? toBar(regulatedInlet, units.pressure)
+			: undefined,
 	}
 	const result = calculateBooster(input)
-	const profile = boosterFillProfile(input, 40)
+
+	const timingArgs = {
+		driveAirL: result.driveAirL,
+		vdPerCycleL: toLpm(vdPerCycle, units.airFlow),
+		driveMaxLpm: toLpm(driveMax, units.airFlow),
+		compressorRateLpm: toLpm(compressorRate, units.airFlow),
+		storageL: storageGal * GAL_TO_L,
+		storageMaxBar: toBar(storageMax, units.pressure),
+		storageMinBar: toBar(storageMin, units.pressure),
+	}
+	const timing = boosterTiming(timingArgs)
+	const profile = boosterFillProfile(input, 40, timing ? timingArgs : undefined)
+	const hasTime = profile.length > 0 && profile[0].timeSeconds !== undefined
 
 	const p = (bar: number) => Math.round(fromBar(bar, units.pressure))
 	const vol = (l: number) => Math.round(fromLiters(l, units.volume))
-	const driveRateLpm = toLpm(driveRate, units.airFlow)
-	const fillMinutes =
-		driveRate > 0 && result.driveAirL > 0
-			? result.driveAirL / driveRateLpm
-			: null
 
-	const chartSeries: ChartSeries[] = profile.length
-		? [
-				{
-					label: 'Cumulative drive air',
-					colorClass: 'text-accent',
-					values: profile.map((pt) =>
-						fromLiters(pt.cumulativeDriveL, units.volume),
-					),
-					rangeLabel: `${vol(profile[0].cumulativeDriveL)}→${vol(profile[profile.length - 1].cumulativeDriveL)} ${units.volume}`,
-				},
-				{
-					label: 'Supply pressure',
-					colorClass: 'text-light-text',
-					values: profile.map((pt) => fromBar(pt.supplyP, units.pressure)),
-					rangeLabel: `${p(profile[0].supplyP)}→${p(profile[profile.length - 1].supplyP)} ${units.pressure}`,
-				},
-				{
-					label: 'Drive-air rate',
-					colorClass: 'text-warning',
-					values: profile.map((pt) => pt.rateLPerBar),
-					rangeLabel: `${Math.round(profile[0].rateLPerBar)}→${Math.round(profile[profile.length - 1].rateLPerBar)} L/bar`,
-				},
-			]
-		: []
-	const xLabels = profile.length
-		? [
-				`${p(profile[0].receiverP)} ${units.pressure}`,
-				`${p(profile[Math.floor(profile.length / 2)].receiverP)}`,
-				`${p(profile[profile.length - 1].receiverP)} ${units.pressure}`,
-			]
-		: []
+	const last = profile.length ? profile[profile.length - 1] : null
+	const xCaptionTime = 'Time'
+	const xCaptionPressure = `Receiver pressure (${units.pressure})`
+
+	const fastWarn = timing != null && timing.cycleRate1 > HIGH_RATE
+	const slowWarn =
+		timing != null && timing.dutyContinuous && timing.cycleRate2 < LOW_RATE
 
 	return (
 		<div className='space-y-6'>
@@ -81,7 +90,14 @@ const BoosterCalculator = () => {
 
 			<section className='space-y-3'>
 				<h2 className='text-text text-lg font-semibold'>Booster</h2>
-				<BoosterPicker onSelect={setRatio} />
+				<BoosterPicker
+					onSelect={(preset) => {
+						setRatio(preset.ratio)
+						setTwoStage(preset.twoStage)
+						setVdPerCycle(preset.vdPerCycleL)
+						setDriveMax(preset.driveMaxLpm)
+					}}
+				/>
 				<div className='grid grid-cols-1 gap-4 sm:grid-cols-2'>
 					<NumberInput
 						id='b-ratio'
@@ -99,7 +115,43 @@ const BoosterCalculator = () => {
 						onChange={setDriveP}
 						min={0}
 					/>
+					<NumberInput
+						id='b-vd'
+						name='b-vd'
+						label={`Drive air / cycle (${units.airFlow.replace('m', '')})`}
+						value={vdPerCycle}
+						onChange={setVdPerCycle}
+						min={0}
+						tooltip='Drive air consumed per cycle, from the booster datasheet. Enables cycle timing.'
+					/>
+					<NumberInput
+						id='b-dmax'
+						name='b-dmax'
+						label={`Max drive-air consumption (${units.airFlow})`}
+						value={driveMax}
+						onChange={setDriveMax}
+						min={0}
+						tooltip='Booster max free-air consumption at full speed, from the datasheet.'
+					/>
 				</div>
+				<Checkbox
+					id='b-2stage'
+					name='b-2stage'
+					title='Two-stage (regulated inlet)'
+					checked={twoStage}
+					onChange={setTwoStage}
+				/>
+				{twoStage && (
+					<NumberInput
+						id='b-reg'
+						name='b-reg'
+						label={`Regulated inlet pressure (${units.pressure})`}
+						value={regulatedInlet}
+						onChange={setRegulatedInlet}
+						min={0}
+						tooltip='Low pressure the source is regulated to before the first stage.'
+					/>
+				)}
 			</section>
 
 			<section className='space-y-3'>
@@ -164,12 +216,44 @@ const BoosterCalculator = () => {
 						onChange={setTarget}
 						min={0}
 					/>
+				</div>
+			</section>
+
+			<section className='space-y-3'>
+				<h2 className='text-text text-lg font-semibold'>
+					Drive compressor (optional)
+				</h2>
+				<div className='grid grid-cols-1 gap-4 sm:grid-cols-2'>
 					<NumberInput
-						id='b-driverate'
-						name='b-driverate'
-						label={`Drive-air supply rate (${units.airFlow}, optional)`}
-						value={driveRate}
-						onChange={setDriveRate}
+						id='b-crate'
+						name='b-crate'
+						label={`Compressor output (${units.airFlow})`}
+						value={compressorRate}
+						onChange={setCompressorRate}
+						min={0}
+					/>
+					<NumberInput
+						id='b-stgal'
+						name='b-stgal'
+						label='Storage volume (gal)'
+						value={storageGal}
+						onChange={setStorageGal}
+						min={0}
+					/>
+					<NumberInput
+						id='b-stmax'
+						name='b-stmax'
+						label={`Storage max (${units.pressure})`}
+						value={storageMax}
+						onChange={setStorageMax}
+						min={0}
+					/>
+					<NumberInput
+						id='b-stmin'
+						name='b-stmin'
+						label={`Storage min (${units.pressure})`}
+						value={storageMin}
+						onChange={setStorageMin}
 						min={0}
 					/>
 				</div>
@@ -185,6 +269,19 @@ const BoosterCalculator = () => {
 			{result.feasible && result.driveAirL === 0 && (
 				<SafetyNote level='warning'>
 					Free equalization already reaches the target — no boosting needed.
+				</SafetyNote>
+			)}
+			{fastWarn && (
+				<SafetyNote level='danger'>
+					Booster cycling faster than ~1/sec — hard on the booster; lower the
+					drive pressure or use a smaller drive supply.
+				</SafetyNote>
+			)}
+			{slowWarn && (
+				<SafetyNote level='warning'>
+					Compressor undersized — the booster cycles very slowly (
+					{fmtDuration(timing!.phase2Seconds)} of the fill at{' '}
+					{timing!.cycleRate2.toFixed(2)}/sec).
 				</SafetyNote>
 			)}
 
@@ -214,16 +311,79 @@ const BoosterCalculator = () => {
 						{p(result.finalSupply)} {units.pressure}
 					</span>
 				</p>
-				{fillMinutes !== null && (
-					<p className='text-text'>
-						Est. fill time at {driveRate} {units.airFlow}:{' '}
-						<span className='font-semibold'>{Math.round(fillMinutes)} min</span>
-					</p>
+				{timing && result.driveAirL > 0 && (
+					<>
+						<p className='text-text'>
+							Total cycles:{' '}
+							<span className='font-semibold'>
+								{Math.round(timing.totalCycles)}
+							</span>
+						</p>
+						<p className='text-text'>
+							Fill time:{' '}
+							<span className='font-semibold'>
+								{fmtDuration(timing.fillSeconds)}
+							</span>
+						</p>
+						<p className='text-text'>
+							Compressor duty:{' '}
+							<span className='font-semibold'>
+								{timing.dutyContinuous
+									? '~100% (continuous)'
+									: `${Math.round(timing.dutyCycle * 100)}%`}
+							</span>
+						</p>
+					</>
 				)}
 			</section>
 
-			{chartSeries.length > 0 && (
-				<BoosterChart xLabels={xLabels} series={chartSeries} />
+			{profile.length > 0 && (
+				<DualAxisChart
+					x={
+						hasTime
+							? profile.map((pt) => pt.timeSeconds!)
+							: profile.map((pt) => fromBar(pt.receiverP, units.pressure))
+					}
+					xLabels={
+						hasTime
+							? [
+									fmtDuration(0),
+									fmtDuration((last!.timeSeconds ?? 0) / 2),
+									fmtDuration(last!.timeSeconds ?? 0),
+								]
+							: [
+									`${p(profile[0].receiverP)}`,
+									`${p(profile[Math.floor(profile.length / 2)].receiverP)}`,
+									`${p(last!.receiverP)}`,
+								]
+					}
+					xCaption={hasTime ? xCaptionTime : xCaptionPressure}
+					left={{
+						label: 'Supply',
+						colorClass: 'text-light-text',
+						unit: units.pressure,
+						values: profile.map((pt) => fromBar(pt.supplyP, units.pressure)),
+					}}
+					right={{
+						label: 'Receiver',
+						colorClass: 'text-accent',
+						unit: units.pressure,
+						values: profile.map((pt) => fromBar(pt.receiverP, units.pressure)),
+					}}
+				/>
+			)}
+			{hasTime && (
+				<CycleRateChart
+					xLabels={[
+						fmtDuration(0),
+						fmtDuration((last!.timeSeconds ?? 0) / 2),
+						fmtDuration(last!.timeSeconds ?? 0),
+					]}
+					xCaption={xCaptionTime}
+					rates={profile.map((pt) => pt.cycleRatePerSec ?? 0)}
+					highPerSec={HIGH_RATE}
+					lowPerSec={LOW_RATE}
+				/>
 			)}
 		</div>
 	)
