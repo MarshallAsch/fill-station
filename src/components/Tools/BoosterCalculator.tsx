@@ -191,12 +191,6 @@ const BoosterCalculator = () => {
 			<section className='border-border space-y-2 rounded-md border p-4'>
 				<h2 className='text-text text-lg font-semibold'>Estimate</h2>
 				<p className='text-text'>
-					Max output pressure:{' '}
-					<span className='font-semibold'>
-						{p(result.maxOutput)} {units.pressure}
-					</span>
-				</p>
-				<p className='text-text'>
 					Equalization pressure:{' '}
 					<span className='font-semibold'>
 						{p(result.eqPressure)} {units.pressure}
