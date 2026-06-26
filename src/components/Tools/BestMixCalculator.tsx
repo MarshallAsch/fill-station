@@ -7,6 +7,7 @@ import RadioGroup from '@/components/UI/FormElements/RadioGroup'
 import { bestMix } from '@/lib/diveMath/bestMix'
 import { calculateMod, Water } from '@/lib/diveMath/modEnd'
 import { fromMeters, toMeters } from '@/lib/diveMath/units'
+import FormulaPanel, { FormulaRow } from './FormulaPanel'
 import SafetyNote from './SafetyNote'
 import UnitToggle from './UnitToggle'
 import { useUnits } from './UnitsProvider'
@@ -34,83 +35,120 @@ const BestMixCalculator = () => {
 	const ppo2Danger = ppo2 > 1.6
 	const ppo2Warning = !ppo2Danger && ppo2 > 1.4
 
+	const d0 = water === 'fresh' ? 10.3 : 10
+	const ata = depthM / d0 + 1
+	const endM = toMeters(targetEnd, units.depth)
+	const m1 = (m: number) => m.toFixed(1)
+	const f3 = (f: number) => f.toFixed(3)
+	const disp = (m: number) =>
+		`${Math.round(fromMeters(m, units.depth))} ${units.depth}`
+
+	const formulaRows: FormulaRow[] = [
+		{
+			label: 'Inputs',
+			expr: `depth = ${depth} ${units.depth} = ${m1(depthM)} m · ppO₂ = ${ppo2} · D₀ = ${d0} m/bar (${water})`,
+		},
+		{
+			label: 'Ambient pressure',
+			expr: `ata = depth/D₀ + 1 = ${m1(depthM)}/${d0} + 1 = ${ata.toFixed(2)}`,
+		},
+		{
+			label: 'Best O₂ fraction',
+			expr: `FO₂ = ppO₂/ata = ${ppo2}/${ata.toFixed(2)} = ${f3(mix.fo2)} → ${fo2Pct}%`,
+		},
+	]
+	if (useHe) {
+		formulaRows.push({
+			label: 'Best He fraction',
+			expr: `FHe = 1 − (END+D₀)/(depth+D₀) = 1 − (${m1(endM)}+${d0})/(${m1(depthM)}+${d0}) = ${f3(mix.fhe)} → ${fhePct}%`,
+			note: `Target END = ${targetEnd} ${units.depth} = ${m1(endM)} m`,
+		})
+	}
+	formulaRows.push({
+		label: 'MOD at this mix',
+		expr: `MOD = (ppO₂/FO₂ − 1)×D₀ = (${ppo2}/${f3(mix.fo2)} − 1)×${d0} = ${m1(mod)} m ≈ ${disp(mod)}`,
+	})
+
 	return (
-		<div className='space-y-6'>
-			<UnitToggle show={['depth']} />
-			<section className='grid grid-cols-1 gap-4 sm:grid-cols-2'>
-				<NumberInput
-					id='bm-depth'
-					name='bm-depth'
-					label={`Planned depth (${units.depth})`}
-					value={depth}
-					onChange={setDepth}
-					min={0}
+		<div className='lg:grid lg:grid-cols-[minmax(0,1fr)_19rem] lg:items-start lg:gap-6'>
+			<div className='space-y-6'>
+				<UnitToggle show={['depth']} />
+				<section className='grid grid-cols-1 gap-4 sm:grid-cols-2'>
+					<NumberInput
+						id='bm-depth'
+						name='bm-depth'
+						label={`Planned depth (${units.depth})`}
+						value={depth}
+						onChange={setDepth}
+						min={0}
+					/>
+					<NumberInput
+						id='bm-ppo2'
+						name='bm-ppo2'
+						label='Target ppO₂'
+						value={ppo2}
+						onChange={setPpo2}
+						min={0}
+						max={3}
+						step={0.1}
+					/>
+				</section>
+				{ppo2Danger && (
+					<SafetyNote level='danger'>
+						ppO₂ above 1.6 — unsafe, high O₂-toxicity risk.
+					</SafetyNote>
+				)}
+				{ppo2Warning && (
+					<SafetyNote level='warning'>
+						ppO₂ above 1.4 exceeds the recommended working limit.
+					</SafetyNote>
+				)}
+				<RadioGroup
+					title='Water'
+					name='bm-water'
+					value={water}
+					onChange={(v) => setWater(v as Water)}
+					options={[
+						{ value: 'salt', label: 'Salt' },
+						{ value: 'fresh', label: 'Fresh' },
+					]}
 				/>
-				<NumberInput
-					id='bm-ppo2'
-					name='bm-ppo2'
-					label='Target ppO₂'
-					value={ppo2}
-					onChange={setPpo2}
-					min={0}
-					max={3}
-					step={0.1}
+				<Checkbox
+					id='bm-usehe'
+					name='bm-usehe'
+					title='Add helium to cap narcosis (END)'
+					checked={useHe}
+					onChange={setUseHe}
 				/>
-			</section>
-			{ppo2Danger && (
-				<SafetyNote level='danger'>
-					ppO₂ above 1.6 — unsafe, high O₂-toxicity risk.
-				</SafetyNote>
-			)}
-			{ppo2Warning && (
-				<SafetyNote level='warning'>
-					ppO₂ above 1.4 exceeds the recommended working limit.
-				</SafetyNote>
-			)}
-			<RadioGroup
-				title='Water'
-				name='bm-water'
-				value={water}
-				onChange={(v) => setWater(v as Water)}
-				options={[
-					{ value: 'salt', label: 'Salt' },
-					{ value: 'fresh', label: 'Fresh' },
-				]}
-			/>
-			<Checkbox
-				id='bm-usehe'
-				name='bm-usehe'
-				title='Add helium to cap narcosis (END)'
-				checked={useHe}
-				onChange={setUseHe}
-			/>
-			{useHe && (
-				<NumberInput
-					id='bm-targetend'
-					name='bm-targetend'
-					label={`Target END (${units.depth})`}
-					value={targetEnd}
-					onChange={setTargetEnd}
-					min={0}
-				/>
-			)}
-			<section className='border-border space-y-2 rounded-md border p-4'>
-				<h2 className='text-text text-lg font-semibold'>Recommended mix</h2>
-				<p className='text-text text-2xl font-bold'>
-					{fo2Pct}
-					{fhePct > 0 ? `/${fhePct}` : ''}
-					{fhePct > 0 ? ' (trimix)' : ' nitrox'}
-				</p>
-				<p className='text-light-text text-sm'>
-					O₂ {fo2Pct}% · He {fhePct}% · N₂ {Math.round(mix.fn2 * 100)}%
-				</p>
-				<p className='text-text'>
-					MOD at this mix &amp; ppO₂:{' '}
-					<span className='font-semibold'>
-						{Math.round(fromMeters(mod, units.depth))} {units.depth}
-					</span>
-				</p>
-			</section>
+				{useHe && (
+					<NumberInput
+						id='bm-targetend'
+						name='bm-targetend'
+						label={`Target END (${units.depth})`}
+						value={targetEnd}
+						onChange={setTargetEnd}
+						min={0}
+					/>
+				)}
+				<section className='border-border space-y-2 rounded-md border p-4'>
+					<h2 className='text-text text-lg font-semibold'>Recommended mix</h2>
+					<p className='text-text text-2xl font-bold'>
+						{fo2Pct}
+						{fhePct > 0 ? `/${fhePct}` : ''}
+						{fhePct > 0 ? ' (trimix)' : ' nitrox'}
+					</p>
+					<p className='text-light-text text-sm'>
+						O₂ {fo2Pct}% · He {fhePct}% · N₂ {Math.round(mix.fn2 * 100)}%
+					</p>
+					<p className='text-text'>
+						MOD at this mix &amp; ppO₂:{' '}
+						<span className='font-semibold'>
+							{Math.round(fromMeters(mod, units.depth))} {units.depth}
+						</span>
+					</p>
+				</section>
+			</div>
+			<FormulaPanel rows={formulaRows} />
 		</div>
 	)
 }

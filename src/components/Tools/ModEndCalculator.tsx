@@ -10,6 +10,7 @@ import {
 	Water,
 } from '@/lib/diveMath/modEnd'
 import { fromMeters, toMeters } from '@/lib/diveMath/units'
+import FormulaPanel, { FormulaRow } from './FormulaPanel'
 import MixPicker from './MixPicker'
 import SafetyNote from './SafetyNote'
 import UnitToggle from './UnitToggle'
@@ -43,113 +44,146 @@ const ModEndCalculator = () => {
 
 	const mixInvalid = fo2 + fhe > 100
 
+	const d0 = water === 'fresh' ? 10.3 : 10
+	const fn2Frac = 1 - fo2Frac - fheFrac
+	const m1 = (m: number) => m.toFixed(1)
+	const f3 = (f: number) => f.toFixed(3)
+	const disp = (m: number) => `${d(m)} ${units.depth}`
+
+	const endExpr =
+		model === 'o2-narcotic'
+			? `END = (depth+D₀)(1−FHe) − D₀ = (${m1(depthM)}+${d0})(1−${f3(fheFrac)}) − ${d0} = ${m1(end)} m ≈ ${disp(end)}`
+			: `FN₂ = 1−FO₂−FHe = ${f3(fn2Frac)}; END = (depth+D₀)(FN₂/0.79) − D₀ = ${m1(end)} m ≈ ${disp(end)}`
+
+	const formulaRows: FormulaRow[] = [
+		{
+			label: 'Inputs',
+			expr: `FO₂ = ${f3(fo2Frac)} · FHe = ${f3(fheFrac)} · depth = ${depth} ${units.depth} = ${m1(depthM)} m · D₀ = ${d0} m/bar (${water})`,
+		},
+		{
+			label: `MOD @ ppO₂ ${ppo2}`,
+			expr: `(ppO₂/FO₂ − 1)×D₀ = (${ppo2}/${f3(fo2Frac)} − 1)×${d0} = ${m1(modEditable)} m ≈ ${disp(modEditable)}`,
+		},
+		{
+			label: 'MOD @ ppO₂ 1.6',
+			expr: `(1.6/${f3(fo2Frac)} − 1)×${d0} = ${m1(mod16)} m ≈ ${disp(mod16)}`,
+		},
+		{
+			label: `END (${model === 'o2-narcotic' ? 'O₂ narcotic' : 'N₂ only'})`,
+			expr: endExpr,
+		},
+	]
+
 	return (
-		<div className='space-y-6'>
-			<UnitToggle show={['depth']} />
+		<div className='lg:grid lg:grid-cols-[minmax(0,1fr)_19rem] lg:items-start lg:gap-6'>
+			<div className='space-y-6'>
+				<UnitToggle show={['depth']} />
 
-			<section className='grid grid-cols-1 gap-4 sm:grid-cols-2'>
-				<MixPicker
-					id='me-mix'
-					onSelect={(o2, he) => {
-						setFo2(o2)
-						setFhe(he)
-					}}
-				/>
-				<NumberInput
-					id='me-fo2'
-					name='me-fo2'
-					label='O₂ (%)'
-					value={fo2}
-					onChange={setFo2}
-					min={0}
-					max={100}
-				/>
-				<NumberInput
-					id='me-fhe'
-					name='me-fhe'
-					label='He (%)'
-					value={fhe}
-					onChange={setFhe}
-					min={0}
-					max={100}
-				/>
-				<NumberInput
-					id='me-ppo2'
-					name='me-ppo2'
-					label='Working ppO₂'
-					value={ppo2}
-					onChange={setPpo2}
-					min={0}
-					max={3}
-					step={0.1}
-				/>
-			</section>
-			{mixInvalid && (
-				<SafetyNote level='danger'>
-					O₂ + He exceeds 100% — not a valid mix.
-				</SafetyNote>
-			)}
+				<section className='grid grid-cols-1 gap-4 sm:grid-cols-2'>
+					<MixPicker
+						id='me-mix'
+						onSelect={(o2, he) => {
+							setFo2(o2)
+							setFhe(he)
+						}}
+					/>
+					<NumberInput
+						id='me-fo2'
+						name='me-fo2'
+						label='O₂ (%)'
+						value={fo2}
+						onChange={setFo2}
+						min={0}
+						max={100}
+					/>
+					<NumberInput
+						id='me-fhe'
+						name='me-fhe'
+						label='He (%)'
+						value={fhe}
+						onChange={setFhe}
+						min={0}
+						max={100}
+					/>
+					<NumberInput
+						id='me-ppo2'
+						name='me-ppo2'
+						label='Working ppO₂'
+						value={ppo2}
+						onChange={setPpo2}
+						min={0}
+						max={3}
+						step={0.1}
+					/>
+				</section>
+				{mixInvalid && (
+					<SafetyNote level='danger'>
+						O₂ + He exceeds 100% — not a valid mix.
+					</SafetyNote>
+				)}
 
-			<section className='flex flex-wrap gap-6'>
-				<RadioGroup
-					title='Water'
-					name='water'
-					value={water}
-					onChange={(v) => setWater(v as Water)}
-					options={[
-						{ value: 'salt', label: 'Salt' },
-						{ value: 'fresh', label: 'Fresh' },
-					]}
-				/>
-				<RadioGroup
-					title='END model'
-					name='end-model'
-					value={model}
-					onChange={(v) => setModel(v as EndModel)}
-					options={[
-						{ value: 'o2-narcotic', label: 'O₂ narcotic' },
-						{ value: 'n2-only', label: 'N₂ only' },
-					]}
-				/>
-			</section>
+				<section className='flex flex-wrap gap-6'>
+					<RadioGroup
+						title='Water'
+						name='water'
+						value={water}
+						onChange={(v) => setWater(v as Water)}
+						options={[
+							{ value: 'salt', label: 'Salt' },
+							{ value: 'fresh', label: 'Fresh' },
+						]}
+					/>
+					<RadioGroup
+						title='END model'
+						name='end-model'
+						value={model}
+						onChange={(v) => setModel(v as EndModel)}
+						options={[
+							{ value: 'o2-narcotic', label: 'O₂ narcotic' },
+							{ value: 'n2-only', label: 'N₂ only' },
+						]}
+					/>
+				</section>
 
-			<section className='border-border space-y-2 rounded-md border p-4'>
-				<h2 className='text-text text-lg font-semibold'>
-					Maximum operating depth
-				</h2>
-				<p className='text-text'>
-					ppO₂ {ppo2}:{' '}
-					<span className='font-semibold'>
-						{d(modEditable)} {units.depth}
-					</span>
-				</p>
-				<p className='text-text'>
-					ppO₂ 1.6:{' '}
-					<span className='font-semibold'>
-						{d(mod16)} {units.depth}
-					</span>
-				</p>
-			</section>
+				<section className='border-border space-y-2 rounded-md border p-4'>
+					<h2 className='text-text text-lg font-semibold'>
+						Maximum operating depth
+					</h2>
+					<p className='text-text'>
+						ppO₂ {ppo2}:{' '}
+						<span className='font-semibold'>
+							{d(modEditable)} {units.depth}
+						</span>
+					</p>
+					<p className='text-text'>
+						ppO₂ 1.6:{' '}
+						<span className='font-semibold'>
+							{d(mod16)} {units.depth}
+						</span>
+					</p>
+				</section>
 
-			<section className='border-border space-y-3 rounded-md border p-4'>
-				<h2 className='text-text text-lg font-semibold'>
-					Equivalent narcotic depth
-				</h2>
-				<NumberInput
-					id='me-depth'
-					name='me-depth'
-					label={`Planned depth (${units.depth})`}
-					value={depth}
-					onChange={setDepth}
-					min={0}
-				/>
-				<p className='text-text'>
-					END at {depth} {units.depth}:{' '}
-					<span className='font-semibold'>
-						{d(end)} {units.depth}
-					</span>
-				</p>
-			</section>
+				<section className='border-border space-y-3 rounded-md border p-4'>
+					<h2 className='text-text text-lg font-semibold'>
+						Equivalent narcotic depth
+					</h2>
+					<NumberInput
+						id='me-depth'
+						name='me-depth'
+						label={`Planned depth (${units.depth})`}
+						value={depth}
+						onChange={setDepth}
+						min={0}
+					/>
+					<p className='text-text'>
+						END at {depth} {units.depth}:{' '}
+						<span className='font-semibold'>
+							{d(end)} {units.depth}
+						</span>
+					</p>
+				</section>
+			</div>
+			<FormulaPanel rows={formulaRows} />
 		</div>
 	)
 }
