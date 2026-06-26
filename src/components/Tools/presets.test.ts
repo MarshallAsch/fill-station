@@ -54,30 +54,28 @@ describe('booster presets', () => {
 	it('includes USUN dive boosters', () => {
 		expect(BOOSTERS.some((b) => b.name.includes('USUN'))).toBe(true)
 	})
-	it('flags the two-stage models and carries per-cycle fields', () => {
+	it('flags the two-stage models and carries swept-volume fields', () => {
 		for (const b of BOOSTERS) {
 			expect(typeof b.twoStage).toBe('boolean')
-			expect(b.vdPerCycleL).toBeGreaterThanOrEqual(0)
-			expect(b.driveMaxLpm).toBeGreaterThanOrEqual(0)
+			expect(b.driveSweptL).toBeGreaterThanOrEqual(0)
+			expect(b.maxCpm).toBeGreaterThanOrEqual(0)
 		}
 		expect(BOOSTERS.some((b) => b.twoStage)).toBe(true)
 	})
-	it('seeds derived drive-air data for every preset (USUN and Haskel)', () => {
+	it('seeds derived swept-volume data for every preset (USUN and Haskel)', () => {
 		expect(BOOSTERS.some((b) => b.name.includes('USUN'))).toBe(true)
 		expect(BOOSTERS.some((b) => b.name.includes('Haskel'))).toBe(true)
 		for (const b of BOOSTERS) {
-			expect(b.vdPerCycleL).toBeGreaterThan(0)
-			expect(b.driveMaxLpm).toBeGreaterThan(0)
+			expect(b.driveSweptL).toBeGreaterThan(0)
+			expect(b.maxCpm).toBeGreaterThan(0)
 		}
 	})
 	it('uses one shared air-drive head for all Haskel AG models', () => {
 		const haskel = BOOSTERS.filter((b) => b.name.includes('Haskel'))
 		expect(haskel.length).toBe(6)
-		const vd = haskel[0].vdPerCycleL
-		const dm = haskel[0].driveMaxLpm
+		const swept = haskel[0].driveSweptL
 		for (const b of haskel) {
-			expect(b.vdPerCycleL).toBe(vd)
-			expect(b.driveMaxLpm).toBe(dm)
+			expect(b.driveSweptL).toBe(swept)
 		}
 	})
 })

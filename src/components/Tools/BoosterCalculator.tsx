@@ -9,6 +9,7 @@ import {
 	calculateBooster,
 } from '@/lib/diveMath/booster'
 import {
+	ATMOSPHERIC_BAR,
 	fromBar,
 	fromLiters,
 	fromLpm,
@@ -27,7 +28,7 @@ import { useUnits } from './UnitsProvider'
 
 const GAL_TO_L = 3.785411784
 const HIGH_RATE = 1 // cycle/sec danger threshold
-const LOW_RATE = 1 / 30 // cycle/sec warning threshold
+const LOW_RATE = 1 / 30 // cycle/sec band reference
 
 function fmtDuration(sec: number): string {
 	const m = Math.floor(sec / 60)
@@ -38,41 +39,58 @@ function fmtDuration(sec: number): string {
 const BoosterCalculator = () => {
 	const { units } = useUnits()
 	const [ratio, setRatio] = useState(30)
-	const [driveP, setDriveP] = usePressureState(100)
+	const [driveP, setDriveP] = usePressureState(120)
 	const [twoStage, setTwoStage] = useState(false)
 	const [regulatedInlet, setRegulatedInlet] = usePressureState(150)
-	const [vdPerCycle, setVdPerCycle] = useState(0)
-	const [driveMax, setDriveMax] = useState(0)
+	const [driveSwept, setDriveSwept] = useState(0)
+	const [maxCpm, setMaxCpm] = useState(0)
 	const [supplyVol, setSupplyVol] = useState(50)
 	const [supplyStart, setSupplyStart] = usePressureState(2900)
-	const [receiverVol, setReceiverVol] = useState(11.1)
-	const [receiverStart, setReceiverStart] = usePressureState(500)
+	const [receiverVol, setReceiverVol] = useState(5.7)
+	const [receiverStart, setReceiverStart] = usePressureState(0)
 	const [target, setTarget] = usePressureState(3000)
+	const [maxFillRate, setMaxFillRate] = usePressureState(300)
 	const [compressorRate, setCompressorRate] = useState(0)
 	const [storageGal, setStorageGal] = useState(0)
 	const [storageMax, setStorageMax] = usePressureState(175)
 	const [storageMin, setStorageMin] = usePressureState(125)
 
+	const supplyStartBar = toBar(supplyStart, units.pressure)
+	const receiverStartBar = toBar(receiverStart, units.pressure)
+	const targetBar = toBar(target, units.pressure)
+
 	const input = {
 		ratio,
 		driveP: toBar(driveP, units.pressure),
 		supplyVol,
-		supplyStart: toBar(supplyStart, units.pressure),
+		supplyStart: supplyStartBar,
 		receiverVol,
-		receiverStart: toBar(receiverStart, units.pressure),
-		target: toBar(target, units.pressure),
+		receiverStart: receiverStartBar,
+		target: targetBar,
 		regulatedInletBar: twoStage
 			? toBar(regulatedInlet, units.pressure)
 			: undefined,
 	}
 	const result = calculateBooster(input)
 
+	const equalizes = supplyStartBar > receiverStartBar
+	const boostStartBar = equalizes ? result.eqPressure : receiverStartBar
+	const inletStartAbsBar =
+		(equalizes ? result.eqPressure : supplyStartBar) + ATMOSPHERIC_BAR
+	const riseBar = Math.max(0, targetBar - boostStartBar)
+
 	const timingArgs = {
 		driveAirL: result.driveAirL,
-		vdPerCycleL: toLpm(vdPerCycle, units.airFlow),
-		driveMaxLpm: toLpm(driveMax, units.airFlow),
+		riseBar,
+		receiverVolL: receiverVol,
+		maxFillRateBarPerMin: toBar(maxFillRate, units.pressure),
+		driveSweptL: driveSwept,
+		maxCpm,
+		ratio,
+		supplyAbsBar: inletStartAbsBar,
+		driveStartBar: result.driveStart,
+		driveEndBar: result.driveEnd,
 		compressorRateLpm: toLpm(compressorRate, units.airFlow),
-		drivePBar: toBar(driveP, units.pressure),
 		storageL: storageGal * GAL_TO_L,
 		storageMaxBar: toBar(storageMax, units.pressure),
 		storageMinBar: toBar(storageMin, units.pressure),
@@ -82,6 +100,7 @@ const BoosterCalculator = () => {
 	const hasTime = profile.length > 0 && profile[0].timeSeconds !== undefined
 
 	const p = (bar: number) => Math.round(fromBar(bar, units.pressure))
+	const p1 = (bar: number) => fromBar(bar, units.pressure)
 	const vol = (l: number) => Math.round(fromLiters(l, units.volume))
 	const flow = (lpm: number) => Math.round(fromLpm(lpm, units.airFlow))
 
@@ -89,8 +108,6 @@ const BoosterCalculator = () => {
 	const xCaptionTime = 'Time'
 	const xCaptionPressure = `Receiver pressure (${units.pressure})`
 
-	// Shared x-axis: time (seconds) when timing data is available, else receiver
-	// pressure. Charts position points by these values, so the time axis is real.
 	const xCaption = hasTime ? xCaptionTime : xCaptionPressure
 	const xValues = hasTime
 		? profile.map((pt) => pt.timeSeconds!)
@@ -110,22 +127,6 @@ const BoosterCalculator = () => {
 						`${p(last!.receiverP)}`,
 					]
 
-	// Event markers on the time axis (only meaningful with a time x-axis).
-	const cycleMarkers =
-		hasTime && timing
-			? [
-					{ x: 0, label: 'boost on', colorClass: 'text-light-text' },
-					...(timing.compressorStartSeconds != null
-						? [
-								{
-									x: timing.compressorStartSeconds,
-									label: 'comp. on',
-									colorClass: 'text-warning',
-								},
-							]
-						: []),
-				]
-			: []
 	const stallMarkers =
 		hasTime && timing && timing.stallSeconds != null
 			? [{ x: timing.stallSeconds, label: 'stall', colorClass: 'text-danger' }]
@@ -134,15 +135,7 @@ const BoosterCalculator = () => {
 	const hasBufferLine =
 		profile.length > 0 && profile[0].driveBufferFrac !== undefined
 
-	const fastWarn = timing != null && timing.cycleRateFast > HIGH_RATE
-	const slowWarn =
-		timing != null && timing.dutyContinuous && timing.cycleRateSlow < LOW_RATE
-	// Drive pressure must sit below the compressor cut-in, or the buffer stalls
-	// the booster before the compressor ever restarts.
-	const cutInTooLow =
-		compressorRate > 0 &&
-		storageGal > 0 &&
-		toBar(driveP, units.pressure) >= toBar(storageMin, units.pressure)
+	const fastWarn = timing != null && timing.cycleRatePerSec > HIGH_RATE
 
 	return (
 		<div className='space-y-6'>
@@ -154,8 +147,8 @@ const BoosterCalculator = () => {
 					onSelect={(preset) => {
 						setRatio(preset.ratio)
 						setTwoStage(preset.twoStage)
-						setVdPerCycle(fromLpm(preset.vdPerCycleL, units.airFlow))
-						setDriveMax(fromLpm(preset.driveMaxLpm, units.airFlow))
+						setDriveSwept(preset.driveSweptL)
+						setMaxCpm(preset.maxCpm)
 					}}
 				/>
 				<div className='grid grid-cols-1 gap-4 sm:grid-cols-2'>
@@ -170,28 +163,29 @@ const BoosterCalculator = () => {
 					<NumberInput
 						id='b-drive'
 						name='b-drive'
-						label={`Drive pressure (${units.pressure})`}
+						label={`Max drive pressure (${units.pressure})`}
 						value={driveP}
 						onChange={setDriveP}
 						min={0}
+						tooltip='Highest drive pressure the regulator can supply — sets the stall ceiling (ratio × this). The booster only uses as much as the back-pressure needs.'
 					/>
 					<NumberInput
-						id='b-vd'
-						name='b-vd'
-						label={`Drive air / cycle (${units.airFlow === 'lpm' ? 'L' : 'CF'})`}
-						value={vdPerCycle}
-						onChange={setVdPerCycle}
+						id='b-swept'
+						name='b-swept'
+						label='Drive swept volume / cycle (L)'
+						value={driveSwept}
+						onChange={setDriveSwept}
 						min={0}
-						tooltip='Drive air consumed per cycle, from the booster datasheet. Enables cycle timing.'
+						tooltip='Air-drive piston displacement per cycle (geometric). The actual drive-air per cycle is this × drive-pressure-abs / atmosphere.'
 					/>
 					<NumberInput
-						id='b-dmax'
-						name='b-dmax'
-						label={`Max drive-air consumption (${units.airFlow})`}
-						value={driveMax}
-						onChange={setDriveMax}
+						id='b-cpm'
+						name='b-cpm'
+						label='Max cycle rate (cycles/min)'
+						value={maxCpm}
+						onChange={setMaxCpm}
 						min={0}
-						tooltip='Booster max free-air consumption at full speed, from the datasheet.'
+						tooltip='Booster max cycling speed. Caps how fast it can fill if that is slower than the fill-rate limit.'
 					/>
 				</div>
 				<Checkbox
@@ -276,6 +270,15 @@ const BoosterCalculator = () => {
 						onChange={setTarget}
 						min={0}
 					/>
+					<NumberInput
+						id='b-fillrate'
+						name='b-fillrate'
+						label={`Max fill rate (${units.pressure}/min)`}
+						value={maxFillRate}
+						onChange={setMaxFillRate}
+						min={0}
+						tooltip='Standard safe fill rate (≈300 psi/min for oxygen). The fill time is the pressure rise divided by this, unless the booster is even slower.'
+					/>
 				</div>
 			</section>
 
@@ -307,7 +310,7 @@ const BoosterCalculator = () => {
 						value={storageMax}
 						onChange={setStorageMax}
 						min={0}
-						tooltip='Pressure the compressor fills the storage tank to before shutting off. The usable buffer is the gas between this and the drive pressure.'
+						tooltip='Pressure the compressor fills the storage tank to before shutting off.'
 					/>
 					<NumberInput
 						id='b-stmin'
@@ -316,7 +319,7 @@ const BoosterCalculator = () => {
 						value={storageMin}
 						onChange={setStorageMin}
 						min={0}
-						tooltip='Pressure at which the compressor restarts. Sets how often it cycles on/off when it keeps up — it does not set the buffer floor (that is the drive pressure).'
+						tooltip='Pressure at which the compressor restarts.'
 					/>
 				</div>
 			</section>
@@ -335,23 +338,21 @@ const BoosterCalculator = () => {
 			)}
 			{fastWarn && (
 				<SafetyNote level='danger'>
-					Booster cycling faster than ~1/sec — hard on the booster; lower the
-					drive pressure or use a smaller drive supply.
+					At this fill rate the booster cycles faster than ~1/sec — hard on the
+					booster. Slow the fill rate or fit a larger gas head.
 				</SafetyNote>
 			)}
-			{slowWarn && (
+			{timing?.boosterLimited && (
 				<SafetyNote level='warning'>
-					Compressor undersized — after the booster stalls it cycles very slowly
-					({fmtDuration(timing!.slowSeconds)} of the fill at{' '}
-					{timing!.cycleRateSlow.toFixed(2)}/sec).
+					The booster can&apos;t reach the requested fill rate — it&apos;s
+					running flat out, so the fill is slower than the limit.
 				</SafetyNote>
 			)}
-			{cutInTooLow && (
+			{timing?.stallSeconds != null && (
 				<SafetyNote level='warning'>
-					Storage cut-in ({p(toBar(storageMin, units.pressure))}{' '}
-					{units.pressure}) is at or below the drive pressure — the buffer
-					reaches the drive pressure before the compressor restarts, so the
-					booster stalls. Set the cut-in above the drive pressure.
+					Drive-gas storage runs out at {fmtDuration(timing.stallSeconds)} — the
+					compressor can&apos;t keep up and the booster will stall and wait. Use
+					a bigger compressor or storage tank.
 				</SafetyNote>
 			)}
 
@@ -381,6 +382,15 @@ const BoosterCalculator = () => {
 						{p(result.finalSupply)} {units.pressure}
 					</span>
 				</p>
+				{result.driveAirL > 0 && (
+					<p className='text-text'>
+						Drive pressure used:{' '}
+						<span className='font-semibold'>
+							{p(result.driveStart)}→{p(result.driveEnd)} {units.pressure}
+						</span>{' '}
+						<span className='text-light-text'>(ramps as receiver fills)</span>
+					</p>
+				)}
 				{timing && result.driveAirL > 0 && (
 					<>
 						<p className='text-text'>
@@ -389,42 +399,25 @@ const BoosterCalculator = () => {
 								{fmtDuration(timing.fillSeconds)}
 							</span>
 						</p>
-						{timing.compressorStartSeconds != null &&
-							timing.compressorStartSeconds > 0 && (
-								<p className='text-text'>
-									Compressor kicks on at:{' '}
-									<span className='font-semibold'>
-										{fmtDuration(timing.compressorStartSeconds)}
-									</span>
-								</p>
-							)}
-						{timing.stallSeconds != null && (
-							<p className='text-text'>
-								Booster stalls at:{' '}
-								<span className='font-semibold'>
-									{fmtDuration(timing.stallSeconds)}
-								</span>{' '}
-								<span className='text-light-text'>
-									(then compressor-limited)
-								</span>
-							</p>
-						)}
+						<p className='text-text'>
+							Cycle rate:{' '}
+							<span className='font-semibold'>
+								~{timing.cycleRatePerSec.toFixed(2)}/sec
+							</span>
+						</p>
+						<p className='text-text'>
+							Avg drive-air rate:{' '}
+							<span className='font-semibold'>
+								{flow(timing.driveAirRateLpm)} {units.airFlow}
+							</span>
+						</p>
 						{compressorRate > 0 && (
 							<p className='text-text'>
 								Compressor duty:{' '}
 								<span className='font-semibold'>
 									{timing.dutyContinuous
-										? '~100% (continuous)'
+										? '~100% (can’t keep up)'
 										: `${Math.round(timing.dutyCycle * 100)}%`}
-								</span>
-							</p>
-						)}
-						{!timing.dutyContinuous && timing.compressorOnSeconds > 0 && (
-							<p className='text-text'>
-								Compressor cycle:{' '}
-								<span className='font-semibold'>
-									~{fmtDuration(timing.compressorOnSeconds)} on /{' '}
-									{fmtDuration(timing.compressorOffSeconds)} off
 								</span>
 							</p>
 						)}
@@ -452,7 +445,7 @@ const BoosterCalculator = () => {
 					extra={
 						hasBufferLine
 							? {
-									label: 'Drive gas',
+									label: 'Storage buffer',
 									colorClass: 'text-warning',
 									valuesFrac: profile.map((pt) => pt.driveBufferFrac ?? 0),
 								}
@@ -469,23 +462,33 @@ const BoosterCalculator = () => {
 					rates={profile.map((pt) => pt.cycleRatePerSec ?? 0)}
 					highPerSec={HIGH_RATE}
 					lowPerSec={LOW_RATE}
-					markers={cycleMarkers}
+					markers={stallMarkers}
 				/>
 			)}
-			{hasBufferLine && last && (
+			{hasTime && last && (
 				<BoosterChart
 					x={xValues}
 					xLabels={xLabels}
 					xCaption={xCaption}
 					series={[
 						{
-							label: 'Drive-gas draw from storage',
-							colorClass: 'text-light-text',
-							values: profile.map((pt) => flow(pt.storageDrawLpm ?? 0)),
-							rangeLabel: `0–${flow(
-								Math.max(...profile.map((pt) => pt.storageDrawLpm ?? 0)),
-							)} ${units.airFlow}`,
+							label: 'Drive pressure (regulated)',
+							colorClass: 'text-accent',
+							values: profile.map((pt) => p1(pt.drivePBar ?? 0)),
+							rangeLabel: `${p(result.driveStart)}–${p(result.driveEnd)} ${units.pressure}`,
 						},
+						...(hasBufferLine
+							? [
+									{
+										label: 'Drive-gas draw from storage',
+										colorClass: 'text-light-text',
+										values: profile.map((pt) => flow(pt.storageDrawLpm ?? 0)),
+										rangeLabel: `0–${flow(
+											Math.max(...profile.map((pt) => pt.storageDrawLpm ?? 0)),
+										)} ${units.airFlow}`,
+									},
+								]
+							: []),
 					]}
 				/>
 			)}

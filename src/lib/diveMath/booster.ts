@@ -1,13 +1,21 @@
 import { ATMOSPHERIC_BAR } from './units'
 
+const ATM = ATMOSPHERIC_BAR
+
 export interface BoosterInput {
 	ratio: number
+	// Max drive pressure the regulator can supply (bar gauge). Sets the stall
+	// ceiling: max output = ratio × this. The drive pressure actually used ramps
+	// up to only what's needed (≈ receiver pressure ÷ ratio), so this is a cap,
+	// not the operating pressure.
 	driveP: number
 	supplyVol: number
 	supplyStart: number
 	receiverVol: number
 	receiverStart: number
 	target: number
+	// Two-stage: source gas is regulated down to this inlet pressure (bar gauge)
+	// before the boost stage.
 	regulatedInletBar?: number
 }
 
@@ -20,6 +28,10 @@ export interface BoosterResult {
 	feasible: boolean
 	reason?: string
 	supplyLimitedMax?: number
+	// Drive pressure actually needed, bar gauge: ramps from driveStart (at the
+	// boost start) to driveEnd (at the target) ≈ receiver pressure ÷ ratio.
+	driveStart: number
+	driveEnd: number
 }
 
 export interface ProfilePoint {
@@ -27,186 +39,47 @@ export interface ProfilePoint {
 	cumulativeDriveL: number
 	supplyP: number
 	timeSeconds?: number
-	cumulativeCycles?: number
+	// Drive pressure being used at this point (bar gauge) ≈ receiverP / ratio.
+	drivePBar?: number
 	cycleRatePerSec?: number
-	// Drive-gas buffer (storage) pressure as a fraction of cut-out (1 = full at
-	// the start). Present only when storage + compressor data is supplied.
+	// Drive-gas storage (buffer) pressure as a fraction of cut-out (1 = full).
 	driveBufferFrac?: number
-	// Net rate the storage tank is being drawn down (free L/min): driveMax while
-	// the compressor is off, the deficit while it's on, ~0 once it keeps up or
-	// the booster stalls. Present only with storage + compressor data.
+	// Net rate the storage tank is being drawn down (free L/min).
 	storageDrawLpm?: number
 }
 
 export interface BoosterTiming {
-	totalCycles: number
 	fillSeconds: number
-	// The booster runs at full speed (driveMax) while the buffer holds above the
-	// drive pressure, then is compressor-limited after it stalls.
-	fastSeconds: number
-	slowSeconds: number
-	cycleRateFast: number
-	cycleRateSlow: number
-	// Event markers, seconds from booster start (after equalization); null when
-	// the event doesn't occur during this fill:
-	compressorStartSeconds: number | null // compressor kicks on (buffer → cut-in)
-	stallSeconds: number | null // booster stalls (buffer → drive pressure)
-	dutyCycle: number
-	dutyContinuous: boolean
-	// Compressor on/off cycle in the keeps-up case (0 otherwise): the run time to
-	// refill the buffer cut-in→cut-out, and the idle time as the booster drains
-	// it back cut-out→cut-in.
-	compressorOnSeconds: number
-	compressorOffSeconds: number
+	// True when the booster's own max throughput is below the requested fill rate,
+	// so it (not the O2 rate limit) sets the fill time.
+	boosterLimited: boolean
+	driveAirRateLpm: number // average drive-air consumption over the fill
+	cycleRatePerSec: number // operating cycle rate (≈ constant)
+	driveStartBar: number
+	driveEndBar: number
+	dutyCycle: number // compressor on-fraction (0 if no compressor)
+	dutyContinuous: boolean // compressor runs ~100% (can't keep up)
+	// Storage drained to the drive pressure before the fill finished → the
+	// booster stalls and waits on the compressor. null when it doesn't happen.
+	stallSeconds: number | null
 }
 
 export interface TimingArgs {
 	driveAirL: number
-	vdPerCycleL: number
-	driveMaxLpm: number
+	riseBar: number // receiver pressure rise over the boost phase
+	receiverVolL: number
+	maxFillRateBarPerMin: number // O2 fill-rate limit
+	driveSweptL: number // air-drive piston swept volume per cycle (geometric)
+	maxCpm: number // booster max cycle rate
+	ratio: number
+	supplyAbsBar: number // representative supply (inlet) pressure, absolute
+	driveStartBar: number
+	driveEndBar: number
 	compressorRateLpm: number
-	// Drive (regulated) pressure feeding the booster, bar gauge. The usable
-	// buffer floor: once storage bleeds down to this, the regulator can no
-	// longer hold drive pressure, so buffered drive air is exhausted.
-	drivePBar?: number
 	storageL?: number
 	storageMaxBar?: number
-	// Compressor cut-in (restart) pressure, bar gauge. Bounds the on/off cycle
-	// when the compressor keeps up; it does NOT bound the usable buffer during a
-	// heavy fill (the compressor runs continuously and the tank drains past it
-	// down to the drive pressure).
 	storageMinBar?: number
 }
-
-interface BufferTimeline {
-	hasBuffer: boolean
-	keepsUp: boolean
-	storageL: number
-	cutout: number
-	cutin: number // effective: clamped to ≥ drive pressure
-	floor: number // drive pressure
-	dToCutin: number // free L of drive air consumed when the buffer reaches cut-in
-	dToStall: number // free L of drive air consumed when the buffer reaches drive pressure
-}
-
-// The drive-gas timeline as a function of cumulative drive air. The buffer
-// starts full (cut-out); the booster draws it down at driveMax with the
-// compressor off; the compressor kicks on at cut-in; if it can't keep up the
-// buffer keeps falling to the drive pressure, where the booster stalls and the
-// fill becomes compressor-limited.
-function bufferTimeline(args: TimingArgs): BufferTimeline {
-	const DM = args.driveMaxLpm
-	const C = args.compressorRateLpm
-	const hasCompressor = C > 0
-	const hasBuffer =
-		!!args.storageL &&
-		args.storageMaxBar != null &&
-		args.storageMinBar != null &&
-		args.drivePBar != null
-	const storageL = args.storageL ?? 0
-	const cutout = args.storageMaxBar ?? 0
-	const floor = args.drivePBar ?? 0
-	// Drive pressure must sit below cut-in for the compressor to refill before the
-	// booster stalls; clamp so a misconfigured cut-in degrades gracefully.
-	const cutin = Math.max(args.storageMinBar ?? 0, floor)
-	const keepsUp = hasCompressor && C >= DM
-	const dToCutin = hasBuffer ? Math.max(0, storageL * (cutout - cutin)) : Infinity
-	let dToStall = Infinity
-	if (hasCompressor && !keepsUp) {
-		if (hasBuffer) {
-			const onDrain = Math.max(0, storageL * (cutin - floor))
-			dToStall = dToCutin + (DM / (DM - C)) * onDrain
-		} else {
-			dToStall = 0 // no reservoir → compressor-limited from the start
-		}
-	}
-	return { hasBuffer, keepsUp, storageL, cutout, cutin, floor, dToCutin, dToStall }
-}
-
-export function boosterTiming(args: TimingArgs): BoosterTiming | null {
-	const {
-		driveAirL: D,
-		vdPerCycleL: vd,
-		driveMaxLpm: DM,
-		compressorRateLpm: C,
-	} = args
-	// Per-cycle volume and max consumption are enough to place the fill on a time
-	// axis (the booster runs at driveMax). Compressor data is optional — it only
-	// refines the fill into a full-speed phase + a compressor-limited phase and
-	// adds the duty / stall / on-off markers.
-	if (!(vd > 0) || !(DM > 0)) {
-		return null
-	}
-	const hasCompressor = C > 0
-	const rate = (lpm: number) => lpm / vd / 60
-	const cycleRateFast = rate(DM)
-	const cycleRateSlow = hasCompressor ? rate(C) : 0
-	const totalCycles = D / vd
-
-	if (D <= 0) {
-		return {
-			totalCycles: 0,
-			fillSeconds: 0,
-			fastSeconds: 0,
-			slowSeconds: 0,
-			cycleRateFast,
-			cycleRateSlow,
-			compressorStartSeconds: null,
-			stallSeconds: null,
-			dutyCycle: 0,
-			dutyContinuous: false,
-			compressorOnSeconds: 0,
-			compressorOffSeconds: 0,
-		}
-	}
-
-	const bt = bufferTimeline(args)
-	const { dToCutin, dToStall, keepsUp, hasBuffer } = bt
-
-	// Time to consume d free L of drive air: at driveMax until the booster stalls,
-	// then at the compressor rate (C > 0 whenever dToStall is finite).
-	const tOf = (d: number): number =>
-		d <= dToStall
-			? (d / DM) * 60
-			: (dToStall / DM) * 60 + ((d - dToStall) / C) * 60
-	const fillSeconds = tOf(D)
-	const stalls = Number.isFinite(dToStall) && dToStall < D
-	const stallSeconds = stalls ? (dToStall / DM) * 60 : null
-	const fastSeconds = stalls ? stallSeconds! : fillSeconds
-	const slowSeconds = fillSeconds - fastSeconds
-
-	let compressorStartSeconds: number | null = null
-	if (hasCompressor) {
-		if (!hasBuffer) compressorStartSeconds = 0
-		else if (dToCutin < D) compressorStartSeconds = (dToCutin / DM) * 60
-	}
-
-	// Keeps-up on/off cycle: the buffer between cut-in and cut-out drains at the
-	// booster draw (off) and refills at the surplus (on).
-	const cycBuffer =
-		keepsUp && hasBuffer ? Math.max(0, bt.storageL * (bt.cutout - bt.cutin)) : 0
-	const surplus = C - DM
-	const compressorOffSeconds = cycBuffer > 0 ? (cycBuffer / DM) * 60 : 0
-	const compressorOnSeconds =
-		cycBuffer > 0 && surplus > 0 ? (cycBuffer / surplus) * 60 : 0
-
-	return {
-		totalCycles,
-		fillSeconds,
-		fastSeconds,
-		slowSeconds,
-		cycleRateFast,
-		cycleRateSlow,
-		compressorStartSeconds,
-		stallSeconds,
-		dutyCycle: keepsUp ? DM / C : hasCompressor ? 1 : 0,
-		dutyContinuous: hasCompressor && !keepsUp,
-		compressorOnSeconds,
-		compressorOffSeconds,
-	}
-}
-
-const ATM = ATMOSPHERIC_BAR
 
 // Shared setup: the boost phase's starting conditions, after any free
 // equalization (which happens only when the supply starts above the receiver).
@@ -221,42 +94,45 @@ function boostSetup(input: BoosterInput) {
 	return { eqPressure, boostStartReceiver, inletStartAbs }
 }
 
-// Drive air (free litres) to move Q free litres into the receiver, with the
-// inlet pressure capped at capAbs (two-stage regulated inlet). capAbs = +∞ for
-// single-stage. While the supply (inletStartAbs − q/vs) is above the cap the
-// inlet is constant (linear drive term); below it, the inlet follows the supply
-// down (log term).
+// Drive air (free L) to move gas into the receiver. Per unit of gas delivered the
+// drive air is receiverAbs / inletAbs: the air-drive piston runs at only the
+// pressure needed to overcome the current back-pressure (driveP ≈ receiverP /
+// ratio), so the geometric ratio cancels. The inlet (gas-piston intake) pressure
+// is the supply, depleting as q is drawn, capped at capAbs for a two-stage
+// regulated inlet. Integrated numerically (the integrand is smooth).
 function driveAirForQ(
 	q: number,
+	boostStartAbs: number,
 	inletStartAbs: number,
 	capAbs: number,
 	vs: number,
-	ratio: number,
-	drivePAbs: number,
+	vr: number,
+	steps = 400,
 ): number {
 	if (q <= 0) return 0
-	const qStar = Math.max(0, vs * (inletStartAbs - capAbs))
-	const q1 = Math.min(q, qStar)
-	const seg1 = q1 > 0 ? ((ratio * drivePAbs) / capAbs) * q1 : 0
-	let seg2 = 0
-	if (q > qStar) {
-		const startAbs2 = qStar > 0 ? capAbs : inletStartAbs
-		const finalAbs = inletStartAbs - q / vs
-		seg2 = ratio * drivePAbs * vs * Math.log(startAbs2 / finalAbs)
+	const integrand = (x: number) => {
+		const receiverAbs = boostStartAbs + x / vr
+		const inletAbs = Math.min(inletStartAbs - x / vs, capAbs)
+		return receiverAbs / inletAbs
 	}
-	return seg1 + seg2
+	const h = q / steps
+	let sum = 0.5 * (integrand(0) + integrand(q))
+	for (let i = 1; i < steps; i++) sum += integrand(i * h)
+	return sum * h
 }
 
 export function calculateBooster(input: BoosterInput): BoosterResult {
 	const { ratio, driveP, supplyVol: vs, receiverVol: vr, target } = input
 	const maxOutput = ratio * driveP
 	const { eqPressure, boostStartReceiver, inletStartAbs } = boostSetup(input)
-	const drivePAbs = driveP + ATM
 	const finalSupplyNoBoost = inletStartAbs - ATM
 	const capAbs =
 		input.regulatedInletBar !== undefined
 			? input.regulatedInletBar + ATM
 			: Infinity
+	const boostStartAbs = boostStartReceiver + ATM
+	const driveStart = boostStartReceiver / ratio
+	const driveEnd = target / ratio
 
 	if (target <= boostStartReceiver + 1e-9) {
 		return {
@@ -266,6 +142,8 @@ export function calculateBooster(input: BoosterInput): BoosterResult {
 			driveAirL: 0,
 			finalSupply: finalSupplyNoBoost,
 			feasible: true,
+			driveStart,
+			driveEnd,
 		}
 	}
 
@@ -278,7 +156,9 @@ export function calculateBooster(input: BoosterInput): BoosterResult {
 			finalSupply: finalSupplyNoBoost,
 			feasible: false,
 			reason:
-				'Target exceeds the booster stall pressure (ratio × drive pressure).',
+				'Target exceeds the booster stall pressure (ratio × max drive pressure).',
+			driveStart,
+			driveEnd,
 		}
 	}
 
@@ -289,16 +169,18 @@ export function calculateBooster(input: BoosterInput): BoosterResult {
 			maxOutput,
 			eqPressure,
 			processGasL: availQ,
-			driveAirL: driveAirForQ(availQ, inletStartAbs, capAbs, vs, ratio, drivePAbs),
+			driveAirL: driveAirForQ(availQ, boostStartAbs, inletStartAbs, capAbs, vs, vr),
 			finalSupply: 0,
 			feasible: false,
 			reason: 'Supply gas is insufficient to reach the target.',
 			supplyLimitedMax: boostStartReceiver + availQ / vr,
+			driveStart,
+			driveEnd,
 		}
 	}
 
 	const finalInletAbs = inletStartAbs - q / vs
-	const driveAirL = driveAirForQ(q, inletStartAbs, capAbs, vs, ratio, drivePAbs)
+	const driveAirL = driveAirForQ(q, boostStartAbs, inletStartAbs, capAbs, vs, vr)
 	return {
 		maxOutput,
 		eqPressure,
@@ -306,6 +188,92 @@ export function calculateBooster(input: BoosterInput): BoosterResult {
 		driveAirL,
 		finalSupply: finalInletAbs - ATM,
 		feasible: true,
+		driveStart,
+		driveEnd,
+	}
+}
+
+export function boosterTiming(args: TimingArgs): BoosterTiming | null {
+	const {
+		driveAirL,
+		riseBar,
+		receiverVolL: vr,
+		maxFillRateBarPerMin: maxRate,
+		driveSweptL,
+		maxCpm,
+		ratio,
+		supplyAbsBar,
+		driveStartBar,
+		driveEndBar,
+		compressorRateLpm: C,
+	} = args
+	// Need the booster's geometry + a fill-rate limit to place the fill on time.
+	if (!(driveSweptL > 0) || !(maxCpm > 0) || !(maxRate > 0) || !(ratio > 0)) {
+		return null
+	}
+
+	const base = {
+		driveStartBar,
+		driveEndBar,
+		dutyCycle: 0,
+		dutyContinuous: false,
+		stallSeconds: null as number | null,
+	}
+	if (driveAirL <= 0 || riseBar <= 0) {
+		return {
+			...base,
+			fillSeconds: 0,
+			boosterLimited: false,
+			driveAirRateLpm: 0,
+			cycleRatePerSec: 0,
+		}
+	}
+
+	// Gas delivered to the receiver per cycle (surface L): the gas piston draws a
+	// gulp of supply gas (gasSwept = driveSwept / ratio) at the supply pressure.
+	const gasPerCycle = (driveSweptL / ratio) * (supplyAbsBar / ATM)
+	// The booster's own ceiling on fill rate (bar/min), then the actual rate is
+	// the lower of that and the O2 limit.
+	const boosterMaxRate =
+		gasPerCycle > 0 ? (maxCpm * gasPerCycle) / vr : Infinity
+	const fillRate = Math.min(maxRate, boosterMaxRate)
+	const boosterLimited = boosterMaxRate < maxRate
+	const fillSeconds = (riseBar / fillRate) * 60
+
+	// cycles/sec = (gas delivered per min) / gasPerCycle / 60
+	const cycleRatePerSec =
+		gasPerCycle > 0 ? (vr * fillRate) / gasPerCycle / 60 : 0
+	const driveAirRateLpm = (driveAirL / fillSeconds) * 60
+
+	const hasCompressor = C > 0
+	let dutyCycle = 0
+	let dutyContinuous = false
+	let stallSeconds: number | null = null
+	if (hasCompressor) {
+		dutyCycle = Math.min(1, driveAirRateLpm / C)
+		dutyContinuous = C < driveAirRateLpm
+		// Storage must cover the deficit. The usable buffer is the gas between
+		// cut-out and the (highest) drive pressure needed; once the tank bleeds to
+		// the drive pressure the regulator can't hold it and the booster stalls.
+		const hasBuffer =
+			!!args.storageL && args.storageMaxBar != null && args.storageMinBar != null
+		if (dutyContinuous && hasBuffer) {
+			const buffer = Math.max(0, args.storageL! * (args.storageMaxBar! - driveEndBar))
+			const deficit = driveAirRateLpm - C
+			const drainSeconds = deficit > 0 ? (buffer / deficit) * 60 : Infinity
+			if (drainSeconds < fillSeconds) stallSeconds = drainSeconds
+		}
+	}
+
+	return {
+		...base,
+		fillSeconds,
+		boosterLimited,
+		driveAirRateLpm,
+		cycleRatePerSec,
+		dutyCycle,
+		dutyContinuous,
+		stallSeconds,
 	}
 }
 
@@ -314,9 +282,9 @@ export function boosterFillProfile(
 	steps = 40,
 	timing?: TimingArgs,
 ): ProfilePoint[] {
-	const { ratio, driveP, supplyVol: vs, receiverVol: vr, target } = input
+	const { ratio, supplyVol: vs, receiverVol: vr, target } = input
 	const { boostStartReceiver, inletStartAbs } = boostSetup(input)
-	const drivePAbs = driveP + ATM
+	const boostStartAbs = boostStartReceiver + ATM
 	const capAbs =
 		input.regulatedInletBar !== undefined
 			? input.regulatedInletBar + ATM
@@ -328,55 +296,52 @@ export function boosterFillProfile(
 	if (reached <= boostStartReceiver + 1e-9) return []
 
 	const tm = timing ? boosterTiming(timing) : null
-	const bt = timing ? bufferTimeline(timing) : null
-	const DM = timing?.driveMaxLpm ?? 0
 	const C = timing?.compressorRateLpm ?? 0
-	const showBuffer = !!(bt?.hasBuffer && C > 0)
+	const storageL = timing?.storageL ?? 0
+	const cutout = timing?.storageMaxBar ?? 0
+	const hasBuffer = !!(tm && storageL > 0 && cutout > 0 && C > 0)
+	// Fill rate is constant, so time is linear in the receiver-pressure rise.
+	const fillSeconds = tm?.fillSeconds ?? 0
+	const rise = reached - boostStartReceiver
 
 	const points: ProfilePoint[] = []
+	let prevDrive = 0
+	let prevTime = 0
 	for (let i = 0; i <= steps; i++) {
-		const receiverP =
-			boostStartReceiver + ((reached - boostStartReceiver) * i) / steps
+		const receiverP = boostStartReceiver + (rise * i) / steps
 		const q = vr * (receiverP - boostStartReceiver)
 		const inletAbs = inletStartAbs - q / vs
 		const cumulativeDriveL = driveAirForQ(
 			q,
+			boostStartAbs,
 			inletStartAbs,
 			capAbs,
 			vs,
-			ratio,
-			drivePAbs,
+			vr,
 		)
 		const point: ProfilePoint = {
 			receiverP,
 			cumulativeDriveL,
 			supplyP: inletAbs - ATM,
 		}
-		if (tm && timing && bt) {
-			const d = cumulativeDriveL
-			const { dToCutin, dToStall, cutout, cutin, floor } = bt
-			point.cumulativeCycles = d / timing.vdPerCycleL
-			point.timeSeconds =
-				d <= dToStall
-					? (d / DM) * 60
-					: (dToStall / DM) * 60 + ((d - dToStall) / C) * 60
-			point.cycleRatePerSec =
-				d <= dToStall ? tm.cycleRateFast : tm.cycleRateSlow
-			if (showBuffer) {
-				let bufP: number
-				if (d <= dToCutin) {
-					bufP = cutout - d / bt.storageL
-				} else if (d <= dToStall) {
-					const span = dToStall - dToCutin
-					const frac = span > 0 ? (d - dToCutin) / span : 1
-					bufP = cutin - frac * (cutin - floor)
-				} else {
-					bufP = floor
-				}
-				point.driveBufferFrac = cutout > 0 ? bufP / cutout : 0
-				point.storageDrawLpm =
-					d <= dToCutin ? DM : d <= dToStall ? Math.max(0, DM - C) : 0
+		if (tm) {
+			const timeSeconds = rise > 0 ? (fillSeconds * (receiverP - boostStartReceiver)) / rise : 0
+			point.timeSeconds = timeSeconds
+			point.drivePBar = receiverP / ratio
+			point.cycleRatePerSec = tm.cycleRatePerSec
+			if (hasBuffer) {
+				// Storage runs continuously: content = full + compressor in − booster out.
+				const minutes = timeSeconds / 60
+				const storageGas = storageL * cutout + C * minutes - cumulativeDriveL
+				point.driveBufferFrac = Math.max(0, Math.min(1, storageGas / (storageL * cutout)))
+				// Net draw rate from storage = booster draw − compressor (≥ 0).
+				const dDrive = cumulativeDriveL - prevDrive
+				const dt = timeSeconds - prevTime
+				const boosterDrawLpm = dt > 0 ? (dDrive / dt) * 60 : 0
+				point.storageDrawLpm = Math.max(0, boosterDrawLpm - C)
 			}
+			prevDrive = cumulativeDriveL
+			prevTime = timeSeconds
 		}
 		points.push(point)
 	}
