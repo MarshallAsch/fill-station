@@ -1,5 +1,6 @@
 import { ComponentType } from 'react'
 import BestMixCalculator from './BestMixCalculator'
+import BoosterCalculator from './BoosterCalculator'
 import BlendCalculator from './BlendCalculator'
 import BlendingCostCalculator from './BlendingCostCalculator'
 import CascadeCalculator from './CascadeCalculator'
@@ -25,6 +26,7 @@ export type TabId =
 	| 'mix-two-gases'
 	| 'oxygen-exposure'
 	| 'gas-requirements'
+	| 'booster'
 
 export interface ToolDef {
 	id: TabId
@@ -44,6 +46,7 @@ export const TOOLS: ToolDef[] = [
 	{ id: 'blend', name: 'Blend (PP)', group: 'blending', Component: BlendCalculator },
 	{ id: 'mix-two-gases', name: 'Mix Two Gases', group: 'blending', Component: GasMixingCalculator },
 	{ id: 'blending-cost', name: 'Blending Cost', group: 'blending', Component: BlendingCostCalculator },
+	{ id: 'booster', name: 'Booster', group: 'blending', Component: BoosterCalculator },
 	{ id: 'mod-end', name: 'MOD / END', group: 'planning', Component: ModEndCalculator },
 	{ id: 'best-mix', name: 'Best Mix', group: 'blending', Component: BestMixCalculator },
 	{ id: 'ead', name: 'EAD', group: 'planning', Component: EadCalculator },
