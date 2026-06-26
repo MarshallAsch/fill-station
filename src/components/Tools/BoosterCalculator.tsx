@@ -8,7 +8,13 @@ import {
 	boosterTiming,
 	calculateBooster,
 } from '@/lib/diveMath/booster'
-import { fromBar, fromLiters, toBar, toLpm } from '@/lib/diveMath/units'
+import {
+	fromBar,
+	fromLiters,
+	fromLpm,
+	toBar,
+	toLpm,
+} from '@/lib/diveMath/units'
 import CycleRateChart from './CycleRateChart'
 import DualAxisChart from './DualAxisChart'
 import BoosterPicker from './BoosterPicker'
@@ -94,8 +100,8 @@ const BoosterCalculator = () => {
 					onSelect={(preset) => {
 						setRatio(preset.ratio)
 						setTwoStage(preset.twoStage)
-						setVdPerCycle(preset.vdPerCycleL)
-						setDriveMax(preset.driveMaxLpm)
+						setVdPerCycle(fromLpm(preset.vdPerCycleL, units.airFlow))
+						setDriveMax(fromLpm(preset.driveMaxLpm, units.airFlow))
 					}}
 				/>
 				<div className='grid grid-cols-1 gap-4 sm:grid-cols-2'>
