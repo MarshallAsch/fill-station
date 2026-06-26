@@ -130,7 +130,18 @@ describe('boosterTiming', () => {
 		const r = boosterTiming(timing)!
 		// 200 bar at 20 bar/min = 10 min, regardless of how fast the booster could go
 		expect(r.fillSeconds).toBeCloseTo(600, 6)
+		expect(r.boostSeconds).toBeCloseTo(600, 6)
+		expect(r.eqSeconds).toBe(0)
 		expect(r.boosterLimited).toBe(false)
+	})
+	it('free-equalization transfer counts toward the (rate-limited) fill time', () => {
+		// 150 bar equalized for free + 200 bar boosted, both at 20 bar/min
+		const r = boosterTiming({ ...timing, eqRiseBar: 150 })!
+		expect(r.eqSeconds).toBeCloseTo((150 / 20) * 60, 6) // 450 s
+		expect(r.boostSeconds).toBeCloseTo(600, 6)
+		expect(r.fillSeconds).toBeCloseTo(1050, 6)
+		// drive air is spread over the boost phase only, not the equalization
+		expect(r.driveAirRateLpm).toBeCloseTo((350 / 600) * 60, 6)
 	})
 	it('reports a modest average drive-air rate and a sane cycle rate', () => {
 		const r = boosterTiming(timing)!
@@ -163,10 +174,18 @@ describe('boosterTiming', () => {
 		expect(r.stallSeconds).not.toBeNull()
 		expect(r.stallSeconds!).toBeLessThan(r.fillSeconds)
 	})
-	it('zero boost ⇒ zero timing', () => {
+	it('zero boost ⇒ only the equalization transfer time', () => {
 		const r = boosterTiming({ ...timing, driveAirL: 0, riseBar: 0 })!
 		expect(r.fillSeconds).toBe(0)
 		expect(r.cycleRatePerSec).toBe(0)
+		const eq = boosterTiming({
+			...timing,
+			driveAirL: 0,
+			riseBar: 0,
+			eqRiseBar: 100,
+		})!
+		expect(eq.fillSeconds).toBeCloseTo((100 / 20) * 60, 6)
+		expect(eq.boostSeconds).toBe(0)
 	})
 })
 
@@ -183,22 +202,29 @@ describe('boosterFillProfile timing fields', () => {
 		expect(p[0].timeSeconds).toBeUndefined()
 		expect(p[0].drivePBar).toBeUndefined()
 	})
-	it('time is linear in receiver rise; drive pressure ramps as receiverP/ratio', () => {
+	it('spans equalization + boost; time ends at total, drive pressure ramps', () => {
 		const summary = calculateBooster(base)
 		const t: TimingArgs = {
 			...fullTiming,
 			driveAirL: summary.driveAirL,
 			riseBar: base.target - summary.eqPressure,
+			eqRiseBar: summary.eqPressure - base.receiverStart,
 		}
 		const p = boosterFillProfile(base, 40, t)
 		const tm = boosterTiming(t)!
+		// profile starts at the receiver's actual start, not the equalized pressure
+		expect(p[0].receiverP).toBeCloseTo(base.receiverStart, 6)
 		expect(p[0].timeSeconds).toBeCloseTo(0, 6)
 		for (let i = 1; i < p.length; i++) {
 			expect(p[i].timeSeconds!).toBeGreaterThanOrEqual(p[i - 1].timeSeconds!)
 		}
 		expect(p[p.length - 1].timeSeconds!).toBeCloseTo(tm.fillSeconds, 1)
+		expect(tm.eqSeconds).toBeGreaterThan(0) // equalization took real time
 		// drive pressure = receiverP / ratio
 		expect(p[p.length - 1].drivePBar!).toBeCloseTo(base.target / base.ratio, 6)
+		// no drive air during equalization, then it accrues
+		expect(p[0].cumulativeDriveL).toBe(0)
+		expect(p[p.length - 1].cumulativeDriveL).toBeGreaterThan(0)
 	})
 	it('tracks the storage buffer falling from full when the compressor lags', () => {
 		const summary = calculateBooster(base)
@@ -206,6 +232,7 @@ describe('boosterFillProfile timing fields', () => {
 			...fullTiming,
 			driveAirL: summary.driveAirL,
 			riseBar: base.target - summary.eqPressure,
+			eqRiseBar: summary.eqPressure - base.receiverStart,
 		}
 		const p = boosterFillProfile(base, 40, t)
 		expect(p[0].driveBufferFrac).toBeCloseTo(1, 2)

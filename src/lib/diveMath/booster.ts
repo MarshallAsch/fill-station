@@ -49,11 +49,13 @@ export interface ProfilePoint {
 }
 
 export interface BoosterTiming {
-	fillSeconds: number
+	fillSeconds: number // total: equalization transfer + boosting
+	eqSeconds: number // free-equalization transfer portion (rate-limited)
+	boostSeconds: number // active boosting portion
 	// True when the booster's own max throughput is below the requested fill rate,
 	// so it (not the O2 rate limit) sets the fill time.
 	boosterLimited: boolean
-	driveAirRateLpm: number // average drive-air consumption over the fill
+	driveAirRateLpm: number // average drive-air consumption while boosting
 	cycleRatePerSec: number // operating cycle rate (≈ constant)
 	driveStartBar: number
 	driveEndBar: number
@@ -67,6 +69,9 @@ export interface BoosterTiming {
 export interface TimingArgs {
 	driveAirL: number
 	riseBar: number // receiver pressure rise over the boost phase
+	// Receiver rise covered by free equalization before boosting (0 if none). The
+	// transfer is still rate-limited, so it counts toward the fill time.
+	eqRiseBar?: number
 	receiverVolL: number
 	maxFillRateBarPerMin: number // O2 fill-rate limit
 	driveSweptL: number // air-drive piston swept volume per cycle (geometric)
@@ -219,10 +224,15 @@ export function boosterTiming(args: TimingArgs): BoosterTiming | null {
 		dutyContinuous: false,
 		stallSeconds: null as number | null,
 	}
+	const eqRiseBar = Math.max(0, args.eqRiseBar ?? 0)
 	if (driveAirL <= 0 || riseBar <= 0) {
+		// No boost, but a free-equalization transfer may still take time.
+		const eqSeconds = (eqRiseBar / maxRate) * 60
 		return {
 			...base,
-			fillSeconds: 0,
+			fillSeconds: eqSeconds,
+			eqSeconds,
+			boostSeconds: 0,
 			boosterLimited: false,
 			driveAirRateLpm: 0,
 			cycleRatePerSec: 0,
@@ -232,18 +242,22 @@ export function boosterTiming(args: TimingArgs): BoosterTiming | null {
 	// Gas delivered to the receiver per cycle (surface L): the gas piston draws a
 	// gulp of supply gas (gasSwept = driveSwept / ratio) at the supply pressure.
 	const gasPerCycle = (driveSweptL / ratio) * (supplyAbsBar / ATM)
-	// The booster's own ceiling on fill rate (bar/min), then the actual rate is
-	// the lower of that and the O2 limit.
+	// The booster's own ceiling on fill rate (bar/min), then the actual boost
+	// rate is the lower of that and the O2 limit. Equalization isn't booster-
+	// limited, so it runs at the O2 rate.
 	const boosterMaxRate =
 		gasPerCycle > 0 ? (maxCpm * gasPerCycle) / vr : Infinity
-	const fillRate = Math.min(maxRate, boosterMaxRate)
+	const boostRate = Math.min(maxRate, boosterMaxRate)
 	const boosterLimited = boosterMaxRate < maxRate
-	const fillSeconds = (riseBar / fillRate) * 60
+	const eqSeconds = (eqRiseBar / maxRate) * 60
+	const boostSeconds = (riseBar / boostRate) * 60
+	const fillSeconds = eqSeconds + boostSeconds
 
-	// cycles/sec = (gas delivered per min) / gasPerCycle / 60
+	// cycles/sec = (gas delivered per min) / gasPerCycle / 60 (during boosting)
 	const cycleRatePerSec =
-		gasPerCycle > 0 ? (vr * fillRate) / gasPerCycle / 60 : 0
-	const driveAirRateLpm = (driveAirL / fillSeconds) * 60
+		gasPerCycle > 0 ? (vr * boostRate) / gasPerCycle / 60 : 0
+	// Drive-air rate is the demand while the booster is actually running.
+	const driveAirRateLpm = boostSeconds > 0 ? (driveAirL / boostSeconds) * 60 : 0
 
 	const hasCompressor = C > 0
 	let dutyCycle = 0
@@ -261,13 +275,17 @@ export function boosterTiming(args: TimingArgs): BoosterTiming | null {
 			const buffer = Math.max(0, args.storageL! * (args.storageMaxBar! - driveEndBar))
 			const deficit = driveAirRateLpm - C
 			const drainSeconds = deficit > 0 ? (buffer / deficit) * 60 : Infinity
-			if (drainSeconds < fillSeconds) stallSeconds = drainSeconds
+			// The booster only draws while boosting, so the stall is offset by the
+			// equalization transfer that precedes it.
+			if (drainSeconds < boostSeconds) stallSeconds = eqSeconds + drainSeconds
 		}
 	}
 
 	return {
 		...base,
 		fillSeconds,
+		eqSeconds,
+		boostSeconds,
 		boosterLimited,
 		driveAirRateLpm,
 		cycleRatePerSec,
@@ -282,9 +300,10 @@ export function boosterFillProfile(
 	steps = 40,
 	timing?: TimingArgs,
 ): ProfilePoint[] {
-	const { ratio, supplyVol: vs, receiverVol: vr, target } = input
+	const { ratio, supplyVol: vs, receiverVol: vr, receiverStart, target } = input
 	const { boostStartReceiver, inletStartAbs } = boostSetup(input)
 	const boostStartAbs = boostStartReceiver + ATM
+	const supplyStartAbs = input.supplyStart + ATM
 	const capAbs =
 		input.regulatedInletBar !== undefined
 			? input.regulatedInletBar + ATM
@@ -293,6 +312,7 @@ export function boosterFillProfile(
 	const reached = summary.feasible
 		? target
 		: (summary.supplyLimitedMax ?? boostStartReceiver)
+	// No boost phase (equalization alone reaches the target) → no booster profile.
 	if (reached <= boostStartReceiver + 1e-9) return []
 
 	const tm = timing ? boosterTiming(timing) : null
@@ -300,41 +320,58 @@ export function boosterFillProfile(
 	const storageL = timing?.storageL ?? 0
 	const cutout = timing?.storageMaxBar ?? 0
 	const hasBuffer = !!(tm && storageL > 0 && cutout > 0 && C > 0)
-	// Fill rate is constant, so time is linear in the receiver-pressure rise.
-	const fillSeconds = tm?.fillSeconds ?? 0
-	const rise = reached - boostStartReceiver
+	const eqSeconds = tm?.eqSeconds ?? 0
+	const boostSeconds = tm?.boostSeconds ?? 0
+	const eqRise = boostStartReceiver - receiverStart
+	const boostRise = reached - boostStartReceiver
+
+	// Span the whole fill: the equalization transfer (receiverStart → boost start)
+	// then the boost phase. Both deplete the supply; only the boost phase consumes
+	// drive air.
+	const rise = reached - receiverStart
 
 	const points: ProfilePoint[] = []
 	let prevDrive = 0
 	let prevTime = 0
 	for (let i = 0; i <= steps; i++) {
-		const receiverP = boostStartReceiver + (rise * i) / steps
-		const q = vr * (receiverP - boostStartReceiver)
-		const inletAbs = inletStartAbs - q / vs
-		const cumulativeDriveL = driveAirForQ(
-			q,
-			boostStartAbs,
-			inletStartAbs,
-			capAbs,
-			vs,
-			vr,
-		)
-		const point: ProfilePoint = {
-			receiverP,
-			cumulativeDriveL,
-			supplyP: inletAbs - ATM,
-		}
+		const receiverP = receiverStart + (rise * i) / steps
+		// Total gas drawn from the supply (equalization + boost).
+		const qTotal = vr * (receiverP - receiverStart)
+		const supplyP = supplyStartAbs - qTotal / vs - ATM
+		const boosting = receiverP > boostStartReceiver + 1e-9
+		const cumulativeDriveL = boosting
+			? driveAirForQ(
+					vr * (receiverP - boostStartReceiver),
+					boostStartAbs,
+					inletStartAbs,
+					capAbs,
+					vs,
+					vr,
+				)
+			: 0
+		const point: ProfilePoint = { receiverP, cumulativeDriveL, supplyP }
 		if (tm) {
-			const timeSeconds = rise > 0 ? (fillSeconds * (receiverP - boostStartReceiver)) / rise : 0
+			// Two-rate timeline: equalization then boosting.
+			const timeSeconds = boosting
+				? eqSeconds +
+					(boostRise > 0
+						? (boostSeconds * (receiverP - boostStartReceiver)) / boostRise
+						: 0)
+				: eqRise > 0
+					? (eqSeconds * (receiverP - receiverStart)) / eqRise
+					: 0
 			point.timeSeconds = timeSeconds
 			point.drivePBar = receiverP / ratio
-			point.cycleRatePerSec = tm.cycleRatePerSec
+			point.cycleRatePerSec = boosting ? tm.cycleRatePerSec : 0
 			if (hasBuffer) {
-				// Storage runs continuously: content = full + compressor in − booster out.
+				// Storage runs continuously: full + compressor in − booster out
+				// (clamped — it can't exceed cut-out while topped off).
 				const minutes = timeSeconds / 60
 				const storageGas = storageL * cutout + C * minutes - cumulativeDriveL
-				point.driveBufferFrac = Math.max(0, Math.min(1, storageGas / (storageL * cutout)))
-				// Net draw rate from storage = booster draw − compressor (≥ 0).
+				point.driveBufferFrac = Math.max(
+					0,
+					Math.min(1, storageGas / (storageL * cutout)),
+				)
 				const dDrive = cumulativeDriveL - prevDrive
 				const dt = timeSeconds - prevTime
 				const boosterDrawLpm = dt > 0 ? (dDrive / dt) * 60 : 0

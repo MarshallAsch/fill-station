@@ -79,9 +79,11 @@ const BoosterCalculator = () => {
 		(equalizes ? result.eqPressure : supplyStartBar) + ATMOSPHERIC_BAR
 	const riseBar = Math.max(0, targetBar - boostStartBar)
 
+	const eqRiseBar = Math.max(0, boostStartBar - receiverStartBar)
 	const timingArgs = {
 		driveAirL: result.driveAirL,
 		riseBar,
+		eqRiseBar,
 		receiverVolL: receiverVol,
 		maxFillRateBarPerMin: toBar(maxFillRate, units.pressure),
 		driveSweptL: driveSwept,
