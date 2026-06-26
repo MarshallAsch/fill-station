@@ -118,85 +118,88 @@ describe('two-stage (regulated inlet cap)', () => {
 })
 
 describe('boosterTiming', () => {
+	// Sane ordering: drive pressure (6) < cut-in (10) < cut-out (12).
 	const t = {
 		driveAirL: 6000,
 		vdPerCycleL: 3,
-		driveMaxLpm: 300,
+		driveMaxLpm: 1200,
 		compressorRateLpm: 600,
-		drivePBar: 8,
+		drivePBar: 6,
 		storageL: 100,
 		storageMaxBar: 12,
-		storageMinBar: 8,
+		storageMinBar: 10,
 	}
 	it('returns null only without per-cycle / max-consumption data', () => {
 		expect(boosterTiming({ ...t, vdPerCycleL: 0 })).toBeNull()
 		expect(boosterTiming({ ...t, driveMaxLpm: 0 })).toBeNull()
 	})
-	it('no compressor data: single phase at driveMax, time still derivable', () => {
+	it('no compressor data: full speed throughout, no stall, time derivable', () => {
 		const r = boosterTiming({ ...t, compressorRateLpm: 0 })!
 		expect(r.totalCycles).toBeCloseTo(2000, 6)
-		expect(r.fillSeconds).toBeCloseTo((6000 / 300) * 60, 6)
-		expect(r.phase2Seconds).toBe(0)
-		expect(r.cycleRate1).toBeCloseTo(r.cycleRate2, 6)
+		expect(r.fillSeconds).toBeCloseTo((6000 / 1200) * 60, 6)
+		expect(r.slowSeconds).toBe(0)
+		expect(r.stallSeconds).toBeNull()
+		expect(r.compressorStartSeconds).toBeNull()
+		expect(r.cycleRateSlow).toBe(0)
 		expect(r.dutyContinuous).toBe(false)
-		expect(r.compressorOnSeconds).toBe(0) // unknown without compressor
 	})
-	it('compressor keeps up: single phase, duty < 1', () => {
-		const r = boosterTiming(t)! // driveMax 300 ≤ compressor 600
-		expect(r.totalCycles).toBeCloseTo(2000, 6) // 6000/3
-		expect(r.dutyContinuous).toBe(false)
-		expect(r.dutyCycle).toBeCloseTo(0.5, 6) // 300/600
-		expect(r.fillSeconds).toBeCloseTo((6000 / 300) * 60, 6)
-		expect(r.cycleRate1).toBeCloseTo(300 / 3 / 60, 6)
-	})
-	it('keeps-up: reports the compressor on/off cycle from cut-in↔cut-out', () => {
-		// cycle buffer = 100*(12-8) = 400 free L.
-		// off (compressor idle, booster drains): 400/300*60 = 80 s
-		// on (compressor refills while feeding booster): 400/(600-300)*60 = 80 s
+	it('undersized compressor: full-speed phase, stall, then compressor-limited', () => {
+		// dToCutin = 100*(12-10) = 200 → compressorStart = 200/1200*60 = 10 s.
+		// onDrain = 100*(10-6) = 400; dToStall = 200 + (1200/600)*400 = 1000.
+		// stall = 1000/1200*60 = 50 s; fill = 50 + (6000-1000)/600*60 = 550 s.
 		const r = boosterTiming(t)!
-		expect(r.compressorOffSeconds).toBeCloseTo(80, 6)
-		expect(r.compressorOnSeconds).toBeCloseTo(80, 6)
-		// duty derived from on/off matches driveMax/compressor
-		expect(
-			r.compressorOnSeconds / (r.compressorOnSeconds + r.compressorOffSeconds),
-		).toBeCloseTo(r.dutyCycle, 6)
-	})
-	it('buffer-limited: two phases, continuous duty, fill = p1 + p2', () => {
-		const r = boosterTiming({ ...t, driveMaxLpm: 1200 })! // > compressor 600
+		expect(r.compressorStartSeconds).toBeCloseTo(10, 6)
+		expect(r.stallSeconds).toBeCloseTo(50, 6)
+		expect(r.fillSeconds).toBeCloseTo(550, 6)
+		expect(r.fastSeconds).toBeCloseTo(50, 6)
+		expect(r.slowSeconds).toBeCloseTo(500, 6)
+		expect(r.cycleRateFast).toBeGreaterThan(r.cycleRateSlow)
 		expect(r.dutyContinuous).toBe(true)
 		expect(r.dutyCycle).toBe(1)
-		expect(r.fillSeconds).toBeCloseTo(r.phase1Seconds + r.phase2Seconds, 6)
-		expect(r.phase1Seconds).toBeGreaterThan(0)
-		expect(r.phase2Seconds).toBeGreaterThan(0)
-		expect(r.cycleRate1).toBeGreaterThan(r.cycleRate2)
-		// no compressor on/off cycling in the continuous phase
-		expect(r.compressorOnSeconds).toBe(0)
-		expect(r.compressorOffSeconds).toBe(0)
+		// events are ordered: booster on (0) < compressor on < stall < fill
+		expect(r.compressorStartSeconds!).toBeLessThan(r.stallSeconds!)
+		expect(r.stallSeconds!).toBeLessThan(r.fillSeconds)
 	})
-	it('buffer-limited: floor is the drive pressure, not the compressor cut-in', () => {
-		// higher drive pressure ⇒ smaller usable buffer above it ⇒ shorter fast phase
-		const lowFloor = boosterTiming({ ...t, driveMaxLpm: 1200, drivePBar: 8 })!
-		const highFloor = boosterTiming({ ...t, driveMaxLpm: 1200, drivePBar: 10 })!
-		expect(highFloor.phase1Seconds).toBeLessThan(lowFloor.phase1Seconds)
-		// the compressor cut-in (storageMin) does NOT bound the buffer here
-		const lowCutIn = boosterTiming({
-			...t,
+	it('compressor keeps up: no stall, duty < 1, on/off cycle reported', () => {
+		const r = boosterTiming({ ...t, driveMaxLpm: 300 })! // 300 ≤ 600
+		expect(r.stallSeconds).toBeNull()
+		expect(r.fillSeconds).toBeCloseTo((6000 / 300) * 60, 6)
+		expect(r.dutyContinuous).toBe(false)
+		expect(r.dutyCycle).toBeCloseTo(0.5, 6) // 300/600
+		expect(r.compressorStartSeconds).toBeCloseTo((200 / 300) * 60, 6)
+		// cycle buffer = 100*(12-10)=200: off = 200/300*60 = 40, on = 200/300*60 = 40
+		expect(r.compressorOffSeconds).toBeCloseTo(40, 6)
+		expect(r.compressorOnSeconds).toBeCloseTo(40, 6)
+	})
+	it('a higher cut-in (compressor on sooner) lengthens the full-speed phase', () => {
+		const lowCutIn = boosterTiming({ ...t, storageMinBar: 10 })!
+		const highCutIn = boosterTiming({ ...t, storageMinBar: 11 })!
+		expect(highCutIn.stallSeconds!).toBeGreaterThan(lowCutIn.stallSeconds!)
+	})
+	it('a higher drive pressure (smaller usable buffer) stalls sooner', () => {
+		const lowFloor = boosterTiming({ ...t, drivePBar: 6 })!
+		const highFloor = boosterTiming({ ...t, drivePBar: 8 })!
+		expect(highFloor.stallSeconds!).toBeLessThan(lowFloor.stallSeconds!)
+	})
+	it('undersized with no buffer: compressor-limited from the start', () => {
+		const r = boosterTiming({
+			driveAirL: 6000,
+			vdPerCycleL: 3,
 			driveMaxLpm: 1200,
-			drivePBar: 8,
-			storageMinBar: 2,
+			compressorRateLpm: 600,
 		})!
-		expect(lowCutIn.phase1Seconds).toBeCloseTo(lowFloor.phase1Seconds, 6)
-	})
-	it('buffer-limited: drive pressure at/above cut-out leaves no buffer', () => {
-		const r = boosterTiming({ ...t, driveMaxLpm: 1200, drivePBar: 12 })!
-		expect(r.phase1Seconds).toBe(0)
+		expect(r.stallSeconds).toBe(0)
+		expect(r.fastSeconds).toBe(0)
+		expect(r.fillSeconds).toBeCloseTo((6000 / 600) * 60, 6)
+		expect(r.compressorStartSeconds).toBe(0)
+		expect(r.dutyContinuous).toBe(true)
 	})
 	it('zero boost ⇒ zero timing', () => {
 		const r = boosterTiming({ ...t, driveAirL: 0 })!
 		expect(r.fillSeconds).toBe(0)
 		expect(r.totalCycles).toBe(0)
-		expect(r.compressorOnSeconds).toBe(0)
-		expect(r.compressorOffSeconds).toBe(0)
+		expect(r.stallSeconds).toBeNull()
+		expect(r.compressorStartSeconds).toBeNull()
 	})
 })
 
@@ -206,13 +209,15 @@ describe('boosterFillProfile timing fields', () => {
 		vdPerCycleL: 3,
 		driveMaxLpm: 1200,
 		compressorRateLpm: 600,
-		storageL: 100,
+		drivePBar: 6,
+		storageL: 30, // small enough that the base fill drains it to the stall floor
 		storageMaxBar: 12,
-		storageMinBar: 8,
+		storageMinBar: 10,
 	}
 	it('omits time fields when no timing supplied', () => {
 		const p = boosterFillProfile(base, 20)
 		expect(p[0].timeSeconds).toBeUndefined()
+		expect(p[0].driveBufferFrac).toBeUndefined()
 	})
 	it('attaches increasing time and cycles ending at the totals', () => {
 		const summary = calculateBooster(base)
@@ -225,5 +230,21 @@ describe('boosterFillProfile timing fields', () => {
 		}
 		expect(p[p.length - 1].timeSeconds!).toBeCloseTo(tm.fillSeconds, 1)
 		expect(p[p.length - 1].cumulativeCycles!).toBeCloseTo(tm.totalCycles, 1)
+	})
+	it('tracks the drive-gas buffer falling from full (cut-out) and the draw rate', () => {
+		const summary = calculateBooster(base)
+		const t = { ...timing, driveAirL: summary.driveAirL }
+		const p = boosterFillProfile(base, 40, t)
+		// starts full (100% of cut-out) and never rises
+		expect(p[0].driveBufferFrac).toBeCloseTo(1, 6)
+		for (let i = 1; i < p.length; i++) {
+			expect(p[i].driveBufferFrac!).toBeLessThanOrEqual(
+				p[i - 1].driveBufferFrac! + 1e-9,
+			)
+		}
+		// floor reached is the drive pressure / cut-out = 6/12 = 0.5
+		expect(p[p.length - 1].driveBufferFrac!).toBeCloseTo(0.5, 2)
+		// storage draw starts at driveMax (compressor off)
+		expect(p[0].storageDrawLpm).toBeCloseTo(1200, 6)
 	})
 })

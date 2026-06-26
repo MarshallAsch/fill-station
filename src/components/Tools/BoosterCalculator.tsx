@@ -38,7 +38,7 @@ function fmtDuration(sec: number): string {
 const BoosterCalculator = () => {
 	const { units } = useUnits()
 	const [ratio, setRatio] = useState(30)
-	const [driveP, setDriveP] = usePressureState(150)
+	const [driveP, setDriveP] = usePressureState(100)
 	const [twoStage, setTwoStage] = useState(false)
 	const [regulatedInlet, setRegulatedInlet] = usePressureState(150)
 	const [vdPerCycle, setVdPerCycle] = useState(0)
@@ -83,13 +83,18 @@ const BoosterCalculator = () => {
 
 	const p = (bar: number) => Math.round(fromBar(bar, units.pressure))
 	const vol = (l: number) => Math.round(fromLiters(l, units.volume))
+	const flow = (lpm: number) => Math.round(fromLpm(lpm, units.airFlow))
 
 	const last = profile.length ? profile[profile.length - 1] : null
 	const xCaptionTime = 'Time'
 	const xCaptionPressure = `Receiver pressure (${units.pressure})`
 
-	// Shared x-axis: time when timing data is available, else receiver pressure.
+	// Shared x-axis: time (seconds) when timing data is available, else receiver
+	// pressure. Charts position points by these values, so the time axis is real.
 	const xCaption = hasTime ? xCaptionTime : xCaptionPressure
+	const xValues = hasTime
+		? profile.map((pt) => pt.timeSeconds!)
+		: profile.map((pt) => fromBar(pt.receiverP, units.pressure))
 	const xLabels =
 		profile.length === 0
 			? []
@@ -105,9 +110,39 @@ const BoosterCalculator = () => {
 						`${p(last!.receiverP)}`,
 					]
 
-	const fastWarn = timing != null && timing.cycleRate1 > HIGH_RATE
+	// Event markers on the time axis (only meaningful with a time x-axis).
+	const cycleMarkers =
+		hasTime && timing
+			? [
+					{ x: 0, label: 'boost on', colorClass: 'text-light-text' },
+					...(timing.compressorStartSeconds != null
+						? [
+								{
+									x: timing.compressorStartSeconds,
+									label: 'comp. on',
+									colorClass: 'text-warning',
+								},
+							]
+						: []),
+				]
+			: []
+	const stallMarkers =
+		hasTime && timing && timing.stallSeconds != null
+			? [{ x: timing.stallSeconds, label: 'stall', colorClass: 'text-danger' }]
+			: []
+
+	const hasBufferLine =
+		profile.length > 0 && profile[0].driveBufferFrac !== undefined
+
+	const fastWarn = timing != null && timing.cycleRateFast > HIGH_RATE
 	const slowWarn =
-		timing != null && timing.dutyContinuous && timing.cycleRate2 < LOW_RATE
+		timing != null && timing.dutyContinuous && timing.cycleRateSlow < LOW_RATE
+	// Drive pressure must sit below the compressor cut-in, or the buffer stalls
+	// the booster before the compressor ever restarts.
+	const cutInTooLow =
+		compressorRate > 0 &&
+		storageGal > 0 &&
+		toBar(driveP, units.pressure) >= toBar(storageMin, units.pressure)
 
 	return (
 		<div className='space-y-6'>
@@ -306,9 +341,17 @@ const BoosterCalculator = () => {
 			)}
 			{slowWarn && (
 				<SafetyNote level='warning'>
-					Compressor undersized — the booster cycles very slowly (
-					{fmtDuration(timing!.phase2Seconds)} of the fill at{' '}
-					{timing!.cycleRate2.toFixed(2)}/sec).
+					Compressor undersized — after the booster stalls it cycles very slowly
+					({fmtDuration(timing!.slowSeconds)} of the fill at{' '}
+					{timing!.cycleRateSlow.toFixed(2)}/sec).
+				</SafetyNote>
+			)}
+			{cutInTooLow && (
+				<SafetyNote level='warning'>
+					Storage cut-in ({p(toBar(storageMin, units.pressure))}{' '}
+					{units.pressure}) is at or below the drive pressure — the buffer
+					reaches the drive pressure before the compressor restarts, so the
+					booster stalls. Set the cut-in above the drive pressure.
 				</SafetyNote>
 			)}
 
@@ -341,17 +384,31 @@ const BoosterCalculator = () => {
 				{timing && result.driveAirL > 0 && (
 					<>
 						<p className='text-text'>
-							Total cycles:{' '}
-							<span className='font-semibold'>
-								{Math.round(timing.totalCycles)}
-							</span>
-						</p>
-						<p className='text-text'>
 							Fill time:{' '}
 							<span className='font-semibold'>
 								{fmtDuration(timing.fillSeconds)}
 							</span>
 						</p>
+						{timing.compressorStartSeconds != null &&
+							timing.compressorStartSeconds > 0 && (
+								<p className='text-text'>
+									Compressor kicks on at:{' '}
+									<span className='font-semibold'>
+										{fmtDuration(timing.compressorStartSeconds)}
+									</span>
+								</p>
+							)}
+						{timing.stallSeconds != null && (
+							<p className='text-text'>
+								Booster stalls at:{' '}
+								<span className='font-semibold'>
+									{fmtDuration(timing.stallSeconds)}
+								</span>{' '}
+								<span className='text-light-text'>
+									(then compressor-limited)
+								</span>
+							</p>
+						)}
 						{compressorRate > 0 && (
 							<p className='text-text'>
 								Compressor duty:{' '}
@@ -377,11 +434,7 @@ const BoosterCalculator = () => {
 
 			{profile.length > 0 && (
 				<DualAxisChart
-					x={
-						hasTime
-							? profile.map((pt) => pt.timeSeconds!)
-							: profile.map((pt) => fromBar(pt.receiverP, units.pressure))
-					}
+					x={xValues}
 					xLabels={xLabels}
 					xCaption={xCaption}
 					left={{
@@ -396,38 +449,43 @@ const BoosterCalculator = () => {
 						unit: units.pressure,
 						values: profile.map((pt) => fromBar(pt.receiverP, units.pressure)),
 					}}
+					extra={
+						hasBufferLine
+							? {
+									label: 'Drive gas',
+									colorClass: 'text-warning',
+									valuesFrac: profile.map((pt) => pt.driveBufferFrac ?? 0),
+								}
+							: undefined
+					}
+					markers={stallMarkers}
 				/>
 			)}
 			{hasTime && (
 				<CycleRateChart
+					x={xValues}
 					xLabels={xLabels}
 					xCaption={xCaptionTime}
 					rates={profile.map((pt) => pt.cycleRatePerSec ?? 0)}
 					highPerSec={HIGH_RATE}
 					lowPerSec={LOW_RATE}
+					markers={cycleMarkers}
 				/>
 			)}
-			{profile.length > 0 && last && (
+			{hasBufferLine && last && (
 				<BoosterChart
+					x={xValues}
 					xLabels={xLabels}
 					xCaption={xCaption}
 					series={[
 						{
-							label: 'Drive air consumed',
+							label: 'Drive-gas draw from storage',
 							colorClass: 'text-light-text',
-							values: profile.map((pt) => vol(pt.cumulativeDriveL)),
-							rangeLabel: `0–${vol(last.cumulativeDriveL)} ${units.volume}`,
+							values: profile.map((pt) => flow(pt.storageDrawLpm ?? 0)),
+							rangeLabel: `0–${flow(
+								Math.max(...profile.map((pt) => pt.storageDrawLpm ?? 0)),
+							)} ${units.airFlow}`,
 						},
-						...(hasTime
-							? [
-									{
-										label: 'Cycles completed',
-										colorClass: 'text-accent',
-										values: profile.map((pt) => pt.cumulativeCycles ?? 0),
-										rangeLabel: `0–${Math.round(last.cumulativeCycles ?? 0)}`,
-									},
-								]
-							: []),
 					]}
 				/>
 			)}
