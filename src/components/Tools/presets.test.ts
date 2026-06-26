@@ -54,4 +54,12 @@ describe('booster presets', () => {
 	it('includes USUN dive boosters', () => {
 		expect(BOOSTERS.some((b) => b.name.includes('USUN'))).toBe(true)
 	})
+	it('flags the two-stage models and carries per-cycle fields', () => {
+		for (const b of BOOSTERS) {
+			expect(typeof b.twoStage).toBe('boolean')
+			expect(b.vdPerCycleL).toBeGreaterThanOrEqual(0)
+			expect(b.driveMaxLpm).toBeGreaterThanOrEqual(0)
+		}
+		expect(BOOSTERS.some((b) => b.twoStage)).toBe(true)
+	})
 })

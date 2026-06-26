@@ -66,6 +66,13 @@ export function freeGasLiters(tank: TankPreset): number {
 export interface BoosterPreset {
 	name: string
 	ratio: number
+	twoStage: boolean
+	// Drive-air consumed per cycle (free L) and max drive-air consumption (free
+	// L/min). Model-specific and not reliably published per model, so default 0
+	// ("unknown"); the calculator seeds an editable field the user fills from the
+	// booster datasheet. Two-stage flag from the model designation.
+	vdPerCycleL: number
+	driveMaxLpm: number
 }
 
 // Air-driven gas boosters. The ratio is the nominal pressure (area) ratio,
@@ -76,17 +83,17 @@ export interface BoosterPreset {
 // our single-ratio model approximates them by the 40:1 output stage, so the
 // drive-gas estimate for those is rough. Other brands/models: use Custom.
 export const BOOSTERS: BoosterPreset[] = [
-	{ name: 'Haskel AG-30', ratio: 30 },
-	{ name: 'Haskel AG-50', ratio: 50 },
-	{ name: 'Haskel AG-62', ratio: 62 },
-	{ name: 'Haskel AG-75', ratio: 75 },
-	{ name: 'Haskel AG-102', ratio: 102 },
-	{ name: 'Haskel AG-152', ratio: 152 },
-	{ name: 'USUN XB30 / XBD30', ratio: 30 },
-	{ name: 'USUN GB40 / GBD40', ratio: 40 },
-	{ name: 'USUN GB40-OL-F (O₂)', ratio: 40 },
-	{ name: 'USUN GBT 15/40 (2-stage)', ratio: 40 },
-	{ name: 'USUN SBT 15/40 (2-stage)', ratio: 40 },
+	{ name: 'Haskel AG-30', ratio: 30, twoStage: false, vdPerCycleL: 0, driveMaxLpm: 0 },
+	{ name: 'Haskel AG-50', ratio: 50, twoStage: false, vdPerCycleL: 0, driveMaxLpm: 0 },
+	{ name: 'Haskel AG-62', ratio: 62, twoStage: false, vdPerCycleL: 0, driveMaxLpm: 0 },
+	{ name: 'Haskel AG-75', ratio: 75, twoStage: false, vdPerCycleL: 0, driveMaxLpm: 0 },
+	{ name: 'Haskel AG-102', ratio: 102, twoStage: false, vdPerCycleL: 0, driveMaxLpm: 0 },
+	{ name: 'Haskel AG-152', ratio: 152, twoStage: false, vdPerCycleL: 0, driveMaxLpm: 0 },
+	{ name: 'USUN XB30 / XBD30', ratio: 30, twoStage: false, vdPerCycleL: 0, driveMaxLpm: 0 },
+	{ name: 'USUN GB40 / GBD40', ratio: 40, twoStage: false, vdPerCycleL: 0, driveMaxLpm: 0 },
+	{ name: 'USUN GB40-OL-F (O₂)', ratio: 40, twoStage: false, vdPerCycleL: 0, driveMaxLpm: 0 },
+	{ name: 'USUN GBT 15/40 (2-stage)', ratio: 40, twoStage: true, vdPerCycleL: 0, driveMaxLpm: 0 },
+	{ name: 'USUN SBT 15/40 (2-stage)', ratio: 40, twoStage: true, vdPerCycleL: 0, driveMaxLpm: 0 },
 ]
 
 export const MIXES: MixPreset[] = [
