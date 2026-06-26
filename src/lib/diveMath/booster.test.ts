@@ -128,9 +128,18 @@ describe('boosterTiming', () => {
 		storageMaxBar: 12,
 		storageMinBar: 8,
 	}
-	it('returns null without the required data', () => {
+	it('returns null only without per-cycle / max-consumption data', () => {
 		expect(boosterTiming({ ...t, vdPerCycleL: 0 })).toBeNull()
-		expect(boosterTiming({ ...t, compressorRateLpm: 0 })).toBeNull()
+		expect(boosterTiming({ ...t, driveMaxLpm: 0 })).toBeNull()
+	})
+	it('no compressor data: single phase at driveMax, time still derivable', () => {
+		const r = boosterTiming({ ...t, compressorRateLpm: 0 })!
+		expect(r.totalCycles).toBeCloseTo(2000, 6)
+		expect(r.fillSeconds).toBeCloseTo((6000 / 300) * 60, 6)
+		expect(r.phase2Seconds).toBe(0)
+		expect(r.cycleRate1).toBeCloseTo(r.cycleRate2, 6)
+		expect(r.dutyContinuous).toBe(false)
+		expect(r.compressorOnSeconds).toBe(0) // unknown without compressor
 	})
 	it('compressor keeps up: single phase, duty < 1', () => {
 		const r = boosterTiming(t)! // driveMax 300 ≤ compressor 600

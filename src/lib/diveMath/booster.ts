@@ -68,9 +68,14 @@ export interface TimingArgs {
 
 export function boosterTiming(args: TimingArgs): BoosterTiming | null {
 	const { driveAirL, vdPerCycleL, driveMaxLpm, compressorRateLpm } = args
-	if (!(vdPerCycleL > 0) || !(compressorRateLpm > 0) || !(driveMaxLpm > 0)) {
+	// Per-cycle volume and max consumption are enough to place the fill on a time
+	// axis (the booster runs at driveMax). Compressor data is optional — it only
+	// refines the fill into a buffered phase + a compressor-limited phase and
+	// adds duty/on-off info.
+	if (!(vdPerCycleL > 0) || !(driveMaxLpm > 0)) {
 		return null
 	}
+	const hasCompressor = compressorRateLpm > 0
 	const totalCycles = driveAirL / vdPerCycleL
 	const cycleRate = (lpm: number) => lpm / vdPerCycleL / 60
 	if (driveAirL <= 0) {
@@ -87,15 +92,21 @@ export function boosterTiming(args: TimingArgs): BoosterTiming | null {
 			compressorOffSeconds: 0,
 		}
 	}
-	if (driveMaxLpm <= compressorRateLpm) {
+	if (!hasCompressor || driveMaxLpm <= compressorRateLpm) {
+		// Single phase: the booster runs at driveMax throughout (compressor keeps
+		// up, or no compressor data — best-case continuous-supply estimate).
 		const fillSeconds = (driveAirL / driveMaxLpm) * 60
 		const rate = cycleRate(driveMaxLpm)
 		// Compressor cycles on/off between cut-in and cut-out. The buffer between
 		// those setpoints drains at the booster draw (off) and refills at the
-		// net surplus (on). Undefined when storage or the gap isn't given, or the
-		// compressor exactly matches the booster (it never shuts off).
+		// net surplus (on). Undefined when storage or the gap isn't given, the
+		// compressor exactly matches the booster (it never shuts off), or no
+		// compressor was specified.
 		const cycBuffer =
-			args.storageL && args.storageMaxBar != null && args.storageMinBar != null
+			hasCompressor &&
+			args.storageL &&
+			args.storageMaxBar != null &&
+			args.storageMinBar != null
 				? Math.max(0, args.storageL * (args.storageMaxBar - args.storageMinBar))
 				: 0
 		const surplus = compressorRateLpm - driveMaxLpm
@@ -110,7 +121,7 @@ export function boosterTiming(args: TimingArgs): BoosterTiming | null {
 			phase2Seconds: 0,
 			cycleRate1: rate,
 			cycleRate2: rate,
-			dutyCycle: driveMaxLpm / compressorRateLpm,
+			dutyCycle: hasCompressor ? driveMaxLpm / compressorRateLpm : 0,
 			dutyContinuous: false,
 			compressorOnSeconds,
 			compressorOffSeconds,

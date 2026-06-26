@@ -15,6 +15,7 @@ import {
 	toBar,
 	toLpm,
 } from '@/lib/diveMath/units'
+import BoosterChart from './BoosterChart'
 import CycleRateChart from './CycleRateChart'
 import DualAxisChart from './DualAxisChart'
 import BoosterPicker from './BoosterPicker'
@@ -86,6 +87,23 @@ const BoosterCalculator = () => {
 	const last = profile.length ? profile[profile.length - 1] : null
 	const xCaptionTime = 'Time'
 	const xCaptionPressure = `Receiver pressure (${units.pressure})`
+
+	// Shared x-axis: time when timing data is available, else receiver pressure.
+	const xCaption = hasTime ? xCaptionTime : xCaptionPressure
+	const xLabels =
+		profile.length === 0
+			? []
+			: hasTime
+				? [
+						fmtDuration(0),
+						fmtDuration((last!.timeSeconds ?? 0) / 2),
+						fmtDuration(last!.timeSeconds ?? 0),
+					]
+				: [
+						`${p(profile[0].receiverP)}`,
+						`${p(profile[Math.floor(profile.length / 2)].receiverP)}`,
+						`${p(last!.receiverP)}`,
+					]
 
 	const fastWarn = timing != null && timing.cycleRate1 > HIGH_RATE
 	const slowWarn =
@@ -334,14 +352,16 @@ const BoosterCalculator = () => {
 								{fmtDuration(timing.fillSeconds)}
 							</span>
 						</p>
-						<p className='text-text'>
-							Compressor duty:{' '}
-							<span className='font-semibold'>
-								{timing.dutyContinuous
-									? '~100% (continuous)'
-									: `${Math.round(timing.dutyCycle * 100)}%`}
-							</span>
-						</p>
+						{compressorRate > 0 && (
+							<p className='text-text'>
+								Compressor duty:{' '}
+								<span className='font-semibold'>
+									{timing.dutyContinuous
+										? '~100% (continuous)'
+										: `${Math.round(timing.dutyCycle * 100)}%`}
+								</span>
+							</p>
+						)}
 						{!timing.dutyContinuous && timing.compressorOnSeconds > 0 && (
 							<p className='text-text'>
 								Compressor cycle:{' '}
@@ -362,20 +382,8 @@ const BoosterCalculator = () => {
 							? profile.map((pt) => pt.timeSeconds!)
 							: profile.map((pt) => fromBar(pt.receiverP, units.pressure))
 					}
-					xLabels={
-						hasTime
-							? [
-									fmtDuration(0),
-									fmtDuration((last!.timeSeconds ?? 0) / 2),
-									fmtDuration(last!.timeSeconds ?? 0),
-								]
-							: [
-									`${p(profile[0].receiverP)}`,
-									`${p(profile[Math.floor(profile.length / 2)].receiverP)}`,
-									`${p(last!.receiverP)}`,
-								]
-					}
-					xCaption={hasTime ? xCaptionTime : xCaptionPressure}
+					xLabels={xLabels}
+					xCaption={xCaption}
 					left={{
 						label: 'Supply',
 						colorClass: 'text-light-text',
@@ -392,15 +400,35 @@ const BoosterCalculator = () => {
 			)}
 			{hasTime && (
 				<CycleRateChart
-					xLabels={[
-						fmtDuration(0),
-						fmtDuration((last!.timeSeconds ?? 0) / 2),
-						fmtDuration(last!.timeSeconds ?? 0),
-					]}
+					xLabels={xLabels}
 					xCaption={xCaptionTime}
 					rates={profile.map((pt) => pt.cycleRatePerSec ?? 0)}
 					highPerSec={HIGH_RATE}
 					lowPerSec={LOW_RATE}
+				/>
+			)}
+			{profile.length > 0 && last && (
+				<BoosterChart
+					xLabels={xLabels}
+					xCaption={xCaption}
+					series={[
+						{
+							label: 'Drive air consumed',
+							colorClass: 'text-light-text',
+							values: profile.map((pt) => vol(pt.cumulativeDriveL)),
+							rangeLabel: `0–${vol(last.cumulativeDriveL)} ${units.volume}`,
+						},
+						...(hasTime
+							? [
+									{
+										label: 'Cycles completed',
+										colorClass: 'text-accent',
+										values: profile.map((pt) => pt.cumulativeCycles ?? 0),
+										rangeLabel: `0–${Math.round(last.cumulativeCycles ?? 0)}`,
+									},
+								]
+							: []),
+					]}
 				/>
 			)}
 		</div>
