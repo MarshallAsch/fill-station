@@ -40,3 +40,13 @@ export function fromLpm(lpm: number, unit: FlowUnit): number {
 	return unit === 'cfm' ? lpm / L_PER_CF : lpm
 }
 
+export type TempUnit = 'C' | 'F'
+
+export function toCelsius(value: number, unit: TempUnit): number {
+	return unit === 'F' ? ((value - 32) * 5) / 9 : value
+}
+
+export function fromCelsius(c: number, unit: TempUnit): number {
+	return unit === 'F' ? (c * 9) / 5 + 32 : c
+}
+

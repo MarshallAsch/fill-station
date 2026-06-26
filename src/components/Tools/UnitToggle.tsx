@@ -41,6 +41,13 @@ const OPTIONS: Record<
 			{ value: 'cfm', label: 'CFM' },
 		],
 	},
+	temp: {
+		label: 'Temperature',
+		values: [
+			{ value: 'F', label: '°F' },
+			{ value: 'C', label: '°C' },
+		],
+	},
 }
 
 const UnitToggle = ({ show }: { show: Array<keyof UnitPrefs> }) => {

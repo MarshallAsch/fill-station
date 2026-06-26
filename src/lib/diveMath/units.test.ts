@@ -9,6 +9,8 @@ import {
 	fromLiters,
 	toLpm,
 	fromLpm,
+	toCelsius,
+	fromCelsius,
 } from './units'
 
 describe('units', () => {
@@ -46,5 +48,17 @@ describe('flow rate', () => {
 	it('converts litres-per-minute back to the display unit', () => {
 		expect(fromLpm(28.3168466, 'cfm')).toBeCloseTo(1, 4)
 		expect(fromLpm(10, 'lpm')).toBe(10)
+	})
+})
+
+describe('temperature conversions', () => {
+	it('converts F to C and back', () => {
+		expect(toCelsius(32, 'F')).toBeCloseTo(0, 6)
+		expect(toCelsius(212, 'F')).toBeCloseTo(100, 6)
+		expect(fromCelsius(0, 'F')).toBeCloseTo(32, 6)
+	})
+	it('is identity for celsius', () => {
+		expect(toCelsius(20, 'C')).toBe(20)
+		expect(fromCelsius(20, 'C')).toBe(20)
 	})
 })
