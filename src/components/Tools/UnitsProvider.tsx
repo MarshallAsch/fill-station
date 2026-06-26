@@ -80,7 +80,7 @@ const UnitsProvider = ({ children }: { children: ReactNode }) => {
 
 			if (rg != null) setRealGas(rg === 'true')
 			const t = localStorage.getItem(TEMP_KEY)
-			 
+
 			if (t) setTemp({ ...DEFAULT_TEMP, ...JSON.parse(t) })
 		} catch {
 			// ignore malformed storage

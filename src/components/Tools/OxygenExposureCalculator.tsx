@@ -7,7 +7,6 @@ import { computeDay, DayItem } from '@/lib/diveMath/oxygenExposure'
 import { ataAtDepth, Water } from '@/lib/diveMath/modEnd'
 import { fromMeters, toMeters } from '@/lib/diveMath/units'
 import SafetyNote from './SafetyNote'
-import UnitToggle from './UnitToggle'
 import { useUnits } from './UnitsProvider'
 
 interface DiveRow {
@@ -66,7 +65,6 @@ const OxygenExposureCalculator = () => {
 
 	return (
 		<div className='space-y-6'>
-			<UnitToggle show={['depth']} />
 			<RadioGroup
 				title='Water'
 				name='ox-water'

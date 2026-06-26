@@ -6,7 +6,6 @@ import { calculateBlend } from '@/lib/diveMath/blending'
 import { toBar } from '@/lib/diveMath/units'
 import MixPicker from './MixPicker'
 import SafetyNote from './SafetyNote'
-import UnitToggle from './UnitToggle'
 import { useUnits } from './UnitsProvider'
 import { usePressureState } from './useUnitState'
 
@@ -68,7 +67,6 @@ const BlendingCostCalculator = () => {
 
 	return (
 		<div className='space-y-6'>
-			<UnitToggle show={['pressure', 'volume']} />
 			<section className='space-y-3'>
 				<h2 className='text-text text-lg font-semibold'>Fill</h2>
 				<MixPicker

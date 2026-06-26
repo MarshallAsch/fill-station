@@ -10,7 +10,6 @@ import { fromMeters, toMeters } from '@/lib/diveMath/units'
 import FormulaPanel, { FormulaRow } from './FormulaPanel'
 import { Frac, MathExpr } from './Math'
 import SafetyNote from './SafetyNote'
-import UnitToggle from './UnitToggle'
 import { useUnits } from './UnitsProvider'
 import { useDepthState } from './useUnitState'
 
@@ -101,7 +100,6 @@ const BestMixCalculator = () => {
 	return (
 		<div className='2xl:relative'>
 			<div className='space-y-6'>
-				<UnitToggle show={['depth']} />
 				<section className='grid grid-cols-1 gap-4 sm:grid-cols-2'>
 					<NumberInput
 						id='bm-depth'

@@ -5,10 +5,8 @@ import NumberInput from '@/components/UI/FormElements/NumberInput'
 import { calculateCascade } from '@/lib/diveMath/cascade'
 import { fromBar, toBar } from '@/lib/diveMath/units'
 import RealGasNote from './RealGasNote'
-import RealGasToggle from './RealGasToggle'
 import SafetyNote from './SafetyNote'
 import TankSizePicker from './TankSizePicker'
-import UnitToggle from './UnitToggle'
 import { useUnits } from './UnitsProvider'
 import { usePressureState } from './useUnitState'
 
@@ -62,9 +60,6 @@ const CascadeCalculator = () => {
 	return (
 		<div className='2xl:relative'>
 			<div className='space-y-6'>
-				<UnitToggle show={['pressure', 'volume']} />
-				<RealGasToggle />
-
 				<section className='space-y-4'>
 					<h2 className='text-text text-lg font-semibold'>Storage bank</h2>
 					{banks.map((b, i) => (

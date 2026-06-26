@@ -6,9 +6,7 @@ import { calculateBlend } from '@/lib/diveMath/blending'
 import { fromBar, toBar } from '@/lib/diveMath/units'
 import MixPicker from './MixPicker'
 import RealGasNote from './RealGasNote'
-import RealGasToggle from './RealGasToggle'
 import SafetyNote from './SafetyNote'
-import UnitToggle from './UnitToggle'
 import { useUnits } from './UnitsProvider'
 import { usePressureState } from './useUnitState'
 
@@ -40,9 +38,6 @@ const BlendCalculator = () => {
 	return (
 		<div className='2xl:relative'>
 			<div className='space-y-6'>
-				<UnitToggle show={['pressure']} />
-				<RealGasToggle />
-
 				<section className='space-y-4'>
 					<h2 className='text-text text-lg font-semibold'>Starting gas</h2>
 					<MixPicker

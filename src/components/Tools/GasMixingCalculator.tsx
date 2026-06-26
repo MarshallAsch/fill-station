@@ -6,7 +6,6 @@ import { mixTwoGases } from '@/lib/diveMath/gasMixing'
 import { fromBar, toBar } from '@/lib/diveMath/units'
 import MixPicker from './MixPicker'
 import SafetyNote from './SafetyNote'
-import UnitToggle from './UnitToggle'
 import { useUnits } from './UnitsProvider'
 import { usePressureState } from './useUnitState'
 
@@ -29,7 +28,6 @@ const GasMixingCalculator = () => {
 
 	return (
 		<div className='space-y-6'>
-			<UnitToggle show={['pressure']} />
 			<section className='space-y-3'>
 				<h2 className='text-text text-lg font-semibold'>Gas A</h2>
 				<MixPicker

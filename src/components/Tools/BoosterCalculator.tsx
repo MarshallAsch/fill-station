@@ -22,10 +22,8 @@ import DualAxisChart from './DualAxisChart'
 import BoosterPicker from './BoosterPicker'
 import MixPicker from './MixPicker'
 import RealGasNote from './RealGasNote'
-import RealGasToggle from './RealGasToggle'
 import SafetyNote from './SafetyNote'
 import TankSizePicker from './TankSizePicker'
-import UnitToggle from './UnitToggle'
 import { usePressureState } from './useUnitState'
 import { useUnits } from './UnitsProvider'
 
@@ -153,9 +151,6 @@ const BoosterCalculator = () => {
 	return (
 		<div className='2xl:relative'>
 			<div className='space-y-6'>
-				<UnitToggle show={['pressure', 'volume', 'airFlow']} />
-				<RealGasToggle />
-
 				<section className='space-y-3'>
 					<h2 className='text-text text-lg font-semibold'>Booster</h2>
 					<BoosterPicker

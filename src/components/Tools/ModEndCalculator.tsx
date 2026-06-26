@@ -14,7 +14,6 @@ import FormulaPanel, { FormulaRow } from './FormulaPanel'
 import { Frac, MathExpr } from './Math'
 import MixPicker from './MixPicker'
 import SafetyNote from './SafetyNote'
-import UnitToggle from './UnitToggle'
 import { useDepthState } from './useUnitState'
 import { useUnits } from './UnitsProvider'
 
@@ -102,8 +101,6 @@ const ModEndCalculator = () => {
 	return (
 		<div className='2xl:relative'>
 			<div className='space-y-6'>
-				<UnitToggle show={['depth']} />
-
 				<section className='grid grid-cols-1 gap-4 sm:grid-cols-2'>
 					<MixPicker
 						id='me-mix'

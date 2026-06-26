@@ -9,7 +9,6 @@ import {
 import { fromBar, fromLpm, toBar, toLpm } from '@/lib/diveMath/units'
 import SafetyNote from './SafetyNote'
 import TankSizePicker from './TankSizePicker'
-import UnitToggle from './UnitToggle'
 import { useUnits } from './UnitsProvider'
 import { useAirFlowState, usePressureState } from './useUnitState'
 
@@ -44,8 +43,6 @@ const NitroxStickCalculator = () => {
 
 	return (
 		<div className='space-y-6'>
-			<UnitToggle show={['pressure', 'volume', 'airFlow', 'o2Flow']} />
-
 			<section className='space-y-4'>
 				<h2 className='text-text text-lg font-semibold'>O₂ flow rate</h2>
 				<div className='grid grid-cols-1 gap-4 sm:grid-cols-2'>

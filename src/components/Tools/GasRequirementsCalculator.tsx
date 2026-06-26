@@ -12,7 +12,6 @@ import {
 import { Water } from '@/lib/diveMath/modEnd'
 import { fromBar, fromLiters, toBar, toMeters } from '@/lib/diveMath/units'
 import TankSizePicker from './TankSizePicker'
-import UnitToggle from './UnitToggle'
 import { useUnits } from './UnitsProvider'
 import { useDepthState, usePressureState } from './useUnitState'
 
@@ -63,7 +62,6 @@ const GasRequirementsCalculator = () => {
 
 	return (
 		<div className='space-y-6'>
-			<UnitToggle show={['pressure', 'depth', 'volume']} />
 			<RadioGroup
 				title='Water'
 				name='gr-water'

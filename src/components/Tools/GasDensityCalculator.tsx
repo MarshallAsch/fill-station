@@ -13,7 +13,6 @@ import { Water } from '@/lib/diveMath/modEnd'
 import { fromMeters, toMeters } from '@/lib/diveMath/units'
 import MixPicker from './MixPicker'
 import SafetyNote from './SafetyNote'
-import UnitToggle from './UnitToggle'
 import { useDepthState } from './useUnitState'
 import { useUnits } from './UnitsProvider'
 
@@ -56,7 +55,6 @@ const GasDensityCalculator = () => {
 
 	return (
 		<div className='space-y-6'>
-			<UnitToggle show={['depth']} />
 			<MixPicker
 				id='gd-mix'
 				onSelect={(o2, he) => {
