@@ -27,6 +27,87 @@ export interface ProfilePoint {
 	cumulativeDriveL: number
 	supplyP: number
 	rateLPerBar: number
+	timeSeconds?: number
+	cumulativeCycles?: number
+	cycleRatePerSec?: number
+}
+
+export interface BoosterTiming {
+	totalCycles: number
+	fillSeconds: number
+	phase1Seconds: number
+	phase2Seconds: number
+	cycleRate1: number
+	cycleRate2: number
+	dutyCycle: number
+	dutyContinuous: boolean
+}
+
+export interface TimingArgs {
+	driveAirL: number
+	vdPerCycleL: number
+	driveMaxLpm: number
+	compressorRateLpm: number
+	storageL?: number
+	storageMaxBar?: number
+	storageMinBar?: number
+}
+
+export function boosterTiming(args: TimingArgs): BoosterTiming | null {
+	const { driveAirL, vdPerCycleL, driveMaxLpm, compressorRateLpm } = args
+	if (!(vdPerCycleL > 0) || !(compressorRateLpm > 0) || !(driveMaxLpm > 0)) {
+		return null
+	}
+	const totalCycles = driveAirL / vdPerCycleL
+	const cycleRate = (lpm: number) => lpm / vdPerCycleL / 60
+	if (driveAirL <= 0) {
+		return {
+			totalCycles: 0,
+			fillSeconds: 0,
+			phase1Seconds: 0,
+			phase2Seconds: 0,
+			cycleRate1: 0,
+			cycleRate2: 0,
+			dutyCycle: 0,
+			dutyContinuous: false,
+		}
+	}
+	if (driveMaxLpm <= compressorRateLpm) {
+		const fillSeconds = (driveAirL / driveMaxLpm) * 60
+		const rate = cycleRate(driveMaxLpm)
+		return {
+			totalCycles,
+			fillSeconds,
+			phase1Seconds: fillSeconds,
+			phase2Seconds: 0,
+			cycleRate1: rate,
+			cycleRate2: rate,
+			dutyCycle: driveMaxLpm / compressorRateLpm,
+			dutyContinuous: false,
+		}
+	}
+	const buffer =
+		args.storageL && args.storageMaxBar != null && args.storageMinBar != null
+			? Math.max(0, args.storageL * (args.storageMaxBar - args.storageMinBar))
+			: 0
+	const bufferDrainSec =
+		buffer > 0 ? (buffer / (driveMaxLpm - compressorRateLpm)) * 60 : 0
+	const fillAtMaxSec = (driveAirL / driveMaxLpm) * 60
+	const phase1Seconds = Math.min(bufferDrainSec, fillAtMaxSec)
+	const driveP1 = (driveMaxLpm * phase1Seconds) / 60
+	const remaining = Math.max(0, driveAirL - driveP1)
+	const phase2Seconds =
+		remaining > 0 ? (remaining / compressorRateLpm) * 60 : 0
+	return {
+		totalCycles,
+		fillSeconds: phase1Seconds + phase2Seconds,
+		phase1Seconds,
+		phase2Seconds,
+		cycleRate1: cycleRate(driveMaxLpm),
+		cycleRate2: cycleRate(compressorRateLpm),
+		dutyCycle: 1,
+		dutyContinuous: true,
+	}
 }
 
 const ATM = ATMOSPHERIC_BAR
@@ -135,6 +216,7 @@ export function calculateBooster(input: BoosterInput): BoosterResult {
 export function boosterFillProfile(
 	input: BoosterInput,
 	steps = 40,
+	timing?: TimingArgs,
 ): ProfilePoint[] {
 	const { ratio, driveP, supplyVol: vs, receiverVol: vr, target } = input
 	const { boostStartReceiver, inletStartAbs } = boostSetup(input)
@@ -148,6 +230,9 @@ export function boosterFillProfile(
 		? target
 		: (summary.supplyLimitedMax ?? boostStartReceiver)
 	if (reached <= boostStartReceiver + 1e-9) return []
+
+	const tm = timing ? boosterTiming(timing) : null
+	const driveP1 = tm ? (timing!.driveMaxLpm * tm.phase1Seconds) / 60 : 0
 
 	const points: ProfilePoint[] = []
 	for (let i = 0; i <= steps; i++) {
@@ -164,12 +249,22 @@ export function boosterFillProfile(
 			drivePAbs,
 		)
 		const effInletAbs = Math.min(inletAbs, capAbs)
-		points.push({
+		const point: ProfilePoint = {
 			receiverP,
 			cumulativeDriveL,
 			supplyP: inletAbs - ATM,
 			rateLPerBar: (ratio * drivePAbs * vr) / effInletAbs,
-		})
+		}
+		if (tm) {
+			const d = cumulativeDriveL
+			point.cumulativeCycles = d / timing!.vdPerCycleL
+			point.timeSeconds =
+				d <= driveP1
+					? (d / timing!.driveMaxLpm) * 60
+					: tm.phase1Seconds + ((d - driveP1) / timing!.compressorRateLpm) * 60
+			point.cycleRatePerSec = d <= driveP1 ? tm.cycleRate1 : tm.cycleRate2
+		}
+		points.push(point)
 	}
 	return points
 }

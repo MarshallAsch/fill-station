@@ -1,5 +1,10 @@
 import { describe, it, expect } from 'vitest'
-import { calculateBooster, boosterFillProfile, BoosterInput } from './booster'
+import {
+	calculateBooster,
+	boosterFillProfile,
+	boosterTiming,
+	BoosterInput,
+} from './booster'
 
 const base: BoosterInput = {
 	ratio: 30,
@@ -110,5 +115,71 @@ describe('two-stage (regulated inlet cap)', () => {
 		const r = calculateBooster({ ...base, regulatedInletBar: 60 })
 		expect(r.driveAirL).toBeGreaterThan(1850)
 		expect(r.driveAirL).toBeLessThan(1920)
+	})
+})
+
+describe('boosterTiming', () => {
+	const t = {
+		driveAirL: 6000,
+		vdPerCycleL: 3,
+		driveMaxLpm: 300,
+		compressorRateLpm: 600,
+		storageL: 100,
+		storageMaxBar: 12,
+		storageMinBar: 8,
+	}
+	it('returns null without the required data', () => {
+		expect(boosterTiming({ ...t, vdPerCycleL: 0 })).toBeNull()
+		expect(boosterTiming({ ...t, compressorRateLpm: 0 })).toBeNull()
+	})
+	it('compressor keeps up: single phase, duty < 1', () => {
+		const r = boosterTiming(t)! // driveMax 300 ≤ compressor 600
+		expect(r.totalCycles).toBeCloseTo(2000, 6) // 6000/3
+		expect(r.dutyContinuous).toBe(false)
+		expect(r.dutyCycle).toBeCloseTo(0.5, 6) // 300/600
+		expect(r.fillSeconds).toBeCloseTo((6000 / 300) * 60, 6)
+		expect(r.cycleRate1).toBeCloseTo(300 / 3 / 60, 6)
+	})
+	it('buffer-limited: two phases, continuous duty, fill = p1 + p2', () => {
+		const r = boosterTiming({ ...t, driveMaxLpm: 1200 })! // > compressor 600
+		expect(r.dutyContinuous).toBe(true)
+		expect(r.dutyCycle).toBe(1)
+		expect(r.fillSeconds).toBeCloseTo(r.phase1Seconds + r.phase2Seconds, 6)
+		expect(r.phase1Seconds).toBeGreaterThan(0)
+		expect(r.phase2Seconds).toBeGreaterThan(0)
+		expect(r.cycleRate1).toBeGreaterThan(r.cycleRate2)
+	})
+	it('zero boost ⇒ zero timing', () => {
+		const r = boosterTiming({ ...t, driveAirL: 0 })!
+		expect(r.fillSeconds).toBe(0)
+		expect(r.totalCycles).toBe(0)
+	})
+})
+
+describe('boosterFillProfile timing fields', () => {
+	const timing = {
+		driveAirL: 0, // overwritten below via summary
+		vdPerCycleL: 3,
+		driveMaxLpm: 1200,
+		compressorRateLpm: 600,
+		storageL: 100,
+		storageMaxBar: 12,
+		storageMinBar: 8,
+	}
+	it('omits time fields when no timing supplied', () => {
+		const p = boosterFillProfile(base, 20)
+		expect(p[0].timeSeconds).toBeUndefined()
+	})
+	it('attaches increasing time and cycles ending at the totals', () => {
+		const summary = calculateBooster(base)
+		const t = { ...timing, driveAirL: summary.driveAirL }
+		const p = boosterFillProfile(base, 40, t)
+		const tm = boosterTiming(t)!
+		expect(p[0].timeSeconds).toBeCloseTo(0, 6)
+		for (let i = 1; i < p.length; i++) {
+			expect(p[i].timeSeconds!).toBeGreaterThanOrEqual(p[i - 1].timeSeconds!)
+		}
+		expect(p[p.length - 1].timeSeconds!).toBeCloseTo(tm.fillSeconds, 1)
+		expect(p[p.length - 1].cumulativeCycles!).toBeCloseTo(tm.totalCycles, 1)
 	})
 })
