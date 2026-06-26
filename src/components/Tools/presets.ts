@@ -63,6 +63,23 @@ export function freeGasLiters(tank: TankPreset): number {
 	return tank.waterVolumeL * tank.ratedBar
 }
 
+export interface BoosterPreset {
+	name: string
+	ratio: number
+}
+
+// Haskel AG single-stage air-driven gas boosters — the model number is the
+// nominal pressure (area) ratio. Source: Haskel AG-series product pages
+// (haskel.com / fluidprocesscontrol.com). SUN and other brands: use Custom.
+export const BOOSTERS: BoosterPreset[] = [
+	{ name: 'Haskel AG-30', ratio: 30 },
+	{ name: 'Haskel AG-50', ratio: 50 },
+	{ name: 'Haskel AG-62', ratio: 62 },
+	{ name: 'Haskel AG-75', ratio: 75 },
+	{ name: 'Haskel AG-102', ratio: 102 },
+	{ name: 'Haskel AG-152', ratio: 152 },
+]
+
 export const MIXES: MixPreset[] = [
 	{ name: 'Air', fo2: 0.21, fhe: 0 },
 	{ name: 'EAN28', fo2: 0.28, fhe: 0 },

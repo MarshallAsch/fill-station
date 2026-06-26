@@ -36,3 +36,19 @@ describe('mix presets', () => {
 		expect(MIXES.some((m) => m.fo2 === 1 && m.fhe === 0)).toBe(true)
 	})
 })
+
+import { BOOSTERS } from './presets'
+
+describe('booster presets', () => {
+	it('every booster has a positive ratio and a name', () => {
+		for (const b of BOOSTERS) {
+			expect(b.ratio).toBeGreaterThan(0)
+			expect(b.name.length).toBeGreaterThan(0)
+		}
+	})
+	it('includes a Haskel AG-30 at ratio 30', () => {
+		expect(BOOSTERS.some((b) => b.name.includes('AG-30') && b.ratio === 30)).toBe(
+			true,
+		)
+	})
+})
