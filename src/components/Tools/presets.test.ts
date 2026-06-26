@@ -62,12 +62,22 @@ describe('booster presets', () => {
 		}
 		expect(BOOSTERS.some((b) => b.twoStage)).toBe(true)
 	})
-	it('seeds derived drive-air data for the USUN models', () => {
-		const usun = BOOSTERS.filter((b) => b.name.includes('USUN'))
-		expect(usun.length).toBeGreaterThan(0)
-		for (const b of usun) {
+	it('seeds derived drive-air data for every preset (USUN and Haskel)', () => {
+		expect(BOOSTERS.some((b) => b.name.includes('USUN'))).toBe(true)
+		expect(BOOSTERS.some((b) => b.name.includes('Haskel'))).toBe(true)
+		for (const b of BOOSTERS) {
 			expect(b.vdPerCycleL).toBeGreaterThan(0)
 			expect(b.driveMaxLpm).toBeGreaterThan(0)
+		}
+	})
+	it('uses one shared air-drive head for all Haskel AG models', () => {
+		const haskel = BOOSTERS.filter((b) => b.name.includes('Haskel'))
+		expect(haskel.length).toBe(6)
+		const vd = haskel[0].vdPerCycleL
+		const dm = haskel[0].driveMaxLpm
+		for (const b of haskel) {
+			expect(b.vdPerCycleL).toBe(vd)
+			expect(b.driveMaxLpm).toBe(dm)
 		}
 	})
 })

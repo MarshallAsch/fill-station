@@ -70,10 +70,10 @@ export interface BoosterPreset {
 	// Drive-air consumed per cycle (free L) and max drive-air consumption (free
 	// L/min); 0 = unknown. The calculator seeds these into editable fields, so
 	// they're starting estimates the user can override. NOTE: per-cycle free
-	// volume scales with drive pressure — the USUN figures below are computed at
-	// a ~9 bar gauge (10 bar abs, ~130 psi) reference drive pressure; at a higher
-	// drive pressure they rise proportionally. Two-stage flag from the model
-	// designation.
+	// volume scales with drive pressure — the figures below are computed at each
+	// brand's reference drive pressure (USUN ~9 bar gauge / 130 psi; Haskel ~6 bar
+	// gauge / 87 psi), close to typical shop air; at a higher drive pressure they
+	// rise proportionally. Two-stage flag from the model designation.
 	vdPerCycleL: number
 	driveMaxLpm: number
 }
@@ -86,21 +86,26 @@ export interface BoosterPreset {
 // our single-ratio model approximates them by the 40:1 output stage, so the
 // drive-gas estimate for those is rough. Other brands/models: use Custom.
 //
-// USUN drive-air figures are DERIVED (USUN publishes no direct consumption): free
-// L/cycle = swept volume (π/4·bore²·stroke) × drive-pressure-abs/atm, at the
-// reference above; driveMaxLpm = vd × 55 cpm (midpoint of the recommended
-// 50–60 cycles/min). Drive sections: XB/GB 100/160 mm bore, GBT 160 mm, SBT
-// 125 mm, all 120 mm stroke (u-sun.cn, made-in-china, DRIS). The "D" double-acting
-// variants (XBD30, GBD40) consume ~2× per cycle — for the grouped presets we seed
-// the single-acting base figure; the GBT/SBT two-stage entries are double-acting.
-// Haskel AG figures left 0 (no datasheet dimensions sourced) — enter from the manual.
+// Drive-air figures are DERIVED (neither maker publishes consumption directly):
+// free L/cycle = swept volume (π/4·bore²·stroke) × drive-pressure-abs/atm at the
+// brand reference; driveMaxLpm = vd × max cpm.
+// • USUN: drive sections XB/GB 100/160 mm bore, GBT 160 mm, SBT 125 mm, all
+//   120 mm stroke (u-sun.cn, made-in-china, DRIS); ×55 cpm (mid of 50–60). The
+//   "D" double-acting variants (XBD30, GBD40) draw ~2×/cycle — the grouped
+//   presets seed the single-acting base; GBT/SBT are double-acting.
+// • Haskel AG: ALL six share one 5.75 in (146 mm) air-drive head (OM-3F manual,
+//   Nuvair specs), so the drive-air figures are identical across AG-30…AG-152 —
+//   the ratio is set by the gas piston, not the drive. Stroke ~3.6 in is derived
+//   (±10%); ×60 cpm. AG-62/102/152 are tandem two-stage gas barrels on the same
+//   drive (ratio doubles, drive air unchanged).
 export const BOOSTERS: BoosterPreset[] = [
-	{ name: 'Haskel AG-30', ratio: 30, twoStage: false, vdPerCycleL: 0, driveMaxLpm: 0 },
-	{ name: 'Haskel AG-50', ratio: 50, twoStage: false, vdPerCycleL: 0, driveMaxLpm: 0 },
-	{ name: 'Haskel AG-62', ratio: 62, twoStage: false, vdPerCycleL: 0, driveMaxLpm: 0 },
-	{ name: 'Haskel AG-75', ratio: 75, twoStage: false, vdPerCycleL: 0, driveMaxLpm: 0 },
-	{ name: 'Haskel AG-102', ratio: 102, twoStage: false, vdPerCycleL: 0, driveMaxLpm: 0 },
-	{ name: 'Haskel AG-152', ratio: 152, twoStage: false, vdPerCycleL: 0, driveMaxLpm: 0 },
+	// Shared 5.75 in drive head: vd = 1.535 L × 7/1.013 ≈ 10.6; ×60 ≈ 636 L/min.
+	{ name: 'Haskel AG-30', ratio: 30, twoStage: false, vdPerCycleL: 10.6, driveMaxLpm: 636 },
+	{ name: 'Haskel AG-50', ratio: 50, twoStage: false, vdPerCycleL: 10.6, driveMaxLpm: 636 },
+	{ name: 'Haskel AG-62', ratio: 62, twoStage: false, vdPerCycleL: 10.6, driveMaxLpm: 636 },
+	{ name: 'Haskel AG-75', ratio: 75, twoStage: false, vdPerCycleL: 10.6, driveMaxLpm: 636 },
+	{ name: 'Haskel AG-102', ratio: 102, twoStage: false, vdPerCycleL: 10.6, driveMaxLpm: 636 },
+	{ name: 'Haskel AG-152', ratio: 152, twoStage: false, vdPerCycleL: 10.6, driveMaxLpm: 636 },
 	// XB30 single-acting base (100 mm): vd = 0.942 L × 10 ≈ 9.4; ×55 ≈ 520 L/min.
 	{ name: 'USUN XB30 / XBD30', ratio: 30, twoStage: false, vdPerCycleL: 9.4, driveMaxLpm: 520 },
 	// GB40 single-acting base (160 mm): vd = 2.412 L × 10 ≈ 24.1; ×55 ≈ 1330 L/min.
