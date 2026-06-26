@@ -23,7 +23,7 @@ const BoosterPicker = ({
 			name='booster-model'
 			title='Booster model'
 			items={items}
-			value={items[0]}
+			defaultValue={items[0]}
 			onChange={(item) => {
 				if (item.value === CUSTOM) return
 				const preset = BOOSTERS.find((b) => b.name === item.value)

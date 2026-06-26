@@ -43,16 +43,15 @@ const TankSizePicker = ({
 	]
 	const id = `tank-${category}${idSuffix ? `-${idSuffix}` : ''}`
 
-	// Action-style picker: applies a preset then reverts to the prompt (value is
-	// pinned to the placeholder), so it never shows a stale selection after the
-	// user edits the fields by hand.
+	// Keeps the picked size shown after it applies the preset (the fields stay
+	// editable; manual edits just won't change what the picker displays).
 	return (
 		<ListBox
 			id={id}
 			name={id}
 			title='Standard size'
 			items={items}
-			value={items[0]}
+			defaultValue={items[0]}
 			onChange={(item) => {
 				if (item.value === CUSTOM) return
 				const preset = presets.find((p) => p.name === item.value)

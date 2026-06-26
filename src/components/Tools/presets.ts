@@ -84,34 +84,41 @@ export interface BoosterPreset {
 // our single-ratio model approximates them by the 40:1 output stage, so the
 // drive-gas estimate for those is rough. Other brands/models: use Custom.
 //
-// Swept volumes are geometric (π/4·bore²·stroke), so they don't depend on drive
-// pressure — the actual drive-air per cycle is derived at the running pressure.
+// driveSweptL is the air-drive swept volume PER STROKE (one gas delivery),
+// geometric (π/4·bore²·stroke) so it's drive-pressure-independent; the drive air
+// per stroke is derived at the running drive pressure. Total drive air over a
+// fill is thermodynamic (≈ receiver/supply pressure ratio) and does NOT depend on
+// swept volume — the swept volume only sets the cycle (stroke) rate. Double-acting
+// ("D", GBT, SBT) deliver on both strokes, so each stroke has the SAME per-stroke
+// swept as the single-acting equivalent (same bore); the "D" just buys a higher
+// max stroke rate (maxCpm), not a different per-stroke draw or cycle rate.
 // • USUN: drive bores XB/GB 100/160 mm, GBT 160 mm, SBT 125 mm, all 120 mm stroke
-//   (u-sun.cn, made-in-china, DRIS); ~60 cpm max. The "D" double-acting variants
-//   (XBD30, GBD40) sweep ~2×/cycle — grouped presets seed the single-acting base;
-//   GBT/SBT are double-acting.
+//   (u-sun.cn, made-in-china, DRIS); ~60 strokes/min single, ~120 double-acting.
 // • Haskel AG: ALL six share one 5.75 in (146 mm) air-drive head (OM-3F manual,
 //   Nuvair specs) with ~3.6 in stroke (derived, ±10%) → 1.535 L swept, ~60 cpm.
 //   The ratio is set by the gas piston, not the drive, so the swept volume is
 //   identical across AG-30…AG-152 (AG-62/102/152 are tandem two-stage gas
 //   barrels on the same drive).
 export const BOOSTERS: BoosterPreset[] = [
-	// Shared 5.75 in × 3.6 in drive head → π/4·146²·91.6 ≈ 1.535 L swept.
+	// Shared 5.75 in × 3.6 in drive head → π/4·146²·91.6 ≈ 1.535 L per stroke.
 	{ name: 'Haskel AG-30', ratio: 30, twoStage: false, driveSweptL: 1.535, maxCpm: 60 },
 	{ name: 'Haskel AG-50', ratio: 50, twoStage: false, driveSweptL: 1.535, maxCpm: 60 },
 	{ name: 'Haskel AG-62', ratio: 62, twoStage: false, driveSweptL: 1.535, maxCpm: 60 },
 	{ name: 'Haskel AG-75', ratio: 75, twoStage: false, driveSweptL: 1.535, maxCpm: 60 },
 	{ name: 'Haskel AG-102', ratio: 102, twoStage: false, driveSweptL: 1.535, maxCpm: 60 },
 	{ name: 'Haskel AG-152', ratio: 152, twoStage: false, driveSweptL: 1.535, maxCpm: 60 },
-	// XB30 single-acting base (100 mm × 120 mm) → 0.942 L swept.
-	{ name: 'USUN XB30 / XBD30', ratio: 30, twoStage: false, driveSweptL: 0.942, maxCpm: 60 },
-	// GB40 single-acting base (160 mm × 120 mm) → 2.412 L swept.
-	{ name: 'USUN GB40 / GBD40', ratio: 40, twoStage: false, driveSweptL: 2.412, maxCpm: 60 },
+	// XB30/XBD30 share the 100 mm × 120 mm drive (0.942 L/stroke); XBD30 is
+	// double-acting → ~2× the max stroke rate.
+	{ name: 'USUN XB30', ratio: 30, twoStage: false, driveSweptL: 0.942, maxCpm: 60 },
+	{ name: 'USUN XBD30 (double-acting)', ratio: 30, twoStage: false, driveSweptL: 0.942, maxCpm: 120 },
+	// GB40/GBD40 share the 160 mm × 120 mm drive (2.412 L/stroke); GBD40 double-acting.
+	{ name: 'USUN GB40', ratio: 40, twoStage: false, driveSweptL: 2.412, maxCpm: 60 },
+	{ name: 'USUN GBD40 (double-acting)', ratio: 40, twoStage: false, driveSweptL: 2.412, maxCpm: 120 },
 	{ name: 'USUN GB40-OL-F (O₂)', ratio: 40, twoStage: false, driveSweptL: 2.412, maxCpm: 60 },
-	// GBT 15/40 double-acting (160 mm) → 2 × 2.412 ≈ 4.824 L swept.
-	{ name: 'USUN GBT 15/40 (2-stage)', ratio: 40, twoStage: true, driveSweptL: 4.824, maxCpm: 60 },
-	// SBT 15/40 double-acting (125 mm) → 2 × 1.473 ≈ 2.946 L swept.
-	{ name: 'USUN SBT 15/40 (2-stage)', ratio: 40, twoStage: true, driveSweptL: 2.946, maxCpm: 60 },
+	// GBT 15/40 double-acting, 160 mm → 2.412 L/stroke.
+	{ name: 'USUN GBT 15/40 (2-stage)', ratio: 40, twoStage: true, driveSweptL: 2.412, maxCpm: 120 },
+	// SBT 15/40 double-acting, 125 mm → 1.473 L/stroke.
+	{ name: 'USUN SBT 15/40 (2-stage)', ratio: 40, twoStage: true, driveSweptL: 1.473, maxCpm: 120 },
 ]
 
 export const MIXES: MixPreset[] = [

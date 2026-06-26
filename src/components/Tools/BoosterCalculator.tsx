@@ -214,7 +214,10 @@ const BoosterCalculator = () => {
 				<h2 className='text-text text-lg font-semibold'>Supply cylinder</h2>
 				<TankSizePicker
 					category='industrial'
-					onSelect={(l) => setSupplyVol(l)}
+					onSelect={(l, bar) => {
+						setSupplyVol(l)
+						setSupplyStart(fromBar(bar, units.pressure))
+					}}
 				/>
 				<div className='grid grid-cols-1 gap-4 sm:grid-cols-2'>
 					<NumberInput
