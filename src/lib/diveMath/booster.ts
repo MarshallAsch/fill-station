@@ -26,7 +26,6 @@ export interface ProfilePoint {
 	receiverP: number
 	cumulativeDriveL: number
 	supplyP: number
-	rateLPerBar: number
 	timeSeconds?: number
 	cumulativeCycles?: number
 	cycleRatePerSec?: number
@@ -248,12 +247,10 @@ export function boosterFillProfile(
 			ratio,
 			drivePAbs,
 		)
-		const effInletAbs = Math.min(inletAbs, capAbs)
 		const point: ProfilePoint = {
 			receiverP,
 			cumulativeDriveL,
 			supplyP: inletAbs - ATM,
-			rateLPerBar: (ratio * drivePAbs * vr) / effInletAbs,
 		}
 		if (tm) {
 			const d = cumulativeDriveL

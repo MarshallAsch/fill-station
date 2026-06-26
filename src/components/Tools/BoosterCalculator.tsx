@@ -124,7 +124,7 @@ const BoosterCalculator = () => {
 					<NumberInput
 						id='b-vd'
 						name='b-vd'
-						label={`Drive air / cycle (${units.airFlow.replace('m', '')})`}
+						label={`Drive air / cycle (${units.airFlow === 'lpm' ? 'L' : 'CF'})`}
 						value={vdPerCycle}
 						onChange={setVdPerCycle}
 						min={0}

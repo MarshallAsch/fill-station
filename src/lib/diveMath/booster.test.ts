@@ -74,7 +74,6 @@ describe('boosterFillProfile', () => {
 		const first = profile[0]
 		const last = profile[profile.length - 1]
 		expect(last.supplyP).toBeLessThan(first.supplyP)
-		expect(last.rateLPerBar).toBeGreaterThan(first.rateLPerBar)
 	})
 	it('returns an empty profile when no boost is needed', () => {
 		expect(boosterFillProfile({ ...base, target: 150 })).toEqual([])
