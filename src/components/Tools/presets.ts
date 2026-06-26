@@ -68,9 +68,13 @@ export interface BoosterPreset {
 	ratio: number
 }
 
-// Haskel AG single-stage air-driven gas boosters — the model number is the
-// nominal pressure (area) ratio. Source: Haskel AG-series product pages
-// (haskel.com / fluidprocesscontrol.com). SUN and other brands: use Custom.
+// Air-driven gas boosters. The ratio is the nominal pressure (area) ratio,
+// inferred from each model's designation (the model number is the ratio — the
+// standard naming convention). Sources: Haskel AG-series product pages
+// (haskel.com / fluidprocesscontrol.com); USUN dive boosters (diverightinscuba.com/usun).
+// The USUN GBT/SBT 15/40 are TWO-STAGE (1st stage 15:1, output stage 40:1);
+// our single-ratio model approximates them by the 40:1 output stage, so the
+// drive-gas estimate for those is rough. Other brands/models: use Custom.
 export const BOOSTERS: BoosterPreset[] = [
 	{ name: 'Haskel AG-30', ratio: 30 },
 	{ name: 'Haskel AG-50', ratio: 50 },
@@ -78,6 +82,11 @@ export const BOOSTERS: BoosterPreset[] = [
 	{ name: 'Haskel AG-75', ratio: 75 },
 	{ name: 'Haskel AG-102', ratio: 102 },
 	{ name: 'Haskel AG-152', ratio: 152 },
+	{ name: 'USUN XB30 / XBD30', ratio: 30 },
+	{ name: 'USUN GB40 / GBD40', ratio: 40 },
+	{ name: 'USUN GB40-OL-F (O₂)', ratio: 40 },
+	{ name: 'USUN GBT 15/40 (2-stage)', ratio: 40 },
+	{ name: 'USUN SBT 15/40 (2-stage)', ratio: 40 },
 ]
 
 export const MIXES: MixPreset[] = [

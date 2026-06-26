@@ -51,4 +51,7 @@ describe('booster presets', () => {
 			true,
 		)
 	})
+	it('includes USUN dive boosters', () => {
+		expect(BOOSTERS.some((b) => b.name.includes('USUN'))).toBe(true)
+	})
 })
