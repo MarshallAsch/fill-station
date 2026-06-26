@@ -1,3 +1,4 @@
+import { mixZ } from './compressibility'
 import { ATMOSPHERIC_BAR } from './units'
 
 const ATM = ATMOSPHERIC_BAR
@@ -17,6 +18,21 @@ export interface BoosterInput {
 	// Two-stage: source gas is regulated down to this inlet pressure (bar gauge)
 	// before the boost stage.
 	regulatedInletBar?: number
+	// Boosted gas, for real-gas (compressibility) accounting. Defaults to air,
+	// ideal gas (useRealGas false) — unchanged behaviour unless set.
+	fo2?: number
+	fhe?: number
+	useRealGas?: boolean
+}
+
+// Compressibility factor at an absolute pressure for the boosted gas (1 = ideal).
+function zOf(input: BoosterInput, absBar: number): number {
+	if (!input.useRealGas) return 1
+	return mixZ({
+		fo2: input.fo2 ?? 0.209,
+		fhe: input.fhe ?? 0,
+		pressureBar: absBar,
+	})
 }
 
 export interface BoosterResult {
@@ -84,18 +100,27 @@ export interface TimingArgs {
 	storageL?: number
 	storageMaxBar?: number
 	storageMinBar?: number
+	// Real-gas: gas moles per cycle ∝ 1/Z at the supply pressure.
+	fo2?: number
+	fhe?: number
+	useRealGas?: boolean
 }
 
 // Shared setup: the boost phase's starting conditions, after any free
 // equalization (which happens only when the supply starts above the receiver).
+// Real gas: moles ∝ V·P/Z, so the equalized pressure is the V/Z-weighted mean
+// (first-order, Z at each side's pressure) — reduces to the ideal mean when Z=1.
 function boostSetup(input: BoosterInput) {
 	const { supplyVol: vs, supplyStart, receiverVol: vr, receiverStart } = input
-	const eqAbs =
-		(vs * (supplyStart + ATM) + vr * (receiverStart + ATM)) / (vs + vr)
+	const supplyAbs = supplyStart + ATM
+	const receiverAbs = receiverStart + ATM
+	const ws = vs / zOf(input, supplyAbs)
+	const wr = vr / zOf(input, receiverAbs)
+	const eqAbs = (supplyAbs * ws + receiverAbs * wr) / (ws + wr)
 	const eqPressure = eqAbs - ATM
 	const equalizes = supplyStart > receiverStart
 	const boostStartReceiver = equalizes ? eqPressure : receiverStart
-	const inletStartAbs = equalizes ? eqAbs : supplyStart + ATM
+	const inletStartAbs = equalizes ? eqAbs : supplyAbs
 	return { eqPressure, boostStartReceiver, inletStartAbs }
 }
 
@@ -104,8 +129,10 @@ function boostSetup(input: BoosterInput) {
 // pressure needed to overcome the current back-pressure (driveP ≈ receiverP /
 // ratio), so the geometric ratio cancels. The inlet (gas-piston intake) pressure
 // is the supply, depleting as q is drawn, capped at capAbs for a two-stage
-// regulated inlet. Integrated numerically (the integrand is smooth).
+// regulated inlet. Real gas adds a Z(inlet)/Z(receiver) factor per the moles
+// actually moved. Integrated numerically (the integrand is smooth).
 function driveAirForQ(
+	input: BoosterInput,
 	q: number,
 	boostStartAbs: number,
 	inletStartAbs: number,
@@ -118,7 +145,8 @@ function driveAirForQ(
 	const integrand = (x: number) => {
 		const receiverAbs = boostStartAbs + x / vr
 		const inletAbs = Math.min(inletStartAbs - x / vs, capAbs)
-		return receiverAbs / inletAbs
+		const zFactor = zOf(input, inletAbs) / zOf(input, receiverAbs)
+		return (receiverAbs / inletAbs) * zFactor
 	}
 	const h = q / steps
 	let sum = 0.5 * (integrand(0) + integrand(q))
@@ -174,7 +202,15 @@ export function calculateBooster(input: BoosterInput): BoosterResult {
 			maxOutput,
 			eqPressure,
 			processGasL: availQ,
-			driveAirL: driveAirForQ(availQ, boostStartAbs, inletStartAbs, capAbs, vs, vr),
+			driveAirL: driveAirForQ(
+				input,
+				availQ,
+				boostStartAbs,
+				inletStartAbs,
+				capAbs,
+				vs,
+				vr,
+			),
 			finalSupply: 0,
 			feasible: false,
 			reason: 'Supply gas is insufficient to reach the target.',
@@ -185,7 +221,15 @@ export function calculateBooster(input: BoosterInput): BoosterResult {
 	}
 
 	const finalInletAbs = inletStartAbs - q / vs
-	const driveAirL = driveAirForQ(q, boostStartAbs, inletStartAbs, capAbs, vs, vr)
+	const driveAirL = driveAirForQ(
+		input,
+		q,
+		boostStartAbs,
+		inletStartAbs,
+		capAbs,
+		vs,
+		vr,
+	)
 	return {
 		maxOutput,
 		eqPressure,
@@ -241,7 +285,11 @@ export function boosterTiming(args: TimingArgs): BoosterTiming | null {
 
 	// Gas delivered to the receiver per cycle (surface L): the gas piston draws a
 	// gulp of supply gas (gasSwept = driveSwept / ratio) at the supply pressure.
-	const gasPerCycle = (driveSweptL / ratio) * (supplyAbsBar / ATM)
+	// Real gas: moles ∝ P/Z, so a gulp holds 1/Z as much.
+	const zSupply = args.useRealGas
+		? mixZ({ fo2: args.fo2 ?? 0.209, fhe: args.fhe ?? 0, pressureBar: supplyAbsBar })
+		: 1
+	const gasPerCycle = ((driveSweptL / ratio) * (supplyAbsBar / ATM)) / zSupply
 	// The booster's own ceiling on fill rate (bar/min), then the actual boost
 	// rate is the lower of that and the O2 limit. Equalization isn't booster-
 	// limited, so it runs at the O2 rate.
@@ -341,6 +389,7 @@ export function boosterFillProfile(
 		const boosting = receiverP > boostStartReceiver + 1e-9
 		const cumulativeDriveL = boosting
 			? driveAirForQ(
+					input,
 					vr * (receiverP - boostStartReceiver),
 					boostStartAbs,
 					inletStartAbs,

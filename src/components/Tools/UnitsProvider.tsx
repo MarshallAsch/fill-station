@@ -23,6 +23,8 @@ export interface UnitPrefs {
 }
 
 const STORAGE_KEY = 'fillstation.tools.units'
+const REALGAS_KEY = 'fillstation.tools.realgas'
+const DEFAULT_REAL_GAS = true
 const DEFAULT_UNITS: UnitPrefs = {
 	pressure: 'psi',
 	depth: 'ft',
@@ -34,12 +36,17 @@ const DEFAULT_UNITS: UnitPrefs = {
 interface UnitsContextValue {
 	units: UnitPrefs
 	setUnit: <K extends keyof UnitPrefs>(key: K, value: UnitPrefs[K]) => void
+	// Global across every tool: account for gas compressibility (real-gas) rather
+	// than ideal gas. Persisted, so it's set once and applies everywhere.
+	useRealGas: boolean
+	setUseRealGas: (value: boolean) => void
 }
 
 const UnitsContext = createContext<UnitsContextValue | null>(null)
 
 const UnitsProvider = ({ children }: { children: ReactNode }) => {
 	const [units, setUnits] = useState<UnitPrefs>(DEFAULT_UNITS)
+	const [useRealGas, setRealGas] = useState<boolean>(DEFAULT_REAL_GAS)
 
 	useEffect(() => {
 		try {
@@ -48,6 +55,9 @@ const UnitsProvider = ({ children }: { children: ReactNode }) => {
 				// eslint-disable-next-line react-hooks/set-state-in-effect
 				setUnits({ ...DEFAULT_UNITS, ...JSON.parse(raw) })
 			}
+			const rg = localStorage.getItem(REALGAS_KEY)
+
+			if (rg != null) setRealGas(rg === 'true')
 		} catch {
 			// ignore malformed storage
 		}
@@ -65,8 +75,19 @@ const UnitsProvider = ({ children }: { children: ReactNode }) => {
 		})
 	}
 
+	const setUseRealGas = (value: boolean) => {
+		setRealGas(value)
+		try {
+			localStorage.setItem(REALGAS_KEY, String(value))
+		} catch {
+			// ignore storage failures
+		}
+	}
+
 	return (
-		<UnitsContext.Provider value={{ units, setUnit }}>
+		<UnitsContext.Provider
+			value={{ units, setUnit, useRealGas, setUseRealGas }}
+		>
 			{children}
 		</UnitsContext.Provider>
 	)

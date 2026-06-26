@@ -82,6 +82,24 @@ describe('two-stage (regulated inlet)', () => {
 	})
 })
 
+describe('real-gas (compressibility)', () => {
+	it('useRealGas changes the equalization pressure and drive air for O2', () => {
+		const ideal = calculateBooster(base)
+		const real = calculateBooster({ ...base, fo2: 1, fhe: 0, useRealGas: true })
+		expect(real.feasible).toBe(true)
+		expect(real.driveAirL).toBeGreaterThan(0)
+		expect(real.eqPressure).not.toBeCloseTo(ideal.eqPressure, 2)
+	})
+	it('ideal and real nearly agree at low pressure (Z → 1)', () => {
+		const lowP = { ...base, supplyStart: 5, receiverStart: 0, target: 30 }
+		const ideal = calculateBooster(lowP)
+		const real = calculateBooster({ ...lowP, fo2: 1, useRealGas: true })
+		expect(Math.abs(real.driveAirL - ideal.driveAirL) / ideal.driveAirL).toBeLessThan(
+			0.01,
+		)
+	})
+})
+
 describe('boosterFillProfile', () => {
 	it('rises monotonically and ends at the summary drive-air total', () => {
 		const profile = boosterFillProfile(base, 40)

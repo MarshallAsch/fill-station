@@ -1,3 +1,5 @@
+import { mixZ } from '../../lib/diveMath/compressibility'
+
 export interface TankPreset {
 	name: string
 	waterVolumeL: number
@@ -63,11 +65,18 @@ export interface MixPreset {
 	fhe: number
 }
 
-// Free-gas (air) capacity in surface litres, ideal-gas estimate at the
-// cylinder's working pressure: water volume × rated pressure (bar gauge ≈
-// atmospheres). The actual fill pressure may differ from the working pressure.
-export function freeGasLiters(tank: TankPreset): number {
-	return tank.waterVolumeL * tank.ratedBar
+// Free-gas capacity in surface litres at the cylinder's working pressure: water
+// volume × rated pressure (bar gauge ≈ atmospheres). Real-gas by default (÷ the
+// air compressibility Z at that pressure), which is why a nominal AL80 reads ~79
+// not 81; pass useRealGas: false for the ideal estimate. The actual fill pressure
+// may differ from the working pressure.
+export function freeGasLiters(
+	tank: TankPreset,
+	opts?: { useRealGas?: boolean },
+): number {
+	const ideal = tank.waterVolumeL * tank.ratedBar
+	if (opts?.useRealGas === false) return ideal
+	return ideal / mixZ({ fo2: 0.209, fhe: 0, pressureBar: tank.ratedBar })
 }
 
 export interface BoosterPreset {

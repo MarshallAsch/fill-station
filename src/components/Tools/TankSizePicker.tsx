@@ -28,12 +28,14 @@ const TankSizePicker = ({
 	idSuffix?: string
 	onSelect: (waterVolumeL: number, ratedBar: number) => void
 }) => {
-	const { units } = useUnits()
+	const { units, useRealGas } = useUnits()
 	const presets = LISTS[category]
 	const items = [
 		{ value: CUSTOM, name: 'Choose a standard size…' },
 		...presets.map((p) => {
-			const freeDisplay = Math.round(fromLiters(freeGasLiters(p), units.volume))
+			const freeDisplay = Math.round(
+				fromLiters(freeGasLiters(p, { useRealGas }), units.volume),
+			)
 			const presDisplay = Math.round(fromBar(p.ratedBar, units.pressure))
 			return {
 				value: p.name,

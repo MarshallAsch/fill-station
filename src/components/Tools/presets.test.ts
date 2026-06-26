@@ -4,6 +4,7 @@ import {
 	STORAGE_TANKS,
 	INDUSTRIAL_TANKS,
 	MIXES,
+	freeGasLiters,
 } from './presets'
 
 describe('tank presets', () => {
@@ -13,6 +14,13 @@ describe('tank presets', () => {
 			expect(t.ratedBar).toBeGreaterThan(0)
 			expect(t.name.length).toBeGreaterThan(0)
 		}
+	})
+	it('real-gas capacity is below the ideal estimate at high pressure', () => {
+		const al80 = DIVE_TANKS.find((t) => t.name.startsWith('AL80'))!
+		const ideal = freeGasLiters(al80, { useRealGas: false })
+		const real = freeGasLiters(al80, { useRealGas: true })
+		expect(real).toBeLessThan(ideal)
+		expect(real).toBeGreaterThan(ideal * 0.9) // a few percent, not wildly off
 	})
 	it('includes the sourced industrial T and K bottles', () => {
 		const names = INDUSTRIAL_TANKS.map((t) => t.name)
