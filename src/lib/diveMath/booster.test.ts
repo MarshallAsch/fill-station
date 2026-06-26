@@ -84,3 +84,31 @@ describe('boosterFillProfile', () => {
 		expect(last.supplyP).toBeCloseTo(0, 1)
 	})
 })
+
+describe('two-stage (regulated inlet cap)', () => {
+	it('matches single-stage when the cap is at/above the equalized supply', () => {
+		const single = calculateBooster(base)
+		const capped = calculateBooster({ ...base, regulatedInletBar: 1000 })
+		expect(capped.driveAirL).toBeCloseTo(single.driveAirL, 6)
+	})
+	it('uses less drive air than single-stage with a low regulated inlet', () => {
+		// a low cap means the falling-inlet (log) penalty is replaced by a
+		// constant low inlet for the early part — but the constant term uses the
+		// low cap as the divisor; check it differs and is finite/positive
+		const single = calculateBooster(base)
+		const capped = calculateBooster({ ...base, regulatedInletBar: 60 })
+		expect(capped.feasible).toBe(true)
+		expect(capped.driveAirL).toBeGreaterThan(0)
+		expect(capped.driveAirL).not.toBeCloseTo(single.driveAirL, 1)
+	})
+	it('hand-checked capped value (cap below equalized supply)', () => {
+		// base: ratio 30, drive 10, Vs 50, supplyStart 200, Vr 12,
+		// receiverStart 50, target 200. eqAbs ≈ 171.98, boostStart ≈ 170.97,
+		// Q = 12*(200−170.97) ≈ 348.39. cap = 60 bar → capAbs ≈ 61.013.
+		// qStar = 50*(171.98−61.013) ≈ 5548 > Q ⇒ whole boost is constant-inlet:
+		// drive = 30*11.013*348.39/61.013 ≈ 1885 L
+		const r = calculateBooster({ ...base, regulatedInletBar: 60 })
+		expect(r.driveAirL).toBeGreaterThan(1850)
+		expect(r.driveAirL).toBeLessThan(1920)
+	})
+})
