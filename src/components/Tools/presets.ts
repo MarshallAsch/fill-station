@@ -68,9 +68,12 @@ export interface BoosterPreset {
 	ratio: number
 	twoStage: boolean
 	// Drive-air consumed per cycle (free L) and max drive-air consumption (free
-	// L/min). Model-specific and not reliably published per model, so default 0
-	// ("unknown"); the calculator seeds an editable field the user fills from the
-	// booster datasheet. Two-stage flag from the model designation.
+	// L/min); 0 = unknown. The calculator seeds these into editable fields, so
+	// they're starting estimates the user can override. NOTE: per-cycle free
+	// volume scales with drive pressure — the USUN figures below are computed at
+	// a ~9 bar gauge (10 bar abs, ~130 psi) reference drive pressure; at a higher
+	// drive pressure they rise proportionally. Two-stage flag from the model
+	// designation.
 	vdPerCycleL: number
 	driveMaxLpm: number
 }
@@ -82,6 +85,15 @@ export interface BoosterPreset {
 // The USUN GBT/SBT 15/40 are TWO-STAGE (1st stage 15:1, output stage 40:1);
 // our single-ratio model approximates them by the 40:1 output stage, so the
 // drive-gas estimate for those is rough. Other brands/models: use Custom.
+//
+// USUN drive-air figures are DERIVED (USUN publishes no direct consumption): free
+// L/cycle = swept volume (π/4·bore²·stroke) × drive-pressure-abs/atm, at the
+// reference above; driveMaxLpm = vd × 55 cpm (midpoint of the recommended
+// 50–60 cycles/min). Drive sections: XB/GB 100/160 mm bore, GBT 160 mm, SBT
+// 125 mm, all 120 mm stroke (u-sun.cn, made-in-china, DRIS). The "D" double-acting
+// variants (XBD30, GBD40) consume ~2× per cycle — for the grouped presets we seed
+// the single-acting base figure; the GBT/SBT two-stage entries are double-acting.
+// Haskel AG figures left 0 (no datasheet dimensions sourced) — enter from the manual.
 export const BOOSTERS: BoosterPreset[] = [
 	{ name: 'Haskel AG-30', ratio: 30, twoStage: false, vdPerCycleL: 0, driveMaxLpm: 0 },
 	{ name: 'Haskel AG-50', ratio: 50, twoStage: false, vdPerCycleL: 0, driveMaxLpm: 0 },
@@ -89,11 +101,15 @@ export const BOOSTERS: BoosterPreset[] = [
 	{ name: 'Haskel AG-75', ratio: 75, twoStage: false, vdPerCycleL: 0, driveMaxLpm: 0 },
 	{ name: 'Haskel AG-102', ratio: 102, twoStage: false, vdPerCycleL: 0, driveMaxLpm: 0 },
 	{ name: 'Haskel AG-152', ratio: 152, twoStage: false, vdPerCycleL: 0, driveMaxLpm: 0 },
-	{ name: 'USUN XB30 / XBD30', ratio: 30, twoStage: false, vdPerCycleL: 0, driveMaxLpm: 0 },
-	{ name: 'USUN GB40 / GBD40', ratio: 40, twoStage: false, vdPerCycleL: 0, driveMaxLpm: 0 },
-	{ name: 'USUN GB40-OL-F (O₂)', ratio: 40, twoStage: false, vdPerCycleL: 0, driveMaxLpm: 0 },
-	{ name: 'USUN GBT 15/40 (2-stage)', ratio: 40, twoStage: true, vdPerCycleL: 0, driveMaxLpm: 0 },
-	{ name: 'USUN SBT 15/40 (2-stage)', ratio: 40, twoStage: true, vdPerCycleL: 0, driveMaxLpm: 0 },
+	// XB30 single-acting base (100 mm): vd = 0.942 L × 10 ≈ 9.4; ×55 ≈ 520 L/min.
+	{ name: 'USUN XB30 / XBD30', ratio: 30, twoStage: false, vdPerCycleL: 9.4, driveMaxLpm: 520 },
+	// GB40 single-acting base (160 mm): vd = 2.412 L × 10 ≈ 24.1; ×55 ≈ 1330 L/min.
+	{ name: 'USUN GB40 / GBD40', ratio: 40, twoStage: false, vdPerCycleL: 24.1, driveMaxLpm: 1330 },
+	{ name: 'USUN GB40-OL-F (O₂)', ratio: 40, twoStage: false, vdPerCycleL: 24.1, driveMaxLpm: 1330 },
+	// GBT 15/40 double-acting (160 mm): vd = 2 × 24.1 ≈ 48.2; ×55 ≈ 2650 L/min.
+	{ name: 'USUN GBT 15/40 (2-stage)', ratio: 40, twoStage: true, vdPerCycleL: 48.2, driveMaxLpm: 2650 },
+	// SBT 15/40 double-acting (125 mm): vd = 2 × 1.473 L × 10 ≈ 29.5; ×55 ≈ 1620 L/min.
+	{ name: 'USUN SBT 15/40 (2-stage)', ratio: 40, twoStage: true, vdPerCycleL: 29.5, driveMaxLpm: 1620 },
 ]
 
 export const MIXES: MixPreset[] = [

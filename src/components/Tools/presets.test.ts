@@ -62,4 +62,12 @@ describe('booster presets', () => {
 		}
 		expect(BOOSTERS.some((b) => b.twoStage)).toBe(true)
 	})
+	it('seeds derived drive-air data for the USUN models', () => {
+		const usun = BOOSTERS.filter((b) => b.name.includes('USUN'))
+		expect(usun.length).toBeGreaterThan(0)
+		for (const b of usun) {
+			expect(b.vdPerCycleL).toBeGreaterThan(0)
+			expect(b.driveMaxLpm).toBeGreaterThan(0)
+		}
+	})
 })
