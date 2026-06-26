@@ -91,7 +91,7 @@ describe('two-stage (regulated inlet cap)', () => {
 		const capped = calculateBooster({ ...base, regulatedInletBar: 1000 })
 		expect(capped.driveAirL).toBeCloseTo(single.driveAirL, 6)
 	})
-	it('uses less drive air than single-stage with a low regulated inlet', () => {
+	it('uses different drive air than single-stage with a low regulated inlet', () => {
 		// a low cap means the falling-inlet (log) penalty is replaced by a
 		// constant low inlet for the early part — but the constant term uses the
 		// low cap as the divisor; check it differs and is finite/positive
