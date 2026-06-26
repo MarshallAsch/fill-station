@@ -75,7 +75,7 @@ const ModEndCalculator = () => {
 	]
 
 	return (
-		<div className='lg:grid lg:grid-cols-[minmax(0,1fr)_19rem] lg:items-start lg:gap-6'>
+		<div className='2xl:relative'>
 			<div className='space-y-6'>
 				<UnitToggle show={['depth']} />
 
@@ -183,7 +183,9 @@ const ModEndCalculator = () => {
 					</p>
 				</section>
 			</div>
-			<FormulaPanel rows={formulaRows} />
+			<div className='mt-6 2xl:absolute 2xl:top-0 2xl:left-full 2xl:mt-0 2xl:ml-8 2xl:w-72'>
+				<FormulaPanel rows={formulaRows} />
+			</div>
 		</div>
 	)
 }
