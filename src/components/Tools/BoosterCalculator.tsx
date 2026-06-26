@@ -71,6 +71,7 @@ const BoosterCalculator = () => {
 		vdPerCycleL: toLpm(vdPerCycle, units.airFlow),
 		driveMaxLpm: toLpm(driveMax, units.airFlow),
 		compressorRateLpm: toLpm(compressorRate, units.airFlow),
+		drivePBar: toBar(driveP, units.pressure),
 		storageL: storageGal * GAL_TO_L,
 		storageMaxBar: toBar(storageMax, units.pressure),
 		storageMinBar: toBar(storageMin, units.pressure),
@@ -249,18 +250,20 @@ const BoosterCalculator = () => {
 					<NumberInput
 						id='b-stmax'
 						name='b-stmax'
-						label={`Storage max (${units.pressure})`}
+						label={`Storage cut-out / full (${units.pressure})`}
 						value={storageMax}
 						onChange={setStorageMax}
 						min={0}
+						tooltip='Pressure the compressor fills the storage tank to before shutting off. The usable buffer is the gas between this and the drive pressure.'
 					/>
 					<NumberInput
 						id='b-stmin'
 						name='b-stmin'
-						label={`Storage min (${units.pressure})`}
+						label={`Storage cut-in / restart (${units.pressure})`}
 						value={storageMin}
 						onChange={setStorageMin}
 						min={0}
+						tooltip='Pressure at which the compressor restarts. Sets how often it cycles on/off when it keeps up — it does not set the buffer floor (that is the drive pressure).'
 					/>
 				</div>
 			</section>
@@ -339,6 +342,15 @@ const BoosterCalculator = () => {
 									: `${Math.round(timing.dutyCycle * 100)}%`}
 							</span>
 						</p>
+						{!timing.dutyContinuous && timing.compressorOnSeconds > 0 && (
+							<p className='text-text'>
+								Compressor cycle:{' '}
+								<span className='font-semibold'>
+									~{fmtDuration(timing.compressorOnSeconds)} on /{' '}
+									{fmtDuration(timing.compressorOffSeconds)} off
+								</span>
+							</p>
+						)}
 					</>
 				)}
 			</section>

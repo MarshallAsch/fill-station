@@ -40,6 +40,12 @@ export interface BoosterTiming {
 	cycleRate2: number
 	dutyCycle: number
 	dutyContinuous: boolean
+	// Compressor on/off cycle in the keeps-up case (0 when running continuously
+	// or when storage isn't specified): time the compressor runs to refill the
+	// buffer from cut-in to cut-out, and the idle time as the booster drains it
+	// back from cut-out to cut-in.
+	compressorOnSeconds: number
+	compressorOffSeconds: number
 }
 
 export interface TimingArgs {
@@ -47,8 +53,16 @@ export interface TimingArgs {
 	vdPerCycleL: number
 	driveMaxLpm: number
 	compressorRateLpm: number
+	// Drive (regulated) pressure feeding the booster, bar gauge. The usable
+	// buffer floor: once storage bleeds down to this, the regulator can no
+	// longer hold drive pressure, so buffered drive air is exhausted.
+	drivePBar?: number
 	storageL?: number
 	storageMaxBar?: number
+	// Compressor cut-in (restart) pressure, bar gauge. Bounds the on/off cycle
+	// when the compressor keeps up; it does NOT bound the usable buffer during a
+	// heavy fill (the compressor runs continuously and the tank drains past it
+	// down to the drive pressure).
 	storageMinBar?: number
 }
 
@@ -69,11 +83,26 @@ export function boosterTiming(args: TimingArgs): BoosterTiming | null {
 			cycleRate2: 0,
 			dutyCycle: 0,
 			dutyContinuous: false,
+			compressorOnSeconds: 0,
+			compressorOffSeconds: 0,
 		}
 	}
 	if (driveMaxLpm <= compressorRateLpm) {
 		const fillSeconds = (driveAirL / driveMaxLpm) * 60
 		const rate = cycleRate(driveMaxLpm)
+		// Compressor cycles on/off between cut-in and cut-out. The buffer between
+		// those setpoints drains at the booster draw (off) and refills at the
+		// net surplus (on). Undefined when storage or the gap isn't given, or the
+		// compressor exactly matches the booster (it never shuts off).
+		const cycBuffer =
+			args.storageL && args.storageMaxBar != null && args.storageMinBar != null
+				? Math.max(0, args.storageL * (args.storageMaxBar - args.storageMinBar))
+				: 0
+		const surplus = compressorRateLpm - driveMaxLpm
+		const compressorOffSeconds =
+			cycBuffer > 0 ? (cycBuffer / driveMaxLpm) * 60 : 0
+		const compressorOnSeconds =
+			cycBuffer > 0 && surplus > 0 ? (cycBuffer / surplus) * 60 : 0
 		return {
 			totalCycles,
 			fillSeconds,
@@ -83,11 +112,16 @@ export function boosterTiming(args: TimingArgs): BoosterTiming | null {
 			cycleRate2: rate,
 			dutyCycle: driveMaxLpm / compressorRateLpm,
 			dutyContinuous: false,
+			compressorOnSeconds,
+			compressorOffSeconds,
 		}
 	}
+	// Buffer-limited: the compressor runs continuously and the storage tank
+	// drains from cut-out down to the drive pressure (the floor where the
+	// regulator can no longer hold drive pressure) — not down to the cut-in.
 	const buffer =
-		args.storageL && args.storageMaxBar != null && args.storageMinBar != null
-			? Math.max(0, args.storageL * (args.storageMaxBar - args.storageMinBar))
+		args.storageL && args.storageMaxBar != null && args.drivePBar != null
+			? Math.max(0, args.storageL * (args.storageMaxBar - args.drivePBar))
 			: 0
 	const bufferDrainSec =
 		buffer > 0 ? (buffer / (driveMaxLpm - compressorRateLpm)) * 60 : 0
@@ -106,6 +140,8 @@ export function boosterTiming(args: TimingArgs): BoosterTiming | null {
 		cycleRate2: cycleRate(compressorRateLpm),
 		dutyCycle: 1,
 		dutyContinuous: true,
+		compressorOnSeconds: 0,
+		compressorOffSeconds: 0,
 	}
 }
 
