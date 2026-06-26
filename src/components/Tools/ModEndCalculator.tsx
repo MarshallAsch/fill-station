@@ -9,7 +9,7 @@ import {
 	EndModel,
 	Water,
 } from '@/lib/diveMath/modEnd'
-import { fromMeters, toMeters } from '@/lib/diveMath/units'
+import { AIR_FN2, fromMeters, toMeters } from '@/lib/diveMath/units'
 import FormulaPanel, { FormulaRow } from './FormulaPanel'
 import MixPicker from './MixPicker'
 import SafetyNote from './SafetyNote'
@@ -53,7 +53,7 @@ const ModEndCalculator = () => {
 	const endExpr =
 		model === 'o2-narcotic'
 			? `END = (depth+D₀)(1−FHe) − D₀ = (${m1(depthM)}+${d0})(1−${f3(fheFrac)}) − ${d0} = ${m1(end)} m ≈ ${disp(end)}`
-			: `FN₂ = 1−FO₂−FHe = ${f3(fn2Frac)}; END = (depth+D₀)(FN₂/0.79) − D₀ = ${m1(end)} m ≈ ${disp(end)}`
+			: `FN₂ = 1−FO₂−FHe = ${f3(fn2Frac)}; END = (depth+D₀)(FN₂/${AIR_FN2}) − D₀ = ${m1(end)} m ≈ ${disp(end)}`
 
 	const formulaRows: FormulaRow[] = [
 		{
