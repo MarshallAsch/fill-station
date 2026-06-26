@@ -11,6 +11,7 @@ import {
 } from '@/lib/diveMath/modEnd'
 import { AIR_FN2, fromMeters, toMeters } from '@/lib/diveMath/units'
 import FormulaPanel, { FormulaRow } from './FormulaPanel'
+import { Frac, MathExpr } from './Math'
 import MixPicker from './MixPicker'
 import SafetyNote from './SafetyNote'
 import UnitToggle from './UnitToggle'
@@ -51,22 +52,46 @@ const ModEndCalculator = () => {
 	const disp = (m: number) => `${d(m)} ${units.depth}`
 
 	const endExpr =
-		model === 'o2-narcotic'
-			? `END = (depth+D₀)(1−FHe) − D₀ = (${m1(depthM)}+${d0})(1−${f3(fheFrac)}) − ${d0} = ${m1(end)} m ≈ ${disp(end)}`
-			: `FN₂ = 1−FO₂−FHe = ${f3(fn2Frac)}; END = (depth+D₀)(FN₂/${AIR_FN2}) − D₀ = ${m1(end)} m ≈ ${disp(end)}`
+		model === 'o2-narcotic' ? (
+			<MathExpr>
+				END = (depth + D₀)(1 − FHe) − D₀ = ({m1(depthM)} + {d0})(1 −{' '}
+				{f3(fheFrac)}) − {d0} = {m1(end)} m ≈ {disp(end)}
+			</MathExpr>
+		) : (
+			<MathExpr>
+				FN₂ = 1 − FO₂ − FHe = {f3(fn2Frac)}; END = (depth + D₀) ×{' '}
+				<Frac num='FN₂' den={`${AIR_FN2}`} /> − D₀ = {m1(end)} m ≈ {disp(end)}
+			</MathExpr>
+		)
 
 	const formulaRows: FormulaRow[] = [
 		{
 			label: 'Inputs',
-			expr: `FO₂ = ${f3(fo2Frac)} · FHe = ${f3(fheFrac)} · depth = ${depth} ${units.depth} = ${m1(depthM)} m · D₀ = ${d0} m/bar (${water})`,
+			expr: (
+				<MathExpr>
+					FO₂ = {f3(fo2Frac)} · FHe = {f3(fheFrac)} · depth = {depth}{' '}
+					{units.depth} = {m1(depthM)} m · D₀ = {d0} m/bar ({water})
+				</MathExpr>
+			),
 		},
 		{
 			label: `MOD @ ppO₂ ${ppo2}`,
-			expr: `(ppO₂/FO₂ − 1)×D₀ = (${ppo2}/${f3(fo2Frac)} − 1)×${d0} = ${m1(modEditable)} m ≈ ${disp(modEditable)}`,
+			expr: (
+				<MathExpr>
+					(<Frac num='ppO₂' den='FO₂' /> − 1) × D₀ = (
+					<Frac num={`${ppo2}`} den={f3(fo2Frac)} /> − 1) × {d0} ={' '}
+					{m1(modEditable)} m ≈ {disp(modEditable)}
+				</MathExpr>
+			),
 		},
 		{
 			label: 'MOD @ ppO₂ 1.6',
-			expr: `(1.6/${f3(fo2Frac)} − 1)×${d0} = ${m1(mod16)} m ≈ ${disp(mod16)}`,
+			expr: (
+				<MathExpr>
+					(<Frac num='1.6' den={f3(fo2Frac)} /> − 1) × {d0} = {m1(mod16)} m ≈{' '}
+					{disp(mod16)}
+				</MathExpr>
+			),
 		},
 		{
 			label: `END (${model === 'o2-narcotic' ? 'O₂ narcotic' : 'N₂ only'})`,

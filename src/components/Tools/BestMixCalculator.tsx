@@ -8,6 +8,7 @@ import { bestMix } from '@/lib/diveMath/bestMix'
 import { calculateMod, Water } from '@/lib/diveMath/modEnd'
 import { fromMeters, toMeters } from '@/lib/diveMath/units'
 import FormulaPanel, { FormulaRow } from './FormulaPanel'
+import { Frac, MathExpr } from './Math'
 import SafetyNote from './SafetyNote'
 import UnitToggle from './UnitToggle'
 import { useUnits } from './UnitsProvider'
@@ -46,27 +47,55 @@ const BestMixCalculator = () => {
 	const formulaRows: FormulaRow[] = [
 		{
 			label: 'Inputs',
-			expr: `depth = ${depth} ${units.depth} = ${m1(depthM)} m · ppO₂ = ${ppo2} · D₀ = ${d0} m/bar (${water})`,
+			expr: (
+				<MathExpr>
+					depth = {depth} {units.depth} = {m1(depthM)} m · ppO₂ = {ppo2} · D₀ ={' '}
+					{d0} m/bar ({water})
+				</MathExpr>
+			),
 		},
 		{
-			label: 'Ambient pressure',
-			expr: `ata = depth/D₀ + 1 = ${m1(depthM)}/${d0} + 1 = ${ata.toFixed(2)}`,
+			label: 'Ambient pressure (ata)',
+			expr: (
+				<MathExpr>
+					<Frac num='depth' den='D₀' /> + 1 ={' '}
+					<Frac num={`${m1(depthM)} m`} den={`${d0}`} /> + 1 = {ata.toFixed(2)}
+				</MathExpr>
+			),
 		},
 		{
 			label: 'Best O₂ fraction',
-			expr: `FO₂ = ppO₂/ata = ${ppo2}/${ata.toFixed(2)} = ${f3(mix.fo2)} → ${fo2Pct}%`,
+			expr: (
+				<MathExpr>
+					FO₂ = <Frac num='ppO₂' den='ata' /> ={' '}
+					<Frac num={`${ppo2}`} den={ata.toFixed(2)} /> = {f3(mix.fo2)} →{' '}
+					{fo2Pct}%
+				</MathExpr>
+			),
 		},
 	]
 	if (useHe) {
 		formulaRows.push({
 			label: 'Best He fraction',
-			expr: `FHe = 1 − (END+D₀)/(depth+D₀) = 1 − (${m1(endM)}+${d0})/(${m1(depthM)}+${d0}) = ${f3(mix.fhe)} → ${fhePct}%`,
+			expr: (
+				<MathExpr>
+					FHe = 1 − <Frac num='END + D₀' den='depth + D₀' /> = 1 −{' '}
+					<Frac num={`${m1(endM)} + ${d0}`} den={`${m1(depthM)} + ${d0}`} /> ={' '}
+					{f3(mix.fhe)} → {fhePct}%
+				</MathExpr>
+			),
 			note: `Target END = ${targetEnd} ${units.depth} = ${m1(endM)} m`,
 		})
 	}
 	formulaRows.push({
 		label: 'MOD at this mix',
-		expr: `MOD = (ppO₂/FO₂ − 1)×D₀ = (${ppo2}/${f3(mix.fo2)} − 1)×${d0} = ${m1(mod)} m ≈ ${disp(mod)}`,
+		expr: (
+			<MathExpr>
+				MOD = (<Frac num='ppO₂' den='FO₂' /> − 1) × D₀ = (
+				<Frac num={`${ppo2}`} den={f3(mix.fo2)} /> − 1) × {d0} = {m1(mod)} m ≈{' '}
+				{disp(mod)}
+			</MathExpr>
+		),
 	})
 
 	return (

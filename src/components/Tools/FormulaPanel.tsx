@@ -1,6 +1,8 @@
+import { ReactNode } from 'react'
+
 export interface FormulaRow {
 	label: string
-	expr: string
+	expr: ReactNode
 	note?: string
 }
 
@@ -18,9 +20,7 @@ const FormulaPanel = ({
 				{rows.map((row, i) => (
 					<div key={i}>
 						<dt className='text-light-text text-xs font-medium'>{row.label}</dt>
-						<dd className='text-text mt-0.5 font-mono text-xs break-words'>
-							{row.expr}
-						</dd>
+						<dd className='text-text mt-1 break-words'>{row.expr}</dd>
 						{row.note && (
 							<dd className='text-light-text mt-0.5 text-xs italic'>
 								{row.note}
