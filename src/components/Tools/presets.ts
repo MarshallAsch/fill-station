@@ -5,24 +5,31 @@ export interface TankPreset {
 }
 
 // Common scuba cylinders — water (internal) volume in litres, rated pressure in
-// bar. Aluminum (AL*) water volumes from the Luxfer aluminum cylinder spec sheet
-// (XS Scuba, rev 19A); steel HP* from the Faber steel cylinder spec sheet
-// (XS Scuba). Cylinder names are NOMINAL capacity — e.g. Luxfer lists the AL80's
-// true capacity as 77.4 cu ft — so a free-gas figure computed from water volume ×
-// working pressure is an ideal-gas estimate and won't exactly match the name.
-// LP85/LP95 are approximate (not on those sheets); the metric NL sizes are
-// water-volume by definition.
+// bar. Cylinder names are NOMINAL capacity, not exact: e.g. the AL80 is really
+// 77.4 cu ft (11.1 L × 3000 psi), so a free-gas figure from water volume ×
+// working pressure is an ideal-gas estimate that over-states ~5% at HP. Sources:
+// Luxfer & Catalina (aluminum, all 3000 psi / 206.84 bar — Catalina S80 ≡ Luxfer
+// AL80 on the numbers); Faber & Worthington/PST (steel). NOTE: HP117/HP133 are
+// Faber, HP119/HP130 are Worthington — same nominal class, different cylinders.
+// HP rated 3442 psi (237.32 bar); LP commonly filled to +10% (2640 psi / 182 bar).
+// Metric NL sizes are water-volume by definition.
+const AL_BAR = 206.84 // 3000 psi
+const HP_BAR = 237.32 // 3442 psi
+const LP_BAR = 182.0 // 2640 psi (+10%)
 export const DIVE_TANKS: TankPreset[] = [
-	{ name: 'AL80 (S80)', waterVolumeL: 11.1, ratedBar: 207 },
-	{ name: 'AL63', waterVolumeL: 9.0, ratedBar: 207 },
-	{ name: 'AL40', waterVolumeL: 5.7, ratedBar: 207 },
-	{ name: 'AL30 (pony)', waterVolumeL: 4.3, ratedBar: 207 },
-	{ name: 'HP100', waterVolumeL: 12.9, ratedBar: 237 },
-	{ name: 'HP117', waterVolumeL: 15.0, ratedBar: 237 },
-	{ name: 'HP120', waterVolumeL: 15.3, ratedBar: 237 },
-	{ name: 'HP133', waterVolumeL: 17.0, ratedBar: 237 },
-	{ name: 'LP85', waterVolumeL: 11.1, ratedBar: 182 },
-	{ name: 'LP95', waterVolumeL: 12.4, ratedBar: 182 },
+	{ name: 'AL80 (S80)', waterVolumeL: 11.1, ratedBar: AL_BAR },
+	{ name: 'AL63 (S63)', waterVolumeL: 9.0, ratedBar: AL_BAR },
+	{ name: 'AL40', waterVolumeL: 5.7, ratedBar: AL_BAR },
+	{ name: 'AL30 (pony)', waterVolumeL: 4.3, ratedBar: AL_BAR },
+	{ name: 'AL19 (pony)', waterVolumeL: 2.9, ratedBar: AL_BAR },
+	{ name: 'HP100 (Faber)', waterVolumeL: 12.9, ratedBar: HP_BAR },
+	{ name: 'HP117 (Faber)', waterVolumeL: 15.0, ratedBar: HP_BAR },
+	{ name: 'HP119 (Worthington)', waterVolumeL: 15.0, ratedBar: HP_BAR },
+	{ name: 'HP120 (Faber)', waterVolumeL: 15.3, ratedBar: HP_BAR },
+	{ name: 'HP130 (Worthington)', waterVolumeL: 16.3, ratedBar: HP_BAR },
+	{ name: 'HP133 (Faber)', waterVolumeL: 17.0, ratedBar: HP_BAR },
+	{ name: 'LP85', waterVolumeL: 12.9, ratedBar: LP_BAR },
+	{ name: 'LP95', waterVolumeL: 14.9, ratedBar: LP_BAR },
 	{ name: 'Steel 12 L', waterVolumeL: 12.0, ratedBar: 232 },
 	{ name: 'Steel 15 L', waterVolumeL: 15.0, ratedBar: 232 },
 	{ name: 'Steel 7 L (stage)', waterVolumeL: 7.0, ratedBar: 232 },
