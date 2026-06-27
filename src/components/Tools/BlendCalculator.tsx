@@ -1,15 +1,16 @@
 'use client'
 
-import { useState } from 'react'
 import NumberInput from '@/components/UI/FormElements/NumberInput'
 import { type BlendComponent, calculateBlend } from '@/lib/diveMath/blending'
-import { fromBar, toBar } from '@/lib/diveMath/units'
+import { toBar } from '@/lib/diveMath/units'
+import { roundPressure } from '@/lib/diveMath/format'
 import MixPicker from './MixPicker'
 import HotFillNote from './HotFillNote'
 import RealGasNote from './RealGasNote'
 import SafetyNote from './SafetyNote'
 import { useUnits } from './UnitsProvider'
-import { usePressureState } from './useUnitState'
+import { usePersistedPressure } from './useUnitState'
+import { usePersistedState } from './usePersistedState'
 import { useHotFill } from './useHotFill'
 
 const BLEND_LABEL: Record<BlendComponent, string> = {
@@ -21,16 +22,23 @@ const BLEND_LABEL: Record<BlendComponent, string> = {
 const BlendCalculator = () => {
 	const { units, useRealGas } = useUnits()
 	const hot = useHotFill()
-	const [startPressure, setStartPressure] = usePressureState(0)
-	const [startO2, setStartO2] = useState(21)
-	const [startHe, setStartHe] = useState(0)
-	const [finalPressure, setFinalPressure] = usePressureState(3000)
+	const [startPressure, setStartPressure] = usePersistedPressure('bl.start', 0)
+	const [startO2, setStartO2] = usePersistedState('bl.startO2', 21)
+	const [startHe, setStartHe] = usePersistedState('bl.startHe', 0)
+	const [finalPressure, setFinalPressure] = usePersistedPressure(
+		'bl.final',
+		3000,
+	)
 	const hotFinal = hot.hotFill(finalPressure)
-	const [targetO2, setTargetO2] = useState(32)
-	const [targetHe, setTargetHe] = useState(0)
-	const [topO2, setTopO2] = useState(21)
-	const [topHe, setTopHe] = useState(0)
-	const [order, setOrder] = useState<BlendComponent[]>(['he', 'o2', 'top'])
+	const [targetO2, setTargetO2] = usePersistedState('bl.targetO2', 32)
+	const [targetHe, setTargetHe] = usePersistedState('bl.targetHe', 0)
+	const [topO2, setTopO2] = usePersistedState('bl.topO2', 21)
+	const [topHe, setTopHe] = usePersistedState('bl.topHe', 0)
+	const [order, setOrder] = usePersistedState<BlendComponent[]>('bl.order', [
+		'he',
+		'o2',
+		'top',
+	])
 
 	const result = calculateBlend(
 		{
@@ -47,7 +55,6 @@ const BlendCalculator = () => {
 		{ useRealGas },
 	)
 
-	const p = (bar: number) => Math.round(fromBar(bar, units.pressure))
 	const startMixInvalid = startO2 + startHe > 100
 	const targetMixInvalid = targetO2 + targetHe > 100
 	const topMixInvalid = topO2 + topHe > 100
@@ -200,7 +207,8 @@ const BlendCalculator = () => {
 											<span className='font-semibold'>{step.label}</span>
 											{': add to '}
 											<span className='font-semibold'>
-												{p(step.toBar)} {units.pressure}
+												{roundPressure(step.toBar, units.pressure)}{' '}
+												{units.pressure}
 											</span>
 										</li>
 									))}
