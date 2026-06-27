@@ -1,13 +1,11 @@
 'use client'
 
 import { useState } from 'react'
-import NumberInput from '@/components/UI/FormElements/NumberInput'
 import { calculateCascade } from '@/lib/diveMath/cascade'
 import { fromBar, toBar } from '@/lib/diveMath/units'
 import CascadeCylinders from './CascadeCylinders'
+import CylinderFields from './CylinderFields'
 import RealGasNote from './RealGasNote'
-import SafetyNote from './SafetyNote'
-import TankSizePicker from './TankSizePicker'
 import TemperatureResult from './TemperatureResult'
 import { useUnits } from './UnitsProvider'
 import { usePressureState } from './useUnitState'
@@ -15,19 +13,18 @@ import { usePressureState } from './useUnitState'
 interface BankRow {
 	volume: number
 	pressure: number
+	working: number
 }
 
 const CascadeCalculator = () => {
 	const { units, useRealGas } = useUnits()
 	const [banks, setBanks] = useState<BankRow[]>([
-		{ volume: 50, pressure: 3000 },
+		{ volume: 50, pressure: 3000, working: 3000 },
 	])
 	const [targetVolume, setTargetVolume] = useState(11.1)
 	const [startPressure, setStartPressure] = usePressureState(500)
 	const [desiredPressure, setDesiredPressure] = usePressureState(3000)
-	const [workingPressureBar, setWorkingPressureBar] = useState<number | null>(
-		null,
-	)
+	const [fillWorking, setFillWorking] = usePressureState(3000)
 
 	const updateBank = (i: number, key: keyof BankRow, value: number) => {
 		setBanks((prev) =>
@@ -35,7 +32,7 @@ const CascadeCalculator = () => {
 		)
 	}
 	const addBank = () =>
-		setBanks((prev) => [...prev, { volume: 50, pressure: 3000 }])
+		setBanks((prev) => [...prev, { volume: 50, pressure: 3000, working: 3000 }])
 	const removeBank = (i: number) =>
 		setBanks((prev) => prev.filter((_, idx) => idx !== i))
 
@@ -79,9 +76,6 @@ const CascadeCalculator = () => {
 	]
 
 	const p = (bar: number) => Math.round(fromBar(bar, units.pressure))
-	const overfill =
-		workingPressureBar != null &&
-		toBar(desiredPressure, units.pressure) > workingPressureBar * 1.1
 
 	return (
 		<div className='2xl:relative'>
@@ -89,34 +83,22 @@ const CascadeCalculator = () => {
 				<section className='space-y-4'>
 					<h2 className='text-text text-lg font-semibold'>Storage bank</h2>
 					{banks.map((b, i) => (
-						<div key={i} className='flex flex-wrap items-end gap-3'>
-							<TankSizePicker
-								category='storage'
-								idSuffix={String(i)}
-								onSelect={(l, bar) => {
-									updateBank(i, 'volume', l)
-									updateBank(i, 'pressure', fromBar(bar, units.pressure))
+						<div key={i} className='space-y-2'>
+							<CylinderFields
+								idPrefix={`bank-${i}`}
+								category='cascade'
+								waterVolumeL={b.volume}
+								onWaterVolumeL={(v) => updateBank(i, 'volume', v)}
+								working={{
+									value: b.working,
+									onChange: (v) => updateBank(i, 'working', v),
+								}}
+								filled={{
+									value: b.pressure,
+									onChange: (v) => updateBank(i, 'pressure', v),
+									label: 'Current pressure',
 								}}
 							/>
-							<div className='grid grid-cols-2 gap-4'>
-								<NumberInput
-									id={`bank-vol-${i}`}
-									name={`bank-vol-${i}`}
-									label='Volume (L)'
-									value={b.volume}
-									onChange={(v) => updateBank(i, 'volume', v)}
-									tooltip='Water (internal) cylinder volume — not free-gas capacity'
-									min={0}
-								/>
-								<NumberInput
-									id={`bank-pr-${i}`}
-									name={`bank-pr-${i}`}
-									label={`Pressure (${units.pressure})`}
-									value={b.pressure}
-									onChange={(v) => updateBank(i, 'pressure', v)}
-									min={0}
-								/>
-							</div>
 							<button
 								type='button'
 								onClick={() => removeBank(i)}
@@ -138,47 +120,23 @@ const CascadeCalculator = () => {
 
 				<section className='space-y-4'>
 					<h2 className='text-text text-lg font-semibold'>Cylinder to fill</h2>
-					<TankSizePicker
-						category='dive'
-						onSelect={(l, bar) => {
-							setTargetVolume(l)
-							setDesiredPressure(fromBar(bar, units.pressure))
-							setWorkingPressureBar(bar)
+					<CylinderFields
+						idPrefix='cas-fill'
+						category={['scuba', 'cascade']}
+						waterVolumeL={targetVolume}
+						onWaterVolumeL={setTargetVolume}
+						working={{ value: fillWorking, onChange: setFillWorking }}
+						start={{
+							value: startPressure,
+							onChange: setStartPressure,
+							label: 'Start pressure',
+						}}
+						filled={{
+							value: desiredPressure,
+							onChange: setDesiredPressure,
+							label: 'Target pressure',
 						}}
 					/>
-					<div className='grid grid-cols-1 gap-4 sm:grid-cols-2'>
-						<NumberInput
-							id='target-vol'
-							name='target-vol'
-							label='Volume (L)'
-							value={targetVolume}
-							onChange={setTargetVolume}
-							tooltip='Water (internal) cylinder volume — not free-gas capacity'
-							min={0}
-						/>
-						<NumberInput
-							id='target-start'
-							name='target-start'
-							label={`Start pressure (${units.pressure})`}
-							value={startPressure}
-							onChange={setStartPressure}
-							min={0}
-						/>
-						<NumberInput
-							id='target-desired'
-							name='target-desired'
-							label={`Desired pressure (${units.pressure})`}
-							value={desiredPressure}
-							onChange={setDesiredPressure}
-							min={0}
-						/>
-					</div>
-					{overfill && (
-						<SafetyNote level='danger'>
-							Fill pressure is more than 10% over the cylinder&apos;s working
-							pressure.
-						</SafetyNote>
-					)}
 				</section>
 
 				<section className='border-border space-y-2 rounded-md border p-4'>
