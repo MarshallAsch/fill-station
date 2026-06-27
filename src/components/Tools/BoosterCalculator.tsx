@@ -18,13 +18,13 @@ import {
 } from '@/lib/diveMath/units'
 import BoosterChart from './BoosterChart'
 import CycleRateChart from './CycleRateChart'
+import CylinderFields from './CylinderFields'
 import DualAxisChart from './DualAxisChart'
 import BoosterPicker from './BoosterPicker'
 import MixPicker from './MixPicker'
 import RealGasNote from './RealGasNote'
 import SafetyNote from './SafetyNote'
 import TemperatureResult from './TemperatureResult'
-import TankSizePicker from './TankSizePicker'
 import { usePressureState } from './useUnitState'
 import { useUnits } from './UnitsProvider'
 
@@ -50,8 +50,10 @@ const BoosterCalculator = () => {
 	const [maxCpm, setMaxCpm] = useState(0)
 	const [supplyVol, setSupplyVol] = useState(50)
 	const [supplyStart, setSupplyStart] = usePressureState(2900)
+	const [supplyWorking, setSupplyWorking] = usePressureState(2900)
 	const [receiverVol, setReceiverVol] = useState(5.7)
 	const [receiverStart, setReceiverStart] = usePressureState(0)
+	const [receiverWorking, setReceiverWorking] = usePressureState(3000)
 	const [target, setTarget] = usePressureState(3000)
 	const [maxFillRate, setMaxFillRate] = usePressureState(300)
 	const [compressorRate, setCompressorRate] = useState(0)
@@ -253,69 +255,40 @@ const BoosterCalculator = () => {
 
 				<section className='space-y-3'>
 					<h2 className='text-text text-lg font-semibold'>Supply cylinder</h2>
-					<TankSizePicker
+					<CylinderFields
+						idPrefix='b-supply'
 						category='industrial'
-						onSelect={(l, bar) => {
-							setSupplyVol(l)
-							setSupplyStart(fromBar(bar, units.pressure))
+						waterVolumeL={supplyVol}
+						onWaterVolumeL={setSupplyVol}
+						working={{ value: supplyWorking, onChange: setSupplyWorking }}
+						filled={{
+							value: supplyStart,
+							onChange: setSupplyStart,
+							label: 'Current pressure',
 						}}
 					/>
-					<div className='grid grid-cols-1 gap-4 sm:grid-cols-2'>
-						<NumberInput
-							id='b-svol'
-							name='b-svol'
-							label='Supply volume (L)'
-							value={supplyVol}
-							onChange={setSupplyVol}
-							min={0}
-							tooltip='Water (internal) cylinder volume — not free-gas capacity'
-						/>
-						<NumberInput
-							id='b-sstart'
-							name='b-sstart'
-							label={`Supply start (${units.pressure})`}
-							value={supplyStart}
-							onChange={setSupplyStart}
-							min={0}
-						/>
-					</div>
 				</section>
 
 				<section className='space-y-3'>
 					<h2 className='text-text text-lg font-semibold'>Receiver cylinder</h2>
-					<TankSizePicker
-						category='dive'
-						onSelect={(l, bar) => {
-							setReceiverVol(l)
-							setTarget(fromBar(bar, units.pressure))
+					<CylinderFields
+						idPrefix='b-receiver'
+						category={['scuba', 'cascade']}
+						waterVolumeL={receiverVol}
+						onWaterVolumeL={setReceiverVol}
+						working={{ value: receiverWorking, onChange: setReceiverWorking }}
+						start={{
+							value: receiverStart,
+							onChange: setReceiverStart,
+							label: 'Start pressure',
+						}}
+						filled={{
+							value: target,
+							onChange: setTarget,
+							label: 'Target pressure',
 						}}
 					/>
 					<div className='grid grid-cols-1 gap-4 sm:grid-cols-2'>
-						<NumberInput
-							id='b-rvol'
-							name='b-rvol'
-							label='Receiver volume (L)'
-							value={receiverVol}
-							onChange={setReceiverVol}
-							min={0}
-							tooltip='Water (internal) cylinder volume — not free-gas capacity'
-						/>
-						<NumberInput
-							id='b-rstart'
-							name='b-rstart'
-							label={`Receiver start (${units.pressure})`}
-							value={receiverStart}
-							onChange={setReceiverStart}
-							min={0}
-						/>
-						<NumberInput
-							id='b-target'
-							name='b-target'
-							label={`Target (${units.pressure})`}
-							value={target}
-							onChange={setTarget}
-							min={0}
-						/>
 						<NumberInput
 							id='b-fillrate'
 							name='b-fillrate'
