@@ -22,10 +22,11 @@ import CylinderFields from './CylinderFields'
 import DualAxisChart from './DualAxisChart'
 import BoosterPicker from './BoosterPicker'
 import MixPicker from './MixPicker'
+import HotFillNote from './HotFillNote'
 import RealGasNote from './RealGasNote'
 import SafetyNote from './SafetyNote'
-import TemperatureResult from './TemperatureResult'
 import { usePressureState } from './useUnitState'
+import { useHotFill } from './useHotFill'
 import { useUnits } from './UnitsProvider'
 
 const GAL_TO_L = 3.785411784
@@ -40,6 +41,7 @@ function fmtDuration(sec: number): string {
 
 const BoosterCalculator = () => {
 	const { units, useRealGas } = useUnits()
+	const hot = useHotFill()
 	const [ratio, setRatio] = useState(30)
 	const [driveP, setDriveP] = usePressureState(120)
 	const [o2Pct, setO2Pct] = useState(100)
@@ -63,7 +65,8 @@ const BoosterCalculator = () => {
 
 	const supplyStartBar = toBar(supplyStart, units.pressure)
 	const receiverStartBar = toBar(receiverStart, units.pressure)
-	const targetBar = toBar(target, units.pressure)
+	const hotTarget = hot.hotFill(target)
+	const targetBar = toBar(hotTarget, units.pressure)
 
 	const input = {
 		ratio,
@@ -442,7 +445,7 @@ const BoosterCalculator = () => {
 							)}
 						</>
 					)}
-					<TemperatureResult goalBar={targetBar} />
+					{hot.on && <HotFillNote cold={target} hot={hotTarget} />}
 				</section>
 
 				{profile.length > 0 && (
