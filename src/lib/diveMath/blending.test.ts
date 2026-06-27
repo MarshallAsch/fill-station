@@ -95,3 +95,45 @@ describe('calculateBlend real-gas opt-in', () => {
 		expect(real.pHe).toBeGreaterThan(ideal.pHe)
 	})
 })
+
+describe('blend top-up gas + order', () => {
+	const base = {
+		startPressure: 0,
+		startFo2: 0.209,
+		startFhe: 0,
+		finalPressure: 200,
+		targetFo2: 0.32,
+		targetFhe: 0,
+	}
+	it('air top-up (default) matches the legacy O2/He/air result', () => {
+		const r = calculateBlend(base)
+		expect(r.pHe).toBeCloseTo(0, 6)
+		expect(r.pTop).toBeGreaterThan(0)
+		expect(r.steps[r.steps.length - 1].toBar).toBeCloseTo(200, 6)
+	})
+	it('produces one step per component in the chosen order', () => {
+		const r = calculateBlend({ ...base, order: ['o2', 'he', 'top'] })
+		expect(r.steps.map((s) => s.gas)).toEqual(['o2', 'he', 'top'])
+		// cumulative and non-decreasing, ending at the final pressure
+		for (let i = 1; i < r.steps.length; i++) {
+			expect(r.steps[i].toBar).toBeGreaterThanOrEqual(r.steps[i - 1].toBar)
+		}
+		expect(r.steps[r.steps.length - 1].toBar).toBeCloseTo(200, 6)
+	})
+	it('a richer top-up gas needs less added O2 for the same target', () => {
+		const air = calculateBlend(base)
+		const ean25 = calculateBlend({ ...base, topupFo2: 0.25 })
+		expect(ean25.pO2).toBeLessThan(air.pO2)
+		expect(ean25.feasible).toBe(true)
+	})
+	it('flags drain-required when the start mix is too rich', () => {
+		const r = calculateBlend({
+			...base,
+			startPressure: 150,
+			startFo2: 0.5,
+			targetFo2: 0.21,
+		})
+		expect(r.feasible).toBe(false)
+		expect(r.reason).toBeTruthy()
+	})
+})
