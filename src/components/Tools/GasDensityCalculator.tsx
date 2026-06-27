@@ -41,15 +41,12 @@ const GasDensityCalculator = () => {
 	})
 	const d = (m: number) => Math.round(fromMeters(m, units.depth))
 
-	const flag =
+	const densityStatus =
 		density > HARD_MAX_DENSITY
-			? {
-					text: 'Exceeds the 6.3 g/L hard limit.',
-					cls: 'text-text font-semibold',
-				}
+			? 'hard'
 			: density > RECOMMENDED_MAX_DENSITY
-				? { text: 'Above the 5.2 g/L recommended limit.', cls: 'text-text' }
-				: { text: 'Within recommended density.', cls: 'text-light-text' }
+				? 'warning'
+				: 'ok'
 
 	const mixInvalid = fo2 + fhe > 100
 
@@ -111,7 +108,19 @@ const GasDensityCalculator = () => {
 					At {depth} {units.depth}:{' '}
 					<span className='font-semibold'>{density.toFixed(2)} g/L</span>
 				</p>
-				<p className={flag.cls + ' text-sm'}>{flag.text}</p>
+				{densityStatus === 'hard' && (
+					<SafetyNote level='danger'>
+						Exceeds the 6.3 g/L hard limit.
+					</SafetyNote>
+				)}
+				{densityStatus === 'warning' && (
+					<SafetyNote level='warning'>
+						Above the 5.2 g/L recommended limit.
+					</SafetyNote>
+				)}
+				{densityStatus === 'ok' && (
+					<p className='text-light-text text-sm'>Within recommended density.</p>
+				)}
 				<p className='text-light-text text-sm'>
 					Recommended max (5.2 g/L) depth: {d(recDepth)} {units.depth} · Hard
 					max (6.3 g/L) depth: {d(hardDepth)} {units.depth}

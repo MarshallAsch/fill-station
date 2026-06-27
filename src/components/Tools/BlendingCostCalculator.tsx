@@ -76,7 +76,7 @@ const BlendingCostCalculator = () => {
 						setStartHe(he)
 					}}
 				/>
-				<div className='flex flex-wrap items-end gap-3'>
+				<div className='grid grid-cols-1 gap-4 sm:grid-cols-2'>
 					<NumberInput
 						id='c-tank'
 						name='c-tank'
@@ -124,7 +124,7 @@ const BlendingCostCalculator = () => {
 						setTargetHe(he)
 					}}
 				/>
-				<div className='flex flex-wrap items-end gap-3'>
+				<div className='grid grid-cols-1 gap-4 sm:grid-cols-2'>
 					<NumberInput
 						id='c-fp'
 						name='c-fp'
@@ -162,7 +162,7 @@ const BlendingCostCalculator = () => {
 				<h2 className='text-text text-lg font-semibold'>
 					Gas prices (per surface litre)
 				</h2>
-				<div className='flex flex-wrap items-end gap-3'>
+				<div className='grid grid-cols-1 gap-4 sm:grid-cols-2'>
 					<NumberInput
 						id='c-po2'
 						name='c-po2'
@@ -181,7 +181,7 @@ const BlendingCostCalculator = () => {
 					/>
 				</div>
 			</section>
-			<section className='border-border space-y-1 rounded-md border p-4'>
+			<section className='border-border space-y-2 rounded-md border p-4'>
 				<h2 className='text-text text-lg font-semibold'>Cost</h2>
 				{blend.feasible ? (
 					<>

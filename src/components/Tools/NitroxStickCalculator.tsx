@@ -70,18 +70,20 @@ const NitroxStickCalculator = () => {
 						special handling.
 					</SafetyNote>
 				)}
-				<p className='text-text'>
-					O₂ flow into the stick:{' '}
-					<span className='font-semibold'>
-						{leanWarning ? '0.00' : fromLpm(flow, units.o2Flow).toFixed(2)}
-					</span>{' '}
-					<span className='text-light-text text-sm'>{units.o2Flow}</span>
-				</p>
-				{leanWarning && (
-					<p className='text-light-text text-sm'>
-						Target is air or leaner — no O₂ injection needed.
+				<div className='border-border space-y-2 rounded-md border p-4'>
+					<p className='text-text'>
+						O₂ flow into the stick:{' '}
+						<span className='font-semibold'>
+							{leanWarning ? '0.00' : fromLpm(flow, units.o2Flow).toFixed(2)}
+						</span>{' '}
+						<span className='text-light-text text-sm'>{units.o2Flow}</span>
 					</p>
-				)}
+					{leanWarning && (
+						<p className='text-light-text text-sm'>
+							Target is air or leaner — no O₂ injection needed.
+						</p>
+					)}
+				</div>
 			</section>
 
 			<section className='space-y-4'>

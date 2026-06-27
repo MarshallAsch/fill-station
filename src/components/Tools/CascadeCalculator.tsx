@@ -98,7 +98,7 @@ const CascadeCalculator = () => {
 									updateBank(i, 'pressure', fromBar(bar, units.pressure))
 								}}
 							/>
-							<div className='grid grid-cols-2 gap-3'>
+							<div className='grid grid-cols-2 gap-4'>
 								<NumberInput
 									id={`bank-vol-${i}`}
 									name={`bank-vol-${i}`}

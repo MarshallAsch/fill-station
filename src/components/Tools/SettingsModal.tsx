@@ -31,7 +31,10 @@ const SettingsModal = ({
 					leaveFrom='opacity-100'
 					leaveTo='opacity-0'
 				>
-					<div className='fixed inset-0 bg-black/40' aria-hidden='true' />
+					<div
+						className='bg-overlay fixed inset-0 transition-opacity'
+						aria-hidden='true'
+					/>
 				</TransitionChild>
 				<div className='fixed inset-0 flex items-center justify-center p-4'>
 					<TransitionChild
@@ -71,7 +74,7 @@ const SettingsModal = ({
 								<button
 									type='button'
 									onClick={onClose}
-									className='bg-accent text-white-text rounded-md px-4 py-2 text-sm font-medium'
+									className='bg-accent text-white-text rounded-md px-4 py-2 text-sm font-medium hover:opacity-90'
 								>
 									Done
 								</button>

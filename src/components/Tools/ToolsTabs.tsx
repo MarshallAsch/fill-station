@@ -52,7 +52,7 @@ const ToolsTabs = ({
 					onClick={() => setSettingsOpen(true)}
 					className='border-border text-text hover:bg-hover rounded-md border px-3 py-1.5 text-sm font-medium'
 				>
-					⚙ Settings
+					<span aria-hidden='true'>⚙</span> Settings
 				</button>
 			</div>
 			<div className='border-border flex flex-wrap gap-2 border-b'>

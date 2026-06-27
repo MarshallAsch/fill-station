@@ -217,7 +217,7 @@ const BlendCalculator = () => {
 													type='button'
 													onClick={() => move(i, -1)}
 													disabled={i === 0}
-													className='text-light-text hover:text-accent disabled:opacity-30'
+													className='text-light-text hover:text-accent px-2 py-1 disabled:opacity-30'
 													aria-label={`Move ${BLEND_LABEL[gas]} up`}
 												>
 													▲
@@ -226,7 +226,7 @@ const BlendCalculator = () => {
 													type='button'
 													onClick={() => move(i, 1)}
 													disabled={i === order.length - 1}
-													className='text-light-text hover:text-accent disabled:opacity-30'
+													className='text-light-text hover:text-accent px-2 py-1 disabled:opacity-30'
 													aria-label={`Move ${BLEND_LABEL[gas]} down`}
 												>
 													▼

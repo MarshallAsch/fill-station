@@ -79,7 +79,7 @@ const OxygenExposureCalculator = () => {
 				{rows.map((r, i) => (
 					<div
 						key={i}
-						className='border-border space-y-3 rounded-md border p-3'
+						className='border-border space-y-3 rounded-md border p-4'
 					>
 						<div className='flex items-center justify-between'>
 							<h3 className='text-text font-semibold'>Dive {i + 1}</h3>
@@ -143,7 +143,7 @@ const OxygenExposureCalculator = () => {
 					Add dive
 				</button>
 			</section>
-			<section className='border-border space-y-1 rounded-md border p-4'>
+			<section className='border-border space-y-2 rounded-md border p-4'>
 				<h2 className='text-text text-lg font-semibold'>Day totals</h2>
 				{ppo2AggrDanger && (
 					<SafetyNote level='danger'>

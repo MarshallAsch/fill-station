@@ -79,7 +79,7 @@ const EadCalculator = () => {
 					{ value: 'fresh', label: 'Fresh' },
 				]}
 			/>
-			<section className='border-border rounded-md border p-4'>
+			<section className='border-border space-y-2 rounded-md border p-4'>
 				<h2 className='text-text text-lg font-semibold'>
 					Equivalent Air Depth
 				</h2>

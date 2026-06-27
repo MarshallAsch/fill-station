@@ -7,7 +7,7 @@ export default function ToolsAboutPage() {
 			<Link href='/tools' className='text-accent text-sm underline'>
 				← Back to tools
 			</Link>
-			<h1 className='text-text mt-2 mb-2 text-3xl font-bold'>
+			<h1 className='text-text mt-4 mb-2 text-3xl font-bold'>
 				About the Dive Tools
 			</h1>
 			<div className='border-border bg-hover text-text mb-6 rounded-md border p-3 text-sm'>
@@ -30,12 +30,13 @@ export default function ToolsAboutPage() {
 				</section>
 			))}
 
-			<h2 className='text-text mt-8 mb-2 text-xl font-semibold'>
+			<hr className='border-border my-8' />
+			<h2 className='text-text mb-2 text-xl font-semibold'>
 				How it works &amp; decisions made
 			</h2>
 			<div className='text-text space-y-4 text-sm'>
 				<div>
-					<h3 className='font-semibold'>Real gas vs ideal gas</h3>
+					<h3 className='text-text font-semibold'>Real gas vs ideal gas</h3>
 					<p>
 						Gas amounts use the compressibility factor Z (PV = ZnRT), not just
 						the ideal PV = nRT. A first-order linear Z (O₂ ≈ 0.96, N₂ ≈ 1.04, He
@@ -46,7 +47,7 @@ export default function ToolsAboutPage() {
 					</p>
 				</div>
 				<div>
-					<h3 className='font-semibold'>Temperature / hot fills</h3>
+					<h3 className='text-text font-semibold'>Temperature / hot fills</h3>
 					<p>
 						A cylinder fills hot and loses pressure as it cools (Gay-Lussac: P/T
 						constant at fixed volume). With temperatures set, the tools show the
@@ -56,7 +57,7 @@ export default function ToolsAboutPage() {
 					</p>
 				</div>
 				<div>
-					<h3 className='font-semibold'>Booster model</h3>
+					<h3 className='text-text font-semibold'>Booster model</h3>
 					<p>
 						The drive pressure ramps to only what the back-pressure needs (≈
 						receiver pressure ÷ ratio), so drive air is the receiver/supply
@@ -67,7 +68,7 @@ export default function ToolsAboutPage() {
 					</p>
 				</div>
 				<div>
-					<h3 className='font-semibold'>Data sources</h3>
+					<h3 className='text-text font-semibold'>Data sources</h3>
 					<p>
 						Cylinder water volumes and pressures: Luxfer / Catalina (aluminum,
 						3000 psi), Faber / Worthington (HP steel, 3442 psi), UN / industrial

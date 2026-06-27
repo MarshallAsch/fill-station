@@ -114,7 +114,7 @@ const GasMixingCalculator = () => {
 					</SafetyNote>
 				)}
 			</section>
-			<section className='border-border space-y-1 rounded-md border p-4'>
+			<section className='border-border space-y-2 rounded-md border p-4'>
 				<h2 className='text-text text-lg font-semibold'>Resulting mix</h2>
 				<p className='text-text text-2xl font-bold'>
 					{Math.round(result.fo2 * 100)}/{Math.round(result.fhe * 100)}

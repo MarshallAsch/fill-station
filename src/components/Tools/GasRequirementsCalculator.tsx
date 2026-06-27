@@ -120,9 +120,12 @@ const GasRequirementsCalculator = () => {
 						min={0}
 					/>
 				</div>
-				<p className='text-text'>
-					RMV: <span className='font-semibold'>{rmvLpm.toFixed(1)} L/min</span>
-				</p>
+				<div className='border-border space-y-2 rounded-md border p-4'>
+					<p className='text-text'>
+						RMV:{' '}
+						<span className='font-semibold'>{rmvLpm.toFixed(1)} L/min</span>
+					</p>
+				</div>
 			</section>
 			<section className='space-y-3'>
 				<h2 className='text-text text-lg font-semibold'>
@@ -187,7 +190,7 @@ const GasRequirementsCalculator = () => {
 					/>
 				</div>
 			</section>
-			<section className='border-border space-y-1 rounded-md border p-4'>
+			<section className='border-border space-y-2 rounded-md border p-4'>
 				<h2 className='text-text text-lg font-semibold'>Results</h2>
 				<p className='text-text'>
 					Dive gas needed:{' '}
