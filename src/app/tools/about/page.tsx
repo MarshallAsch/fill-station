@@ -15,6 +15,11 @@ export default function ToolsAboutPage() {
 				are estimates — independently verify and analyze every gas mix and dive
 				plan before diving.
 			</div>
+			<p className='mb-6 text-sm'>
+				<Link href='/tools/reference' className='text-accent underline'>
+					Equations &amp; references →
+				</Link>
+			</p>
 
 			{GROUPS.map((g) => (
 				<section key={g.id} className='mb-6'>

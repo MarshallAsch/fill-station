@@ -10,6 +10,7 @@ const publicPages = [
 	'/contact',
 	'/tools',
 	'/tools/about',
+	'/tools/reference',
 ]
 
 function isPublicFile(pathname: string): boolean {
