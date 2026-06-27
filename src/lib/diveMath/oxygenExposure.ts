@@ -1,5 +1,5 @@
 // NOAA single-exposure CNS limits: ppO2 (ata) -> max minutes.
-const CNS_TABLE: [number, number][] = [
+export const CNS_TABLE: [number, number][] = [
 	[0.6, 720],
 	[0.7, 570],
 	[0.8, 450],
