@@ -4,6 +4,7 @@ import { useState } from 'react'
 import NumberInput from '@/components/UI/FormElements/NumberInput'
 import { calculateCascade } from '@/lib/diveMath/cascade'
 import { fromBar, toBar } from '@/lib/diveMath/units'
+import CascadeCylinders from './CascadeCylinders'
 import RealGasNote from './RealGasNote'
 import SafetyNote from './SafetyNote'
 import TankSizePicker from './TankSizePicker'
@@ -52,6 +53,30 @@ const CascadeCalculator = () => {
 		},
 		{ useRealGas },
 	)
+
+	const cylMax = Math.max(
+		...banks.map((b) => b.pressure),
+		fromBar(result.finalPressure, units.pressure),
+		1,
+	)
+	const cylinders = [
+		...banks.map((b, i) => ({
+			label: `Bank ${i + 1}`,
+			volumeL: b.volume,
+			startP: b.pressure,
+			endP: fromBar(result.banks[i].residualPressure, units.pressure),
+			maxP: cylMax,
+			colorClass: ['text-warning', 'text-light-text', 'text-accent'][i % 3],
+		})),
+		{
+			label: 'Fill',
+			volumeL: targetVolume,
+			startP: startPressure,
+			endP: fromBar(result.finalPressure, units.pressure),
+			maxP: cylMax,
+			colorClass: 'text-accent',
+		},
+	]
 
 	const p = (bar: number) => Math.round(fromBar(bar, units.pressure))
 	const overfill =
@@ -176,6 +201,7 @@ const CascadeCalculator = () => {
 							? 'Reaches the desired pressure.'
 							: `Falls short of the desired ${desiredPressure} ${units.pressure}.`}
 					</p>
+					<CascadeCylinders cylinders={cylinders} unit={units.pressure} />
 					<div className='text-light-text text-sm'>
 						Bank residual pressures:{' '}
 						{result.banks.map((b, i) => (
