@@ -5,11 +5,12 @@ import NumberInput from '@/components/UI/FormElements/NumberInput'
 import { type BlendComponent, calculateBlend } from '@/lib/diveMath/blending'
 import { fromBar, toBar } from '@/lib/diveMath/units'
 import MixPicker from './MixPicker'
+import HotFillNote from './HotFillNote'
 import RealGasNote from './RealGasNote'
 import SafetyNote from './SafetyNote'
-import TemperatureResult from './TemperatureResult'
 import { useUnits } from './UnitsProvider'
 import { usePressureState } from './useUnitState'
+import { useHotFill } from './useHotFill'
 
 const BLEND_LABEL: Record<BlendComponent, string> = {
 	o2: 'O₂',
@@ -19,10 +20,12 @@ const BLEND_LABEL: Record<BlendComponent, string> = {
 
 const BlendCalculator = () => {
 	const { units, useRealGas } = useUnits()
+	const hot = useHotFill()
 	const [startPressure, setStartPressure] = usePressureState(0)
 	const [startO2, setStartO2] = useState(21)
 	const [startHe, setStartHe] = useState(0)
 	const [finalPressure, setFinalPressure] = usePressureState(3000)
+	const hotFinal = hot.hotFill(finalPressure)
 	const [targetO2, setTargetO2] = useState(32)
 	const [targetHe, setTargetHe] = useState(0)
 	const [topO2, setTopO2] = useState(21)
@@ -34,7 +37,7 @@ const BlendCalculator = () => {
 			startPressure: toBar(startPressure, units.pressure),
 			startFo2: startO2 / 100,
 			startFhe: startHe / 100,
-			finalPressure: toBar(finalPressure, units.pressure),
+			finalPressure: toBar(hotFinal, units.pressure),
 			targetFo2: targetO2 / 100,
 			targetFhe: targetHe / 100,
 			topupFo2: topO2 / 100,
@@ -240,7 +243,7 @@ const BlendCalculator = () => {
 					) : (
 						<p className='text-light-text text-sm'>{result.reason}</p>
 					)}
-					<TemperatureResult goalBar={toBar(finalPressure, units.pressure)} />
+					{hot.on && <HotFillNote cold={finalPressure} hot={hotFinal} />}
 				</section>
 			</div>
 			<div className='mt-6 2xl:absolute 2xl:top-0 2xl:left-full 2xl:mt-0 2xl:ml-8 2xl:w-72'>
