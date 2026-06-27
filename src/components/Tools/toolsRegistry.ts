@@ -6,7 +6,7 @@ import BlendingCostCalculator from './BlendingCostCalculator'
 import CascadeCalculator from './CascadeCalculator'
 import EadCalculator from './EadCalculator'
 import GasDensityCalculator from './GasDensityCalculator'
-import GasMixingCalculator from './GasMixingCalculator'
+import ToppingUpCalculator from './ToppingUpCalculator'
 import GasRequirementsCalculator from './GasRequirementsCalculator'
 import ModEndCalculator from './ModEndCalculator'
 import NitroxStickCalculator from './NitroxStickCalculator'
@@ -23,7 +23,7 @@ export type TabId =
 	| 'best-mix'
 	| 'ead'
 	| 'gas-density'
-	| 'mix-two-gases'
+	| 'top-up'
 	| 'oxygen-exposure'
 	| 'gas-requirements'
 	| 'booster'
@@ -67,12 +67,12 @@ export const TOOLS: ToolDef[] = [
 			'Partial-pressure blend a cylinder to a target O₂/He mix by adding pure oxygen, helium, and then air or travel gas in sequence.',
 	},
 	{
-		id: 'mix-two-gases',
-		name: 'Mix Two Gases',
+		id: 'top-up',
+		name: 'Topping Up',
 		group: 'blending',
-		Component: GasMixingCalculator,
+		Component: ToppingUpCalculator,
 		description:
-			'Combine two arbitrary gas mixes in a cylinder and calculate the resulting O₂, He, and N₂ fractions by pressure contribution.',
+			'Fill a partial cylinder up to a target pressure with a top-up gas and see the resulting mix and how much gas you added.',
 	},
 	{
 		id: 'blending-cost',
