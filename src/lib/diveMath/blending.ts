@@ -74,8 +74,8 @@ export function calculateBlend(
 	const a21 = -topFo2
 	const a22 = 1 - topFo2
 	const det = a11 * a22 - a12 * a21
-	let pHe = det !== 0 ? (bHe * a22 - a12 * bO2) / det : 0
-	let pO2 = det !== 0 ? (a11 * bO2 - bHe * a21) / det : 0
+	let pHe = (bHe * a22 - a12 * bO2) / det
+	let pO2 = (a11 * bO2 - bHe * a21) / det
 
 	if (opts?.useRealGas) {
 		pHe *= gasZ('he', pf)
@@ -86,7 +86,11 @@ export function calculateBlend(
 	const eps = 1e-6
 	let feasible = true
 	let reason: string | undefined
-	if (pHe < -eps) {
+	if (Math.abs(det) < 1e-9) {
+		feasible = false
+		reason =
+			"Top-up gas can't reach this mix — use a top-up with both oxygen and inert gas."
+	} else if (pHe < -eps) {
 		feasible = false
 		reason = 'Too much helium in the start mix — draining required.'
 	} else if (pO2 < -eps) {

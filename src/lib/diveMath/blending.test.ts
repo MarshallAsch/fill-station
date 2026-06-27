@@ -136,4 +136,9 @@ describe('blend top-up gas + order', () => {
 		expect(r.feasible).toBe(false)
 		expect(r.reason).toBeTruthy()
 	})
+	it('flags an unsolvable pure-O2 top-up', () => {
+		const r = calculateBlend({ ...base, topupFo2: 1, topupFhe: 0 })
+		expect(r.feasible).toBe(false)
+		expect(r.reason).toBeTruthy()
+	})
 })
