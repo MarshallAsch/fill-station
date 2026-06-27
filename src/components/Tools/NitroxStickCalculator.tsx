@@ -1,29 +1,36 @@
 'use client'
 
-import { useState } from 'react'
 import NumberInput from '@/components/UI/FormElements/NumberInput'
 import {
 	nitroxStickFlowRate,
 	nitroxStickSupplyDraw,
 } from '@/lib/diveMath/nitroxStick'
 import { tempRiseC } from '@/lib/diveMath/temperature'
-import { fromBar, fromLpm, toBar, toLpm } from '@/lib/diveMath/units'
+import { fromLpm, toBar, toLpm } from '@/lib/diveMath/units'
+import { roundPressure } from '@/lib/diveMath/format'
 import SafetyNote from './SafetyNote'
 import CylinderFields from './CylinderFields'
 import HotFillNote from './HotFillNote'
 import { useUnits } from './UnitsProvider'
-import { useAirFlowState, usePressureState } from './useUnitState'
+import { usePersistedAirFlow, usePersistedPressure } from './useUnitState'
+import { usePersistedState } from './usePersistedState'
 import { useHotFill } from './useHotFill'
 
 const NitroxStickCalculator = () => {
 	const { units, settledTempC } = useUnits()
-	const [fo2, setFo2] = useState(32)
-	const [airFlow, setAirFlow] = useAirFlowState(100)
-	const [tankVolume, setTankVolume] = useState(11.1)
-	const [startPressure, setStartPressure] = usePressureState(0)
-	const [finalPressure, setFinalPressure] = usePressureState(3000)
-	const [supplyVolume, setSupplyVolume] = useState(49)
-	const [workingPressure, setWorkingPressure] = usePressureState(3000)
+	const [fo2, setFo2] = usePersistedState('ns.targetO2', 32)
+	const [airFlow, setAirFlow] = usePersistedAirFlow('ns.airFlow', 5)
+	const [tankVolume, setTankVolume] = usePersistedState('ns.tankVol', 11.1)
+	const [startPressure, setStartPressure] = usePersistedPressure('ns.start', 0)
+	const [finalPressure, setFinalPressure] = usePersistedPressure(
+		'ns.final',
+		3000,
+	)
+	const [supplyVolume, setSupplyVolume] = usePersistedState('ns.supplyVol', 49)
+	const [workingPressure, setWorkingPressure] = usePersistedPressure(
+		'ns.working',
+		3000,
+	)
 
 	const targetFo2 = fo2 / 100
 	const airFlowLpm = toLpm(airFlow, units.airFlow)
@@ -133,7 +140,7 @@ const NitroxStickCalculator = () => {
 					<p className='text-text'>
 						O₂ supply pressure drop:{' '}
 						<span className='font-semibold'>
-							{Math.round(fromBar(draw.supplyPressureDrop, units.pressure))}{' '}
+							{roundPressure(draw.supplyPressureDrop, units.pressure)}{' '}
 							{units.pressure}
 						</span>
 					</p>
