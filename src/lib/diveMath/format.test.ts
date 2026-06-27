@@ -39,4 +39,12 @@ describe('format rounding', () => {
 		expect(fmtMix(32, 0)).toBe('32')
 		expect(fmtMix(21, 35)).toBe('21/35')
 	})
+	it('produces clean decimals (no floating-point tails) for display', () => {
+		// 312 * 0.1 === 31.200000000000003; the helper must yield exactly 31.2
+		expect(roundPercent(31.21658)).toBe(31.2)
+		expect(String(roundPercent(31.21658))).toBe('31.2')
+		expect(String(roundPercent(7.0000001))).toBe('7')
+		expect(String(roundDepthDown(30.18, 'm'))).toBe('30.1')
+		expect(String(roundSac(14, 'cf'))).toBe('0.49')
+	})
 })

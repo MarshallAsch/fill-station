@@ -7,10 +7,17 @@ import {
 	fromMeters,
 } from './units'
 
-const roundTo = (value: number, step: number) =>
-	Math.round(value / step) * step
-const floorTo = (value: number, step: number) =>
-	Math.floor(value / step) * step
+// Divide by an integer factor rather than multiplying by the fractional step:
+// `Math.round(312.1658) * 0.1` is 31.200000000000003, but `312 / 10` is exactly
+// 31.2 — so the displayed value has no floating-point tail.
+const roundTo = (value: number, step: number) => {
+	const inv = Math.round(1 / step)
+	return Math.round(value * inv) / inv
+}
+const floorTo = (value: number, step: number) => {
+	const inv = Math.round(1 / step)
+	return Math.floor(value * inv) / inv
+}
 
 // Pressure (display units): psi → nearest 1, bar → nearest 0.1.
 export function roundPressure(bar: number, unit: PressureUnit): number {
