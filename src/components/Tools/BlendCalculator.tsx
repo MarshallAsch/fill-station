@@ -7,6 +7,7 @@ import { fromBar, toBar } from '@/lib/diveMath/units'
 import MixPicker from './MixPicker'
 import RealGasNote from './RealGasNote'
 import SafetyNote from './SafetyNote'
+import TemperatureResult from './TemperatureResult'
 import { useUnits } from './UnitsProvider'
 import { usePressureState } from './useUnitState'
 
@@ -152,6 +153,7 @@ const BlendCalculator = () => {
 					) : (
 						<p className='text-light-text text-sm'>{result.reason}</p>
 					)}
+					<TemperatureResult goalBar={toBar(finalPressure, units.pressure)} />
 				</section>
 			</div>
 			<div className='mt-6 2xl:absolute 2xl:top-0 2xl:left-full 2xl:mt-0 2xl:ml-8 2xl:w-72'>

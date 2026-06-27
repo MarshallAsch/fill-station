@@ -23,6 +23,7 @@ import BoosterPicker from './BoosterPicker'
 import MixPicker from './MixPicker'
 import RealGasNote from './RealGasNote'
 import SafetyNote from './SafetyNote'
+import TemperatureResult from './TemperatureResult'
 import TankSizePicker from './TankSizePicker'
 import { usePressureState } from './useUnitState'
 import { useUnits } from './UnitsProvider'
@@ -468,6 +469,7 @@ const BoosterCalculator = () => {
 							)}
 						</>
 					)}
+					<TemperatureResult goalBar={targetBar} />
 				</section>
 
 				{profile.length > 0 && (

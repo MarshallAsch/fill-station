@@ -7,6 +7,7 @@ import { fromBar, toBar } from '@/lib/diveMath/units'
 import RealGasNote from './RealGasNote'
 import SafetyNote from './SafetyNote'
 import TankSizePicker from './TankSizePicker'
+import TemperatureResult from './TemperatureResult'
 import { useUnits } from './UnitsProvider'
 import { usePressureState } from './useUnitState'
 
@@ -163,6 +164,7 @@ const CascadeCalculator = () => {
 							{p(result.finalPressure)} {units.pressure}
 						</span>
 					</p>
+					<TemperatureResult goalBar={result.finalPressure} />
 					<p
 						className={
 							result.reachedDesired
