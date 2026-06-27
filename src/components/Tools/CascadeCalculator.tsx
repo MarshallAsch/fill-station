@@ -1,14 +1,15 @@
 'use client'
 
-import { useState } from 'react'
 import { calculateCascade } from '@/lib/diveMath/cascade'
+import { roundPressure } from '@/lib/diveMath/format'
 import { fromBar, toBar } from '@/lib/diveMath/units'
 import CascadeCylinders from './CascadeCylinders'
 import CylinderFields from './CylinderFields'
 import HotFillNote from './HotFillNote'
 import RealGasNote from './RealGasNote'
 import { useUnits } from './UnitsProvider'
-import { usePressureState } from './useUnitState'
+import { usePersistedState } from './usePersistedState'
+import { usePersistedPressure } from './useUnitState'
 import { useHotFill } from './useHotFill'
 
 interface BankRow {
@@ -20,14 +21,26 @@ interface BankRow {
 const CascadeCalculator = () => {
 	const { units, useRealGas } = useUnits()
 	const hot = useHotFill()
-	const [banks, setBanks] = useState<BankRow[]>([
+	const [banks, setBanks] = usePersistedState<BankRow[]>('cas.banks', [
 		{ volume: 50, pressure: 3000, working: 3000 },
 	])
-	const [targetVolume, setTargetVolume] = useState(11.1)
-	const [startPressure, setStartPressure] = usePressureState(500)
-	const [desiredPressure, setDesiredPressure] = usePressureState(3000)
+	const [targetVolume, setTargetVolume] = usePersistedState(
+		'cas.targetVol',
+		11.1,
+	)
+	const [startPressure, setStartPressure] = usePersistedPressure(
+		'cas.start',
+		500,
+	)
+	const [desiredPressure, setDesiredPressure] = usePersistedPressure(
+		'cas.desired',
+		3000,
+	)
 	const hotDesired = hot.hotFill(desiredPressure)
-	const [fillWorking, setFillWorking] = usePressureState(3000)
+	const [fillWorking, setFillWorking] = usePersistedPressure(
+		'cas.fillWorking',
+		3000,
+	)
 
 	const updateBank = (i: number, key: keyof BankRow, value: number) => {
 		setBanks((prev) =>
@@ -78,7 +91,7 @@ const CascadeCalculator = () => {
 		},
 	]
 
-	const p = (bar: number) => Math.round(fromBar(bar, units.pressure))
+	const p = (bar: number) => roundPressure(bar, units.pressure)
 
 	return (
 		<div className='2xl:relative'>
