@@ -5,10 +5,11 @@ import { calculateCascade } from '@/lib/diveMath/cascade'
 import { fromBar, toBar } from '@/lib/diveMath/units'
 import CascadeCylinders from './CascadeCylinders'
 import CylinderFields from './CylinderFields'
+import HotFillNote from './HotFillNote'
 import RealGasNote from './RealGasNote'
-import TemperatureResult from './TemperatureResult'
 import { useUnits } from './UnitsProvider'
 import { usePressureState } from './useUnitState'
+import { useHotFill } from './useHotFill'
 
 interface BankRow {
 	volume: number
@@ -18,12 +19,14 @@ interface BankRow {
 
 const CascadeCalculator = () => {
 	const { units, useRealGas } = useUnits()
+	const hot = useHotFill()
 	const [banks, setBanks] = useState<BankRow[]>([
 		{ volume: 50, pressure: 3000, working: 3000 },
 	])
 	const [targetVolume, setTargetVolume] = useState(11.1)
 	const [startPressure, setStartPressure] = usePressureState(500)
 	const [desiredPressure, setDesiredPressure] = usePressureState(3000)
+	const hotDesired = hot.hotFill(desiredPressure)
 	const [fillWorking, setFillWorking] = usePressureState(3000)
 
 	const updateBank = (i: number, key: keyof BankRow, value: number) => {
@@ -46,7 +49,7 @@ const CascadeCalculator = () => {
 				volume: targetVolume,
 				startPressure: toBar(startPressure, units.pressure),
 			},
-			desiredPressure: toBar(desiredPressure, units.pressure),
+			desiredPressure: toBar(hotDesired, units.pressure),
 		},
 		{ useRealGas },
 	)
@@ -147,7 +150,7 @@ const CascadeCalculator = () => {
 							{p(result.finalPressure)} {units.pressure}
 						</span>
 					</p>
-					<TemperatureResult goalBar={result.finalPressure} />
+					{hot.on && <HotFillNote cold={desiredPressure} hot={hotDesired} />}
 					<p
 						className={
 							result.reachedDesired
