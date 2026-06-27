@@ -7,6 +7,7 @@ import {
 	toMeters,
 	fromMeters,
 	fromLiters,
+	toLiters,
 	toLpm,
 	fromLpm,
 	toCelsius,
@@ -37,6 +38,13 @@ describe('volume (fromLiters)', () => {
 	it('converts litres back to the display unit', () => {
 		expect(fromLiters(28.3168466, 'cf')).toBeCloseTo(1, 4)
 		expect(fromLiters(5, 'l')).toBe(5)
+	})
+})
+
+describe('toLiters', () => {
+	it('cf → litres, l identity', () => {
+		expect(toLiters(1, 'cf')).toBeCloseTo(28.3168466, 6)
+		expect(toLiters(50, 'l')).toBe(50)
 	})
 })
 
