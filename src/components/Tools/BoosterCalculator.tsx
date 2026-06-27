@@ -1,6 +1,5 @@
 'use client'
 
-import { useState } from 'react'
 import NumberInput from '@/components/UI/FormElements/NumberInput'
 import Checkbox from '@/components/UI/FormElements/CheckBox'
 import {
@@ -11,11 +10,11 @@ import {
 import {
 	ATMOSPHERIC_BAR,
 	fromBar,
-	fromLiters,
 	fromLpm,
 	toBar,
 	toLpm,
 } from '@/lib/diveMath/units'
+import { roundPressure, roundVolume } from '@/lib/diveMath/format'
 import BoosterChart from './BoosterChart'
 import CycleRateChart from './CycleRateChart'
 import CylinderFields from './CylinderFields'
@@ -25,7 +24,8 @@ import MixPicker from './MixPicker'
 import HotFillNote from './HotFillNote'
 import RealGasNote from './RealGasNote'
 import SafetyNote from './SafetyNote'
-import { usePressureState } from './useUnitState'
+import { usePersistedPressure } from './useUnitState'
+import { usePersistedState } from './usePersistedState'
 import { useHotFill } from './useHotFill'
 import { useUnits } from './UnitsProvider'
 
@@ -42,26 +42,38 @@ function fmtDuration(sec: number): string {
 const BoosterCalculator = () => {
 	const { units, useRealGas } = useUnits()
 	const hot = useHotFill()
-	const [ratio, setRatio] = useState(30)
-	const [driveP, setDriveP] = usePressureState(120)
-	const [o2Pct, setO2Pct] = useState(100)
-	const [hePct, setHePct] = useState(0)
-	const [twoStage, setTwoStage] = useState(false)
-	const [regulatedInlet, setRegulatedInlet] = usePressureState(150)
-	const [driveSwept, setDriveSwept] = useState(0)
-	const [maxCpm, setMaxCpm] = useState(0)
-	const [supplyVol, setSupplyVol] = useState(50)
-	const [supplyStart, setSupplyStart] = usePressureState(2900)
-	const [supplyWorking, setSupplyWorking] = usePressureState(2900)
-	const [receiverVol, setReceiverVol] = useState(5.7)
-	const [receiverStart, setReceiverStart] = usePressureState(0)
-	const [receiverWorking, setReceiverWorking] = usePressureState(3000)
-	const [target, setTarget] = usePressureState(3000)
-	const [maxFillRate, setMaxFillRate] = usePressureState(300)
-	const [compressorRate, setCompressorRate] = useState(0)
-	const [storageGal, setStorageGal] = useState(0)
-	const [storageMax, setStorageMax] = usePressureState(175)
-	const [storageMin, setStorageMin] = usePressureState(125)
+	const [ratio, setRatio] = usePersistedState('b.ratio', 30)
+	const [driveP, setDriveP] = usePersistedPressure('b.driveP', 120)
+	const [o2Pct, setO2Pct] = usePersistedState('b.o2', 100)
+	const [hePct, setHePct] = usePersistedState('b.he', 0)
+	const [twoStage, setTwoStage] = usePersistedState('b.twoStage', false)
+	const [regulatedInlet, setRegulatedInlet] = usePersistedPressure('b.reg', 150)
+	const [driveSwept, setDriveSwept] = usePersistedState('b.swept', 0)
+	const [maxCpm, setMaxCpm] = usePersistedState('b.cpm', 0)
+	const [supplyVol, setSupplyVol] = usePersistedState('b.supplyVol', 50)
+	const [supplyStart, setSupplyStart] = usePersistedPressure(
+		'b.supplyStart',
+		2900,
+	)
+	const [supplyWorking, setSupplyWorking] = usePersistedPressure(
+		'b.supplyWorking',
+		2900,
+	)
+	const [receiverVol, setReceiverVol] = usePersistedState('b.recVol', 5.7)
+	const [receiverStart, setReceiverStart] = usePersistedPressure(
+		'b.recStart',
+		0,
+	)
+	const [receiverWorking, setReceiverWorking] = usePersistedPressure(
+		'b.recWorking',
+		3000,
+	)
+	const [target, setTarget] = usePersistedPressure('b.target', 3000)
+	const [maxFillRate, setMaxFillRate] = usePersistedPressure('b.fillRate', 300)
+	const [compressorRate, setCompressorRate] = usePersistedState('b.compRate', 0)
+	const [storageGal, setStorageGal] = usePersistedState('b.storageGal', 0)
+	const [storageMax, setStorageMax] = usePersistedPressure('b.storageMax', 175)
+	const [storageMin, setStorageMin] = usePersistedPressure('b.storageMin', 125)
 
 	const supplyStartBar = toBar(supplyStart, units.pressure)
 	const receiverStartBar = toBar(receiverStart, units.pressure)
@@ -116,9 +128,9 @@ const BoosterCalculator = () => {
 	const profile = boosterFillProfile(input, 40, timing ? timingArgs : undefined)
 	const hasTime = profile.length > 0 && profile[0].timeSeconds !== undefined
 
-	const p = (bar: number) => Math.round(fromBar(bar, units.pressure))
+	const p = (bar: number) => roundPressure(bar, units.pressure)
 	const p1 = (bar: number) => fromBar(bar, units.pressure)
-	const vol = (l: number) => Math.round(fromLiters(l, units.volume))
+	const vol = (l: number) => roundVolume(l, units.volume)
 	const flow = (lpm: number) => Math.round(fromLpm(lpm, units.airFlow))
 
 	const last = profile.length ? profile[profile.length - 1] : null
