@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
+import { useEffect } from 'react'
 import {
 	fromBar,
 	fromLpm,
@@ -12,6 +12,11 @@ import {
 import { useUnits } from './UnitsProvider'
 import { usePersistedState } from './usePersistedState'
 
+interface Stored<U> {
+	v: number
+	u: U
+}
+
 function usePersistedConverted<U>(
 	key: string,
 	initial: number,
@@ -20,18 +25,35 @@ function usePersistedConverted<U>(
 	fromSI: (v: number, u: U) => number,
 	decimals: number,
 ): [number, (n: number) => void] {
-	const [value, setValue] = usePersistedState<number>(key, initial)
-	const prev = useRef(unit)
+	const [stored, setStored] = usePersistedState<Stored<U>>(key, {
+		v: initial,
+		u: unit,
+	})
+	const factor = 10 ** decimals
+	const convert = (v: number, from: U, to: U) =>
+		from === to ? v : Math.round(fromSI(toSI(v, from), to) * factor) / factor
+
+	// The stored value carries the unit it was entered in, so a value restored
+	// from storage is always interpreted against its own unit — never the
+	// default. This prevents the double-conversion that happens when the
+	// persisted unit is restored after the persisted value.
+	const safe: Stored<U> =
+		stored && typeof stored === 'object' && typeof stored.v === 'number'
+			? stored
+			: { v: initial, u: unit }
+	const value = convert(safe.v, safe.u, unit)
+
+	// Keep storage normalised to the active unit (and repair legacy/malformed
+	// entries). Safe because { v, u } always describes the same physical
+	// quantity, regardless of the order value and unit are restored.
 	useEffect(() => {
-		if (prev.current !== unit) {
-			const factor = 10 ** decimals
-			const from = prev.current
-			prev.current = unit
-			 
-			setValue((v) => Math.round(fromSI(toSI(v, from), unit) * factor) / factor)
+		if (safe.u !== unit || safe !== stored) {
+			setStored({ v: value, u: unit })
 		}
-	}, [unit, decimals, toSI, fromSI, setValue])
-	return [value, setValue]
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [unit, stored])
+
+	return [value, (n: number) => setStored({ v: n, u: unit })]
 }
 
 export function usePersistedPressure(key: string, initial: number) {
@@ -55,4 +77,3 @@ export function usePersistedAirFlow(key: string, initial: number) {
 	const { units } = useUnits()
 	return usePersistedConverted(key, initial, units.airFlow, toLpm, fromLpm, 1)
 }
-

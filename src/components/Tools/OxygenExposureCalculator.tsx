@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
+import { useEffect } from 'react'
 import NumberInput from '@/components/UI/FormElements/NumberInput'
 import RadioGroup from '@/components/UI/FormElements/RadioGroup'
 import { computeDay, DayItem } from '@/lib/diveMath/oxygenExposure'
@@ -19,26 +19,53 @@ interface DiveRow {
 	surfaceAfter: number
 }
 
+const DEFAULT_ROWS: DiveRow[] = [
+	{ depth: 100, fo2: 32, minutes: 40, surfaceAfter: 60 },
+]
+
 const OxygenExposureCalculator = () => {
 	const { units } = useUnits()
 	const [water, setWater] = usePersistedState<Water>('ox.water', 'salt')
-	const [rows, setRows] = usePersistedState<DiveRow[]>('ox.rows', [
-		{ depth: 100, fo2: 32, minutes: 40, surfaceAfter: 60 },
-	])
-	const prevDepthUnit = useRef(units.depth)
-	useEffect(() => {
-		const from = prevDepthUnit.current
-		if (from !== units.depth) {
-			prevDepthUnit.current = units.depth
-			setRows((prev) =>
-				prev.map((r) => ({
+	const [stored, setStored] = usePersistedState<{
+		u: typeof units.depth
+		rows: DiveRow[]
+	}>('ox.rows', { u: units.depth, rows: DEFAULT_ROWS })
+
+	const toCurrent = (rs: DiveRow[], from: typeof units.depth) =>
+		from === units.depth
+			? rs
+			: rs.map((r) => ({
 					...r,
 					depth: Math.round(fromMeters(toMeters(r.depth, from), units.depth)),
-				})),
-			)
+				}))
+
+	// Rows carry the depth unit they were entered in, so a restored value is read
+	// against its own unit — never the default. This avoids the double-conversion
+	// that a unit ref seeded with the default unit causes when the persisted unit
+	// is restored after the persisted rows.
+	const safe =
+		stored && typeof stored === 'object' && Array.isArray(stored.rows)
+			? stored
+			: { u: units.depth, rows: DEFAULT_ROWS }
+	const rows = toCurrent(safe.rows, safe.u)
+
+	// Keep storage normalised to the active depth unit (and repair malformed
+	// entries).
+	useEffect(() => {
+		if (safe.u !== units.depth || safe !== stored) {
+			setStored({ u: units.depth, rows })
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [units.depth])
+	}, [units.depth, stored])
+
+	const setRows = (updater: (prev: DiveRow[]) => DiveRow[]) =>
+		setStored((prev) => {
+			const base =
+				prev && typeof prev === 'object' && Array.isArray(prev.rows)
+					? prev
+					: { u: units.depth, rows: DEFAULT_ROWS }
+			return { u: units.depth, rows: updater(toCurrent(base.rows, base.u)) }
+		})
 
 	const update = (i: number, key: keyof DiveRow, value: number) =>
 		setRows((prev) =>
