@@ -50,7 +50,14 @@ const SettingsModal = ({
 							<div className='space-y-2'>
 								<h3 className='text-light-text text-xs font-medium'>Units</h3>
 								<UnitToggle
-									show={['pressure', 'depth', 'volume', 'airFlow', 'temp']}
+									show={[
+										'pressure',
+										'depth',
+										'volume',
+										'airFlow',
+										'o2Flow',
+										'temp',
+									]}
 								/>
 							</div>
 							<div className='space-y-2'>

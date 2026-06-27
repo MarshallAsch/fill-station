@@ -120,7 +120,7 @@ export const TOOLS: ToolDef[] = [
 		group: 'planning',
 		Component: GasDensityCalculator,
 		description:
-			'Calculate breathing-gas density at depth and flag mixes that exceed the 5.7 g/L work-of-breathing threshold.',
+			'Calculate breathing-gas density at depth and flag mixes that exceed the 5.2 g/L recommended limit or the 6.3 g/L hard limit.',
 	},
 	{
 		id: 'oxygen-exposure',

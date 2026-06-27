@@ -11,6 +11,12 @@ import TemperatureResult from './TemperatureResult'
 import { useUnits } from './UnitsProvider'
 import { usePressureState } from './useUnitState'
 
+const BLEND_LABEL: Record<BlendComponent, string> = {
+	o2: 'O₂',
+	he: 'Helium',
+	top: 'Top-up gas',
+}
+
 const BlendCalculator = () => {
 	const { units, useRealGas } = useUnits()
 	const [startPressure, setStartPressure] = usePressureState(0)
@@ -196,28 +202,23 @@ const BlendCalculator = () => {
 										</li>
 									))}
 							</ol>
-							<div className='border-border mt-3 border-t pt-3'>
-								<p className='text-light-text mb-2 text-xs font-medium tracking-wide uppercase'>
-									Reorder steps
-								</p>
-								<div className='space-y-1'>
-									{order.map((gas, i) => {
-										const labelMap: Record<BlendComponent, string> = {
-											o2: 'O₂',
-											he: 'Helium',
-											top: 'Top-up gas',
-										}
-										return (
+							{result.steps.some((s) => Math.abs(s.addBar) >= 0.01) && (
+								<div className='border-border mt-3 border-t pt-3'>
+									<p className='text-light-text mb-2 text-xs font-medium tracking-wide uppercase'>
+										Reorder steps
+									</p>
+									<div className='space-y-1'>
+										{order.map((gas, i) => (
 											<div key={gas} className='flex items-center gap-2'>
 												<span className='text-text w-24 text-sm'>
-													{labelMap[gas]}
+													{BLEND_LABEL[gas]}
 												</span>
 												<button
 													type='button'
 													onClick={() => move(i, -1)}
 													disabled={i === 0}
 													className='text-light-text hover:text-accent disabled:opacity-30'
-													aria-label={`Move ${labelMap[gas]} up`}
+													aria-label={`Move ${BLEND_LABEL[gas]} up`}
 												>
 													▲
 												</button>
@@ -226,15 +227,15 @@ const BlendCalculator = () => {
 													onClick={() => move(i, 1)}
 													disabled={i === order.length - 1}
 													className='text-light-text hover:text-accent disabled:opacity-30'
-													aria-label={`Move ${labelMap[gas]} down`}
+													aria-label={`Move ${BLEND_LABEL[gas]} down`}
 												>
 													▼
 												</button>
 											</div>
-										)
-									})}
+										))}
+									</div>
 								</div>
-							</div>
+							)}
 						</>
 					) : (
 						<p className='text-light-text text-sm'>{result.reason}</p>
