@@ -3,7 +3,14 @@ import { NextResponse } from 'next/server'
 import { PERMISSIONS, matchApiRoute, Role } from './lib/permissions'
 
 // Pages that don't require authentication
-const publicPages = ['/', '/api/auth', '/about', '/contact', '/tools']
+const publicPages = [
+	'/',
+	'/api/auth',
+	'/about',
+	'/contact',
+	'/tools',
+	'/tools/about',
+]
 
 function isPublicFile(pathname: string): boolean {
 	// Static files in public folder
