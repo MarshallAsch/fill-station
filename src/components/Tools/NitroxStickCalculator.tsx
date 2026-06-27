@@ -8,7 +8,7 @@ import {
 } from '@/lib/diveMath/nitroxStick'
 import { fromBar, fromLpm, toBar, toLpm } from '@/lib/diveMath/units'
 import SafetyNote from './SafetyNote'
-import TankSizePicker from './TankSizePicker'
+import CylinderFields from './CylinderFields'
 import { useUnits } from './UnitsProvider'
 import { useAirFlowState, usePressureState } from './useUnitState'
 
@@ -20,9 +20,7 @@ const NitroxStickCalculator = () => {
 	const [startPressure, setStartPressure] = usePressureState(0)
 	const [finalPressure, setFinalPressure] = usePressureState(3000)
 	const [supplyVolume, setSupplyVolume] = useState(49)
-	const [workingPressureBar, setWorkingPressureBar] = useState<number | null>(
-		null,
-	)
+	const [workingPressure, setWorkingPressure] = usePressureState(3000)
 
 	const targetFo2 = fo2 / 100
 	const airFlowLpm = toLpm(airFlow, units.airFlow)
@@ -37,9 +35,6 @@ const NitroxStickCalculator = () => {
 
 	const leanWarning = targetFo2 <= 0.209
 	const highO2 = fo2 > 40
-	const overfill =
-		workingPressureBar != null &&
-		toBar(finalPressure, units.pressure) > workingPressureBar * 1.1
 
 	return (
 		<div className='space-y-6'>
@@ -92,65 +87,33 @@ const NitroxStickCalculator = () => {
 				</h2>
 				<div className='space-y-3'>
 					<h3 className='text-text font-medium'>Cylinder being filled</h3>
-					<TankSizePicker
-						category='dive'
-						onSelect={(l, bar) => {
-							setTankVolume(l)
-							setFinalPressure(fromBar(bar, units.pressure))
-							setWorkingPressureBar(bar)
+					<CylinderFields
+						idPrefix='ns-tank'
+						category={['scuba', 'cascade']}
+						waterVolumeL={tankVolume}
+						onWaterVolumeL={setTankVolume}
+						working={{ value: workingPressure, onChange: setWorkingPressure }}
+						start={{
+							value: startPressure,
+							onChange: setStartPressure,
+							label: 'Start pressure',
+						}}
+						filled={{
+							value: finalPressure,
+							onChange: setFinalPressure,
+							label: 'Fill pressure',
 						}}
 					/>
-					<div className='grid grid-cols-1 gap-4 sm:grid-cols-2'>
-						<NumberInput
-							id='ns-tankvol'
-							name='ns-tankvol'
-							label='Tank volume (L)'
-							value={tankVolume}
-							onChange={setTankVolume}
-							tooltip='Water (internal) cylinder volume — not free-gas capacity'
-							min={0}
-						/>
-						<NumberInput
-							id='ns-start'
-							name='ns-start'
-							label={`Start pressure (${units.pressure})`}
-							value={startPressure}
-							onChange={setStartPressure}
-							min={0}
-						/>
-						<NumberInput
-							id='ns-final'
-							name='ns-final'
-							label={`Final pressure (${units.pressure})`}
-							value={finalPressure}
-							onChange={setFinalPressure}
-							min={0}
-						/>
-					</div>
-					{overfill && (
-						<SafetyNote level='danger'>
-							Fill pressure is more than 10% over the cylinder&apos;s working
-							pressure.
-						</SafetyNote>
-					)}
 				</div>
 				<div className='space-y-3'>
 					<h3 className='text-text font-medium'>O₂ supply bottle</h3>
-					<TankSizePicker
+					<CylinderFields
+						idPrefix='ns-supply'
 						category='industrial'
-						onSelect={(l) => setSupplyVolume(l)}
+						waterVolumeL={supplyVolume}
+						onWaterVolumeL={setSupplyVolume}
+						showPressures={false}
 					/>
-					<div className='flex flex-wrap items-end gap-3'>
-						<NumberInput
-							id='ns-supplyvol'
-							name='ns-supplyvol'
-							label='Supply bottle volume (L)'
-							value={supplyVolume}
-							onChange={setSupplyVolume}
-							tooltip='Water (internal) cylinder volume — not free-gas capacity'
-							min={0}
-						/>
-					</div>
 				</div>
 				{!Number.isFinite(draw.supplyPressureDrop) || supplyVolume <= 0 ? (
 					<p className='text-light-text text-sm'>
