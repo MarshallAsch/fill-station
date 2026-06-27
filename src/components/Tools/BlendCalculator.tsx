@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import NumberInput from '@/components/UI/FormElements/NumberInput'
-import { calculateBlend } from '@/lib/diveMath/blending'
+import { type BlendComponent, calculateBlend } from '@/lib/diveMath/blending'
 import { fromBar, toBar } from '@/lib/diveMath/units'
 import MixPicker from './MixPicker'
 import RealGasNote from './RealGasNote'
@@ -19,6 +19,9 @@ const BlendCalculator = () => {
 	const [finalPressure, setFinalPressure] = usePressureState(3000)
 	const [targetO2, setTargetO2] = useState(32)
 	const [targetHe, setTargetHe] = useState(0)
+	const [topO2, setTopO2] = useState(21)
+	const [topHe, setTopHe] = useState(0)
+	const [order, setOrder] = useState<BlendComponent[]>(['he', 'o2', 'top'])
 
 	const result = calculateBlend(
 		{
@@ -28,6 +31,9 @@ const BlendCalculator = () => {
 			finalPressure: toBar(finalPressure, units.pressure),
 			targetFo2: targetO2 / 100,
 			targetFhe: targetHe / 100,
+			topupFo2: topO2 / 100,
+			topupFhe: topHe / 100,
+			order,
 		},
 		{ useRealGas },
 	)
@@ -35,6 +41,16 @@ const BlendCalculator = () => {
 	const p = (bar: number) => Math.round(fromBar(bar, units.pressure))
 	const startMixInvalid = startO2 + startHe > 100
 	const targetMixInvalid = targetO2 + targetHe > 100
+	const topMixInvalid = topO2 + topHe > 100
+
+	const move = (i: number, dir: -1 | 1) =>
+		setOrder((prev) => {
+			const next = [...prev]
+			const j = i + dir
+			if (j < 0 || j >= next.length) return prev
+			;[next[i], next[j]] = [next[j], next[i]]
+			return next
+		})
 
 	return (
 		<div className='2xl:relative'>
@@ -127,29 +143,99 @@ const BlendCalculator = () => {
 					)}
 				</section>
 
+				<section className='space-y-4'>
+					<h2 className='text-text text-lg font-semibold'>Top-up gas</h2>
+					<MixPicker
+						id='bl-top-mix'
+						onSelect={(o2, he) => {
+							setTopO2(o2)
+							setTopHe(he)
+						}}
+					/>
+					<div className='grid grid-cols-1 gap-4 sm:grid-cols-2'>
+						<NumberInput
+							id='bl-top-o2'
+							name='bl-top-o2'
+							label='O₂ (%)'
+							value={topO2}
+							onChange={setTopO2}
+							min={0}
+							max={100}
+						/>
+						<NumberInput
+							id='bl-top-he'
+							name='bl-top-he'
+							label='He (%)'
+							value={topHe}
+							onChange={setTopHe}
+							min={0}
+							max={100}
+						/>
+					</div>
+					{topMixInvalid && (
+						<SafetyNote level='danger'>
+							O₂ + He exceeds 100% — not a valid mix.
+						</SafetyNote>
+					)}
+				</section>
+
 				<section className='border-border space-y-2 rounded-md border p-4'>
 					<h2 className='text-text text-lg font-semibold'>Fill sequence</h2>
 					{result.feasible ? (
-						<ol className='text-text list-decimal space-y-1 pl-5'>
-							<li>
-								Add helium to{' '}
-								<span className='font-semibold'>
-									{p(result.addHeTo)} {units.pressure}
-								</span>
-							</li>
-							<li>
-								Add oxygen to{' '}
-								<span className='font-semibold'>
-									{p(result.addO2To)} {units.pressure}
-								</span>
-							</li>
-							<li>
-								Top with air to{' '}
-								<span className='font-semibold'>
-									{p(result.topTo)} {units.pressure}
-								</span>
-							</li>
-						</ol>
+						<>
+							<ol className='text-text list-decimal space-y-1 pl-5'>
+								{result.steps
+									.filter((step) => Math.abs(step.addBar) >= 0.01)
+									.map((step) => (
+										<li key={step.gas}>
+											<span className='font-semibold'>{step.label}</span>
+											{': add to '}
+											<span className='font-semibold'>
+												{p(step.toBar)} {units.pressure}
+											</span>
+										</li>
+									))}
+							</ol>
+							<div className='border-border mt-3 border-t pt-3'>
+								<p className='text-light-text mb-2 text-xs font-medium tracking-wide uppercase'>
+									Reorder steps
+								</p>
+								<div className='space-y-1'>
+									{order.map((gas, i) => {
+										const labelMap: Record<BlendComponent, string> = {
+											o2: 'O₂',
+											he: 'Helium',
+											top: 'Top-up gas',
+										}
+										return (
+											<div key={gas} className='flex items-center gap-2'>
+												<span className='text-text w-24 text-sm'>
+													{labelMap[gas]}
+												</span>
+												<button
+													type='button'
+													onClick={() => move(i, -1)}
+													disabled={i === 0}
+													className='text-light-text hover:text-accent disabled:opacity-30'
+													aria-label={`Move ${labelMap[gas]} up`}
+												>
+													▲
+												</button>
+												<button
+													type='button'
+													onClick={() => move(i, 1)}
+													disabled={i === order.length - 1}
+													className='text-light-text hover:text-accent disabled:opacity-30'
+													aria-label={`Move ${labelMap[gas]} down`}
+												>
+													▼
+												</button>
+											</div>
+										)
+									})}
+								</div>
+							</div>
+						</>
 					) : (
 						<p className='text-light-text text-sm'>{result.reason}</p>
 					)}
