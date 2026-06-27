@@ -1,5 +1,6 @@
 'use client'
 
+import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
 import UnitsProvider from './UnitsProvider'
 import ToolsTabs from './ToolsTabs'
@@ -25,6 +26,12 @@ const ToolsPage = () => {
 		<UnitsProvider>
 			<div className='mx-auto max-w-3xl px-4 py-8'>
 				<h1 className='text-text mb-2 text-3xl font-bold'>Dive Tools</h1>
+				<Link
+					href='/tools/about'
+					className='text-accent mb-4 inline-block text-sm underline'
+				>
+					About these tools &amp; how they work →
+				</Link>
 				<div className='border-border bg-hover text-text mb-6 rounded-md border p-3 text-sm'>
 					<span className='font-semibold'>For reference only.</span> All results
 					are estimates — independently verify and analyze every gas mix and
