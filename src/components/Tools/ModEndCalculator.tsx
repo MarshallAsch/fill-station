@@ -1,30 +1,34 @@
 'use client'
 
-import { useState } from 'react'
 import NumberInput from '@/components/UI/FormElements/NumberInput'
 import RadioGroup from '@/components/UI/FormElements/RadioGroup'
+import { fmtMix, roundDepthDown } from '@/lib/diveMath/format'
 import {
 	calculateEnd,
 	calculateMod,
 	EndModel,
 	Water,
 } from '@/lib/diveMath/modEnd'
-import { AIR_FN2, fromMeters, toMeters } from '@/lib/diveMath/units'
+import { AIR_FN2, toMeters } from '@/lib/diveMath/units'
 import FormulaPanel, { FormulaRow } from './FormulaPanel'
 import { Frac, MathExpr } from './Math'
 import MixPicker from './MixPicker'
 import SafetyNote from './SafetyNote'
-import { useDepthState } from './useUnitState'
+import { usePersistedDepth } from './useUnitState'
+import { usePersistedState } from './usePersistedState'
 import { useUnits } from './UnitsProvider'
 
 const ModEndCalculator = () => {
 	const { units } = useUnits()
-	const [fo2, setFo2] = useState(32)
-	const [fhe, setFhe] = useState(0)
-	const [ppo2, setPpo2] = useState(1.4)
-	const [water, setWater] = useState<Water>('salt')
-	const [model, setModel] = useState<EndModel>('o2-narcotic')
-	const [depth, setDepth] = useDepthState(100)
+	const [fo2, setFo2] = usePersistedState('me.fo2', 32)
+	const [fhe, setFhe] = usePersistedState('me.fhe', 0)
+	const [ppo2, setPpo2] = usePersistedState('me.ppo2', 1.4)
+	const [water, setWater] = usePersistedState<Water>('me.water', 'salt')
+	const [model, setModel] = usePersistedState<EndModel>(
+		'me.model',
+		'o2-narcotic',
+	)
+	const [depth, setDepth] = usePersistedDepth('me.depth', 100)
 
 	const fo2Frac = fo2 / 100
 	const fheFrac = fhe / 100
@@ -40,15 +44,13 @@ const ModEndCalculator = () => {
 		model,
 	})
 
-	const d = (m: number) => Math.round(fromMeters(m, units.depth))
-
 	const mixInvalid = fo2 + fhe > 100
 
 	const d0 = water === 'fresh' ? 10.3 : 10
 	const fn2Frac = 1 - fo2Frac - fheFrac
 	const m1 = (m: number) => m.toFixed(1)
 	const f3 = (f: number) => f.toFixed(3)
-	const disp = (m: number) => `${d(m)} ${units.depth}`
+	const disp = (m: number) => `${roundDepthDown(m, units.depth)} ${units.depth}`
 
 	const endExpr =
 		model === 'o2-narcotic' ? (
@@ -172,15 +174,18 @@ const ModEndCalculator = () => {
 						Maximum operating depth
 					</h2>
 					<p className='text-text'>
+						Mix: <span className='font-semibold'>{fmtMix(fo2, fhe)}</span>
+					</p>
+					<p className='text-text'>
 						ppO₂ {ppo2}:{' '}
 						<span className='font-semibold'>
-							{d(modEditable)} {units.depth}
+							{roundDepthDown(modEditable, units.depth)} {units.depth}
 						</span>
 					</p>
 					<p className='text-text'>
 						ppO₂ 1.6:{' '}
 						<span className='font-semibold'>
-							{d(mod16)} {units.depth}
+							{roundDepthDown(mod16, units.depth)} {units.depth}
 						</span>
 					</p>
 				</section>
@@ -200,7 +205,7 @@ const ModEndCalculator = () => {
 					<p className='text-text'>
 						END at {depth} {units.depth}:{' '}
 						<span className='font-semibold'>
-							{d(end)} {units.depth}
+							{roundDepthDown(end, units.depth)} {units.depth}
 						</span>
 					</p>
 				</section>

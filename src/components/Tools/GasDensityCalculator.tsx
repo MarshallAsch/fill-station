@@ -1,6 +1,5 @@
 'use client'
 
-import { useState } from 'react'
 import NumberInput from '@/components/UI/FormElements/NumberInput'
 import RadioGroup from '@/components/UI/FormElements/RadioGroup'
 import {
@@ -9,19 +8,21 @@ import {
 	HARD_MAX_DENSITY,
 	RECOMMENDED_MAX_DENSITY,
 } from '@/lib/diveMath/gasDensity'
+import { fmtMix, roundDepthDown } from '@/lib/diveMath/format'
 import { Water } from '@/lib/diveMath/modEnd'
-import { fromMeters, toMeters } from '@/lib/diveMath/units'
+import { toMeters } from '@/lib/diveMath/units'
 import MixPicker from './MixPicker'
 import SafetyNote from './SafetyNote'
-import { useDepthState } from './useUnitState'
+import { usePersistedDepth } from './useUnitState'
+import { usePersistedState } from './usePersistedState'
 import { useUnits } from './UnitsProvider'
 
 const GasDensityCalculator = () => {
 	const { units } = useUnits()
-	const [fo2, setFo2] = useState(21)
-	const [fhe, setFhe] = useState(0)
-	const [water, setWater] = useState<Water>('salt')
-	const [depth, setDepth] = useDepthState(100)
+	const [fo2, setFo2] = usePersistedState('gd.fo2', 21)
+	const [fhe, setFhe] = usePersistedState('gd.fhe', 0)
+	const [water, setWater] = usePersistedState<Water>('gd.water', 'salt')
+	const [depth, setDepth] = usePersistedDepth('gd.depth', 100)
 
 	const mix = { fo2: fo2 / 100, fhe: fhe / 100 }
 	const density = densityAtDepth({
@@ -39,7 +40,6 @@ const GasDensityCalculator = () => {
 		density: HARD_MAX_DENSITY,
 		water,
 	})
-	const d = (m: number) => Math.round(fromMeters(m, units.depth))
 
 	const densityStatus =
 		density > HARD_MAX_DENSITY
@@ -104,6 +104,7 @@ const GasDensityCalculator = () => {
 			/>
 			<section className='border-border space-y-2 rounded-md border p-4'>
 				<h2 className='text-text text-lg font-semibold'>Gas density</h2>
+				<p className='text-light-text text-sm'>Mix: {fmtMix(fo2, fhe)}</p>
 				<p className='text-text'>
 					At {depth} {units.depth}:{' '}
 					<span className='font-semibold'>{density.toFixed(2)} g/L</span>
@@ -122,8 +123,9 @@ const GasDensityCalculator = () => {
 					<p className='text-light-text text-sm'>Within recommended density.</p>
 				)}
 				<p className='text-light-text text-sm'>
-					Recommended max (5.2 g/L) depth: {d(recDepth)} {units.depth} · Hard
-					max (6.3 g/L) depth: {d(hardDepth)} {units.depth}
+					Recommended max (5.2 g/L) depth:{' '}
+					{roundDepthDown(recDepth, units.depth)} {units.depth} · Hard max (6.3
+					g/L) depth: {roundDepthDown(hardDepth, units.depth)} {units.depth}
 				</p>
 			</section>
 		</div>

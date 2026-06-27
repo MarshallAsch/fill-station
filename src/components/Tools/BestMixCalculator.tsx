@@ -1,25 +1,26 @@
 'use client'
 
-import { useState } from 'react'
 import Checkbox from '@/components/UI/FormElements/CheckBox'
 import NumberInput from '@/components/UI/FormElements/NumberInput'
 import RadioGroup from '@/components/UI/FormElements/RadioGroup'
 import { bestMix } from '@/lib/diveMath/bestMix'
+import { fmtMix, roundDepthDown, roundPercent } from '@/lib/diveMath/format'
 import { calculateMod, Water } from '@/lib/diveMath/modEnd'
-import { fromMeters, toMeters } from '@/lib/diveMath/units'
+import { toMeters } from '@/lib/diveMath/units'
 import FormulaPanel, { FormulaRow } from './FormulaPanel'
 import { Frac, MathExpr } from './Math'
 import SafetyNote from './SafetyNote'
 import { useUnits } from './UnitsProvider'
-import { useDepthState } from './useUnitState'
+import { usePersistedDepth } from './useUnitState'
+import { usePersistedState } from './usePersistedState'
 
 const BestMixCalculator = () => {
 	const { units } = useUnits()
-	const [depth, setDepth] = useDepthState(100)
-	const [ppo2, setPpo2] = useState(1.4)
-	const [water, setWater] = useState<Water>('salt')
-	const [useHe, setUseHe] = useState(false)
-	const [targetEnd, setTargetEnd] = useDepthState(100)
+	const [depth, setDepth] = usePersistedDepth('bm.depth', 100)
+	const [ppo2, setPpo2] = usePersistedState('bm.ppo2', 1.4)
+	const [water, setWater] = usePersistedState<Water>('bm.water', 'salt')
+	const [useHe, setUseHe] = usePersistedState('bm.useHe', false)
+	const [targetEnd, setTargetEnd] = usePersistedDepth('bm.targetEnd', 100)
 
 	const depthM = toMeters(depth, units.depth)
 	const mix = bestMix({
@@ -40,8 +41,7 @@ const BestMixCalculator = () => {
 	const endM = toMeters(targetEnd, units.depth)
 	const m1 = (m: number) => m.toFixed(1)
 	const f3 = (f: number) => f.toFixed(3)
-	const disp = (m: number) =>
-		`${Math.round(fromMeters(m, units.depth))} ${units.depth}`
+	const disp = (m: number) => `${roundDepthDown(m, units.depth)} ${units.depth}`
 
 	const formulaRows: FormulaRow[] = [
 		{
@@ -160,17 +160,17 @@ const BestMixCalculator = () => {
 				<section className='border-border space-y-2 rounded-md border p-4'>
 					<h2 className='text-text text-lg font-semibold'>Recommended mix</h2>
 					<p className='text-text text-2xl font-bold'>
-						{fo2Pct}
-						{fhePct > 0 ? `/${fhePct}` : ''}
+						{fmtMix(fo2Pct, fhePct)}
 						{fhePct > 0 ? ' (trimix)' : ' nitrox'}
 					</p>
 					<p className='text-light-text text-sm'>
-						O₂ {fo2Pct}% · He {fhePct}% · N₂ {Math.round(mix.fn2 * 100)}%
+						O₂ {roundPercent(fo2Pct)}% · He {roundPercent(fhePct)}% · N₂{' '}
+						{roundPercent(Math.round(mix.fn2 * 100))}%
 					</p>
 					<p className='text-text'>
 						MOD at this mix &amp; ppO₂:{' '}
 						<span className='font-semibold'>
-							{Math.round(fromMeters(mod, units.depth))} {units.depth}
+							{roundDepthDown(mod, units.depth)} {units.depth}
 						</span>
 					</p>
 				</section>

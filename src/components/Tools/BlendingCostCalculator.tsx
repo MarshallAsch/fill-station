@@ -1,13 +1,15 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import NumberInput from '@/components/UI/FormElements/NumberInput'
 import { calculateBlend } from '@/lib/diveMath/blending'
+import { roundVolume } from '@/lib/diveMath/format'
 import { toBar } from '@/lib/diveMath/units'
 import MixPicker from './MixPicker'
 import SafetyNote from './SafetyNote'
 import { useUnits } from './UnitsProvider'
-import { usePressureState } from './useUnitState'
+import { usePersistedPressure } from './useUnitState'
+import { usePersistedState } from './usePersistedState'
 
 const PRICE_KEY = 'fillstation.tools.gasPrices'
 interface Prices {
@@ -18,35 +20,35 @@ const DEFAULT_PRICES: Prices = { o2: 0.03, he: 0.5 }
 
 const BlendingCostCalculator = () => {
 	const { units } = useUnits()
-	const [prices, setPrices] = useState<Prices>(DEFAULT_PRICES)
-	const [tankVol, setTankVol] = useState(11.1)
-	const [startP, setStartP] = usePressureState(0)
-	const [startO2, setStartO2] = useState(21)
-	const [startHe, setStartHe] = useState(0)
-	const [finalP, setFinalP] = usePressureState(200)
-	const [targetO2, setTargetO2] = useState(32)
-	const [targetHe, setTargetHe] = useState(0)
+	const [prices, setPrices] = usePersistedState<Prices>(
+		'bc.prices',
+		DEFAULT_PRICES,
+	)
+	const [tankVol, setTankVol] = usePersistedState('bc.tankVol', 11.1)
+	const [startP, setStartP] = usePersistedPressure('bc.startP', 0)
+	const [startO2, setStartO2] = usePersistedState('bc.startO2', 21)
+	const [startHe, setStartHe] = usePersistedState('bc.startHe', 0)
+	const [finalP, setFinalP] = usePersistedPressure('bc.finalP', 200)
+	const [targetO2, setTargetO2] = usePersistedState('bc.targetO2', 32)
+	const [targetHe, setTargetHe] = usePersistedState('bc.targetHe', 0)
 
+	// Migrate existing standalone price storage to new persisted key on first load
 	useEffect(() => {
 		try {
 			const raw = localStorage.getItem(PRICE_KEY)
-			// eslint-disable-next-line react-hooks/set-state-in-effect
-			if (raw) setPrices({ ...DEFAULT_PRICES, ...JSON.parse(raw) })
+			if (raw) {
+				const parsed = JSON.parse(raw) as Partial<Prices>
+				setPrices((prev) => ({ ...prev, ...parsed }))
+				localStorage.removeItem(PRICE_KEY)
+			}
 		} catch {
 			// ignore malformed storage
 		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [])
 
 	const setPrice = (key: keyof Prices, value: number) =>
-		setPrices((prev) => {
-			const next = { ...prev, [key]: value }
-			try {
-				localStorage.setItem(PRICE_KEY, JSON.stringify(next))
-			} catch {
-				// ignore storage failures
-			}
-			return next
-		})
+		setPrices((prev) => ({ ...prev, [key]: value }))
 
 	const blend = calculateBlend({
 		startPressure: toBar(startP, units.pressure),
@@ -186,8 +188,9 @@ const BlendingCostCalculator = () => {
 				{blend.feasible ? (
 					<>
 						<p className='text-light-text text-sm'>
-							O₂ used: {Math.round(o2L)} L → {o2Cost.toFixed(2)} · He used:{' '}
-							{Math.round(heL)} L → {heCost.toFixed(2)}
+							O₂ used: {roundVolume(o2L, units.volume)} {units.volume} →{' '}
+							{o2Cost.toFixed(2)} · He used: {roundVolume(heL, units.volume)}{' '}
+							{units.volume} → {heCost.toFixed(2)}
 						</p>
 						<p className='text-text text-xl font-bold'>
 							Total: {total.toFixed(2)}

@@ -1,22 +1,23 @@
 'use client'
 
-import { useState } from 'react'
 import NumberInput from '@/components/UI/FormElements/NumberInput'
+import { fmtMix, roundPercent, roundPressure } from '@/lib/diveMath/format'
 import { mixTwoGases } from '@/lib/diveMath/gasMixing'
-import { fromBar, toBar } from '@/lib/diveMath/units'
+import { toBar } from '@/lib/diveMath/units'
 import MixPicker from './MixPicker'
 import SafetyNote from './SafetyNote'
 import { useUnits } from './UnitsProvider'
-import { usePressureState } from './useUnitState'
+import { usePersistedPressure } from './useUnitState'
+import { usePersistedState } from './usePersistedState'
 
 const GasMixingCalculator = () => {
 	const { units } = useUnits()
-	const [p1, setP1] = usePressureState(100)
-	const [o21, setO21] = useState(21)
-	const [he1, setHe1] = useState(0)
-	const [p2, setP2] = usePressureState(100)
-	const [o22, setO22] = useState(32)
-	const [he2, setHe2] = useState(0)
+	const [p1, setP1] = usePersistedPressure('gm.p1', 100)
+	const [o21, setO21] = usePersistedState('gm.o21', 21)
+	const [he1, setHe1] = usePersistedState('gm.he1', 0)
+	const [p2, setP2] = usePersistedPressure('gm.p2', 100)
+	const [o22, setO22] = usePersistedState('gm.o22', 32)
+	const [he2, setHe2] = usePersistedState('gm.he2', 0)
 
 	const result = mixTwoGases(
 		{ pressure: toBar(p1, units.pressure), fo2: o21 / 100, fhe: he1 / 100 },
@@ -25,6 +26,9 @@ const GasMixingCalculator = () => {
 
 	const mixAInvalid = o21 + he1 > 100
 	const mixBInvalid = o22 + he2 > 100
+
+	const resultO2Pct = roundPercent(result.fo2 * 100)
+	const resultHePct = roundPercent(result.fhe * 100)
 
 	return (
 		<div className='space-y-6'>
@@ -117,12 +121,11 @@ const GasMixingCalculator = () => {
 			<section className='border-border space-y-2 rounded-md border p-4'>
 				<h2 className='text-text text-lg font-semibold'>Resulting mix</h2>
 				<p className='text-text text-2xl font-bold'>
-					{Math.round(result.fo2 * 100)}/{Math.round(result.fhe * 100)}
+					{fmtMix(resultO2Pct, resultHePct)}
 				</p>
 				<p className='text-light-text text-sm'>
-					{Math.round(fromBar(result.pressure, units.pressure))}{' '}
-					{units.pressure} · O₂ {Math.round(result.fo2 * 100)}% · He{' '}
-					{Math.round(result.fhe * 100)}%
+					{roundPressure(result.pressure, units.pressure)} {units.pressure} · O₂{' '}
+					{resultO2Pct}% · He {resultHePct}%
 				</p>
 			</section>
 		</div>

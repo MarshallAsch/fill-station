@@ -1,22 +1,23 @@
 'use client'
 
-import { useState } from 'react'
 import NumberInput from '@/components/UI/FormElements/NumberInput'
 import RadioGroup from '@/components/UI/FormElements/RadioGroup'
 import { ead } from '@/lib/diveMath/ead'
+import { fmtMix, roundDepthDown } from '@/lib/diveMath/format'
 import { Water } from '@/lib/diveMath/modEnd'
-import { fromMeters, toMeters } from '@/lib/diveMath/units'
+import { toMeters } from '@/lib/diveMath/units'
 import MixPicker from './MixPicker'
 import SafetyNote from './SafetyNote'
-import { useDepthState } from './useUnitState'
+import { usePersistedDepth } from './useUnitState'
+import { usePersistedState } from './usePersistedState'
 import { useUnits } from './UnitsProvider'
 
 const EadCalculator = () => {
 	const { units } = useUnits()
-	const [fo2, setFo2] = useState(32)
-	const [fhe, setFhe] = useState(0)
-	const [water, setWater] = useState<Water>('salt')
-	const [depth, setDepth] = useDepthState(100)
+	const [fo2, setFo2] = usePersistedState('ead.fo2', 32)
+	const [fhe, setFhe] = usePersistedState('ead.fhe', 0)
+	const [water, setWater] = usePersistedState<Water>('ead.water', 'salt')
+	const [depth, setDepth] = usePersistedDepth('ead.depth', 100)
 
 	const result = ead({
 		depthM: toMeters(depth, units.depth),
@@ -83,10 +84,11 @@ const EadCalculator = () => {
 				<h2 className='text-text text-lg font-semibold'>
 					Equivalent Air Depth
 				</h2>
+				<p className='text-light-text text-sm'>Mix: {fmtMix(fo2, fhe)}</p>
 				<p className='text-text'>
 					EAD at {depth} {units.depth}:{' '}
 					<span className='font-semibold'>
-						{Math.round(fromMeters(result, units.depth))} {units.depth}
+						{roundDepthDown(result, units.depth)} {units.depth}
 					</span>
 				</p>
 			</section>
