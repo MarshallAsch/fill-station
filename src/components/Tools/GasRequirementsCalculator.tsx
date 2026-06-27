@@ -84,7 +84,9 @@ const GasRequirementsCalculator = () => {
 			/>
 			<section className='space-y-3'>
 				<h2 className='text-text text-lg font-semibold'>
-					1 · SAC / RMV from a logged dive
+					{sacMode === 'direct'
+						? '1 · SAC / RMV'
+						: '1 · SAC / RMV from a logged dive'}
 				</h2>
 				<RadioGroup
 					title='SAC source'
