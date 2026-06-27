@@ -52,7 +52,7 @@ bO₂ = targetFo2·pf − startFo2·pi − topFo2·rem
 det = (1 − topFhe)(1 − topFo2) − (topFhe)(topFo2)
 pHe = ( bHe·(1 − topFo2) + topFhe·bO₂ ) / det
 pO₂ = ( (1 − topFhe)·bO₂ + topFo2·bHe ) / det
-real gas:  pHe ×= Z(He, pf_abs)   pO₂ ×= Z(O₂, pf_abs)
+real gas:  pHe ×= Z(He, pf)   pO₂ ×= Z(O₂, pf)   (pf = final pressure)
 pTop = pf − pi − pHe − pO₂`}</Formula>
 		<ul className='text-text my-2 list-disc space-y-1 pl-5 text-sm'>
 			<li>
