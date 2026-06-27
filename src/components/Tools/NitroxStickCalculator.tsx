@@ -6,14 +6,17 @@ import {
 	nitroxStickFlowRate,
 	nitroxStickSupplyDraw,
 } from '@/lib/diveMath/nitroxStick'
+import { tempRiseC } from '@/lib/diveMath/temperature'
 import { fromBar, fromLpm, toBar, toLpm } from '@/lib/diveMath/units'
 import SafetyNote from './SafetyNote'
 import CylinderFields from './CylinderFields'
+import HotFillNote from './HotFillNote'
 import { useUnits } from './UnitsProvider'
 import { useAirFlowState, usePressureState } from './useUnitState'
+import { useHotFill } from './useHotFill'
 
 const NitroxStickCalculator = () => {
-	const { units } = useUnits()
+	const { units, settledTempC } = useUnits()
 	const [fo2, setFo2] = useState(32)
 	const [airFlow, setAirFlow] = useAirFlowState(100)
 	const [tankVolume, setTankVolume] = useState(11.1)
@@ -24,12 +27,19 @@ const NitroxStickCalculator = () => {
 
 	const targetFo2 = fo2 / 100
 	const airFlowLpm = toLpm(airFlow, units.airFlow)
+	const hot = useHotFill()
+	const fillRateBarPerMin = tankVolume > 0 ? airFlowLpm / tankVolume : 0
+	const deltaTC = tempRiseC(fillRateBarPerMin)
+	const hotFinal = hot.on
+		? hot.hotFill(finalPressure, settledTempC + deltaTC)
+		: finalPressure
+	const deltaTDisplay = units.temp === 'F' ? deltaTC * (9 / 5) : deltaTC
 	const flow = nitroxStickFlowRate({ targetFo2, airFlow: airFlowLpm })
 	const draw = nitroxStickSupplyDraw({
 		targetFo2,
 		tankVolume,
 		startPressure: toBar(startPressure, units.pressure),
-		finalPressure: toBar(finalPressure, units.pressure),
+		finalPressure: toBar(hotFinal, units.pressure),
 		supplyVolume,
 	})
 
@@ -127,6 +137,13 @@ const NitroxStickCalculator = () => {
 							{units.pressure}
 						</span>
 					</p>
+				)}
+				{hot.on && (
+					<HotFillNote
+						cold={finalPressure}
+						hot={hotFinal}
+						deltaTDisplay={deltaTDisplay}
+					/>
 				)}
 			</section>
 		</div>
