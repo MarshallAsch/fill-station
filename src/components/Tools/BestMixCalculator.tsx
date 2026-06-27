@@ -29,8 +29,8 @@ const BestMixCalculator = () => {
 		targetEndM: useHe ? toMeters(targetEnd, units.depth) : undefined,
 		water,
 	})
-	const fo2Pct = Math.round(mix.fo2 * 100)
-	const fhePct = Math.round(mix.fhe * 100)
+	const fo2Pct = mix.fo2 * 100
+	const fhePct = mix.fhe * 100
 	const mod = calculateMod({ fo2: mix.fo2, ppo2, water })
 
 	const ppo2Danger = ppo2 > 1.6
@@ -68,7 +68,7 @@ const BestMixCalculator = () => {
 				<MathExpr>
 					FO₂ = <Frac num='ppO₂' den='ata' /> ={' '}
 					<Frac num={`${ppo2}`} den={ata.toFixed(2)} /> = {f3(mix.fo2)} →{' '}
-					{fo2Pct}%
+					{roundPercent(fo2Pct)}%
 				</MathExpr>
 			),
 		},
@@ -80,7 +80,7 @@ const BestMixCalculator = () => {
 				<MathExpr>
 					FHe = 1 − <Frac num='END + D₀' den='depth + D₀' /> = 1 −{' '}
 					<Frac num={`${m1(endM)} + ${d0}`} den={`${m1(depthM)} + ${d0}`} /> ={' '}
-					{f3(mix.fhe)} → {fhePct}%
+					{f3(mix.fhe)} → {roundPercent(fhePct)}%
 				</MathExpr>
 			),
 			note: `Target END = ${targetEnd} ${units.depth} = ${m1(endM)} m`,
@@ -165,7 +165,7 @@ const BestMixCalculator = () => {
 					</p>
 					<p className='text-light-text text-sm'>
 						O₂ {roundPercent(fo2Pct)}% · He {roundPercent(fhePct)}% · N₂{' '}
-						{roundPercent(Math.round(mix.fn2 * 100))}%
+						{roundPercent(mix.fn2 * 100)}%
 					</p>
 					<p className='text-text'>
 						MOD at this mix &amp; ppO₂:{' '}

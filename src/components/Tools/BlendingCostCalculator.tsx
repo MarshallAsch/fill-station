@@ -1,6 +1,5 @@
 'use client'
 
-import { useEffect } from 'react'
 import NumberInput from '@/components/UI/FormElements/NumberInput'
 import { calculateBlend } from '@/lib/diveMath/blending'
 import { roundVolume } from '@/lib/diveMath/format'
@@ -11,7 +10,6 @@ import { useUnits } from './UnitsProvider'
 import { usePersistedPressure } from './useUnitState'
 import { usePersistedState } from './usePersistedState'
 
-const PRICE_KEY = 'fillstation.tools.gasPrices'
 interface Prices {
 	o2: number
 	he: number
@@ -31,21 +29,6 @@ const BlendingCostCalculator = () => {
 	const [finalP, setFinalP] = usePersistedPressure('bc.finalP', 200)
 	const [targetO2, setTargetO2] = usePersistedState('bc.targetO2', 32)
 	const [targetHe, setTargetHe] = usePersistedState('bc.targetHe', 0)
-
-	// Migrate existing standalone price storage to new persisted key on first load
-	useEffect(() => {
-		try {
-			const raw = localStorage.getItem(PRICE_KEY)
-			if (raw) {
-				const parsed = JSON.parse(raw) as Partial<Prices>
-				setPrices((prev) => ({ ...prev, ...parsed }))
-				localStorage.removeItem(PRICE_KEY)
-			}
-		} catch {
-			// ignore malformed storage
-		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [])
 
 	const setPrice = (key: keyof Prices, value: number) =>
 		setPrices((prev) => ({ ...prev, [key]: value }))
