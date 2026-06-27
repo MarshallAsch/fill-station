@@ -104,7 +104,7 @@ export const TOOLS: ToolDef[] = [
 		group: 'blending',
 		Component: BestMixCalculator,
 		description:
-			'Find the highest safe oxygen fraction for a target depth given a ppO₂ ceiling, maximising bottom-time decompression efficiency.',
+			'Find the highest safe oxygen fraction for a target depth given a ppO₂ ceiling.',
 	},
 	{
 		id: 'ead',
@@ -112,7 +112,7 @@ export const TOOLS: ToolDef[] = [
 		group: 'planning',
 		Component: EadCalculator,
 		description:
-			'Compute the Equivalent Air Depth of a nitrox mix at a given depth to look up air decompression tables.',
+			'Compute the Equivalent Air Depth of a nitrox or trimix gas at a given depth to look up air decompression tables.',
 	},
 	{
 		id: 'gas-density',
@@ -136,6 +136,6 @@ export const TOOLS: ToolDef[] = [
 		group: 'planning',
 		Component: GasRequirementsCalculator,
 		description:
-			'Estimate total gas volume needed for a dive plan using surface air consumption rate, depth, and a configurable reserve margin.',
+			'Estimate planned gas volume and rock-bottom minimum from a logged RMV, dive profile, and stress factor.',
 	},
 ]
