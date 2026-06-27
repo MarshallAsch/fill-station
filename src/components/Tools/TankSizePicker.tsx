@@ -11,7 +11,9 @@ import {
 } from './presets'
 import { useUnits } from './UnitsProvider'
 
-const LISTS: Record<'dive' | 'storage' | 'industrial', TankPreset[]> = {
+type Cat = 'dive' | 'storage' | 'industrial'
+
+const LISTS: Record<Cat, TankPreset[]> = {
 	dive: DIVE_TANKS,
 	storage: STORAGE_TANKS,
 	industrial: INDUSTRIAL_TANKS,
@@ -24,12 +26,22 @@ const TankSizePicker = ({
 	idSuffix,
 	onSelect,
 }: {
-	category: 'dive' | 'storage' | 'industrial'
+	category: Cat | Cat[]
 	idSuffix?: string
 	onSelect: (waterVolumeL: number, ratedBar: number) => void
 }) => {
 	const { units, useRealGas } = useUnits()
-	const presets = LISTS[category]
+	const cats = Array.isArray(category) ? category : [category]
+	const seen = new Set<string>()
+	const presets = cats
+		.flatMap((c) => LISTS[c])
+		.filter((p) => {
+			if (seen.has(p.name)) {
+				return false
+			}
+			seen.add(p.name)
+			return true
+		})
 	const items = [
 		{ value: CUSTOM, name: 'Choose a standard size…' },
 		...presets.map((p) => {
@@ -43,7 +55,7 @@ const TankSizePicker = ({
 			}
 		}),
 	]
-	const id = `tank-${category}${idSuffix ? `-${idSuffix}` : ''}`
+	const id = `tank-${cats.join('-')}${idSuffix ? `-${idSuffix}` : ''}`
 
 	// Keeps the picked size shown after it applies the preset (the fields stay
 	// editable; manual edits just won't change what the picker displays).
