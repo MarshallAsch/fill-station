@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import ReferenceFundamentals from '@/components/Tools/reference/ReferenceFundamentals'
 import ReferenceBlendingTools from '@/components/Tools/reference/ReferenceBlendingTools'
+import ReferencePlanningTools from '@/components/Tools/reference/ReferencePlanningTools'
 
 export default function ToolsReferencePage() {
 	return (
@@ -27,6 +28,7 @@ export default function ToolsReferencePage() {
 
 			<ReferenceFundamentals />
 			<ReferenceBlendingTools />
+			<ReferencePlanningTools />
 		</div>
 	)
 }
