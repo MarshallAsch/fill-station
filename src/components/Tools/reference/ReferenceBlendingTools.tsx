@@ -1,4 +1,5 @@
 import Formula from './Formula'
+import { AIR_FO2, ATMOSPHERIC_BAR } from '@/lib/diveMath/units'
 
 const ReferenceBlendingTools = () => (
 	<section className='mb-8'>
@@ -14,10 +15,10 @@ const ReferenceBlendingTools = () => (
 ideal:    eqAbs = (P_target_abs·V_target + P_bank_abs·V_bank) / (V_target + V_bank)
 real gas: w = V / Z(air, P_abs)
           eqAbs = (P_target_abs·w_target + P_bank_abs·w_bank) / (w_target + w_bank)
-P_final = eqAbs − 1.01325`}</Formula>
+P_final = eqAbs − ${ATMOSPHERIC_BAR}`}</Formula>
 		<ul className='text-text my-2 list-disc space-y-1 pl-5 text-sm'>
 			<li>Banks used lowest-pressure first to preserve high-pressure gas.</li>
-			<li>Air assumed (fO₂ = 0.209) for the compressibility weighting.</li>
+			<li>Air assumed (fO₂ = {AIR_FO2}) for the compressibility weighting.</li>
 		</ul>
 		<p className='text-light-text text-sm'>
 			Reference: conservation of moles on free equalization; real gas via
@@ -29,13 +30,13 @@ P_final = eqAbs − 1.01325`}</Formula>
 			Continuous blending: how much pure O₂ to bleed into an air stream for a
 			target nitrox fraction, and the O₂ drawn from supply for a fill.
 		</p>
-		<Formula>{`O₂ flow      = airFlow × (targetFO₂ − 0.209) / (1 − targetFO₂)
+		<Formula>{`O₂ flow      = airFlow × (targetFO₂ − ${AIR_FO2}) / (1 − targetFO₂)
 added (surface L) = tankVol × (finalP − startP)
-O₂ fraction  = (targetFO₂ − 0.209) / (1 − 0.209)
+O₂ fraction  = (targetFO₂ − ${AIR_FO2}) / (1 − ${AIR_FO2})
 O₂ volume    = added × O₂ fraction
 supply drop  = O₂ volume / supplyVol`}</Formula>
 		<ul className='text-text my-2 list-disc space-y-1 pl-5 text-sm'>
-			<li>Returns 0 when the target ≤ 0.209 (no enrichment needed).</li>
+			<li>Returns 0 when the target ≤ {AIR_FO2} (no enrichment needed).</li>
 		</ul>
 		<p className='text-light-text text-sm'>
 			Reference: partial pressure of O₂ added to air (Dalton&apos;s law).
@@ -102,7 +103,7 @@ drive air for q surface L (trapezoidal integral, 400 steps):
   inletAbs(x)    = min(supplyStart_abs − x / supplyVol, cap)
   integrand(x)   = (receiverAbs/inletAbs) × Z(inletAbs)/Z(receiverAbs)
   driveAirL = ∫₀^q integrand dx
-gasPerCycle  = ((driveSwept/ratio) × (supplyAbs/1.01325)) / Z_supply
+gasPerCycle  = ((driveSwept/ratio) × (supplyAbs/${ATMOSPHERIC_BAR})) / Z_supply
 boosterRate  = maxCpm · gasPerCycle / receiverVol
 fillTime     = equalization time + boost time   (both rate-limited)`}</Formula>
 		<ul className='text-text my-2 list-disc space-y-1 pl-5 text-sm'>

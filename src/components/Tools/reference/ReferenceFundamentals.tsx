@@ -1,4 +1,15 @@
 import Formula from './Formula'
+import {
+	AIR_FO2,
+	AIR_FN2,
+	ATMOSPHERIC_BAR,
+	PSI_PER_BAR,
+	L_PER_CF,
+	FT_PER_M,
+} from '@/lib/diveMath/units'
+import { Z_COEFF } from '@/lib/diveMath/compressibility'
+import { HEAT_COEFF, KELVIN_OFFSET } from '@/lib/diveMath/temperature'
+import { depthPerBar } from '@/lib/diveMath/modEnd'
 
 const ReferenceFundamentals = () => (
 	<section className='mb-8'>
@@ -10,15 +21,20 @@ const ReferenceFundamentals = () => (
 
 		<h3 className='text-text mt-4 font-semibold'>Units &amp; constants</h3>
 		<ul className='text-text my-2 list-disc space-y-1 pl-5 text-sm'>
-			<li>Atmospheric pressure: 1.01325 bar (gauge = absolute − 1.01325).</li>
-			<li>Air: O₂ = 0.209, N₂ = 0.791.</li>
 			<li>
-				Conversions: 14.5037738 psi/bar · 28.3168466 L/ft³ · 3.280839895 ft/m.
+				Atmospheric pressure: {ATMOSPHERIC_BAR} bar (gauge = absolute −{' '}
+				{ATMOSPHERIC_BAR}).
+			</li>
+			<li>
+				Air: O₂ = {AIR_FO2}, N₂ = {AIR_FN2}.
+			</li>
+			<li>
+				Conversions: {PSI_PER_BAR} psi/bar · {L_PER_CF} L/ft³ · {FT_PER_M} ft/m.
 			</li>
 		</ul>
 
 		<h3 className='text-text mt-4 font-semibold'>Depth ↔ pressure</h3>
-		<Formula>{`d₀ = 10 m/bar (salt water), 10.3 m/bar (fresh)
+		<Formula>{`d₀ = ${depthPerBar('salt')} m/bar (salt water), ${depthPerBar('fresh')} m/bar (fresh)
 ATA = depth_m / d₀ + 1`}</Formula>
 		<p className='text-light-text text-sm'>
 			ATA is the absolute pressure at depth in atmospheres. Reference:
@@ -30,7 +46,7 @@ ATA = depth_m / d₀ + 1`}</Formula>
 		</h3>
 		<Formula>{`PV = Z·nRT          (Z = 1 for an ideal gas)
 Z(P) = 1 + k·P      (P in absolute bar)
-  k_O₂ = −0.0002   k_N₂ = +0.0002   k_He = +0.00025
+  k_O₂ = ${Z_COEFF.o2}   k_N₂ = +${Z_COEFF.n2}   k_He = +${Z_COEFF.he}
 Z_mix = fO₂·Z_O₂ + fHe·Z_He + fN₂·Z_N₂   (fN₂ = 1 − fO₂ − fHe)
 gas content ∝ P_abs / Z`}</Formula>
 		<p className='text-light-text text-sm'>
@@ -46,16 +62,16 @@ gas content ∝ P_abs / Z`}</Formula>
 		<h3 className='text-text mt-4 font-semibold'>
 			Temperature &amp; hot fills
 		</h3>
-		<Formula>{`Gay-Lussac (fixed volume):  P / T = constant   (T in kelvin, K = 273.15)
+		<Formula>{`Gay-Lussac (fixed volume):  P / T = constant   (T in kelvin, K = ${KELVIN_OFFSET})
 Settle on cooling:  P_cold_abs = P_hot_abs × (T_cold / T_hot)
 Fill hot to target: P_hot_abs  = P_cold_abs × (T_hot / T_cold)
-Fill-rate heating:  ΔT = 0.7 × fillRate(bar/min)   (≥ 0)`}</Formula>
+Fill-rate heating:  ΔT = ${HEAT_COEFF} × fillRate(bar/min)   (≥ 0)`}</Formula>
 		<p className='text-light-text text-sm'>
 			With temperatures set, a fill is computed to the hot pressure that settles
 			to your cold target; &quot;simple&quot; mode uses a flat overfill %
-			instead. <span className='font-medium'>Approximation:</span> the 0.7 °C
-			per (bar/min) coefficient rolls cylinder thermal mass into one constant.
-			Reference: Gay-Lussac&apos;s / combined gas law.
+			instead. <span className='font-medium'>Approximation:</span> the{' '}
+			{HEAT_COEFF} °C per (bar/min) coefficient rolls cylinder thermal mass into
+			one constant. Reference: Gay-Lussac&apos;s / combined gas law.
 		</p>
 	</section>
 )
