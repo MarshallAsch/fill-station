@@ -28,9 +28,14 @@ const Navbar = () => {
 					<LogoIcon />
 				</Link>
 				{session.status !== 'authenticated' ? (
-					<Link href='/about' className='text-text text-sm/6 font-semibold'>
-						About
-					</Link>
+					<div className='flex gap-x-8'>
+						<Link href='/tools' className='text-text text-sm/6 font-semibold'>
+							Tools
+						</Link>
+						<Link href='/about' className='text-text text-sm/6 font-semibold'>
+							About
+						</Link>
+					</div>
 				) : (
 					<>
 						<div className='flex lg:hidden'>
@@ -53,6 +58,9 @@ const Navbar = () => {
 									{item.name}
 								</Link>
 							))}
+							<Link href='/tools' className='text-text text-sm/6 font-semibold'>
+								Tools
+							</Link>
 							<Link href='/about' className='text-text text-sm/6 font-semibold'>
 								About
 							</Link>
@@ -107,6 +115,13 @@ const Navbar = () => {
 										{item.name}
 									</Link>
 								))}
+								<Link
+									href='/tools'
+									onClick={() => setMobileMenuOpen(false)}
+									className='text-text hover:bg-hover -mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold'
+								>
+									Tools
+								</Link>
 								<Link
 									href='/about'
 									onClick={() => setMobileMenuOpen(false)}

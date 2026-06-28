@@ -1,7 +1,11 @@
+import { ChangeEvent } from 'react'
+
 type CheckBoxProps = {
 	title: string
 	description?: string
 	defaultChecked?: boolean
+	checked?: boolean
+	onChange?: (checked: boolean) => void
 	id: string
 	name: string
 }
@@ -10,15 +14,26 @@ const Checkbox = ({
 	title,
 	description,
 	defaultChecked = false,
+	checked,
+	onChange,
 	id,
 	name,
 }: CheckBoxProps) => {
+	const controlledProps =
+		checked !== undefined
+			? {
+					checked,
+					onChange: (e: ChangeEvent<HTMLInputElement>) =>
+						onChange?.(e.target.checked),
+				}
+			: { defaultChecked }
+
 	return (
 		<div className='flex gap-3'>
 			<div className='flex h-6 shrink-0 items-center'>
 				<div className='group grid size-4 grid-cols-1'>
 					<input
-						defaultChecked={defaultChecked}
+						{...controlledProps}
 						id={id}
 						name={name}
 						type='checkbox'

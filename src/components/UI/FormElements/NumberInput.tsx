@@ -1,3 +1,5 @@
+import Tooltip from '@/components/UI/Tooltip'
+
 type NumberInputProps = {
 	id: string
 	name: string
@@ -6,6 +8,10 @@ type NumberInputProps = {
 	onChange: (value: number) => void
 	placeholder?: string
 	disabled?: boolean
+	tooltip?: string
+	min?: number
+	max?: number
+	step?: number
 }
 
 const NumberInput = ({
@@ -16,16 +22,24 @@ const NumberInput = ({
 	onChange,
 	placeholder,
 	disabled = false,
+	tooltip,
+	min,
+	max,
+	step,
 }: NumberInputProps) => {
-	console.log(value)
 	return (
 		<div className='w-full'>
 			{label && (
 				<label
 					htmlFor={id}
-					className='text-text mb-1 block text-sm font-medium'
+					className='text-text mb-1 flex items-center text-sm font-medium'
 				>
 					{label}
+					{tooltip && (
+						<Tooltip message={tooltip}>
+							<span className='text-light-text ml-1 cursor-help'>ⓘ</span>
+						</Tooltip>
+					)}
 				</label>
 			)}
 
@@ -36,6 +50,9 @@ const NumberInput = ({
 				value={String(Number(value))}
 				disabled={disabled}
 				placeholder={placeholder}
+				min={min}
+				max={max}
+				step={step}
 				onChange={(e) =>
 					onChange(e.target.value === '' ? 0 : Number(e.target.value))
 				}

@@ -1,0 +1,89 @@
+import { describe, it, expect } from 'vitest'
+import {
+	DIVE_TANKS,
+	STORAGE_TANKS,
+	INDUSTRIAL_TANKS,
+	MIXES,
+	freeGasLiters,
+} from './presets'
+
+describe('tank presets', () => {
+	it('all tanks have positive water volume and rated pressure', () => {
+		for (const t of [...DIVE_TANKS, ...STORAGE_TANKS, ...INDUSTRIAL_TANKS]) {
+			expect(t.waterVolumeL).toBeGreaterThan(0)
+			expect(t.ratedBar).toBeGreaterThan(0)
+			expect(t.name.length).toBeGreaterThan(0)
+		}
+	})
+	it('real-gas capacity is below the ideal estimate at high pressure', () => {
+		const al80 = DIVE_TANKS.find((t) => t.name.startsWith('AL80'))!
+		const ideal = freeGasLiters(al80, { useRealGas: false })
+		const real = freeGasLiters(al80, { useRealGas: true })
+		expect(real).toBeLessThan(ideal)
+		expect(real).toBeGreaterThan(ideal * 0.9) // a few percent, not wildly off
+	})
+	it('includes the sourced industrial T and K bottles', () => {
+		const names = INDUSTRIAL_TANKS.map((t) => t.name)
+		expect(names.some((n) => n.includes('T'))).toBe(true)
+		expect(names.some((n) => n.includes('K'))).toBe(true)
+		expect(INDUSTRIAL_TANKS).toHaveLength(4)
+	})
+})
+
+describe('mix presets', () => {
+	it('every mix has valid fractions summing to <= 1', () => {
+		for (const m of MIXES) {
+			expect(m.fo2).toBeGreaterThan(0)
+			expect(m.fo2).toBeLessThanOrEqual(1)
+			expect(m.fhe).toBeGreaterThanOrEqual(0)
+			expect(m.fo2 + m.fhe).toBeLessThanOrEqual(1 + 1e-9)
+		}
+	})
+	it('includes EAN80 and 100% O2', () => {
+		expect(MIXES.some((m) => m.fo2 === 0.8 && m.fhe === 0)).toBe(true)
+		expect(MIXES.some((m) => m.fo2 === 1 && m.fhe === 0)).toBe(true)
+	})
+})
+
+import { BOOSTERS } from './presets'
+
+describe('booster presets', () => {
+	it('every booster has a positive ratio and a name', () => {
+		for (const b of BOOSTERS) {
+			expect(b.ratio).toBeGreaterThan(0)
+			expect(b.name.length).toBeGreaterThan(0)
+		}
+	})
+	it('includes a Haskel AG-30 at ratio 30', () => {
+		expect(BOOSTERS.some((b) => b.name.includes('AG-30') && b.ratio === 30)).toBe(
+			true,
+		)
+	})
+	it('includes USUN dive boosters', () => {
+		expect(BOOSTERS.some((b) => b.name.includes('USUN'))).toBe(true)
+	})
+	it('flags the two-stage models and carries swept-volume fields', () => {
+		for (const b of BOOSTERS) {
+			expect(typeof b.twoStage).toBe('boolean')
+			expect(b.driveSweptL).toBeGreaterThanOrEqual(0)
+			expect(b.maxCpm).toBeGreaterThanOrEqual(0)
+		}
+		expect(BOOSTERS.some((b) => b.twoStage)).toBe(true)
+	})
+	it('seeds derived swept-volume data for every preset (USUN and Haskel)', () => {
+		expect(BOOSTERS.some((b) => b.name.includes('USUN'))).toBe(true)
+		expect(BOOSTERS.some((b) => b.name.includes('Haskel'))).toBe(true)
+		for (const b of BOOSTERS) {
+			expect(b.driveSweptL).toBeGreaterThan(0)
+			expect(b.maxCpm).toBeGreaterThan(0)
+		}
+	})
+	it('uses one shared air-drive head for all Haskel AG models', () => {
+		const haskel = BOOSTERS.filter((b) => b.name.includes('Haskel'))
+		expect(haskel.length).toBe(6)
+		const swept = haskel[0].driveSweptL
+		for (const b of haskel) {
+			expect(b.driveSweptL).toBe(swept)
+		}
+	})
+})
