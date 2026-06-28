@@ -1,7 +1,7 @@
 import { ATMOSPHERIC_BAR } from './units'
 
 const ATM = ATMOSPHERIC_BAR
-const K = 273.15
+export const KELVIN_OFFSET = 273.15
 
 // Pressure a hot fill settles to once it cools (Gay-Lussac at fixed volume):
 // P_cold_abs = P_hot_abs * T_cold / T_hot. Returns gauge bar.
@@ -10,8 +10,8 @@ export function settledPressureBar(
 	fillTempC: number,
 	settledTempC: number,
 ): number {
-	const tHot = fillTempC + K
-	const tCold = settledTempC + K
+	const tHot = fillTempC + KELVIN_OFFSET
+	const tCold = settledTempC + KELVIN_OFFSET
 	if (tHot <= 0) return hotGaugeBar
 	return ((hotGaugeBar + ATM) * tCold) / tHot - ATM
 }
@@ -22,8 +22,8 @@ export function hotTargetBar(
 	fillTempC: number,
 	settledTempC: number,
 ): number {
-	const tHot = fillTempC + K
-	const tCold = settledTempC + K
+	const tHot = fillTempC + KELVIN_OFFSET
+	const tCold = settledTempC + KELVIN_OFFSET
 	if (tCold <= 0) return coldGoalGaugeBar
 	return ((coldGoalGaugeBar + ATM) * tHot) / tCold - ATM
 }

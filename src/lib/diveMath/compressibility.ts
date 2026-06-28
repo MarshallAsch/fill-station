@@ -6,7 +6,7 @@
 // 77.4. Approximate; covered by the reference-only disclaimer.
 export type Gas = 'o2' | 'n2' | 'he'
 
-const Z_COEFF: Record<Gas, number> = {
+export const Z_COEFF: Record<Gas, number> = {
 	o2: -0.0002,
 	n2: 0.0002,
 	he: 0.00025,

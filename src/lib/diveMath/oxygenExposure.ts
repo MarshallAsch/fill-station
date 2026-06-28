@@ -13,6 +13,12 @@ export const CNS_TABLE: [number, number][] = [
 	[1.6, 45],
 ]
 
+// OTU (pulmonary O2 toxicity) per the NOAA power formula, and the CNS clock
+// surface half-time. Named so the docs and the math read the same values.
+export const OTU_THRESHOLD_PPO2 = 0.5
+export const OTU_EXPONENT = 0.83
+export const CNS_HALF_LIFE_MIN = 90
+
 export function cnsLimitMinutes(ppo2: number): number {
 	if (ppo2 < CNS_TABLE[0][0]) return Infinity
 	const last = CNS_TABLE[CNS_TABLE.length - 1]
@@ -35,8 +41,11 @@ export function segmentCns(input: { ppo2: number; minutes: number }): number {
 }
 
 export function segmentOtu(input: { ppo2: number; minutes: number }): number {
-	if (input.ppo2 <= 0.5) return 0
-	return input.minutes * Math.pow((input.ppo2 - 0.5) / 0.5, 0.83)
+	if (input.ppo2 <= OTU_THRESHOLD_PPO2) return 0
+	return (
+		input.minutes *
+		Math.pow((input.ppo2 - OTU_THRESHOLD_PPO2) / OTU_THRESHOLD_PPO2, OTU_EXPONENT)
+	)
 }
 
 export type DayItem =
@@ -58,7 +67,7 @@ export function computeDay(items: DayItem[]): DayResult {
 
 	for (const item of items) {
 		if (item.type === 'surface') {
-			running *= Math.pow(0.5, item.minutes / 90)
+			running *= Math.pow(0.5, item.minutes / CNS_HALF_LIFE_MIN)
 			continue
 		}
 		const cns = segmentCns({ ppo2: item.ppo2, minutes: item.minutes })

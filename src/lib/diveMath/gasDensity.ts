@@ -1,9 +1,9 @@
 import { ataAtDepth, depthPerBar, Water } from './modEnd'
 
 // Gas densities at 0 °C, 1 atm (g/L).
-const O2_DENSITY = 1.42897
-const N2_DENSITY = 1.2506
-const HE_DENSITY = 0.17846
+export const O2_DENSITY = 1.42897
+export const N2_DENSITY = 1.2506
+export const HE_DENSITY = 0.17846
 
 export const RECOMMENDED_MAX_DENSITY = 5.2
 export const HARD_MAX_DENSITY = 6.3
