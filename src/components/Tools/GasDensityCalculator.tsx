@@ -123,9 +123,10 @@ const GasDensityCalculator = () => {
 					<p className='text-light-text text-sm'>Within recommended density.</p>
 				)}
 				<p className='text-light-text text-sm'>
-					Recommended max (5.2 g/L) depth:{' '}
-					{roundDepthDown(recDepth, units.depth)} {units.depth} · Hard max (6.3
-					g/L) depth: {roundDepthDown(hardDepth, units.depth)} {units.depth}
+					Recommended max ({RECOMMENDED_MAX_DENSITY} g/L) depth:{' '}
+					{roundDepthDown(recDepth, units.depth)} {units.depth} · Hard max (
+					{HARD_MAX_DENSITY} g/L) depth:{' '}
+					{roundDepthDown(hardDepth, units.depth)} {units.depth}
 				</p>
 			</section>
 		</div>
