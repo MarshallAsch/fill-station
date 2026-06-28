@@ -111,12 +111,12 @@ const GasDensityCalculator = () => {
 				</p>
 				{densityStatus === 'hard' && (
 					<SafetyNote level='danger'>
-						Exceeds the 6.3 g/L hard limit.
+						Exceeds the {HARD_MAX_DENSITY} g/L hard limit.
 					</SafetyNote>
 				)}
 				{densityStatus === 'warning' && (
 					<SafetyNote level='warning'>
-						Above the 5.2 g/L recommended limit.
+						Above the {RECOMMENDED_MAX_DENSITY} g/L recommended limit.
 					</SafetyNote>
 				)}
 				{densityStatus === 'ok' && (

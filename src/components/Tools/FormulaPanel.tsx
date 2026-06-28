@@ -1,3 +1,4 @@
+import { depthPerBar } from '@/lib/diveMath/modEnd'
 import { ReactNode } from 'react'
 
 export interface FormulaRow {
@@ -30,8 +31,8 @@ const FormulaPanel = ({
 				))}
 			</dl>
 			<p className='text-light-text mt-4 text-xs italic'>
-				Depths are converted to metres for the formulas (D₀ = 10 m/bar salt,
-				10.3 m/bar fresh).
+				Depths are converted to metres for the formulas (D₀ ={' '}
+				{depthPerBar('salt')} m/bar salt, {depthPerBar('fresh')} m/bar fresh).
 			</p>
 		</aside>
 	)

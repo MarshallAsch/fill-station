@@ -6,6 +6,7 @@ import { fmtMix, roundDepthDown } from '@/lib/diveMath/format'
 import {
 	calculateEnd,
 	calculateMod,
+	depthPerBar,
 	EndModel,
 	Water,
 } from '@/lib/diveMath/modEnd'
@@ -46,7 +47,7 @@ const ModEndCalculator = () => {
 
 	const mixInvalid = fo2 + fhe > 100
 
-	const d0 = water === 'fresh' ? 10.3 : 10
+	const d0 = depthPerBar(water)
 	const fn2Frac = 1 - fo2Frac - fheFrac
 	const m1 = (m: number) => m.toFixed(1)
 	const f3 = (f: number) => f.toFixed(3)

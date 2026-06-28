@@ -5,7 +5,7 @@ import NumberInput from '@/components/UI/FormElements/NumberInput'
 import RadioGroup from '@/components/UI/FormElements/RadioGroup'
 import { bestMix } from '@/lib/diveMath/bestMix'
 import { fmtMix, roundDepthDown, roundPercent } from '@/lib/diveMath/format'
-import { calculateMod, Water } from '@/lib/diveMath/modEnd'
+import { calculateMod, depthPerBar, Water } from '@/lib/diveMath/modEnd'
 import { toMeters } from '@/lib/diveMath/units'
 import FormulaPanel, { FormulaRow } from './FormulaPanel'
 import { Frac, MathExpr } from './Math'
@@ -36,7 +36,7 @@ const BestMixCalculator = () => {
 	const ppo2Danger = ppo2 > 1.6
 	const ppo2Warning = !ppo2Danger && ppo2 > 1.4
 
-	const d0 = water === 'fresh' ? 10.3 : 10
+	const d0 = depthPerBar(water)
 	const ata = depthM / d0 + 1
 	const endM = toMeters(targetEnd, units.depth)
 	const m1 = (m: number) => m.toFixed(1)

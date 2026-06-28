@@ -6,7 +6,7 @@ import {
 	nitroxStickSupplyDraw,
 } from '@/lib/diveMath/nitroxStick'
 import { tempRiseC } from '@/lib/diveMath/temperature'
-import { fromLpm, toBar, toLpm } from '@/lib/diveMath/units'
+import { AIR_FO2, fromLpm, toBar, toLpm } from '@/lib/diveMath/units'
 import { roundPressure } from '@/lib/diveMath/format'
 import SafetyNote from './SafetyNote'
 import CylinderFields from './CylinderFields'
@@ -50,7 +50,7 @@ const NitroxStickCalculator = () => {
 		supplyVolume,
 	})
 
-	const leanWarning = targetFo2 <= 0.209
+	const leanWarning = targetFo2 <= AIR_FO2
 	const highO2 = fo2 > 40
 
 	return (
