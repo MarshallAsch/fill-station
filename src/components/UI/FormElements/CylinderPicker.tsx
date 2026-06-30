@@ -25,6 +25,7 @@ import { Cylinder } from '@/types/cylinder'
 import Button from '../Button'
 import Tooltip from '../Tooltip'
 import useLoadCylinder from '@/hooks/useLoadCylinders'
+import { needsVisual, needsHydro } from '@/lib/cylinderStatus'
 
 dayjs.extend(duration)
 
@@ -172,18 +173,14 @@ const CylinderPicker = ({
 							.filter(filter)
 							.filter((c) => !isFill || isRepresentative(c))
 							.map((cylinder) => {
-								const needsHydro =
-									dayjs.duration(dayjs().diff(cylinder.lastHydro)).asYears() > 5
-								const needsVis = visPage
-									? false
-									: dayjs.duration(dayjs().diff(cylinder.lastVis)).asMonths() >
-										12
+								const hydroOverdue = needsHydro(cylinder)
+								const visOverdue = visPage ? false : needsVisual(cylinder)
 
 								return (
 									<ComboboxOption
 										key={cylinder.serialNumber}
 										value={cylinder}
-										disabled={needsHydro || needsVis}
+										disabled={hydroOverdue}
 										className='text-text data-disabled:text-disabled data-focus:bg-accent data-focus:text-white-text flex cursor-pointer justify-between gap-2 px-3 py-2 select-none data-focus:outline-hidden'
 									>
 										<span className='flex items-center gap-1'>
@@ -198,13 +195,13 @@ const CylinderPicker = ({
 											{isPair(cylinder) && <LinkIcon className='h-4 w-4' />}
 											{formatPickerLabel(cylinder)}
 										</span>
-										{(needsHydro || needsVis) && (
+										{(hydroOverdue || visOverdue) && (
 											<Tooltip
 												position='left'
-												message={`Needs ${needsHydro ? 'Hydro' : 'Visual'}`}
+												message={`Needs ${hydroOverdue ? 'Hydro' : 'Visual'}`}
 											>
 												<ExclamationTriangleIcon
-													className={`size-5 ${needsHydro ? 'fill-red-600' : !showExpired ? 'fill-yellow-500' : 'fill-amber-500'} `}
+													className={`size-5 ${hydroOverdue ? 'fill-red-600' : !showExpired ? 'fill-yellow-500' : 'fill-amber-500'} `}
 												/>
 											</Tooltip>
 										)}
