@@ -3,7 +3,9 @@ import { useAppDispatch, useAppSelector } from '@/redux/hooks'
 import { Client } from '@/types/client'
 import { Fill } from '@/types/fills'
 import { Cylinder } from '@/types/cylinder'
+import { ExclamationTriangleIcon } from '@heroicons/react/24/solid'
 import { XCircleIcon } from '@heroicons/react/24/outline'
+import { needsVisual } from '@/lib/cylinderStatus'
 import CylinderPicker from '../UI/FormElements/CylinderPicker'
 import FillType from './FillType'
 import NumberInput from '../UI/FormElements/NumberInput'
@@ -25,6 +27,13 @@ const FillCard = ({
 	const usedCylinders = useAppSelector((state) => state.fills)
 		.fills.flatMap((f) => [f.cylinder?.id, f.pairedCylinder?.id])
 		.filter((id) => id !== undefined)
+	const visWarning =
+		(fill.cylinder && needsVisual(fill.cylinder)) ||
+		(fill.pairedCylinder && needsVisual(fill.pairedCylinder))
+	const pairedOnly =
+		!!fill.pairedCylinder &&
+		needsVisual(fill.pairedCylinder) &&
+		!(fill.cylinder && needsVisual(fill.cylinder))
 	return (
 		<div className='bg-surface flex min-w-full flex-col gap-2 rounded p-4'>
 			<div className='flex w-full justify-between'>
@@ -81,6 +90,16 @@ const FillCard = ({
 					>
 						unlink
 					</button>
+				</div>
+			)}
+			{visWarning && (
+				<div className='flex items-center gap-1 text-sm text-amber-500'>
+					<ExclamationTriangleIcon className='size-5 shrink-0 fill-amber-500' />
+					<span>
+						{pairedOnly && fill.pairedCylinder
+							? `Paired cylinder (${fill.pairedCylinder.serialNumber}) is out of visual inspection — verify before filling.`
+							: 'Out of visual inspection — verify before filling.'}
+					</span>
 				</div>
 			)}
 			<FillType
