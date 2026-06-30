@@ -1,3 +1,4 @@
+import { ExclamationTriangleIcon } from '@heroicons/react/24/solid'
 import { XCircleIcon } from '@heroicons/react/24/outline'
 import CylinderPicker from '../UI/FormElements/CylinderPicker'
 import FillType from './FillType'
@@ -7,6 +8,7 @@ import { useAppDispatch, useAppSelector } from '@/redux/hooks'
 import { Fill } from '@/types/fills'
 import { Cylinder } from '@/types/cylinder'
 import { Client } from '@/types/client'
+import { needsVisual } from '@/lib/cylinderStatus'
 
 type FillsRowProps = {
 	disableDelete?: boolean
@@ -19,6 +21,14 @@ const FillsRow = ({ disableDelete = false, fill, client }: FillsRowProps) => {
 	const usedCylinders = useAppSelector((state) => state.fills)
 		.fills.flatMap((f) => [f.cylinder?.id, f.pairedCylinder?.id])
 		.filter((id) => id !== undefined)
+
+	const visWarning =
+		(fill.cylinder && needsVisual(fill.cylinder)) ||
+		(fill.pairedCylinder && needsVisual(fill.pairedCylinder))
+	const pairedOnly =
+		!!fill.pairedCylinder &&
+		needsVisual(fill.pairedCylinder) &&
+		!(fill.cylinder && needsVisual(fill.cylinder))
 
 	return (
 		<tr key={fill.id}>
@@ -67,6 +77,16 @@ const FillsRow = ({ disableDelete = false, fill, client }: FillsRowProps) => {
 						>
 							unlink
 						</button>
+					</div>
+				)}
+				{visWarning && (
+					<div className='mt-1 flex items-center gap-1 text-xs text-amber-500'>
+						<ExclamationTriangleIcon className='size-4 shrink-0 fill-amber-500' />
+						<span>
+							{pairedOnly && fill.pairedCylinder
+								? `Paired cylinder (${fill.pairedCylinder.serialNumber}) is out of visual inspection — verify before filling.`
+								: 'Out of visual inspection — verify before filling.'}
+						</span>
 					</div>
 				)}
 			</td>
