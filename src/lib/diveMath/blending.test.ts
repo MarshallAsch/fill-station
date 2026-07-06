@@ -1,6 +1,21 @@
 import { describe, it, expect } from 'vitest'
 import { calculateBlend } from './blending'
 
+// Reconstruct the achieved mix fractions from a result (ideal gas), so bleed
+// cases can be verified without hand-computing the exact bleed pressure.
+const achieved = (
+	r: { bleedTo: number; pHe: number; pO2: number; pTop: number },
+	startFo2: number,
+	startFhe: number,
+	topFo2: number,
+	topFhe: number,
+	pf: number,
+) => {
+	const fo2 = (startFo2 * r.bleedTo + r.pO2 + topFo2 * r.pTop) / pf
+	const fhe = (startFhe * r.bleedTo + r.pHe + topFhe * r.pTop) / pf
+	return { fo2, fhe }
+}
+
 describe('calculateBlend', () => {
 	it('blends EAN32 from empty (nitrox, no helium)', () => {
 		const r = calculateBlend({
@@ -13,10 +28,11 @@ describe('calculateBlend', () => {
 		})
 		expect(r.feasible).toBe(true)
 		expect(r.pHe).toBeCloseTo(0, 6)
-		// pO2 = (0.32*200 - 0.209*0 - 0.209*(200)) / 0.791
 		expect(r.pO2).toBeCloseTo(28.07, 1)
 		expect(r.addO2To).toBeCloseTo(28.07, 1)
 		expect(r.topTo).toBeCloseTo(200, 6)
+		expect(r.bleedBar).toBe(0)
+		expect(r.bleedTo).toBe(0)
 	})
 
 	it('blends trimix 18/45 from empty', () => {
@@ -34,6 +50,7 @@ describe('calculateBlend', () => {
 		expect(r.pO2).toBeCloseTo(16.46, 1)
 		expect(r.addO2To).toBeCloseTo(106.46, 1)
 		expect(r.pTop).toBeCloseTo(93.54, 1)
+		expect(r.bleedBar).toBe(0)
 	})
 
 	it('the three additions sum to the pressure delta', () => {
@@ -46,9 +63,11 @@ describe('calculateBlend', () => {
 			targetFhe: 0.2,
 		})
 		expect(r.pHe + r.pO2 + r.pTop).toBeCloseTo(230 - 50, 6)
+		expect(r.bleedBar).toBe(0)
+		expect(r.bleedTo).toBe(50)
 	})
 
-	it('flags an impossible blend that needs draining', () => {
+	it('bleeds down a slightly-rich nitrox start (EAN36 -> EAN32)', () => {
 		const r = calculateBlend({
 			startPressure: 150,
 			startFo2: 0.36,
@@ -57,8 +76,73 @@ describe('calculateBlend', () => {
 			targetFo2: 0.32,
 			targetFhe: 0,
 		})
+		expect(r.feasible).toBe(true)
+		expect(r.bleedBar).toBeGreaterThan(0)
+		expect(r.bleedTo).toBeCloseTo(147.02, 1)
+		expect(r.bleedBar).toBeCloseTo(2.98, 1)
+		const mix = achieved(r, 0.36, 0, 0.209, 0, 200)
+		expect(mix.fo2).toBeCloseTo(0.32, 4)
+		expect(mix.fhe).toBeCloseTo(0, 4)
+	})
+
+	it('bleeds down a very rich start (near-full drain)', () => {
+		const r = calculateBlend({
+			startPressure: 150,
+			startFo2: 0.5,
+			startFhe: 0,
+			finalPressure: 200,
+			targetFo2: 0.21,
+			targetFhe: 0,
+		})
+		expect(r.feasible).toBe(true)
+		expect(r.bleedBar).toBeGreaterThan(0)
+		expect(r.bleedTo).toBeCloseTo(0.69, 1)
+		expect(r.bleedBar).toBeCloseTo(149.31, 1)
+		const mix = achieved(r, 0.5, 0, 0.209, 0, 200)
+		expect(mix.fo2).toBeCloseTo(0.21, 4)
+	})
+
+	it('bleeds down a helium-rich trimix start', () => {
+		const r = calculateBlend({
+			startPressure: 180,
+			startFo2: 0.18,
+			startFhe: 0.45,
+			finalPressure: 200,
+			targetFo2: 0.18,
+			targetFhe: 0.35,
+		})
+		expect(r.feasible).toBe(true)
+		expect(r.bleedBar).toBeGreaterThan(0)
+		const mix = achieved(r, 0.18, 0.45, 0.209, 0, 200)
+		expect(mix.fo2).toBeCloseTo(0.18, 4)
+		expect(mix.fhe).toBeCloseTo(0.35, 4)
+	})
+
+	it('stays infeasible when the target is leaner than the top-up gas', () => {
+		const r = calculateBlend({
+			startPressure: 150,
+			startFo2: 0.209,
+			startFhe: 0,
+			finalPressure: 200,
+			targetFo2: 0.18,
+			targetFhe: 0,
+		})
 		expect(r.feasible).toBe(false)
 		expect(r.reason).toBeTruthy()
+		expect(r.bleedBar).toBe(0)
+	})
+
+	it('cannot bleed an empty start (still infeasible)', () => {
+		const r = calculateBlend({
+			startPressure: 0,
+			startFo2: 0.209,
+			startFhe: 0,
+			finalPressure: 200,
+			targetFo2: 0.18,
+			targetFhe: 0,
+		})
+		expect(r.feasible).toBe(false)
+		expect(r.bleedBar).toBe(0)
 	})
 })
 
@@ -126,15 +210,15 @@ describe('blend top-up gas + order', () => {
 		expect(ean25.pO2).toBeLessThan(air.pO2)
 		expect(ean25.feasible).toBe(true)
 	})
-	it('flags drain-required when the start mix is too rich', () => {
+	it('bleeds down when the start mix is too rich', () => {
 		const r = calculateBlend({
 			...base,
 			startPressure: 150,
 			startFo2: 0.5,
 			targetFo2: 0.21,
 		})
-		expect(r.feasible).toBe(false)
-		expect(r.reason).toBeTruthy()
+		expect(r.feasible).toBe(true)
+		expect(r.bleedBar).toBeGreaterThan(0)
 	})
 	it('flags an unsolvable pure-O2 top-up', () => {
 		const r = calculateBlend({ ...base, topupFo2: 1, topupFhe: 0 })
