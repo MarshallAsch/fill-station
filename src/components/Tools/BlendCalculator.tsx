@@ -200,6 +200,16 @@ const BlendCalculator = () => {
 					{result.feasible ? (
 						<>
 							<ol className='text-text list-decimal space-y-1 pl-5'>
+								{result.bleedBar > 0.01 && (
+									<li>
+										<span className='font-semibold'>Bleed down</span>
+										{': to '}
+										<span className='font-semibold'>
+											{roundPressure(result.bleedTo, units.pressure)}{' '}
+											{units.pressure}
+										</span>
+									</li>
+								)}
 								{result.steps
 									.filter((step) => Math.abs(step.addBar) >= 0.01)
 									.map((step) => (
