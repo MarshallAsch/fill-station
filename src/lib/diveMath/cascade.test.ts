@@ -74,6 +74,56 @@ describe('calculateCascade', () => {
 		expect(notReached.reachedDesired).toBe(false)
 	})
 
+	it('stops at the desired pressure instead of overshooting', () => {
+		const r = calculateCascade({
+			banks: [
+				{ volume: 50, pressure: 300 },
+				{ volume: 50, pressure: 300 },
+			],
+			target: { volume: 10, startPressure: 0 },
+			desiredPressure: 200,
+		})
+		expect(r.finalPressure).toBeCloseTo(200, 6)
+		expect(r.reachedDesired).toBe(true)
+	})
+
+	it('leaves banks untouched once the desired pressure is reached', () => {
+		const r = calculateCascade({
+			banks: [
+				{ volume: 200, pressure: 300 },
+				{ volume: 200, pressure: 300 },
+			],
+			target: { volume: 10, startPressure: 0 },
+			desiredPressure: 200,
+		})
+		// The first bank alone covers the fill, so the second is never opened.
+		expect(r.banks[1].residualPressure).toBe(300)
+	})
+
+	it('conserves gas when a bank is only partly drawn', () => {
+		const banks = [{ volume: 50, pressure: 300 }]
+		const target = { volume: 10, startPressure: 0 }
+		const before =
+			(banks[0].pressure + ATMOSPHERIC_BAR) * banks[0].volume +
+			(target.startPressure + ATMOSPHERIC_BAR) * target.volume
+		const r = calculateCascade({ banks, target, desiredPressure: 200 })
+		const after =
+			(r.banks[0].residualPressure + ATMOSPHERIC_BAR) * banks[0].volume +
+			(r.finalPressure + ATMOSPHERIC_BAR) * target.volume
+		expect(r.finalPressure).toBeCloseTo(200, 6)
+		expect(after).toBeCloseTo(before, 4)
+	})
+
+	it('still equalizes fully when it cannot reach the desired pressure', () => {
+		const r = calculateCascade({
+			banks: [{ volume: 50, pressure: 200 }],
+			target: { volume: 10, startPressure: 0 },
+			desiredPressure: 300,
+		})
+		expect(r.finalPressure).toBeCloseTo(166.68, 1)
+		expect(r.reachedDesired).toBe(false)
+	})
+
 	it('handles an empty bank list', () => {
 		const r = calculateCascade({
 			banks: [],

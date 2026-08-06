@@ -25,6 +25,10 @@ export function calculateCascade(
 	const { banks, target, desiredPressure } = input
 	const vt = target.volume
 	let targetAbs = target.startPressure + ATMOSPHERIC_BAR
+	// The filler closes the valve once the cylinder is up to pressure, so the
+	// fill stops at the desired pressure rather than equalizing past it.
+	const desiredAbs =
+		desiredPressure != null ? desiredPressure + ATMOSPHERIC_BAR : null
 
 	// Residuals default to the untouched gauge pressure.
 	const residual = banks.map((b) => b.pressure)
@@ -35,6 +39,7 @@ export function calculateCascade(
 		.sort((a, b) => banks[a].pressure - banks[b].pressure)
 
 	for (const i of order) {
+		if (desiredAbs != null && targetAbs >= desiredAbs - 1e-9) break // already full
 		const bankAbs = banks[i].pressure + ATMOSPHERIC_BAR
 		if (bankAbs <= targetAbs) continue // cannot raise the target further
 		const vb = banks[i].volume
@@ -44,6 +49,15 @@ export function calculateCascade(
 		const wt = vt / zt
 		const wb = vb / zb
 		const eqAbs = (targetAbs * wt + bankAbs * wb) / (wt + wb)
+
+		if (desiredAbs != null && eqAbs > desiredAbs) {
+			// This bank overshoots, so draw only the gas needed to top it off.
+			residual[i] =
+				bankAbs - ((desiredAbs - targetAbs) * wt) / wb - ATMOSPHERIC_BAR
+			targetAbs = desiredAbs
+			break
+		}
+
 		targetAbs = eqAbs
 		residual[i] = eqAbs - ATMOSPHERIC_BAR
 	}

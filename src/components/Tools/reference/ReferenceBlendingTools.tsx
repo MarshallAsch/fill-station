@@ -9,15 +9,20 @@ const ReferenceBlendingTools = () => (
 		<p className='text-text text-sm'>
 			Fills a cylinder from a bank of storage bottles, lowest-pressure bottle
 			first, by free equalization (no pump). Each bottle equalizes with the
-			cylinder until pressures meet.
+			cylinder until pressures meet, or until the cylinder is up to the target
+			pressure and the valve is closed.
 		</p>
 		<Formula>{`Per bank (skipped if bank ≤ target), mole-weighted mean:
 ideal:    eqAbs = (P_target_abs·V_target + P_bank_abs·V_bank) / (V_target + V_bank)
 real gas: w = V / Z(air, P_abs)
           eqAbs = (P_target_abs·w_target + P_bank_abs·w_bank) / (w_target + w_bank)
+if eqAbs > P_desired_abs the bank is only partly drawn:
+          P_bank_abs' = P_bank_abs − (P_desired_abs − P_target_abs)·w_target / w_bank
+          the fill stops at P_desired_abs and later banks stay untouched
 P_final = eqAbs − ${ATMOSPHERIC_BAR}`}</Formula>
 		<ul className='text-text my-2 list-disc space-y-1 pl-5 text-sm'>
 			<li>Banks used lowest-pressure first to preserve high-pressure gas.</li>
+			<li>The fill stops at the target pressure — it never overshoots.</li>
 			<li>Air assumed (fO₂ = {AIR_FO2}) for the compressibility weighting.</li>
 		</ul>
 		<p className='text-light-text text-sm'>
