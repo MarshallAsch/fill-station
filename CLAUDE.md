@@ -11,12 +11,16 @@ Fill Station is a web application for tracking scuba diving equipment fills and 
 - `npm run dev` — start Next.js dev server
 - `npm run build` — production build
 - `npm run lint` — run prettier + eslint with auto-fix
+- `npm test` — run vitest once (`npm run test:watch` to watch)
+- `npx tsc --noEmit` — typecheck (no npm script for this)
 - `npm run knip` — check for unused exports/imports (production profile)
 - `docker compose up` — start MariaDB + app locally
 - `npx sequelize-cli db:migrate` — run pending database migrations
 - `npx sequelize-cli db:migrate:undo` — revert last migration
 
-No test framework is configured.
+Tests are vitest, colocated as `*.test.ts`. `vitest.config.ts` only includes
+`src/**/*.test.ts` — components (`.tsx`) are not covered, so extract logic that
+needs testing into `src/lib/`.
 
 Always run `npm run lint` after making code changes.
 
@@ -70,6 +74,8 @@ Environment variables use double-underscore nesting: `DATABASE__HOST`, `DATABASE
 - **Form constants**: Reusable select/listbox options defined in `src/app/constants/FormConstants.ts`.
 - **ClientPicker / ListBox**: Support both Redux-connected (default) and controlled modes via optional `value`/`onChange` props. Use controlled mode when embedding in non-Redux contexts (e.g., admin tables).
 - **Dates**: dayjs — Axios interceptor auto-parses ISO 8601 strings from API responses.
+- **Month stamps**: cylinder `birth` / `lastHydro` / `lastVis` are month-precision stamps stored at UTC midnight on the 1st. Always read/format/submit them via `src/lib/monthStamp.ts` — plain `dayjs(value).format()` renders the previous month in any timezone west of UTC. Day-precision fields (fill date, inspection date) are real instants and stay local.
+- **useMemo**: derive intermediate values *inside* the memo, not outside it — the React Compiler lint rule (`react-hooks/preserve-manual-memoization`) errors on dependencies it thinks may be mutated later.
 
 ## Deployment
 
