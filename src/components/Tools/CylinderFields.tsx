@@ -32,6 +32,7 @@ const CylinderFields = ({
 	category,
 	waterVolumeL,
 	onWaterVolumeL,
+	count,
 	working,
 	filled,
 	start,
@@ -41,6 +42,7 @@ const CylinderFields = ({
 	category: CylinderCategory | CylinderCategory[]
 	waterVolumeL: number
 	onWaterVolumeL: (n: number) => void
+	count?: { value: number; onChange: (n: number) => void }
 	working?: PressureField
 	filled?: (PressureField & { label: string }) | undefined
 	start?: PressureField & { label: string }
@@ -79,6 +81,18 @@ const CylinderFields = ({
 					min={0}
 					tooltip='Water (internal) cylinder volume — not free-gas capacity'
 				/>
+				{count && (
+					<NumberInput
+						id={`${idPrefix}-count`}
+						name={`${idPrefix}-count`}
+						label='Number of cylinders'
+						value={count.value}
+						onChange={(n) => count.onChange(Math.max(1, Math.round(n)))}
+						min={1}
+						step={1}
+						tooltip='How many identical cylinders are being filled together, to this same pressure.'
+					/>
+				)}
 				{pressures && (
 					<>
 						<NumberInput

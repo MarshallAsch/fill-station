@@ -28,6 +28,9 @@ const CascadeCalculator = () => {
 		'cas.targetVol',
 		11.1,
 	)
+	const [targetCount, setTargetCount] = usePersistedState('cas.targetCount', 1)
+	// Cylinders filled together off the same whip behave as one bigger cylinder.
+	const filledVolume = targetVolume * Math.max(1, targetCount)
 	const [startPressure, setStartPressure] = usePersistedPressure(
 		'cas.start',
 		500,
@@ -59,7 +62,7 @@ const CascadeCalculator = () => {
 				pressure: toBar(b.pressure, units.pressure),
 			})),
 			target: {
-				volume: targetVolume,
+				volume: filledVolume,
 				startPressure: toBar(startPressure, units.pressure),
 			},
 			desiredPressure: toBar(hotDesired, units.pressure),
@@ -82,8 +85,8 @@ const CascadeCalculator = () => {
 			colorClass: ['text-warning', 'text-light-text', 'text-accent'][i % 3],
 		})),
 		{
-			label: 'Fill',
-			volumeL: targetVolume,
+			label: targetCount > 1 ? `Fill ×${targetCount}` : 'Fill',
+			volumeL: filledVolume,
 			startP: startPressure,
 			endP: fromBar(result.finalPressure, units.pressure),
 			maxP: cylMax,
@@ -141,6 +144,7 @@ const CascadeCalculator = () => {
 						category={['scuba', 'cascade']}
 						waterVolumeL={targetVolume}
 						onWaterVolumeL={setTargetVolume}
+						count={{ value: targetCount, onChange: setTargetCount }}
 						working={{ value: fillWorking, onChange: setFillWorking }}
 						start={{
 							value: startPressure,
