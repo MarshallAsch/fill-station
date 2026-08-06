@@ -27,7 +27,7 @@ import CylinderPicker from '../UI/FormElements/CylinderPicker'
 import { newCylinder } from '@/app/_api'
 import { Cylinder, NewCylinderDTO } from '@/types/cylinder'
 import { toast } from 'react-toastify'
-import dayjs from 'dayjs'
+import { parseMonthStamp } from '@/lib/monthStamp'
 import { setSelectedClient } from '@/redux/client/clientSlice'
 
 type CylinderModalProps = {
@@ -194,7 +194,7 @@ const CylinderModal = ({
 											name='birth'
 											title='First Hydro'
 											id='birth'
-											defaultValue={dayjs(cylinder?.birth).date(1)}
+											defaultValue={parseMonthStamp(cylinder?.birth)}
 										/>
 
 										<DatePicker
@@ -202,7 +202,7 @@ const CylinderModal = ({
 											name='lastHydro'
 											title='Last Hydro'
 											id='last-hydro'
-											defaultValue={dayjs(cylinder?.lastHydro).date(1)}
+											defaultValue={parseMonthStamp(cylinder?.lastHydro)}
 										/>
 									</div>
 
@@ -211,7 +211,7 @@ const CylinderModal = ({
 										name='lastVis'
 										title='Last Vis'
 										id='last-vis'
-										defaultValue={dayjs(cylinder?.lastVis).date(1)}
+										defaultValue={parseMonthStamp(cylinder?.lastVis)}
 									/>
 
 									<RadioGroup

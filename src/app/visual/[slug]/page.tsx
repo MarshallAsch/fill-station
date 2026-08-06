@@ -10,6 +10,7 @@ import {
 	ExclamationTriangleIcon,
 } from '@heroicons/react/24/solid'
 import dayjs from 'dayjs'
+import { formatMonthStamp } from '@/lib/monthStamp'
 
 export default async function TankVisual({
 	params,
@@ -69,11 +70,11 @@ export default async function TankVisual({
 						<PropertyRow title='Material' text={vis.Cylinder?.material} />
 						<PropertyRow
 							title='First Hydro'
-							text={dayjs(vis.Cylinder?.birth).format('MM/YYYY')}
+							text={formatMonthStamp(vis.Cylinder?.birth)}
 						/>
 						<PropertyRow
 							title='Last Hydro'
-							text={dayjs(vis.Cylinder?.lastHydro).format('MM/YYYY')}
+							text={formatMonthStamp(vis.Cylinder?.lastHydro)}
 						/>
 						<PropertyRow title='Valve Type' text={vis.valve} />
 					</div>

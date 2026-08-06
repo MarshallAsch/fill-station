@@ -5,7 +5,7 @@ import RadioGroup from '../UI/FormElements/RadioGroup'
 import DatePicker from '../UI/FormElements/DatePicker'
 import { CYLINDER_MATERIAL_OPTIONS } from '@/app/constants/FormConstants'
 import { Cylinder } from '@/types/cylinder'
-import dayjs from 'dayjs'
+import { parseMonthStamp } from '@/lib/monthStamp'
 
 const TankInfo = ({ cylinder }: { cylinder?: Cylinder }) => {
 	return (
@@ -17,7 +17,7 @@ const TankInfo = ({ cylinder }: { cylinder?: Cylinder }) => {
 					name='firstHydro'
 					id='first_hydro'
 					readOnly={true}
-					value={dayjs(cylinder?.birth)}
+					value={parseMonthStamp(cylinder?.birth)}
 					description='The first hydro stamp on the cylinder'
 				/>
 
@@ -26,7 +26,7 @@ const TankInfo = ({ cylinder }: { cylinder?: Cylinder }) => {
 					title='Last Hydro'
 					name='lastHydro'
 					id='last_hydro'
-					value={dayjs(cylinder?.lastHydro)}
+					value={parseMonthStamp(cylinder?.lastHydro)}
 					description='The most recent hydro stamp on the cylinder'
 				/>
 
@@ -36,7 +36,7 @@ const TankInfo = ({ cylinder }: { cylinder?: Cylinder }) => {
 					name='lastVis'
 					id='last_vis'
 					readOnly={true}
-					value={dayjs(cylinder?.lastVis)}
+					value={parseMonthStamp(cylinder?.lastVis)}
 					description='The most recent Vis sticker on the cylinder'
 				/>
 

@@ -2,6 +2,7 @@ import { useState, useMemo, useRef, useEffect } from 'react'
 import dayjs, { Dayjs } from 'dayjs'
 import { CalendarDaysIcon } from '@heroicons/react/24/outline'
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/20/solid'
+import { toMonthStamp } from '@/lib/monthStamp'
 
 type DatePickerProps = {
 	mode?: 'date' | 'month'
@@ -27,14 +28,21 @@ export default function DatePicker({
 	onChange,
 }: DatePickerProps) {
 	const today = dayjs()
-	const [selectedDate, setSelectedDate] = useState<Dayjs>(defaultValue || today)
-	const [currentMonth, setCurrentMonth] = useState(value || selectedDate)
+	// In month mode every date is a month stamp anchored at UTC midnight on the
+	// first, so the month reads the same in every timezone.
+	const anchor = (date: Dayjs) => (mode === 'month' ? toMonthStamp(date) : date)
+	const thisMonth = anchor(today)
+	const shownValue = value && anchor(value)
+	const [selectedDate, setSelectedDate] = useState<Dayjs>(
+		anchor(defaultValue || today),
+	)
+	const [currentMonth, setCurrentMonth] = useState(shownValue || selectedDate)
 	const [open, setOpen] = useState(false)
 	const ref = useRef<HTMLDivElement | null>(null)
 
 	const toggleOpen = () => {
 		if (readOnly) return
-		if (!open) setCurrentMonth(value || selectedDate)
+		if (!open) setCurrentMonth(shownValue || selectedDate)
 		setOpen(!open)
 	}
 
@@ -48,21 +56,16 @@ export default function DatePicker({
 		return () => document.removeEventListener('mousedown', handler)
 	}, [])
 
-	const startOfMonth = currentMonth.startOf('month')
-	const endOfMonth = currentMonth.endOf('month')
-	const startDay = startOfMonth.day()
-
 	const days = useMemo(() => {
 		if (mode !== 'date') return []
+		const startOfMonth = currentMonth.startOf('month')
 		const result = []
-		for (let i = 0; i < startDay; i++) result.push(null)
-		for (let d = 1; d <= endOfMonth.date(); d++) {
+		for (let i = 0; i < startOfMonth.day(); i++) result.push(null)
+		for (let d = 1; d <= currentMonth.endOf('month').date(); d++) {
 			result.push(startOfMonth.date(d))
 		}
 		return result
-	}, [endOfMonth, mode, startDay, startOfMonth])
-
-	const months = Array.from({ length: 12 }, (_, i) => dayjs().month(i))
+	}, [currentMonth, mode])
 
 	const isSelected = (date: Dayjs) =>
 		selectedDate.isSame(date, mode === 'month' ? 'month' : 'day')
@@ -75,7 +78,7 @@ export default function DatePicker({
 
 	const isDisabled = (date: Dayjs | null): boolean => {
 		if (mode === 'month') {
-			return date?.startOf('month').isAfter(today, 'month') || false
+			return date?.isAfter(thisMonth) || false
 		}
 		return date?.isAfter(today, 'day') || false
 	}
@@ -89,8 +92,8 @@ export default function DatePicker({
 				className='bg-background border-border hover:border-border flex w-full items-center justify-between rounded-lg border px-3 py-2 text-left text-sm shadow-sm'
 			>
 				{mode === 'month'
-					? (value || selectedDate).format('MMMM YYYY')
-					: (value || selectedDate).format('MMM DD YYYY')}
+					? (shownValue || selectedDate).format('MMMM YYYY')
+					: (shownValue || selectedDate).format('MMM DD YYYY')}
 				<span className=''>
 					<CalendarDaysIcon className='h-5 w-5' />
 				</span>
@@ -142,11 +145,11 @@ export default function DatePicker({
 
 					{mode === 'month' && (
 						<div className='grid grid-cols-3 gap-2'>
-							{months.map((m, idx) => {
-								const date = currentMonth.month(idx).date(1)
+							{Array.from({ length: 12 }, (_, idx) => {
+								const date = currentMonth.date(1).month(idx)
 								return (
 									<button
-										key={m.toISOString()}
+										key={date.format('YYYY-MM')}
 										type='button'
 										onClick={() => selectDate(date)}
 										disabled={isDisabled(date)}
@@ -212,7 +215,7 @@ export default function DatePicker({
 				id={id}
 				type='hidden'
 				name={name}
-				value={(value || selectedDate)
+				value={(shownValue || selectedDate)
 					.hour(0)
 					.minute(0)
 					.second(0)

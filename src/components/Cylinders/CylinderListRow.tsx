@@ -11,6 +11,7 @@ import { ExclamationTriangleIcon } from '@heroicons/react/24/solid'
 import dayjs from 'dayjs'
 import Tooltip from '../UI/Tooltip'
 import relativeTime from 'dayjs/plugin/relativeTime'
+import { parseMonthStamp } from '@/lib/monthStamp'
 
 import Link from 'next/link'
 import Button from '../UI/Button'
@@ -32,8 +33,10 @@ const CylinderListRow = ({
 }) => {
 	const dispatch = useAppDispatch()
 
-	const nextHydro = dayjs(cylinder.lastHydro).add(5, 'year')
-	const nextVis = dayjs(cylinder.lastVis).add(1, 'year')
+	const lastHydro = parseMonthStamp(cylinder.lastHydro)
+	const lastVis = parseMonthStamp(cylinder.lastVis)
+	const nextHydro = lastHydro.add(5, 'year')
+	const nextVis = lastVis.add(1, 'year')
 
 	return (
 		<tr key={cylinder.id} className='hover:bg-hover'>
@@ -90,10 +93,10 @@ const CylinderListRow = ({
 				</span>
 			</td>
 			<td className='text-light-text px-3 py-4 text-center text-sm whitespace-nowrap'>
-				{dayjs(cylinder.lastHydro).format('MM/YYYY')}
+				{lastHydro.format('MM/YYYY')}
 			</td>
 			<td className='text-light-text px-3 py-4 text-center text-sm whitespace-nowrap'>
-				{dayjs(cylinder.lastVis).format('MM/YYYY')}
+				{lastVis.format('MM/YYYY')}
 			</td>
 			<td className='text-light-text hidden px-3 py-4 text-center text-sm whitespace-nowrap md:table-cell'>
 				<Tooltip message={nextHydro.format('MM/YYYY')}>
