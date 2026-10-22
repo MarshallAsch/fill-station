@@ -79,7 +79,7 @@ const EditMaintenanceModal = ({
 				>
 					<div className='fixed inset-0 bg-black/30 transition-opacity' />
 				</TransitionChild>
-				<div className='fixed inset-0 z-50'>
+				<div className='fixed inset-0 z-50 overflow-y-auto'>
 					<div className='flex min-h-full items-end justify-center p-4 sm:items-center sm:p-0'>
 						<TransitionChild
 							as={Fragment}

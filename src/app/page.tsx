@@ -19,8 +19,8 @@ function Home() {
 		}
 	}, [searchParams])
 	return (
-		<div className='text-center'>
-			<h1 className='text-text text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl'>
+		<div className='w-full max-w-7xl px-4 text-center sm:px-6 lg:px-8'>
+			<h1 className='text-text text-3xl font-bold tracking-tight sm:text-5xl md:text-6xl'>
 				Dive Tec Fill Station Tracking
 			</h1>
 			<p className='text-light-text mx-auto mt-3 max-w-md text-base sm:text-lg md:mt-5 md:max-w-3xl md:text-xl'>
@@ -28,24 +28,24 @@ function Home() {
 				station
 			</p>
 			<div className='mx-auto mt-5 max-w-md sm:flex sm:justify-center md:mt-8'>
-				<div className='-mx-6 grid grid-cols-2 gap-0.5 overflow-hidden sm:mx-0 sm:rounded-2xl md:grid-cols-3'>
+				<div className='grid grid-cols-1 gap-0.5 overflow-hidden rounded-2xl sm:grid-cols-3'>
 					<Link
 						href='fills'
-						className='bg-card-hover hover:bg-hover flex cursor-pointer flex-col items-center justify-between gap-2 p-6 transition sm:p-10'
+						className='bg-card-hover hover:bg-hover flex min-h-16 cursor-pointer flex-row items-center gap-4 px-6 py-4 transition sm:flex-col sm:justify-between sm:gap-2 sm:p-10'
 					>
 						<AirTank />
 						<p>Fills</p>
 					</Link>
 					<Link
 						href='visual'
-						className='bg-card-hover hover:bg-hover flex cursor-pointer flex-col items-center justify-between gap-2 p-6 transition sm:p-10'
+						className='bg-card-hover hover:bg-hover flex min-h-16 cursor-pointer flex-row items-center gap-4 px-6 py-4 transition sm:flex-col sm:justify-between sm:gap-2 sm:p-10'
 					>
 						<EyeIcon />
 						<p>Visual</p>
 					</Link>
 					<Link
 						href='history'
-						className='bg-card-hover hover:bg-hover flex cursor-pointer flex-col items-center justify-between gap-2 p-6 transition sm:p-10'
+						className='bg-card-hover hover:bg-hover flex min-h-16 cursor-pointer flex-row items-center gap-4 px-6 py-4 transition sm:flex-col sm:justify-between sm:gap-2 sm:p-10'
 					>
 						<TableCellsIcon />
 						<p>History</p>
@@ -53,7 +53,7 @@ function Home() {
 				</div>
 			</div>
 			<div className='my-10 text-center'>
-				<h2 className='text-text text-4xl font-semibold tracking-tight text-balance sm:text-5xl'>
+				<h2 className='text-text text-3xl font-semibold tracking-tight text-balance sm:text-5xl'>
 					Services Offered
 				</h2>
 			</div>

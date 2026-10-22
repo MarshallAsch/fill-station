@@ -111,7 +111,7 @@ const AddServiceModal = () => {
 				>
 					<div className='bg-overlay fixed inset-0 transition-opacity' />
 				</TransitionChild>
-				<div className='fixed inset-0 z-50'>
+				<div className='fixed inset-0 z-50 overflow-y-auto'>
 					<div className='flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0'>
 						<TransitionChild
 							as={Fragment}
@@ -122,7 +122,7 @@ const AddServiceModal = () => {
 							leaveFrom='opacity-100 translate-y-0 sm:scale-100'
 							leaveTo='opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95'
 						>
-							<DialogPanel className='bg-background transform overflow-hidden rounded-lg px-4 pt-5 pb-4 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:p-6'>
+							<DialogPanel className='bg-background w-full transform rounded-lg px-4 pt-5 pb-4 text-left shadow-xl transition-all sm:my-8 sm:max-w-lg sm:p-6'>
 								<DialogTitle>New Cylinder</DialogTitle>
 								<form className='flex flex-col gap-4' action={handleSubmit}>
 									<DialogTitle>Create Compressor Service Record</DialogTitle>
@@ -134,7 +134,7 @@ const AddServiceModal = () => {
 										id='maintenance_type'
 									/>
 
-									<div className='flex flex-row space-x-2'>
+									<div className='flex flex-col gap-4 sm:flex-row sm:gap-2'>
 										<DatePicker
 											title='Date of Service'
 											name='date'

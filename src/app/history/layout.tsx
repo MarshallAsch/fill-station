@@ -114,7 +114,7 @@ const LayoutContent = ({ children }: { children: ReactNode }) => {
 					</button>
 				</div>
 
-				<div className='flex justify-center px-4 sm:px-6 lg:px-8'>
+				<div className='flex justify-center px-4 *:min-w-0 sm:px-6 lg:px-8'>
 					{children}
 				</div>
 			</div>

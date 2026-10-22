@@ -84,7 +84,7 @@ export default function DatePicker({
 	}
 
 	return (
-		<div ref={ref} className='flex w-full flex-col gap-2'>
+		<div ref={ref} className='relative flex w-full flex-col gap-2'>
 			<label>{title}</label>
 			<button
 				type='button'
@@ -103,23 +103,23 @@ export default function DatePicker({
 			)}
 
 			{open && (
-				<div className='border-border bg-background text-text absolute z-50 mt-2 w-72 rounded-xl border p-4 shadow-lg'>
+				<div className='border-border bg-background text-text absolute top-full z-50 mt-2 w-72 max-w-full rounded-xl border p-4 shadow-lg'>
 					{/* Header */}
 					<div className='mb-4 flex items-center justify-between'>
 						<button
 							type='button'
 							onClick={() => setCurrentMonth((m) => m.subtract(1, 'year'))}
-							className='hover:bg-hover rounded-md px-2 py-1 text-sm'
+							className='hover:bg-hover flex size-10 items-center justify-center rounded-md'
 						>
-							<ChevronLeftIcon className='h-2 w-2' />
+							<ChevronLeftIcon className='size-4' />
 						</button>
 						<div className='font-semibold'>{currentMonth.format('YYYY')}</div>
 						<button
 							type='button'
 							onClick={() => setCurrentMonth((m) => m.add(1, 'year'))}
-							className='hover:bg-hover rounded-md px-2 py-1 text-sm'
+							className='hover:bg-hover flex size-10 items-center justify-center rounded-md'
 						>
-							<ChevronRightIcon className='h-2 w-2' />
+							<ChevronRightIcon className='size-4' />
 						</button>
 					</div>
 
@@ -128,17 +128,17 @@ export default function DatePicker({
 							<button
 								type='button'
 								onClick={() => setCurrentMonth((m) => m.subtract(1, 'month'))}
-								className='hover:bg-hover rounded-md px-2 py-1 text-sm'
+								className='hover:bg-hover flex size-10 items-center justify-center rounded-md'
 							>
-								<ChevronLeftIcon className='h-2 w-2' />
+								<ChevronLeftIcon className='size-4' />
 							</button>
 							<div className='font-medium'>{currentMonth.format('MMMM')}</div>
 							<button
 								type='button'
 								onClick={() => setCurrentMonth((m) => m.add(1, 'month'))}
-								className='hover:bg-hover rounded-md px-2 py-1 text-sm'
+								className='hover:bg-hover flex size-10 items-center justify-center rounded-md'
 							>
-								<ChevronRightIcon className='h-2 w-2' />
+								<ChevronRightIcon className='size-4' />
 							</button>
 						</div>
 					)}
@@ -155,7 +155,7 @@ export default function DatePicker({
 										disabled={isDisabled(date)}
 										className={`\ rounded-lg px-2 py-2 text-sm transition ${
 											isSelected(date)
-												? 'bg-blue-600 text-white'
+												? 'bg-accent text-white-text'
 												: 'hover:bg-hover'
 										} ${
 											isDisabled(date) ? 'cursor-not-allowed opacity-40' : ''
@@ -190,7 +190,7 @@ export default function DatePicker({
 												? 'h-9'
 												: `\ h-9 rounded-lg text-sm transition ${
 														isSelected(date)
-															? 'bg-blue-600 text-white'
+															? 'bg-accent text-white-text'
 															: 'hover:bg-hover'
 													} \ ${
 														date.isSame(today, 'day') && !isSelected(date)

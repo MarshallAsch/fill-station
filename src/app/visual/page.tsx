@@ -66,7 +66,7 @@ export default function Visual() {
 	}
 
 	return (
-		<div className='max-w-7xl'>
+		<div className='w-full max-w-7xl px-4 sm:px-6 lg:px-8'>
 			<div className='flex flex-col overflow-auto'>
 				<div className='flex flex-col items-center justify-center gap-3 py-6'>
 					<h1 className='text-text text-4xl font-semibold'>
@@ -75,7 +75,7 @@ export default function Visual() {
 				</div>
 
 				<form action={handleSubmit}>
-					<div className='flex w-full justify-center gap-6'>
+					<div className='flex w-full flex-col gap-3 sm:flex-row sm:justify-center sm:gap-6'>
 						<ClientPicker />
 						<CylinderPicker
 							initialValue={cylinder}

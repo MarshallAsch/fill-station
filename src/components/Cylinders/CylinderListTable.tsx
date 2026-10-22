@@ -4,6 +4,7 @@ import { Cylinder } from '@/types/cylinder'
 import { Cylinder as CylinderDB } from '@/lib/models/cylinder'
 
 import CylinderListRow from './CylinderListRow'
+import CylinderListCard from './CylinderListCard'
 import Pagination from '@/components/UI/Pagination'
 import usePagination from '@/hooks/usePagination'
 
@@ -29,7 +30,18 @@ const CylinderListTable = ({
 
 	return (
 		<div className='mt-8 flow-root'>
-			<div className='overflow-x-auto'>
+			<ul className='border-border divide-divider divide-y overflow-hidden rounded-lg border md:hidden'>
+				{paginatedCylinders.map((cylinder) => (
+					<CylinderListCard
+						key={cylinder.id}
+						cylinder={JSON.parse(JSON.stringify(cylinder))}
+						showOwner={showOwner}
+						hideInspection={hideInspection}
+						disableEdit={disableEdit}
+					/>
+				))}
+			</ul>
+			<div className='hidden overflow-x-auto md:block'>
 				<div className='inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8'>
 					<div className='shadow-sm outline-1 outline-black/5 sm:rounded-lg'>
 						<table className='divide-divider-strong relative min-w-full divide-y'>
@@ -110,14 +122,10 @@ const CylinderListTable = ({
 								))}
 							</tbody>
 						</table>
-						<Pagination
-							page={page}
-							totalPages={totalPages}
-							onPageChange={setPage}
-						/>
 					</div>
 				</div>
 			</div>
+			<Pagination page={page} totalPages={totalPages} onPageChange={setPage} />
 		</div>
 	)
 }

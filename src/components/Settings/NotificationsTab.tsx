@@ -26,11 +26,11 @@ const NotificationsTab = ({ smtp }: { smtp: SmtpConfig }) => {
 				Read-only — configured via environment variables
 			</p>
 
-			<div className='mt-6 grid grid-cols-[140px_1fr] gap-x-4 gap-y-3 text-sm'>
+			<div className='mt-6 grid grid-cols-1 gap-x-4 gap-y-1 text-sm sm:grid-cols-[140px_minmax(0,1fr)] sm:gap-y-3'>
 				{rows.map((row) => (
 					<React.Fragment key={row.label}>
 						<div className='text-muted-text'>{row.label}</div>
-						<div className='bg-surface text-text rounded px-2 py-1 font-mono'>
+						<div className='bg-surface text-text mb-2 rounded px-2 py-1 font-mono break-all sm:mb-0'>
 							{row.value ?? '—'}
 						</div>
 					</React.Fragment>

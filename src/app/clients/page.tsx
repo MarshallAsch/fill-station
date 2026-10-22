@@ -9,7 +9,7 @@ export default function Clients() {
 	const dispatch = useAppDispatch()
 
 	return (
-		<div className='w-full max-w-7xl'>
+		<div className='w-full max-w-7xl px-4 sm:px-6 lg:px-8'>
 			<div className='my-4 flex min-w-full flex-col items-center justify-center gap-3'>
 				<h1 className='text-3xl'>List of all the clients</h1>
 

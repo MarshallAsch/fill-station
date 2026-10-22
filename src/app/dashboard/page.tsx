@@ -20,7 +20,7 @@ export default async function Dashboard() {
 	// If no linked client, show a message regardless of role.
 	if (!dbUser.clientId) {
 		return (
-			<div className='max-w-7xl'>
+			<div className='w-full max-w-7xl px-4 sm:px-6 lg:px-8'>
 				<div className='my-4 flex flex-col items-center justify-center gap-6'>
 					<h1 className='text-text text-3xl font-semibold'>Dashboard</h1>
 					<NoClientMessage />
@@ -62,11 +62,11 @@ export default async function Dashboard() {
 	})
 
 	return (
-		<div className='w-full max-w-7xl'>
+		<div className='w-full max-w-7xl px-4 sm:px-6 lg:px-8'>
 			<div className='my-4 flex flex-col items-center justify-center gap-6'>
 				<h1 className='text-text text-3xl font-semibold'>Dashboard</h1>
 				{client && (
-					<div className='flex w-full justify-end px-6'>
+					<div className='flex w-full justify-end'>
 						<AddCylinderButton client={JSON.parse(JSON.stringify(client))} />
 					</div>
 				)}

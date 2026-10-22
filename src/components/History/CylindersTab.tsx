@@ -104,7 +104,7 @@ const CylindersTab = ({ cylinders }: CylindersTabProps) => {
 			<TableToolbar
 				filters={
 					<>
-						<div className='w-40'>
+						<div className='w-full sm:w-40'>
 							<ListBox
 								items={YES_NO_ANY_OPTIONS}
 								title='Oxygen clean'
@@ -114,7 +114,7 @@ const CylindersTab = ({ cylinders }: CylindersTabProps) => {
 								onChange={(item) => setOxygen(item.value as TriState)}
 							/>
 						</div>
-						<div className='w-40'>
+						<div className='w-full sm:w-40'>
 							<ListBox
 								items={YES_NO_ANY_OPTIONS}
 								title='Needs vis'
@@ -124,7 +124,7 @@ const CylindersTab = ({ cylinders }: CylindersTabProps) => {
 								onChange={(item) => setNeedsVis(item.value as TriState)}
 							/>
 						</div>
-						<div className='w-40'>
+						<div className='w-full sm:w-40'>
 							<ListBox
 								items={YES_NO_ANY_OPTIONS}
 								title='Out of hydro'
@@ -134,13 +134,13 @@ const CylindersTab = ({ cylinders }: CylindersTabProps) => {
 								onChange={(item) => setOutOfHydro(item.value as TriState)}
 							/>
 						</div>
-						<div className='w-60'>
+						<div className='w-full sm:w-60'>
 							<ClientPicker disableAdd value={owner} onChange={setOwner} />
 						</div>
 					</>
 				}
 				sort={
-					<div className='w-60'>
+					<div className='w-full sm:w-60'>
 						<ListBox
 							items={CYLINDER_SORT_OPTIONS}
 							title='Sort by'

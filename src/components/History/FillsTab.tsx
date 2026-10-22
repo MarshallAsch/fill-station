@@ -82,7 +82,7 @@ const FillsTab = () => {
 			<TableToolbar
 				filters={
 					<>
-						<div className='w-40'>
+						<div className='w-full sm:w-40'>
 							<ListBox
 								items={MIX_TYPE_OPTIONS}
 								title='Mix type'
@@ -92,7 +92,7 @@ const FillsTab = () => {
 								onChange={(item) => setMix(item.value as MixFilter)}
 							/>
 						</div>
-						<div className='w-60'>
+						<div className='w-full sm:w-60'>
 							<CylinderPicker
 								disableAdd
 								filter={() => true}
@@ -100,13 +100,13 @@ const FillsTab = () => {
 								onChange={(c) => setCylinder(c ?? null)}
 							/>
 						</div>
-						<div className='w-60'>
+						<div className='w-full sm:w-60'>
 							<ClientPicker disableAdd value={owner} onChange={setOwner} />
 						</div>
 					</>
 				}
 				sort={
-					<div className='w-60'>
+					<div className='w-full sm:w-60'>
 						<ListBox
 							items={FILL_SORT_OPTIONS}
 							title='Sort by'

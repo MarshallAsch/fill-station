@@ -66,11 +66,11 @@ export default function Fills() {
 					<ClientPicker />
 				</div>
 
-				<div className='hidden md:block'>
+				<div className='hidden lg:block'>
 					<FillsTable client={client} />
 				</div>
 
-				<div className='block md:hidden'>
+				<div className='block lg:hidden'>
 					<FillsCardHolder client={client} />
 				</div>
 			</form>

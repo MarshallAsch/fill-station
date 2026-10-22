@@ -18,11 +18,12 @@ type TooltipProps = {
 
 const Tooltip = ({ children, message, position = 'above' }: TooltipProps) => {
 	return (
-		<div className='group relative flex w-max items-center'>
+		// tabIndex lets a tap focus the wrapper, so the bubble shows on touch too
+		<div tabIndex={0} className='group relative flex w-max items-center'>
 			{children}
 			<span
 				className={clsx(
-					'invisible absolute z-50 rounded bg-black px-3 py-1 text-sm text-white opacity-0 transition-opacity duration-200 group-hover:visible group-hover:opacity-100',
+					'invisible absolute z-50 w-max max-w-64 rounded bg-black px-3 py-1 text-sm text-white opacity-0 transition-opacity duration-200 group-focus-within:visible group-focus-within:opacity-100 group-hover:visible group-hover:opacity-100',
 					positionClasses[position],
 				)}
 			>

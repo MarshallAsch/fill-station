@@ -53,7 +53,7 @@ export default async function Layout({ children }: { children: ReactNode }) {
 			<html lang='en'>
 				<body className='bg-background text-text'>
 					<Navbar />
-					<main className='font-montserrat-regular flex min-h-screen justify-center'>
+					<main className='flex min-h-screen justify-center *:min-w-0'>
 						{children}
 
 						<ToastContainer

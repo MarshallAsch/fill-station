@@ -10,7 +10,7 @@ export default async function Profile() {
 
 	if (!session?.user) {
 		return (
-			<div className='max-w-7xl'>
+			<div className='w-full max-w-7xl px-4 sm:px-6 lg:px-8'>
 				<div className='my-4 flex flex-col items-center justify-center'>
 					<h1 className='text-text text-3xl font-semibold'>Profile</h1>
 					<p className='text-light-text mt-4'>
@@ -27,7 +27,7 @@ export default async function Profile() {
 
 	if (!result) {
 		return (
-			<div className='max-w-7xl'>
+			<div className='w-full max-w-7xl px-4 sm:px-6 lg:px-8'>
 				<div className='my-4 flex flex-col items-center justify-center'>
 					<h1 className='text-text text-3xl font-semibold'>Profile</h1>
 					<p className='text-light-text mt-4'>User not found.</p>
@@ -57,7 +57,7 @@ export default async function Profile() {
 	}
 
 	return (
-		<div className='max-w-7xl'>
+		<div className='w-full max-w-7xl px-4 sm:px-6 lg:px-8'>
 			<div className='my-4 flex flex-col items-center justify-center gap-6'>
 				<h1 className='text-text text-3xl font-semibold'>Profile</h1>
 				<ProfileForm user={user} />

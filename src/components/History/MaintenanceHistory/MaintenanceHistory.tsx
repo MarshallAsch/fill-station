@@ -110,7 +110,7 @@ const MaintenanceHistory = () => {
 
 	return (
 		<div className='flow-root w-full'>
-			<h1 className='text-center text-4xl font-bold'>
+			<h1 className='text-center text-3xl font-bold sm:text-4xl'>
 				Compressor Maintenance Timeline
 			</h1>
 			<div className='my-8 grid grid-cols-1 gap-0.5 overflow-hidden rounded-2xl text-center md:grid-cols-2 lg:grid-cols-4'>
@@ -161,14 +161,14 @@ const MaintenanceHistory = () => {
 										<span
 											className={clsx(
 												getColor(event.type),
-												'flex size-8 items-center justify-center rounded-full ring-8 ring-white',
+												'ring-background flex size-8 items-center justify-center rounded-full ring-8',
 											)}
 										>
 											{getIcon(event.type)}
 										</span>
 									</div>
 									<div className='flex min-w-0 flex-1 justify-between space-x-4 pt-1.5'>
-										<div>
+										<div className='min-w-0'>
 											<p className='text-text font-medium'>
 												{getTitle(event.type)}
 											</p>
@@ -176,7 +176,7 @@ const MaintenanceHistory = () => {
 												{event.description}
 											</p>
 										</div>
-										<div className='text-light-text flex items-center gap-2 text-right text-sm whitespace-nowrap'>
+										<div className='text-light-text flex flex-col items-end gap-1 text-right text-sm whitespace-nowrap sm:flex-row sm:items-center sm:gap-2'>
 											<div>
 												<time dateTime={event.date.format('DD/MM/YYYY')}>
 													{event.date.format('DD/MM/YYYY')}
