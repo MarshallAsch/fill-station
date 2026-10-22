@@ -31,6 +31,10 @@ const FillHistoryRow = ({ fill, onEdit }: FillHistoryRowProps) => {
 
 			<td className='text-light-text px-3 py-4 text-center text-sm whitespace-nowrap'>
 				{getFillMix(fill)}
+				{/* The pressure columns are hidden below sm */}
+				<div className='text-xs sm:hidden'>
+					{fill.startPressure} → {fill.endPressure}
+				</div>
 			</td>
 			<td className='text-light-text hidden px-3 py-4 text-center text-sm whitespace-nowrap sm:table-cell'>
 				{fill.startPressure}

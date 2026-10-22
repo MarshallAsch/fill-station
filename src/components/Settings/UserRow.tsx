@@ -47,6 +47,14 @@ const UserRow = ({ user }: { user: Profile }) => {
 		<tr className='hover:bg-hover'>
 			<td className='text-text py-4 pr-3 pl-4 text-center text-sm font-medium whitespace-nowrap sm:pl-6'>
 				{user.name ?? '—'}
+				{/* The linked-client column is hidden below md */}
+				<div className='mt-2 text-left md:hidden'>
+					<ClientPicker
+						disableAdd
+						value={selectedClient}
+						onChange={handleClientChange}
+					/>
+				</div>
 			</td>
 			<td className='text-light-text hidden px-3 py-4 text-center text-sm whitespace-nowrap sm:table-cell'>
 				{user.email ?? '—'}

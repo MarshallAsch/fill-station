@@ -53,7 +53,7 @@ const ClientListTable = () => {
 									</th>
 									<th
 										scope='col'
-										className='text-text hidden px-3 py-3.5 text-center text-sm font-semibold sm:table-cell'
+										className='text-text px-3 py-3.5 text-center text-sm font-semibold'
 									>
 										Details
 									</th>

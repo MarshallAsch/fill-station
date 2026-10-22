@@ -32,8 +32,12 @@ const ClientsRow = ({ client }: { client: Client }) => {
 			<td className='text-text hidden py-4 pr-3 pl-4 text-center text-sm font-medium whitespace-nowrap sm:table-cell sm:pl-6'>
 				{clientCert(client)}
 			</td>
-			<td className='text-light-text hidden px-3 py-4 text-center text-sm whitespace-nowrap sm:table-cell'>
-				<Link href={`/clients/${client.id}`}>
+			<td className='text-light-text px-3 py-4 text-center text-sm whitespace-nowrap'>
+				<Link
+					href={`/clients/${client.id}`}
+					className='inline-flex size-11 items-center justify-center'
+				>
+					<span className='sr-only'>View {client.name}</span>
 					<LinkIcon className='h-5' />
 				</Link>
 			</td>
