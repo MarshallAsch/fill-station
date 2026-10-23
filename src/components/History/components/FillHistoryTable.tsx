@@ -8,6 +8,7 @@ import Pagination from '@/components/UI/Pagination'
 import usePagination from '@/hooks/usePagination'
 import useLoadFills from '@/hooks/useLoadFills'
 import { FillHistory } from '@/types/fills'
+import { PERMISSIONS, Role } from '@/lib/permissions'
 
 type FillHistoryTableProps = {
 	fills?: FillHistory[]
@@ -18,6 +19,9 @@ const FillHistoryTable = ({ fills: propFills }: FillHistoryTableProps = {}) => {
 	const fills = propFills ?? hookFills
 	const { data: session } = useSession()
 	const isAdmin = session?.user?.role === 'admin'
+	const canViewClients = PERMISSIONS.pages['/clients'].includes(
+		(session?.user?.role ?? 'user') as Role,
+	)
 	const [editing, setEditing] = useState<FillHistory | null>(null)
 
 	const {
@@ -81,6 +85,7 @@ const FillHistoryTable = ({ fills: propFills }: FillHistoryTableProps = {}) => {
 										<FillHistoryRow
 											key={fill.id}
 											fill={fill}
+											linkOwner={canViewClients}
 											onEdit={isAdmin ? () => setEditing(fill) : undefined}
 										/>
 									))}

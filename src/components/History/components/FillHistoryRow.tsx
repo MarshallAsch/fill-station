@@ -1,17 +1,21 @@
 import { FillHistory } from '@/types/fills'
 import { getFillMix } from '@/lib/fills'
 import dayjs from 'dayjs'
-import Tooltip from '@/components/UI/Tooltip'
+import Link from 'next/link'
 import Button from '@/components/UI/Button'
 import { PencilSquareIcon } from '@heroicons/react/24/outline'
 
 type FillHistoryRowProps = {
 	fill: FillHistory
 	onEdit?: () => void
+	linkOwner?: boolean
 }
 
-const FillHistoryRow = ({ fill, onEdit }: FillHistoryRowProps) => {
-	const ownerName = fill.Cylinder.Client?.name
+const FillHistoryRow = ({
+	fill,
+	onEdit,
+	linkOwner = false,
+}: FillHistoryRowProps) => {
 	const cylinderCell = fill.Cylinder.nickname ? (
 		<div className='flex flex-col items-center'>
 			<span>{fill.Cylinder.nickname}</span>
@@ -43,10 +47,14 @@ const FillHistoryRow = ({ fill, onEdit }: FillHistoryRowProps) => {
 				{fill.endPressure}
 			</td>
 			<td className='py-4 pr-4 pl-3 text-center text-sm font-medium whitespace-nowrap sm:pr-6'>
-				{ownerName ? (
-					<Tooltip message={`Owner: ${ownerName}`}>{cylinderCell}</Tooltip>
-				) : (
-					cylinderCell
+				{cylinderCell}
+				{linkOwner && fill.Cylinder.Client && (
+					<Link
+						href={`/clients/${fill.Cylinder.Client.id}`}
+						className='text-light-text hover:text-accent-text block text-xs underline-offset-2 hover:underline'
+					>
+						{fill.Cylinder.Client.name}
+					</Link>
 				)}
 			</td>
 			{onEdit && (
